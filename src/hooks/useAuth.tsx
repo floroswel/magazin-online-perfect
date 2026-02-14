@@ -43,6 +43,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         emailRedirectTo: window.location.origin,
       },
     });
+
+    // Send welcome email (fire-and-forget)
+    if (!error) {
+      supabase.functions.invoke("send-email", {
+        body: { type: "welcome", to: email, data: { name: fullName } },
+      }).catch(console.error);
+    }
+
     return { error: error as Error | null };
   };
 
