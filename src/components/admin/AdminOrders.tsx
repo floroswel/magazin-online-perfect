@@ -2,9 +2,12 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown, ChevronRight, MapPin, CreditCard, Gift } from "lucide-react";
 import { format } from "date-fns";
 import { ro } from "date-fns/locale";
 import { toast } from "sonner";
@@ -28,13 +31,14 @@ const statusLabels: Record<string, string> = {
 export default function AdminOrders() {
   const queryClient = useQueryClient();
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["admin-orders"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("*, order_items(*, products(name, image_url))")
+        .select("*, order_items(*, products(name, image_url, slug))")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
@@ -46,7 +50,6 @@ export default function AdminOrders() {
       const { error } = await supabase.from("orders").update({ status }).eq("id", id);
       if (error) throw error;
 
-      // Send status update email
       if (userEmail) {
         try {
           await supabase.functions.invoke("send-email", {
@@ -67,6 +70,10 @@ export default function AdminOrders() {
   const filtered = filterStatus === "all"
     ? orders
     : orders.filter((o: any) => o.status === filterStatus);
+
+  const toggleExpand = (id: string) => {
+    setExpandedOrder((prev) => (prev === id ? null : id));
+  };
 
   return (
     <Card>
@@ -92,64 +99,147 @@ export default function AdminOrders() {
         {isLoading ? (
           <div className="text-center py-8 text-muted-foreground">Se încarcă...</div>
         ) : (
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Data</TableHead>
-                  <TableHead>Produse</TableHead>
-                  <TableHead>Total</TableHead>
-                  <TableHead>Plată</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filtered.map((order: any) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-mono text-xs">{order.id.slice(0, 8)}...</TableCell>
-                    <TableCell className="text-sm">
-                      {format(new Date(order.created_at), "dd MMM yyyy, HH:mm", { locale: ro })}
-                    </TableCell>
-                    <TableCell>
-                      <div className="space-y-1">
-                        {order.order_items?.map((item: any) => (
-                          <p key={item.id} className="text-xs">
-                            {item.products?.name} × {item.quantity}
-                          </p>
-                        ))}
+          <div className="space-y-2">
+            {filtered.map((order: any) => {
+              const isExpanded = expandedOrder === order.id;
+              const address = order.shipping_address as any;
+              const installments = order.payment_installments as any;
+
+              return (
+                <Collapsible key={order.id} open={isExpanded} onOpenChange={() => toggleExpand(order.id)}>
+                  <div className="border rounded-lg overflow-hidden">
+                    <CollapsibleTrigger asChild>
+                      <div className="flex items-center gap-3 p-4 hover:bg-muted/50 cursor-pointer transition-colors">
+                        {isExpanded ? <ChevronDown className="w-4 h-4 shrink-0" /> : <ChevronRight className="w-4 h-4 shrink-0" />}
+                        <div className="flex-1 grid grid-cols-2 sm:grid-cols-5 gap-2 items-center">
+                          <div>
+                            <p className="font-mono text-xs text-muted-foreground">#{order.id.slice(0, 8)}</p>
+                            <p className="text-sm font-medium">
+                              {format(new Date(order.created_at), "dd MMM yyyy", { locale: ro })}
+                            </p>
+                          </div>
+                          <div className="text-sm">
+                            <p className="text-muted-foreground text-xs">Client</p>
+                            <p className="truncate">{order.user_email || "—"}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground text-xs">Produse</p>
+                            <p className="text-sm">{order.order_items?.length || 0} articole</p>
+                          </div>
+                          <div>
+                            <p className="font-semibold">{Number(order.total).toFixed(2)} RON</p>
+                            {order.discount_amount > 0 && (
+                              <p className="text-xs text-green-600">-{Number(order.discount_amount).toFixed(2)} discount</p>
+                            )}
+                          </div>
+                          <div onClick={(e) => e.stopPropagation()}>
+                            <Select
+                              value={order.status}
+                              onValueChange={(value) => updateStatus.mutate({ id: order.id, status: value, userEmail: order.user_email })}
+                            >
+                              <SelectTrigger className="w-36 h-8">
+                                <Badge className={statusColors[order.status] || ""}>
+                                  {statusLabels[order.status] || order.status}
+                                </Badge>
+                              </SelectTrigger>
+                              <SelectContent>
+                                {Object.entries(statusLabels).map(([key, label]) => (
+                                  <SelectItem key={key} value={key}>{label}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
                       </div>
-                    </TableCell>
-                    <TableCell className="font-semibold">{Number(order.total).toFixed(2)} RON</TableCell>
-                    <TableCell className="text-sm capitalize">{order.payment_method || "—"}</TableCell>
-                    <TableCell>
-                      <Select
-                        value={order.status}
-                        onValueChange={(value) => updateStatus.mutate({ id: order.id, status: value, userEmail: order.user_email })}
-                      >
-                        <SelectTrigger className="w-36">
-                          <Badge className={statusColors[order.status] || ""}>
-                            {statusLabels[order.status] || order.status}
-                          </Badge>
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Object.entries(statusLabels).map(([key, label]) => (
-                            <SelectItem key={key} value={key}>{label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {filtered.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                      Nicio comandă găsită.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                    </CollapsibleTrigger>
+
+                    <CollapsibleContent>
+                      <div className="border-t bg-muted/30 p-4 space-y-4">
+                        {/* Order Items */}
+                        <div>
+                          <h4 className="text-sm font-semibold mb-2">Produse comandate</h4>
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Produs</TableHead>
+                                <TableHead className="text-center">Cantitate</TableHead>
+                                <TableHead className="text-right">Preț unitar</TableHead>
+                                <TableHead className="text-right">Subtotal</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {order.order_items?.map((item: any) => (
+                                <TableRow key={item.id}>
+                                  <TableCell>
+                                    <div className="flex items-center gap-2">
+                                      {item.products?.image_url && (
+                                        <img src={item.products.image_url} alt="" className="w-8 h-8 object-cover rounded" />
+                                      )}
+                                      <span className="text-sm">{item.products?.name || "Produs șters"}</span>
+                                    </div>
+                                  </TableCell>
+                                  <TableCell className="text-center">{item.quantity}</TableCell>
+                                  <TableCell className="text-right text-sm">{Number(item.price).toFixed(2)} RON</TableCell>
+                                  <TableCell className="text-right font-medium">{(Number(item.price) * item.quantity).toFixed(2)} RON</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+
+                        <div className="grid sm:grid-cols-3 gap-4">
+                          {/* Shipping Address */}
+                          {address && (
+                            <div className="space-y-1">
+                              <h4 className="text-sm font-semibold flex items-center gap-1"><MapPin className="w-4 h-4" /> Adresă livrare</h4>
+                              <div className="text-sm text-muted-foreground">
+                                <p>{address.full_name}</p>
+                                <p>{address.address}</p>
+                                <p>{address.city}, {address.county} {address.postal_code}</p>
+                                <p>📞 {address.phone}</p>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Payment Info */}
+                          <div className="space-y-1">
+                            <h4 className="text-sm font-semibold flex items-center gap-1"><CreditCard className="w-4 h-4" /> Plată</h4>
+                            <div className="text-sm text-muted-foreground">
+                              <p className="capitalize">{order.payment_method || "Ramburs"}</p>
+                              {installments && (
+                                <p className="text-xs mt-1">
+                                  {installments.count} rate × {Number(installments.monthlyAmount).toFixed(2)} RON
+                                  <br />via {installments.provider}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Loyalty & Discount */}
+                          <div className="space-y-1">
+                            <h4 className="text-sm font-semibold flex items-center gap-1"><Gift className="w-4 h-4" /> Extra</h4>
+                            <div className="text-sm text-muted-foreground">
+                              {order.loyalty_points_earned > 0 && (
+                                <p>+{order.loyalty_points_earned} puncte fidelitate</p>
+                              )}
+                              {order.discount_amount > 0 && (
+                                <p>Discount: -{Number(order.discount_amount).toFixed(2)} RON</p>
+                              )}
+                              <p className="text-xs mt-1">
+                                Comandat: {format(new Date(order.created_at), "dd MMM yyyy, HH:mm", { locale: ro })}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </div>
+                </Collapsible>
+              );
+            })}
+            {filtered.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">Nicio comandă găsită.</div>
+            )}
           </div>
         )}
       </CardContent>
