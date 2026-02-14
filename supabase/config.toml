@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.send-newsletter]
 verify_jwt = false
+
+[functions.import-products]
+verify_jwt = false
