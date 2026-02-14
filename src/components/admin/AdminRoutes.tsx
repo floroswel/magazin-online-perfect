@@ -20,6 +20,7 @@ import AdminLoyalty from "./customers/AdminLoyalty";
 import AdminSupportTickets from "./customers/AdminSupportTickets";
 import AdminRolesPermissions from "./users/AdminRolesPermissions";
 import AdminReturns from "./orders/AdminReturns";
+import AdminUsers from "./users/AdminUsers";
 
 export default function AdminRoutes() {
   return (
@@ -103,7 +104,7 @@ export default function AdminRoutes() {
       <Route path="settings/integrations" element={<AdminPlaceholder title="Integrări" description="Chei API, webhooks și configurare servicii externe." />} />
 
       {/* Utilizatori */}
-      <Route path="users" element={<AdminPlaceholder title="Utilizatori" description="Gestionare conturi admin și permisiuni." />} />
+      <Route path="users" element={<AdminUsers />} />
       <Route path="users/roles" element={<AdminRolesPermissions />} />
       <Route path="users/audit" element={<AdminAuditLog />} />
 
