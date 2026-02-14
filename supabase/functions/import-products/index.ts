@@ -164,34 +164,38 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceKey);
 
-    // Verify admin via auth header
+    // Verify admin via auth header (skip for service role key - used by cron)
     const authHeader = req.headers.get("authorization");
     if (authHeader) {
       const token = authHeader.replace("Bearer ", "");
-      const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-      const userClient = createClient(supabaseUrl, anonKey);
-      const { data: { user } } = await userClient.auth.getUser(token);
       
-      if (!user) {
-        return new Response(JSON.stringify({ error: "Neautorizat" }), {
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
+      // Allow service role key (used by cron-import)
+      if (token !== serviceKey) {
+        const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+        const userClient = createClient(supabaseUrl, anonKey);
+        const { data: { user } } = await userClient.auth.getUser(token);
+        
+        if (!user) {
+          return new Response(JSON.stringify({ error: "Neautorizat" }), {
+            status: 401,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
 
-      // Check admin role
-      const { data: roleData } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.id)
-        .eq("role", "admin")
-        .maybeSingle();
+        // Check admin role
+        const { data: roleData } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id)
+          .eq("role", "admin")
+          .maybeSingle();
 
-      if (!roleData) {
-        return new Response(JSON.stringify({ error: "Acces interzis" }), {
-          status: 403,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        if (!roleData) {
+          return new Response(JSON.stringify({ error: "Acces interzis" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
       }
     }
 
