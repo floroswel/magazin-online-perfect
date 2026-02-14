@@ -4,12 +4,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import Layout from "@/components/layout/Layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Package, ShoppingCart, Tag, BarChart3, Shield, Mail } from "lucide-react";
+import { Package, ShoppingCart, Tag, BarChart3, Shield, Mail, FolderTree } from "lucide-react";
 import AdminProducts from "@/components/admin/AdminProducts";
 import AdminOrders from "@/components/admin/AdminOrders";
 import AdminCoupons from "@/components/admin/AdminCoupons";
 import AdminReports from "@/components/admin/AdminReports";
 import AdminNewsletter from "@/components/admin/AdminNewsletter";
+import AdminCategories from "@/components/admin/AdminCategories";
 
 export default function Admin() {
   const { user, loading: authLoading } = useAuth();
@@ -52,10 +53,14 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="products" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="products" className="flex items-center gap-2">
               <Package className="w-4 h-4" />
               <span className="hidden sm:inline">Produse</span>
+            </TabsTrigger>
+            <TabsTrigger value="categories" className="flex items-center gap-2">
+              <FolderTree className="w-4 h-4" />
+              <span className="hidden sm:inline">Categorii</span>
             </TabsTrigger>
             <TabsTrigger value="orders" className="flex items-center gap-2">
               <ShoppingCart className="w-4 h-4" />
@@ -76,6 +81,7 @@ export default function Admin() {
           </TabsList>
 
           <TabsContent value="products"><AdminProducts /></TabsContent>
+          <TabsContent value="categories"><AdminCategories /></TabsContent>
           <TabsContent value="orders"><AdminOrders /></TabsContent>
           <TabsContent value="coupons"><AdminCoupons /></TabsContent>
           <TabsContent value="newsletter"><AdminNewsletter /></TabsContent>
