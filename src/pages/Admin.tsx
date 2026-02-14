@@ -6,6 +6,7 @@ import { Shield, Menu } from "lucide-react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminRoutes from "@/components/admin/AdminRoutes";
 import AdminGlobalSearch from "@/components/admin/AdminGlobalSearch";
+import AdminNotifications from "@/components/admin/AdminNotifications";
 import { Button } from "@/components/ui/button";
 
 export default function Admin() {
@@ -48,6 +49,7 @@ export default function Admin() {
             <Menu className="w-5 h-5" />
           </Button>
           <AdminGlobalSearch />
+          <AdminNotifications />
         </header>
         <main className="flex-1">
           <div className="p-4 lg:p-8 max-w-7xl">
