@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 interface EmailRequest {
-  type: "order_placed" | "order_status" | "welcome";
+  type: "order_placed" | "order_status" | "welcome" | "return_status";
   to: string;
   data: Record<string, any>;
 }
@@ -85,6 +85,37 @@ function welcomeHTML(data: Record<string, any>) {
     </div>`;
 }
 
+function returnStatusHTML(data: Record<string, any>) {
+  const statusMap: Record<string, { label: string; color: string; emoji: string; message: string }> = {
+    approved: { label: "Aprobat", color: "#2563eb", emoji: "✅", message: "Cererea ta de retur a fost aprobată. Te rugăm să expediezi produsul conform instrucțiunilor." },
+    rejected: { label: "Respins", color: "#dc2626", emoji: "❌", message: "Din păcate, cererea ta de retur a fost respinsă." },
+    shipped: { label: "Expediat", color: "#7c3aed", emoji: "🚚", message: "Am înregistrat expedierea produsului returnat. Îl vom verifica la primire." },
+    received: { label: "Recepționat", color: "#059669", emoji: "📦", message: "Produsul returnat a fost recepționat. Procesăm rambursarea." },
+    refunded: { label: "Rambursat", color: "#16a34a", emoji: "💰", message: "Rambursarea a fost procesată cu succes!" },
+    closed: { label: "Închis", color: "#6b7280", emoji: "🔒", message: "Cererea de retur a fost închisă." },
+  };
+  const s = statusMap[data.status] || { label: data.status, color: "#666", emoji: "📋", message: "Statusul returului tău s-a schimbat." };
+
+  return `
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">
+      <div style="background:${s.color};padding:24px;text-align:center">
+        <h1 style="color:#fff;margin:0;font-size:22px">${s.emoji} Retur ${s.label}</h1>
+      </div>
+      <div style="padding:24px">
+        <p>Bună!</p>
+        <p>Returul tău <strong>#${(data.returnId || "").slice(0, 8)}</strong> (comandă #${(data.orderId || "").slice(0, 8)}) are un status nou:</p>
+        <div style="text-align:center;padding:20px">
+          <span style="background:${s.color};color:#fff;padding:10px 24px;border-radius:20px;font-size:18px;font-weight:bold">${s.emoji} ${s.label}</span>
+        </div>
+        <p style="color:#444">${s.message}</p>
+        ${data.refundAmount ? `<p style="color:#16a34a;font-weight:bold">Sumă rambursată: ${Number(data.refundAmount).toFixed(2)} RON</p>` : ""}
+        ${data.resolution ? `<p style="color:#666;font-size:14px">Rezoluție: <strong>${data.resolution}</strong></p>` : ""}
+        ${data.adminNotes ? `<p style="color:#666;font-size:14px;background:#f9f9f9;padding:12px;border-radius:6px">${data.adminNotes}</p>` : ""}
+        <p style="margin-top:20px;color:#666;font-size:14px">Poți vedea detaliile returului în contul tău.</p>
+      </div>
+    </div>`;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -113,6 +144,10 @@ serve(async (req) => {
       case "welcome":
         subject = "Bine ai venit! 🎊";
         html = welcomeHTML(data);
+        break;
+      case "return_status":
+        subject = `Actualizare retur #${(data.returnId || "").slice(0, 8)}`;
+        html = returnStatusHTML(data);
         break;
       default:
         throw new Error(`Unknown email type: ${type}`);

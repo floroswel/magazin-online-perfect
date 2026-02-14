@@ -68,6 +68,7 @@ interface ReturnItem {
   // joined
   order_total?: number;
   user_name?: string;
+  user_email?: string | null;
 }
 
 export default function AdminReturns() {
@@ -111,9 +112,31 @@ export default function AdminReturns() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, updates }: { id: string; updates: Record<string, any> }) => {
+    mutationFn: async ({ id, updates, emailData }: { id: string; updates: Record<string, any>; emailData?: { to: string; returnId: string; orderId: string; status: string; refundAmount?: number; resolution?: string; adminNotes?: string } }) => {
       const { error } = await supabase.from("returns").update(updates).eq("id", id);
       if (error) throw error;
+
+      // Send email notification if status changed and we have email
+      if (emailData?.to && emailData.status !== detail?.status) {
+        try {
+          await supabase.functions.invoke("send-email", {
+            body: {
+              type: "return_status",
+              to: emailData.to,
+              data: {
+                returnId: emailData.returnId,
+                orderId: emailData.orderId,
+                status: emailData.status,
+                refundAmount: emailData.refundAmount,
+                resolution: emailData.resolution,
+                adminNotes: emailData.adminNotes,
+              },
+            },
+          });
+        } catch (e) {
+          console.error("Failed to send return status email:", e);
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-returns"] });
@@ -134,15 +157,25 @@ export default function AdminReturns() {
 
   const handleSave = () => {
     if (!detail) return;
+    const newStatus = editStatus || detail.status;
     updateMutation.mutate({
       id: detail.id,
       updates: {
-        status: editStatus || detail.status,
+        status: newStatus,
         admin_notes: editNotes || null,
         refund_amount: parseFloat(editRefund) || 0,
         tracking_number: editTracking || null,
         resolution: editResolution || null,
       },
+      emailData: detail.user_email && newStatus !== detail.status ? {
+        to: detail.user_email,
+        returnId: detail.id,
+        orderId: detail.order_id,
+        status: newStatus,
+        refundAmount: parseFloat(editRefund) || undefined,
+        resolution: editResolution || undefined,
+        adminNotes: editNotes || undefined,
+      } : undefined,
     });
   };
 
