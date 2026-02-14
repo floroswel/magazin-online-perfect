@@ -333,6 +333,63 @@ export type Database = {
           },
         ]
       }
+      newsletter_campaigns: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          recipient_count: number | null
+          sent_at: string | null
+          status: string
+          subject: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          recipient_count?: number | null
+          sent_at?: string | null
+          status?: string
+          subject: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          recipient_count?: number | null
+          sent_at?: string | null
+          status?: string
+          subject?: string
+        }
+        Relationships: []
+      }
+      newsletter_subscribers: {
+        Row: {
+          email: string
+          id: string
+          is_active: boolean
+          name: string | null
+          subscribed_at: string
+          unsubscribed_at: string | null
+        }
+        Insert: {
+          email: string
+          id?: string
+          is_active?: boolean
+          name?: string | null
+          subscribed_at?: string
+          unsubscribed_at?: string | null
+        }
+        Update: {
+          email?: string
+          id?: string
+          is_active?: boolean
+          name?: string | null
+          subscribed_at?: string
+          unsubscribed_at?: string | null
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string

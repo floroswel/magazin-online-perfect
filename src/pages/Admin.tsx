@@ -4,11 +4,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import Layout from "@/components/layout/Layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Package, ShoppingCart, Tag, BarChart3, Shield } from "lucide-react";
+import { Package, ShoppingCart, Tag, BarChart3, Shield, Mail } from "lucide-react";
 import AdminProducts from "@/components/admin/AdminProducts";
 import AdminOrders from "@/components/admin/AdminOrders";
 import AdminCoupons from "@/components/admin/AdminCoupons";
 import AdminReports from "@/components/admin/AdminReports";
+import AdminNewsletter from "@/components/admin/AdminNewsletter";
 
 export default function Admin() {
   const { user, loading: authLoading } = useAuth();
@@ -51,7 +52,7 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="products" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="products" className="flex items-center gap-2">
               <Package className="w-4 h-4" />
               <span className="hidden sm:inline">Produse</span>
@@ -64,6 +65,10 @@ export default function Admin() {
               <Tag className="w-4 h-4" />
               <span className="hidden sm:inline">Cupoane</span>
             </TabsTrigger>
+            <TabsTrigger value="newsletter" className="flex items-center gap-2">
+              <Mail className="w-4 h-4" />
+              <span className="hidden sm:inline">Newsletter</span>
+            </TabsTrigger>
             <TabsTrigger value="reports" className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
               <span className="hidden sm:inline">Rapoarte</span>
@@ -73,6 +78,7 @@ export default function Admin() {
           <TabsContent value="products"><AdminProducts /></TabsContent>
           <TabsContent value="orders"><AdminOrders /></TabsContent>
           <TabsContent value="coupons"><AdminCoupons /></TabsContent>
+          <TabsContent value="newsletter"><AdminNewsletter /></TabsContent>
           <TabsContent value="reports"><AdminReports /></TabsContent>
         </Tabs>
       </div>
