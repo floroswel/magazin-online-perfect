@@ -2,83 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 96%;
-    --foreground: 220 20% 10%;
+    /* CYBER NOIR — near-black surfaces, neon cyan accents, gold finance */
+    --background: 220 25% 6%;
+    --foreground: 200 20% 90%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 20% 10%;
+    --card: 220 22% 9%;
+    --card-foreground: 200 20% 90%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 10%;
+    --popover: 220 22% 10%;
+    --popover-foreground: 200 20% 90%;
 
-    --primary: 0 80% 50%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 185 90% 50%;
+    --primary-foreground: 220 25% 6%;
 
-    --secondary: 42 100% 50%;
-    --secondary-foreground: 220 20% 10%;
+    --secondary: 45 95% 55%;
+    --secondary-foreground: 220 25% 6%;
 
-    --muted: 220 10% 92%;
-    --muted-foreground: 220 10% 46%;
+    --muted: 220 18% 14%;
+    --muted-foreground: 210 12% 50%;
 
-    --accent: 42 100% 50%;
-    --accent-foreground: 220 20% 10%;
+    --accent: 185 70% 40%;
+    --accent-foreground: 200 20% 95%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 87%;
-    --input: 220 13% 87%;
-    --ring: 0 80% 50%;
+    --border: 220 15% 16%;
+    --input: 220 18% 14%;
+    --ring: 185 90% 50%;
 
-    --radius: 0.375rem;
+    --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 220 25% 7%;
+    --sidebar-foreground: 200 15% 75%;
+    --sidebar-primary: 185 90% 50%;
+    --sidebar-primary-foreground: 220 25% 6%;
+    --sidebar-accent: 220 20% 12%;
+    --sidebar-accent-foreground: 200 20% 90%;
+    --sidebar-border: 220 15% 14%;
+    --sidebar-ring: 185 90% 50%;
 
-    --emag-yellow: 42 100% 50%;
-    --emag-red: 0 80% 50%;
-    --emag-dark: 220 20% 15%;
-    --emag-blue: 210 80% 45%;
-  }
-
-  .dark {
-    --background: 220 20% 10%;
-    --foreground: 0 0% 96%;
-    --card: 220 20% 14%;
-    --card-foreground: 0 0% 96%;
-    --popover: 220 20% 14%;
-    --popover-foreground: 0 0% 96%;
-    --primary: 0 80% 50%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 42 100% 50%;
-    --secondary-foreground: 220 20% 10%;
-    --muted: 220 15% 20%;
-    --muted-foreground: 220 10% 60%;
-    --accent: 42 100% 50%;
-    --accent-foreground: 220 20% 10%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 96%;
-    --border: 220 15% 22%;
-    --input: 220 15% 22%;
-    --ring: 0 80% 50%;
-    --sidebar-background: 220 20% 10%;
-    --sidebar-foreground: 0 0% 96%;
-    --sidebar-primary: 0 80% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 18%;
-    --sidebar-accent-foreground: 0 0% 96%;
-    --sidebar-border: 220 15% 22%;
-    --sidebar-ring: 0 80% 50%;
+    --cyber-cyan: 185 90% 50%;
+    --cyber-gold: 45 95% 55%;
+    --cyber-surface: 220 22% 9%;
+    --cyber-glow: 185 100% 60%;
   }
 }
 
@@ -88,13 +59,53 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
-    font-family: 'Open Sans', sans-serif;
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Scrollbar styling for cyber noir */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(220 25% 6%);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(220 15% 20%);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(185 90% 50% / 0.4);
   }
 }
 
 @layer utilities {
+  .cyber-gradient {
+    background: linear-gradient(135deg, hsl(var(--cyber-cyan) / 0.15), hsl(var(--cyber-gold) / 0.08));
+  }
+
+  .cyber-glow {
+    box-shadow: 0 0 20px hsl(var(--cyber-cyan) / 0.15), 0 0 60px hsl(var(--cyber-cyan) / 0.05);
+  }
+
+  .cyber-glow-gold {
+    box-shadow: 0 0 20px hsl(var(--cyber-gold) / 0.15), 0 0 60px hsl(var(--cyber-gold) / 0.05);
+  }
+
+  .cyber-border-glow {
+    border-color: hsl(var(--cyber-cyan) / 0.3);
+  }
+
+  .cyber-text-glow {
+    text-shadow: 0 0 10px hsl(var(--cyber-cyan) / 0.5);
+  }
+
   .emag-gradient {
-    background: linear-gradient(135deg, hsl(var(--emag-yellow)), hsl(42 100% 45%));
+    background: linear-gradient(135deg, hsl(var(--cyber-cyan) / 0.1), hsl(var(--cyber-gold) / 0.05));
+  }
+
+  .font-mono-cyber {
+    font-family: 'JetBrains Mono', monospace;
   }
 }
