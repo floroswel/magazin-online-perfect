@@ -11,6 +11,9 @@ import AdminStockOverview from "./stock/AdminStockOverview";
 import AdminStockMovements from "./stock/AdminStockMovements";
 import AdminStockAlerts from "./stock/AdminStockAlerts";
 import AdminInventory from "./stock/AdminInventory";
+import AdminCustomers from "./customers/AdminCustomers";
+import AdminCustomerGroups from "./customers/AdminCustomerGroups";
+import AdminCustomerSegments from "./customers/AdminCustomerSegments";
 
 export default function AdminRoutes() {
   return (
@@ -39,11 +42,11 @@ export default function AdminRoutes() {
       <Route path="stock/inventory" element={<AdminInventory />} />
 
       {/* Clienți / CRM */}
-      <Route path="customers" element={<AdminPlaceholder title="Clienți" description="Vizualizare și gestionare bază de clienți." />} />
-      <Route path="customers/groups" element={<AdminPlaceholder title="Grupuri Clienți" description="Grupuri: B2C, B2B, VIP cu prețuri și beneficii diferențiate." />} />
+      <Route path="customers" element={<AdminCustomers />} />
+      <Route path="customers/groups" element={<AdminCustomerGroups />} />
       <Route path="customers/loyalty" element={<AdminPlaceholder title="Puncte Fidelitate" description="Administrare program de fidelitate, cashback și recompense." />} />
       <Route path="customers/tickets" element={<AdminPlaceholder title="Tichete Suport" description="Helpdesk integrat pentru gestionare cereri clienți." />} />
-      <Route path="customers/segments" element={<AdminPlaceholder title="Segmentare" description="Segmente automate bazate pe comportament: achiziții recente, valoare coș, frecvență." />} />
+      <Route path="customers/segments" element={<AdminCustomerSegments />} />
 
       {/* Marketing */}
       <Route path="coupons" element={<AdminCoupons />} />
