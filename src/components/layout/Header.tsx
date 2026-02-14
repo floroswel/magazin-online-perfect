@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, GitCompare, Award } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, GitCompare, Award, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { useCart } from "@/hooks/useCart";
 import { useComparison } from "@/hooks/useComparison";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +22,7 @@ const categories = [
 
 export default function Header() {
   const { user, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
   const { totalItems } = useCart();
   const { comparisonItems } = useComparison();
   const navigate = useNavigate();
@@ -83,6 +85,13 @@ export default function Header() {
                     )}
                   </Button>
                 </Link>
+                {isAdmin && (
+                  <Link to="/admin">
+                    <Button variant="ghost" size="icon" className="text-foreground hover:bg-secondary/20">
+                      <Shield className="h-5 w-5" />
+                    </Button>
+                  </Link>
+                )}
                 <Link to="/account">
                   <Button variant="ghost" size="icon" className="text-foreground hover:bg-secondary/20">
                     <User className="h-5 w-5" />
