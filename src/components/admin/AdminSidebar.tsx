@@ -1,13 +1,10 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
-  LayoutDashboard, Package, FolderTree, ShoppingCart, Tag, Mail,
+  LayoutDashboard, Package, ShoppingCart,
   BarChart3, ArrowLeft, Store, X, ChevronDown, Warehouse, Users,
   Megaphone, FileText, Globe, CreditCard, Truck, Settings, Shield,
-  Puzzle, Star, BarChart, Layers, BookOpen, Image, Zap, Receipt,
-  RefreshCw, ShoppingBag, Target, Bell, UserCheck, ScrollText,
-  TrendingUp, Box, AlertTriangle, ClipboardList, BadgePercent,
-  Gift, MessageSquare, Palette, Link2, Banknote, MapPin, FileDown,
+  Puzzle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -16,14 +13,19 @@ interface MenuItem {
   label: string;
   icon: any;
   path?: string;
-  children?: { label: string; path: string; icon?: any }[];
+  children?: { label: string; path: string }[];
 }
 
 const menuSections: { title?: string; items: MenuItem[] }[] = [
   {
     items: [
       {
-        label: "Dashboard", icon: LayoutDashboard, path: "/admin",
+        label: "Dashboard", icon: LayoutDashboard,
+        children: [
+          { label: "Overview", path: "/admin" },
+          { label: "Activitate live", path: "/admin/dashboard/live" },
+          { label: "Task-uri & alerte", path: "/admin/dashboard/tasks" },
+        ],
       },
     ],
   },
@@ -37,6 +39,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Facturi & documente", path: "/admin/orders/invoices" },
           { label: "Retururi (RMA)", path: "/admin/orders/returns" },
           { label: "Coșuri abandonate", path: "/admin/orders/abandoned" },
+          { label: "Comenzi rapide", path: "/admin/orders/quick" },
         ],
       },
       {
@@ -46,8 +49,11 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Categorii", path: "/admin/categories" },
           { label: "Mărci", path: "/admin/products/brands" },
           { label: "Atribute & variante", path: "/admin/products/attributes" },
-          { label: "Review-uri", path: "/admin/products/reviews" },
+          { label: "Filtre (UI)", path: "/admin/products/filters" },
           { label: "Import/Export", path: "/admin/products/import-export" },
+          { label: "Feed-uri produse", path: "/admin/products/feeds" },
+          { label: "Review-uri", path: "/admin/products/reviews" },
+          { label: "Produse digitale", path: "/admin/products/digital" },
           { label: "SEO produse", path: "/admin/products/seo" },
         ],
       },
@@ -56,8 +62,9 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         children: [
           { label: "Stocuri", path: "/admin/stock" },
           { label: "Mișcări stoc", path: "/admin/stock/movements" },
-          { label: "Alerte stoc", path: "/admin/stock/alerts" },
+          { label: "Alerte stoc minim", path: "/admin/stock/alerts" },
           { label: "Inventar", path: "/admin/stock/inventory" },
+          { label: "Loturi / Serii", path: "/admin/stock/lots" },
         ],
       },
     ],
@@ -72,6 +79,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Grupuri clienți", path: "/admin/customers/groups" },
           { label: "Puncte fidelitate", path: "/admin/customers/loyalty" },
           { label: "Tichete suport", path: "/admin/customers/tickets" },
+          { label: "Calendar (follow-up)", path: "/admin/customers/calendar" },
           { label: "Segmentare", path: "/admin/customers/segments" },
         ],
       },
@@ -79,11 +87,13 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         label: "Marketing", icon: Megaphone,
         children: [
           { label: "Cupoane & reduceri", path: "/admin/coupons" },
-          { label: "Promoții", path: "/admin/marketing/promotions" },
-          { label: "Campanii email", path: "/admin/newsletter" },
-          { label: "Automatizări", path: "/admin/marketing/automations" },
-          { label: "Bannere & popups", path: "/admin/marketing/banners" },
+          { label: "Prețuri speciale", path: "/admin/marketing/pricing" },
+          { label: "Promoții în coș", path: "/admin/marketing/promotions" },
           { label: "Upsell / Cross-sell", path: "/admin/marketing/upsell" },
+          { label: "Campanii email", path: "/admin/newsletter" },
+          { label: "Bannere & popups", path: "/admin/marketing/banners" },
+          { label: "Automatizări", path: "/admin/marketing/automations" },
+          { label: "Afiliere", path: "/admin/marketing/affiliates" },
         ],
       },
     ],
@@ -96,8 +106,9 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         children: [
           { label: "Pagini (CMS)", path: "/admin/content/pages" },
           { label: "Blog", path: "/admin/content/blog" },
-          { label: "Media library", path: "/admin/content/media" },
           { label: "Meniu & navigație", path: "/admin/content/menus" },
+          { label: "Bannere / landing pages", path: "/admin/content/landing" },
+          { label: "Media library", path: "/admin/content/media" },
           { label: "Șabloane email", path: "/admin/content/email-templates" },
         ],
       },
@@ -106,7 +117,10 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         children: [
           { label: "eMAG Marketplace", path: "/admin/channels/emag" },
           { label: "Google Shopping", path: "/admin/channels/google" },
-          { label: "Facebook Shop", path: "/admin/channels/facebook" },
+          { label: "Facebook / Instagram", path: "/admin/channels/facebook" },
+          { label: "TikTok Shop", path: "/admin/channels/tiktok" },
+          { label: "Comparatoare", path: "/admin/channels/comparators" },
+          { label: "EasySales / BaseLinker", path: "/admin/channels/aggregators" },
           { label: "Conectori externi", path: "/admin/channels/connectors" },
         ],
       },
@@ -120,6 +134,9 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         children: [
           { label: "Metode de plată", path: "/admin/payments/methods" },
           { label: "Rate & Installments", path: "/admin/payments/installments" },
+          { label: "Stripe / PayPal", path: "/admin/payments/stripe" },
+          { label: "Setări plăți", path: "/admin/payments/settings" },
+          { label: "Status mapping", path: "/admin/payments/status" },
           { label: "Reconciliere", path: "/admin/payments/reconciliation" },
         ],
       },
@@ -130,6 +147,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Tarife transport", path: "/admin/shipping/rates" },
           { label: "AWB automat", path: "/admin/shipping/awb" },
           { label: "Tracking", path: "/admin/shipping/tracking" },
+          { label: "Reguli livrare", path: "/admin/shipping/rules" },
           { label: "Puncte ridicare", path: "/admin/shipping/pickup" },
         ],
       },
@@ -146,6 +164,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Produse top", path: "/admin/reports/top-products" },
           { label: "Conversie / funnel", path: "/admin/reports/conversion" },
           { label: "Marketing ROI", path: "/admin/reports/marketing" },
+          { label: "Stoc (rotire)", path: "/admin/reports/stock" },
           { label: "Export rapoarte", path: "/admin/reports/export" },
         ],
       },
@@ -158,9 +177,11 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         label: "Setări", icon: Settings,
         children: [
           { label: "General", path: "/admin/settings/general" },
+          { label: "Domenii", path: "/admin/settings/domains" },
           { label: "SEO global", path: "/admin/settings/seo" },
           { label: "Notificări", path: "/admin/settings/notifications" },
-          { label: "GDPR & politici", path: "/admin/settings/gdpr" },
+          { label: "GDPR & confidențialitate", path: "/admin/settings/gdpr" },
+          { label: "Politici (T&C, Retur)", path: "/admin/settings/policies" },
           { label: "Integrări", path: "/admin/settings/integrations" },
         ],
       },
@@ -170,14 +191,16 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Utilizatori", path: "/admin/users" },
           { label: "Roluri & permisiuni", path: "/admin/users/roles" },
           { label: "Audit log", path: "/admin/users/audit" },
+          { label: "2FA admin", path: "/admin/users/2fa" },
         ],
       },
       {
-        label: "Module", icon: Puzzle,
+        label: "Module / App Store", icon: Puzzle,
         children: [
           { label: "Module instalate", path: "/admin/modules" },
           { label: "Marketplace", path: "/admin/modules/marketplace" },
-          { label: "Logs & health", path: "/admin/modules/logs" },
+          { label: "Status sănătate", path: "/admin/modules/health" },
+          { label: "Logs & retry queue", path: "/admin/modules/logs" },
         ],
       },
     ],
@@ -192,7 +215,6 @@ interface AdminSidebarProps {
 export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
   const location = useLocation();
   const [expandedMenus, setExpandedMenus] = useState<string[]>(() => {
-    // Auto-expand the section containing the current route
     const expanded: string[] = [];
     menuSections.forEach((section) => {
       section.items.forEach((item) => {
@@ -235,7 +257,6 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
-        {/* Brand */}
         <div className="p-4 border-b flex items-center justify-between shrink-0">
           <Link to="/admin" className="flex items-center gap-2.5" onClick={handleNavClick}>
             <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
@@ -251,7 +272,6 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
           </button>
         </div>
 
-        {/* Nav */}
         <ScrollArea className="flex-1">
           <nav className="p-2 space-y-1">
             {menuSections.map((section, sIdx) => (
@@ -332,7 +352,6 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
           </nav>
         </ScrollArea>
 
-        {/* Footer */}
         <div className="p-2 border-t shrink-0">
           <Link
             to="/"
