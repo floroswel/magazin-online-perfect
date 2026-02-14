@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, Heart, User, Menu, X, LogOut } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, GitCompare, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
+import { useComparison } from "@/hooks/useComparison";
 import { Badge } from "@/components/ui/badge";
 
 const categories = [
@@ -21,6 +22,7 @@ const categories = [
 export default function Header() {
   const { user, signOut } = useAuth();
   const { totalItems } = useCart();
+  const { comparisonItems } = useComparison();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -53,9 +55,19 @@ export default function Header() {
             </div>
           </form>
 
-          <div className="flex items-center gap-2 ml-auto">
+          <div className="flex items-center gap-1 ml-auto">
             {user ? (
               <>
+                <Link to="/compare" className="relative">
+                  <Button variant="ghost" size="icon" className="text-foreground hover:bg-secondary/20">
+                    <GitCompare className="h-5 w-5" />
+                    {comparisonItems.length > 0 && (
+                      <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-emag-blue text-primary-foreground">
+                        {comparisonItems.length}
+                      </Badge>
+                    )}
+                  </Button>
+                </Link>
                 <Link to="/favorites">
                   <Button variant="ghost" size="icon" className="text-foreground hover:bg-secondary/20">
                     <Heart className="h-5 w-5" />

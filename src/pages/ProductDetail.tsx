@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShoppingCart, Heart, Star, Minus, Plus, ArrowLeft } from "lucide-react";
+import { ShoppingCart, Heart, Star, Minus, Plus, ArrowLeft, GitCompare, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
+import { useComparison } from "@/hooks/useComparison";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -17,13 +20,17 @@ export default function ProductDetail() {
   const { slug } = useParams();
   const { user } = useAuth();
   const { addToCart } = useCart();
+  const { addToComparison, isInComparison } = useComparison();
   const [product, setProduct] = useState<Tables<"products"> | null>(null);
   const [similar, setSimilar] = useState<Tables<"products">[]>([]);
-  const [reviews, setReviews] = useState<(Tables<"reviews"> & { profile?: { full_name: string | null } })[]>([]);
+  const [reviews, setReviews] = useState<Tables<"reviews">[]>([]);
+  const [questions, setQuestions] = useState<any[]>([]);
+  const [recentlyViewed, setRecentlyViewed] = useState<Tables<"products">[]>([]);
   const [qty, setQty] = useState(1);
   const [loading, setLoading] = useState(true);
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
+  const [questionText, setQuestionText] = useState("");
   const [isFav, setIsFav] = useState(false);
 
   useEffect(() => {
@@ -33,16 +40,34 @@ export default function ProductDetail() {
       if (!prod) { setLoading(false); return; }
       setProduct(prod);
 
-      const [simRes, revRes] = await Promise.all([
+      const [simRes, revRes, qRes] = await Promise.all([
         supabase.from("products").select("*").eq("category_id", prod.category_id!).neq("id", prod.id).limit(4),
         supabase.from("reviews").select("*").eq("product_id", prod.id).order("created_at", { ascending: false }),
+        supabase.from("product_questions").select("*").eq("product_id", prod.id).order("created_at", { ascending: false }),
       ]);
       setSimilar(simRes.data || []);
       setReviews(revRes.data || []);
+      setQuestions(qRes.data || []);
 
       if (user) {
         const { data: fav } = await supabase.from("favorites").select("id").eq("user_id", user.id).eq("product_id", prod.id).maybeSingle();
         setIsFav(!!fav);
+
+        // Track recently viewed
+        await supabase.from("recently_viewed").upsert(
+          { user_id: user.id, product_id: prod.id, viewed_at: new Date().toISOString() },
+          { onConflict: "user_id,product_id" }
+        );
+
+        // Get recently viewed
+        const { data: rv } = await supabase
+          .from("recently_viewed")
+          .select("*, product:products(*)")
+          .eq("user_id", user.id)
+          .neq("product_id", prod.id)
+          .order("viewed_at", { ascending: false })
+          .limit(4);
+        setRecentlyViewed((rv || []).map((d: any) => d.product).filter(Boolean));
       }
       setLoading(false);
     }
@@ -75,9 +100,20 @@ export default function ProductDetail() {
     if (error) { toast.error("Eroare la adăugarea recenziei"); return; }
     toast.success("Recenzie adăugată!");
     setReviewText("");
-    // Refresh reviews
     const { data } = await supabase.from("reviews").select("*").eq("product_id", product.id).order("created_at", { ascending: false });
     setReviews(data || []);
+  };
+
+  const submitQuestion = async () => {
+    if (!user || !product || !questionText.trim()) return;
+    const { error } = await supabase.from("product_questions").insert({
+      user_id: user.id, product_id: product.id, question: questionText,
+    });
+    if (error) { toast.error("Eroare"); return; }
+    toast.success("Întrebarea a fost trimisă!");
+    setQuestionText("");
+    const { data } = await supabase.from("product_questions").select("*").eq("product_id", product.id).order("created_at", { ascending: false });
+    setQuestions(data || []);
   };
 
   if (loading) return <Layout><div className="container py-16 text-center">Se încarcă...</div></Layout>;
@@ -85,6 +121,9 @@ export default function ProductDetail() {
 
   const specs = product.specs && typeof product.specs === "object" ? Object.entries(product.specs as Record<string, string>) : [];
   const discount = product.old_price ? Math.round(((product.old_price - product.price) / product.old_price) * 100) : 0;
+
+  // Installment preview
+  const monthlyRate3 = (product.price / 3).toFixed(2);
 
   return (
     <Layout>
@@ -122,6 +161,13 @@ export default function ProductDetail() {
               )}
             </div>
 
+            {/* Installment preview */}
+            <div className="bg-emag-blue/5 border border-emag-blue/20 rounded-lg p-3">
+              <p className="text-sm font-medium text-emag-blue">
+                💳 sau de la <span className="font-bold">{monthlyRate3} lei/lună</span> în 3 rate fără dobândă prin Mokka
+              </p>
+            </div>
+
             <p className="text-muted-foreground">{product.description}</p>
 
             <div className="flex items-center gap-3 pt-2">
@@ -136,6 +182,13 @@ export default function ProductDetail() {
               <Button variant="outline" size="lg" onClick={toggleFav}>
                 <Heart className={`h-5 w-5 ${isFav ? "fill-primary text-primary" : ""}`} />
               </Button>
+              <Button
+                variant="outline" size="lg"
+                onClick={() => product && addToComparison(product.id)}
+                className={isInComparison(product.id) ? "border-emag-blue text-emag-blue" : ""}
+              >
+                <GitCompare className="h-5 w-5" />
+              </Button>
             </div>
 
             <p className={`text-sm font-medium ${product.stock > 0 ? "text-green-600" : "text-destructive"}`}>
@@ -144,62 +197,115 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        {/* Specs */}
-        {specs.length > 0 && (
-          <Card className="mt-8">
-            <CardHeader><CardTitle>Specificații tehnice</CardTitle></CardHeader>
-            <CardContent>
-              <Table>
-                <TableBody>
-                  {specs.map(([key, val]) => (
-                    <TableRow key={key}>
-                      <TableCell className="font-medium text-muted-foreground w-1/3">{key}</TableCell>
-                      <TableCell>{val}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        )}
+        {/* Tabs: Specs, Reviews, Q&A */}
+        <Tabs defaultValue="specs" className="mt-8">
+          <TabsList>
+            <TabsTrigger value="specs">Specificații</TabsTrigger>
+            <TabsTrigger value="reviews">Recenzii ({reviews.length})</TabsTrigger>
+            <TabsTrigger value="qa">Întrebări ({questions.length})</TabsTrigger>
+          </TabsList>
 
-        {/* Reviews */}
-        <Card className="mt-8">
-          <CardHeader><CardTitle>Recenzii ({reviews.length})</CardTitle></CardHeader>
-          <CardContent className="space-y-4">
-            {user && (
-              <div className="border rounded-lg p-4 space-y-3">
-                <h4 className="font-medium">Adaugă o recenzie</h4>
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map(s => (
-                    <button key={s} onClick={() => setReviewRating(s)}>
-                      <Star className={`h-5 w-5 cursor-pointer ${s <= reviewRating ? "fill-emag-yellow text-emag-yellow" : "text-muted"}`} />
-                    </button>
-                  ))}
-                </div>
-                <Textarea value={reviewText} onChange={e => setReviewText(e.target.value)} placeholder="Scrie recenzia ta..." />
-                <Button onClick={submitReview} disabled={!reviewText.trim()}>Trimite recenzia</Button>
-              </div>
-            )}
-            {reviews.length === 0 ? (
-              <p className="text-muted-foreground text-sm">Nicio recenzie încă.</p>
+          <TabsContent value="specs">
+            {specs.length > 0 ? (
+              <Card>
+                <CardContent className="pt-6">
+                  <Table>
+                    <TableBody>
+                      {specs.map(([key, val]) => (
+                        <TableRow key={key}>
+                          <TableCell className="font-medium text-muted-foreground w-1/3">{key}</TableCell>
+                          <TableCell>{val}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
             ) : (
-              reviews.map(r => (
-                <div key={r.id} className="border-b pb-4 last:border-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="flex">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} className={`h-3 w-3 ${i < r.rating ? "fill-emag-yellow text-emag-yellow" : "text-muted"}`} />
+              <p className="text-muted-foreground py-4">Nu sunt specificații disponibile.</p>
+            )}
+          </TabsContent>
+
+          <TabsContent value="reviews">
+            <Card>
+              <CardContent className="pt-6 space-y-4">
+                {user && (
+                  <div className="border rounded-lg p-4 space-y-3">
+                    <h4 className="font-medium">Adaugă o recenzie</h4>
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4, 5].map(s => (
+                        <button key={s} onClick={() => setReviewRating(s)}>
+                          <Star className={`h-5 w-5 cursor-pointer ${s <= reviewRating ? "fill-emag-yellow text-emag-yellow" : "text-muted"}`} />
+                        </button>
                       ))}
                     </div>
-                    <span className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("ro-RO")}</span>
+                    <Textarea value={reviewText} onChange={e => setReviewText(e.target.value)} placeholder="Scrie recenzia ta..." />
+                    <Button onClick={submitReview} disabled={!reviewText.trim()}>Trimite recenzia</Button>
                   </div>
-                  <p className="text-sm">{r.comment}</p>
-                </div>
-              ))
-            )}
-          </CardContent>
-        </Card>
+                )}
+                {reviews.length === 0 ? (
+                  <p className="text-muted-foreground text-sm">Nicio recenzie încă. Fii primul!</p>
+                ) : (
+                  reviews.map(r => (
+                    <div key={r.id} className="border-b pb-4 last:border-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="flex">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <Star key={i} className={`h-3 w-3 ${i < r.rating ? "fill-emag-yellow text-emag-yellow" : "text-muted"}`} />
+                          ))}
+                        </div>
+                        <span className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("ro-RO")}</span>
+                      </div>
+                      <p className="text-sm">{r.comment}</p>
+                    </div>
+                  ))
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="qa">
+            <Card>
+              <CardContent className="pt-6 space-y-4">
+                {user && (
+                  <div className="border rounded-lg p-4 space-y-3">
+                    <h4 className="font-medium flex items-center gap-2"><MessageSquare className="h-4 w-4" /> Pune o întrebare</h4>
+                    <div className="flex gap-2">
+                      <Input value={questionText} onChange={e => setQuestionText(e.target.value)} placeholder="Ce vrei să afli despre acest produs?" className="flex-1" />
+                      <Button onClick={submitQuestion} disabled={!questionText.trim()}>Trimite</Button>
+                    </div>
+                  </div>
+                )}
+                {questions.length === 0 ? (
+                  <p className="text-muted-foreground text-sm">Nicio întrebare încă.</p>
+                ) : (
+                  questions.map((q: any) => (
+                    <div key={q.id} className="border-b pb-4 last:border-0">
+                      <p className="font-medium text-sm">❓ {q.question}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{new Date(q.created_at).toLocaleDateString("ro-RO")}</p>
+                      {q.answer && (
+                        <div className="mt-2 bg-muted rounded-lg p-3">
+                          <p className="text-sm">✅ {q.answer}</p>
+                          {q.answered_at && <p className="text-xs text-muted-foreground mt-1">{new Date(q.answered_at).toLocaleDateString("ro-RO")}</p>}
+                        </div>
+                      )}
+                    </div>
+                  ))
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        {/* Recently viewed */}
+        {recentlyViewed.length > 0 && (
+          <section className="mt-8">
+            <h2 className="text-xl font-bold mb-4">Vizualizate recent</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {recentlyViewed.map(p => <ProductCard key={p.id} product={p} />)}
+            </div>
+          </section>
+        )}
 
         {/* Similar products */}
         {similar.length > 0 && (
