@@ -81,6 +81,47 @@ export default function AdminNotifications() {
           });
         }
       )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "orders",
+        },
+        (payload) => {
+          const updated = payload.new as any;
+          const old = payload.old as any;
+          if (old.status === updated.status) return;
+
+          const statusLabels: Record<string, string> = {
+            pending: "În așteptare",
+            processing: "În procesare",
+            shipped: "Expediată",
+            delivered: "Livrată",
+            cancelled: "Anulată",
+            refunded: "Rambursată",
+          };
+
+          const notification: OrderNotification = {
+            id: updated.id,
+            total: updated.total,
+            user_email: updated.user_email,
+            created_at: new Date().toISOString(),
+            status: updated.status,
+            read: false,
+          };
+
+          setNotifications((prev) => [notification, ...prev.slice(0, 19)]);
+
+          toast.info(`📦 Status actualizat`, {
+            description: `#${updated.id.slice(0, 8)} → ${statusLabels[updated.status] || updated.status}`,
+            action: {
+              label: "Vezi",
+              onClick: () => navigate("/admin/orders"),
+            },
+          });
+        }
+      )
       .subscribe();
 
     return () => {
