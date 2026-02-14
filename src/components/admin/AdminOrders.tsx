@@ -42,9 +42,20 @@ export default function AdminOrders() {
   });
 
   const updateStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+    mutationFn: async ({ id, status, userEmail }: { id: string; status: string; userEmail?: string }) => {
       const { error } = await supabase.from("orders").update({ status }).eq("id", id);
       if (error) throw error;
+
+      // Send status update email
+      if (userEmail) {
+        try {
+          await supabase.functions.invoke("send-email", {
+            body: { type: "order_status", to: userEmail, data: { orderId: id, status } },
+          });
+        } catch (e) {
+          console.error("Email notification failed:", e);
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
@@ -114,7 +125,7 @@ export default function AdminOrders() {
                     <TableCell>
                       <Select
                         value={order.status}
-                        onValueChange={(value) => updateStatus.mutate({ id: order.id, status: value })}
+                        onValueChange={(value) => updateStatus.mutate({ id: order.id, status: value, userEmail: order.user_email })}
                       >
                         <SelectTrigger className="w-36">
                           <Badge className={statusColors[order.status] || ""}>
