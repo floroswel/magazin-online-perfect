@@ -14,6 +14,7 @@ import AdminInventory from "./stock/AdminInventory";
 import AdminCustomers from "./customers/AdminCustomers";
 import AdminCustomerGroups from "./customers/AdminCustomerGroups";
 import AdminCustomerSegments from "./customers/AdminCustomerSegments";
+import AdminImportExport from "./products/AdminImportExport";
 
 export default function AdminRoutes() {
   return (
@@ -32,7 +33,7 @@ export default function AdminRoutes() {
       <Route path="products/brands" element={<AdminPlaceholder title="Mărci" description="Gestionare mărci/brand-uri și asociere cu produse." />} />
       <Route path="products/attributes" element={<AdminPlaceholder title="Atribute & Variante" description="Definire atribute (culoare, mărime, capacitate) și variante de produs." />} />
       <Route path="products/reviews" element={<AdminPlaceholder title="Review-uri Produse" description="Moderare și gestionare review-uri clienți." />} />
-      <Route path="products/import-export" element={<AdminPlaceholder title="Import / Export" description="Import și export produse în format CSV/XML." />} />
+      <Route path="products/import-export" element={<AdminImportExport />} />
       <Route path="products/seo" element={<AdminPlaceholder title="SEO Produse" description="Optimizare meta titluri, descrieri și schema markup pentru produse." />} />
 
       {/* Stoc & Depozit */}
