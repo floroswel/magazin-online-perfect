@@ -52,7 +52,7 @@ export default function AdminGlobalSearch() {
     const [prodRes, catRes, ordRes] = await Promise.all([
       supabase.from("products").select("id, name, brand, price, slug").ilike("name", like).limit(5),
       supabase.from("categories").select("id, name, slug, icon").ilike("name", like).limit(5),
-      supabase.from("orders").select("id, user_email, total, status, created_at").or(`user_email.ilike.${like},id.ilike.${like}`).limit(5),
+      supabase.from("orders").select("id, user_email, total, status, created_at").ilike("user_email", like).limit(5),
     ]);
 
     const items: SearchResult[] = [];
