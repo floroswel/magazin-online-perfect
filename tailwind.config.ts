@@ -57,11 +57,11 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        emag: {
-          yellow: "hsl(var(--emag-yellow))",
-          red: "hsl(var(--emag-red))",
-          dark: "hsl(var(--emag-dark))",
-          blue: "hsl(var(--emag-blue))",
+        cyber: {
+          cyan: "hsl(var(--cyber-cyan))",
+          gold: "hsl(var(--cyber-gold))",
+          surface: "hsl(var(--cyber-surface))",
+          glow: "hsl(var(--cyber-glow))",
         },
       },
       borderRadius: {
@@ -78,10 +78,15 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "cyber-pulse": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.6" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "cyber-pulse": "cyber-pulse 2s ease-in-out infinite",
       },
     },
   },
