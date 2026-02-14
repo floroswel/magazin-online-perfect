@@ -17,6 +17,7 @@ import AdminCustomerSegments from "./customers/AdminCustomerSegments";
 import AdminImportExport from "./products/AdminImportExport";
 import AdminAuditLog from "./users/AdminAuditLog";
 import AdminLoyalty from "./customers/AdminLoyalty";
+import AdminSupportTickets from "./customers/AdminSupportTickets";
 
 export default function AdminRoutes() {
   return (
@@ -48,7 +49,7 @@ export default function AdminRoutes() {
       <Route path="customers" element={<AdminCustomers />} />
       <Route path="customers/groups" element={<AdminCustomerGroups />} />
       <Route path="customers/loyalty" element={<AdminLoyalty />} />
-      <Route path="customers/tickets" element={<AdminPlaceholder title="Tichete Suport" description="Helpdesk integrat pentru gestionare cereri clienți." />} />
+      <Route path="customers/tickets" element={<AdminSupportTickets />} />
       <Route path="customers/segments" element={<AdminCustomerSegments />} />
 
       {/* Marketing */}
