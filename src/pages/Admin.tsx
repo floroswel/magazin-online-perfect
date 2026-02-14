@@ -4,6 +4,7 @@ import { useAdmin } from "@/hooks/useAdmin";
 import { Shield } from "lucide-react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminRoutes from "@/components/admin/AdminRoutes";
+import AdminGlobalSearch from "@/components/admin/AdminGlobalSearch";
 
 export default function Admin() {
   const { user, loading: authLoading } = useAuth();
@@ -38,11 +39,17 @@ export default function Admin() {
   return (
     <div className="flex min-h-screen bg-background">
       <AdminSidebar />
-      <main className="flex-1 overflow-auto">
-        <div className="p-6 lg:p-8 max-w-7xl">
-          <AdminRoutes />
-        </div>
-      </main>
+      <div className="flex-1 flex flex-col overflow-auto">
+        {/* Top bar with search */}
+        <header className="sticky top-0 z-30 bg-card/80 backdrop-blur-sm border-b px-6 py-3 flex items-center">
+          <AdminGlobalSearch />
+        </header>
+        <main className="flex-1">
+          <div className="p-6 lg:p-8 max-w-7xl">
+            <AdminRoutes />
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
