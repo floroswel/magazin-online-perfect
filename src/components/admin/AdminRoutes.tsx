@@ -15,6 +15,7 @@ import AdminCustomers from "./customers/AdminCustomers";
 import AdminCustomerGroups from "./customers/AdminCustomerGroups";
 import AdminCustomerSegments from "./customers/AdminCustomerSegments";
 import AdminImportExport from "./products/AdminImportExport";
+import AdminAuditLog from "./users/AdminAuditLog";
 
 export default function AdminRoutes() {
   return (
@@ -100,7 +101,7 @@ export default function AdminRoutes() {
       {/* Utilizatori */}
       <Route path="users" element={<AdminPlaceholder title="Utilizatori" description="Gestionare conturi admin și permisiuni." />} />
       <Route path="users/roles" element={<AdminPlaceholder title="Roluri & Permisiuni" description="Definire roluri (Admin, Manager, Suport, Finance) cu permisiuni granulare." />} />
-      <Route path="users/audit" element={<AdminPlaceholder title="Audit Log" description="Istoric complet: cine a schimbat ce, când și ce valori." />} />
+      <Route path="users/audit" element={<AdminAuditLog />} />
 
       {/* Module */}
       <Route path="modules" element={<AdminPlaceholder title="Module Instalate" description="Vizualizare module active și stare sănătate." />} />
