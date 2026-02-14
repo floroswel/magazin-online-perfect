@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronRight, MapPin, CreditCard, Gift } from "lucide-react";
+import { ChevronDown, ChevronRight, MapPin, CreditCard, Gift, Download } from "lucide-react";
 import { format } from "date-fns";
 import { ro } from "date-fns/locale";
 import { toast } from "sonner";
@@ -75,24 +75,77 @@ export default function AdminOrders() {
     setExpandedOrder((prev) => (prev === id ? null : id));
   };
 
+  const exportCSV = () => {
+    if (filtered.length === 0) {
+      toast.error("Nu există comenzi de exportat.");
+      return;
+    }
+
+    const rows: string[][] = [
+      ["ID Comandă", "Data", "Client Email", "Status", "Total (RON)", "Discount (RON)", "Metoda Plată", "Puncte Fidelitate", "Produse", "Adresă Livrare"],
+    ];
+
+    filtered.forEach((order: any) => {
+      const address = order.shipping_address as any;
+      const items = (order.order_items || [])
+        .map((i: any) => `${i.products?.name || "Produs șters"} x${i.quantity}`)
+        .join("; ");
+      const addr = address
+        ? `${address.full_name}, ${address.address}, ${address.city}, ${address.county} ${address.postal_code || ""}, Tel: ${address.phone}`
+        : "";
+
+      rows.push([
+        order.id,
+        format(new Date(order.created_at), "yyyy-MM-dd HH:mm"),
+        order.user_email || "",
+        statusLabels[order.status] || order.status,
+        Number(order.total).toFixed(2),
+        Number(order.discount_amount || 0).toFixed(2),
+        order.payment_method || "ramburs",
+        String(order.loyalty_points_earned || 0),
+        items,
+        addr,
+      ]);
+    });
+
+    const csvContent = rows
+      .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+
+    const BOM = "\uFEFF";
+    const blob = new Blob([BOM + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `comenzi-${format(new Date(), "yyyy-MM-dd")}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast.success(`${filtered.length} comenzi exportate!`);
+  };
+
   return (
     <Card>
       <CardHeader>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <CardTitle>Comenzi ({orders.length})</CardTitle>
-          <Select value={filterStatus} onValueChange={setFilterStatus}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Filtrează status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Toate</SelectItem>
-              <SelectItem value="pending">În așteptare</SelectItem>
-              <SelectItem value="processing">În procesare</SelectItem>
-              <SelectItem value="shipped">Expediat</SelectItem>
-              <SelectItem value="delivered">Livrat</SelectItem>
-              <SelectItem value="cancelled">Anulat</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={exportCSV} className="gap-2">
+              <Download className="w-4 h-4" /> Export CSV
+            </Button>
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Filtrează status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Toate</SelectItem>
+                <SelectItem value="pending">În așteptare</SelectItem>
+                <SelectItem value="processing">În procesare</SelectItem>
+                <SelectItem value="shipped">Expediat</SelectItem>
+                <SelectItem value="delivered">Livrat</SelectItem>
+                <SelectItem value="cancelled">Anulat</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
