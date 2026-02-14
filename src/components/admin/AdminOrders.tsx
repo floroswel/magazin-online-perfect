@@ -7,10 +7,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown, ChevronRight, MapPin, CreditCard, Gift, Download } from "lucide-react";
-import { format } from "date-fns";
+import { ChevronDown, ChevronRight, MapPin, CreditCard, Gift, Download, CalendarIcon } from "lucide-react";
+import { format, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 import { ro } from "date-fns/locale";
 import { toast } from "sonner";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
@@ -32,6 +35,8 @@ export default function AdminOrders() {
   const queryClient = useQueryClient();
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+  const [dateFrom, setDateFrom] = useState<Date | undefined>();
+  const [dateTo, setDateTo] = useState<Date | undefined>();
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["admin-orders"],
@@ -67,9 +72,13 @@ export default function AdminOrders() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const filtered = filterStatus === "all"
-    ? orders
-    : orders.filter((o: any) => o.status === filterStatus);
+  const filtered = orders.filter((o: any) => {
+    if (filterStatus !== "all" && o.status !== filterStatus) return false;
+    const orderDate = new Date(o.created_at);
+    if (dateFrom && orderDate < startOfDay(dateFrom)) return false;
+    if (dateTo && orderDate > endOfDay(dateTo)) return false;
+    return true;
+  });
 
   const toggleExpand = (id: string) => {
     setExpandedOrder((prev) => (prev === id ? null : id));
@@ -128,10 +137,32 @@ export default function AdminOrders() {
       <CardHeader>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <CardTitle>Comenzi ({orders.length})</CardTitle>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={exportCSV} className="gap-2">
-              <Download className="w-4 h-4" /> Export CSV
-            </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className={cn("gap-2 w-[150px] justify-start text-left font-normal", !dateFrom && "text-muted-foreground")}>
+                  <CalendarIcon className="w-4 h-4" />
+                  {dateFrom ? format(dateFrom, "dd MMM yyyy", { locale: ro }) : "De la"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar mode="single" selected={dateFrom} onSelect={setDateFrom} initialFocus className="p-3 pointer-events-auto" />
+              </PopoverContent>
+            </Popover>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className={cn("gap-2 w-[150px] justify-start text-left font-normal", !dateTo && "text-muted-foreground")}>
+                  <CalendarIcon className="w-4 h-4" />
+                  {dateTo ? format(dateTo, "dd MMM yyyy", { locale: ro }) : "Până la"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar mode="single" selected={dateTo} onSelect={setDateTo} initialFocus className="p-3 pointer-events-auto" />
+              </PopoverContent>
+            </Popover>
+            {(dateFrom || dateTo) && (
+              <Button variant="ghost" size="sm" onClick={() => { setDateFrom(undefined); setDateTo(undefined); }}>✕</Button>
+            )}
             <Select value={filterStatus} onValueChange={setFilterStatus}>
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="Filtrează status" />
@@ -145,6 +176,9 @@ export default function AdminOrders() {
                 <SelectItem value="cancelled">Anulat</SelectItem>
               </SelectContent>
             </Select>
+            <Button variant="outline" size="sm" onClick={exportCSV} className="gap-2">
+              <Download className="w-4 h-4" /> Export CSV
+            </Button>
           </div>
         </div>
       </CardHeader>
