@@ -134,6 +134,27 @@ export default function Checkout() {
     }
 
     await clearCart();
+
+    // Send order confirmation email
+    try {
+      await supabase.functions.invoke("send-email", {
+        body: {
+          type: "order_placed",
+          to: user.email,
+          data: {
+            orderId: order.id,
+            customerName: form.fullName,
+            total,
+            paymentMethod,
+            pointsEarned,
+            items: items.map(i => ({ name: i.product.name, quantity: i.quantity, price: i.product.price })),
+          },
+        },
+      });
+    } catch (emailErr) {
+      console.error("Email notification failed:", emailErr);
+    }
+
     toast.success("Comanda a fost plasată cu succes!");
     navigate("/order-confirmation/" + order.id);
     setSubmitting(false);
