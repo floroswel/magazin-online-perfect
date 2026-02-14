@@ -1,6 +1,43 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Mail } from "lucide-react";
+import { toast } from "sonner";
+import { z } from "zod";
+
+const emailSchema = z.string().trim().email("Adresa de email nu este validă").max(255);
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const result = emailSchema.safeParse(email);
+    if (!result.success) {
+      toast.error(result.error.errors[0].message);
+      return;
+    }
+    setLoading(true);
+    const { error } = await supabase
+      .from("newsletter_subscribers")
+      .insert({ email: result.data });
+
+    if (error) {
+      if (error.code === "23505") {
+        toast.info("Ești deja abonat la newsletter!");
+      } else {
+        toast.error("Eroare la abonare. Încearcă din nou.");
+      }
+    } else {
+      toast.success("Te-ai abonat cu succes la newsletter! 🎉");
+      setEmail("");
+    }
+    setLoading(false);
+  };
+
   return (
     <footer className="bg-emag-dark text-card mt-auto">
       <div className="container py-10">
@@ -28,12 +65,25 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold mb-3">Contact</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>📞 0800 123 456</li>
-              <li>✉️ contact@megashop.ro</li>
-              <li>📍 București, România</li>
-            </ul>
+            <h4 className="font-semibold mb-3">Newsletter</h4>
+            <p className="text-sm text-muted-foreground mb-3">Primește oferte exclusive și noutăți direct pe email.</p>
+            <form onSubmit={handleSubscribe} className="flex gap-2">
+              <Input
+                type="email"
+                placeholder="Email-ul tău"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-background/10 border-muted text-card placeholder:text-muted-foreground"
+                required
+              />
+              <Button type="submit" size="icon" disabled={loading} className="shrink-0 bg-emag-yellow hover:bg-emag-yellow/90 text-emag-dark">
+                <Mail className="w-4 h-4" />
+              </Button>
+            </form>
+            <div className="mt-4 space-y-2 text-sm text-muted-foreground">
+              <p>📞 0800 123 456</p>
+              <p>✉️ contact@megashop.ro</p>
+            </div>
           </div>
         </div>
         <div className="border-t border-muted mt-8 pt-6 text-center text-sm text-muted-foreground">
