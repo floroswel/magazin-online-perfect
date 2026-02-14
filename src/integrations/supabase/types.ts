@@ -1026,6 +1026,111 @@ export type Database = {
           },
         ]
       }
+      stock_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string
+          id: string
+          is_active: boolean
+          product_id: string
+          resolved_at: string | null
+          threshold: number
+          triggered_at: string | null
+          warehouse_id: string | null
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          product_id: string
+          resolved_at?: string | null
+          threshold: number
+          triggered_at?: string | null
+          warehouse_id?: string | null
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          product_id?: string
+          resolved_at?: string | null
+          threshold?: number
+          triggered_at?: string | null
+          warehouse_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_alerts_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_alerts_warehouse_id_fkey"
+            columns: ["warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_movements: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          movement_type: string
+          notes: string | null
+          product_id: string
+          quantity: number
+          reference_id: string | null
+          reference_type: string | null
+          warehouse_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id?: string
+          movement_type: string
+          notes?: string | null
+          product_id: string
+          quantity: number
+          reference_id?: string | null
+          reference_type?: string | null
+          warehouse_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          movement_type?: string
+          notes?: string | null
+          product_id?: string
+          quantity?: number
+          reference_id?: string | null
+          reference_type?: string | null
+          warehouse_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_movements_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_warehouse_id_fkey"
+            columns: ["warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       support_tickets: {
         Row: {
           assigned_to: string | null
@@ -1083,6 +1188,78 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      warehouse_stock: {
+        Row: {
+          id: string
+          max_quantity: number | null
+          min_quantity: number
+          product_id: string
+          quantity: number
+          updated_at: string
+          warehouse_id: string
+        }
+        Insert: {
+          id?: string
+          max_quantity?: number | null
+          min_quantity?: number
+          product_id: string
+          quantity?: number
+          updated_at?: string
+          warehouse_id: string
+        }
+        Update: {
+          id?: string
+          max_quantity?: number | null
+          min_quantity?: number
+          product_id?: string
+          quantity?: number
+          updated_at?: string
+          warehouse_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "warehouse_stock_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "warehouse_stock_warehouse_id_fkey"
+            columns: ["warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      warehouses: {
+        Row: {
+          address: string | null
+          created_at: string
+          id: string
+          is_default: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          name?: string
+          updated_at?: string
         }
         Relationships: []
       }

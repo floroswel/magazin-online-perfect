@@ -7,6 +7,10 @@ import AdminCoupons from "./AdminCoupons";
 import AdminNewsletter from "./AdminNewsletter";
 import AdminReports from "./AdminReports";
 import AdminPlaceholder from "./AdminPlaceholder";
+import AdminStockOverview from "./stock/AdminStockOverview";
+import AdminStockMovements from "./stock/AdminStockMovements";
+import AdminStockAlerts from "./stock/AdminStockAlerts";
+import AdminInventory from "./stock/AdminInventory";
 
 export default function AdminRoutes() {
   return (
@@ -29,10 +33,10 @@ export default function AdminRoutes() {
       <Route path="products/seo" element={<AdminPlaceholder title="SEO Produse" description="Optimizare meta titluri, descrieri și schema markup pentru produse." />} />
 
       {/* Stoc & Depozit */}
-      <Route path="stock" element={<AdminPlaceholder title="Stocuri" description="Vizualizare stocuri pe depozite și locații." />} />
-      <Route path="stock/movements" element={<AdminPlaceholder title="Mișcări Stoc" description="Istoric intrări/ieșiri stoc, transferuri între depozite." />} />
-      <Route path="stock/alerts" element={<AdminPlaceholder title="Alerte Stoc" description="Configurare și vizualizare alerte pentru stoc minim." />} />
-      <Route path="stock/inventory" element={<AdminPlaceholder title="Inventar" description="Proces de inventariere și reconciliere stocuri." />} />
+      <Route path="stock" element={<AdminStockOverview />} />
+      <Route path="stock/movements" element={<AdminStockMovements />} />
+      <Route path="stock/alerts" element={<AdminStockAlerts />} />
+      <Route path="stock/inventory" element={<AdminInventory />} />
 
       {/* Clienți / CRM */}
       <Route path="customers" element={<AdminPlaceholder title="Clienți" description="Vizualizare și gestionare bază de clienți." />} />
