@@ -19,6 +19,7 @@ import AdminAuditLog from "./users/AdminAuditLog";
 import AdminLoyalty from "./customers/AdminLoyalty";
 import AdminSupportTickets from "./customers/AdminSupportTickets";
 import AdminRolesPermissions from "./users/AdminRolesPermissions";
+import AdminReturns from "./orders/AdminReturns";
 
 export default function AdminRoutes() {
   return (
@@ -28,7 +29,7 @@ export default function AdminRoutes() {
       {/* Comenzi */}
       <Route path="orders" element={<AdminOrders />} />
       <Route path="orders/invoices" element={<AdminPlaceholder title="Facturi & Documente" description="Gestionare facturi, avize și documente fiscale pentru comenzi." />} />
-      <Route path="orders/returns" element={<AdminPlaceholder title="Retururi (RMA)" description="Gestionare cereri de retur, schimburi și rambursări." />} />
+      <Route path="orders/returns" element={<AdminReturns />} />
       <Route path="orders/abandoned" element={<AdminPlaceholder title="Coșuri Abandonate" description="Vizualizare și recuperare coșuri abandonate prin email automat." />} />
 
       {/* Produse */}

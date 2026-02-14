@@ -962,6 +962,62 @@ export type Database = {
           },
         ]
       }
+      returns: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          details: string | null
+          id: string
+          items: Json
+          order_id: string
+          reason: string
+          refund_amount: number | null
+          resolution: string | null
+          status: string
+          tracking_number: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          details?: string | null
+          id?: string
+          items?: Json
+          order_id: string
+          reason: string
+          refund_amount?: number | null
+          resolution?: string | null
+          status?: string
+          tracking_number?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          details?: string | null
+          id?: string
+          items?: Json
+          order_id?: string
+          reason?: string
+          refund_amount?: number | null
+          resolution?: string | null
+          status?: string
+          tracking_number?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "returns_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       review_images: {
         Row: {
           created_at: string
