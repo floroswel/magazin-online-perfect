@@ -18,7 +18,12 @@ export default function Admin() {
   if (authLoading || adminLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+        <div className="relative">
+          <div className="w-16 h-16 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-full bg-primary/20 animate-cyber-pulse" />
+          </div>
+        </div>
       </div>
     );
   }
@@ -31,9 +36,9 @@ export default function Admin() {
   if (!isAdmin) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="text-center">
+        <div className="text-center p-8 rounded-xl border border-destructive/30 bg-card">
           <Shield className="w-16 h-16 mx-auto text-destructive mb-4" />
-          <h1 className="text-2xl font-bold mb-2">Acces interzis</h1>
+          <h1 className="text-2xl font-bold mb-2 text-foreground">Acces interzis</h1>
           <p className="text-muted-foreground">Nu ai permisiuni de administrator.</p>
         </div>
       </div>
@@ -44,8 +49,8 @@ export default function Admin() {
     <div className="flex min-h-screen bg-background">
       <AdminSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-auto">
-        <header className="sticky top-0 z-30 bg-card/80 backdrop-blur-sm border-b px-4 lg:px-6 py-3 flex items-center gap-3">
-          <Button variant="ghost" size="icon" className="lg:hidden shrink-0" onClick={() => setSidebarOpen(true)}>
+        <header className="sticky top-0 z-30 bg-card/90 backdrop-blur-md border-b border-border px-4 lg:px-6 py-3 flex items-center gap-3">
+          <Button variant="ghost" size="icon" className="lg:hidden shrink-0 text-muted-foreground hover:text-primary" onClick={() => setSidebarOpen(true)}>
             <Menu className="w-5 h-5" />
           </Button>
           <AdminGlobalSearch />
