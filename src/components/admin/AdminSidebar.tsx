@@ -19,14 +19,7 @@ interface MenuItem {
 const menuSections: { title?: string; items: MenuItem[] }[] = [
   {
     items: [
-      {
-        label: "Dashboard", icon: LayoutDashboard,
-        children: [
-          { label: "Overview", path: "/admin" },
-          { label: "Activitate live", path: "/admin/dashboard/live" },
-          { label: "Task-uri & alerte", path: "/admin/dashboard/tasks" },
-        ],
-      },
+      { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
     ],
   },
   {
@@ -39,7 +32,6 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Facturi & documente", path: "/admin/orders/invoices" },
           { label: "Retururi (RMA)", path: "/admin/orders/returns" },
           { label: "Coșuri abandonate", path: "/admin/orders/abandoned" },
-          { label: "Comenzi rapide", path: "/admin/orders/quick" },
         ],
       },
       {
@@ -49,11 +41,8 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Categorii", path: "/admin/categories" },
           { label: "Mărci", path: "/admin/products/brands" },
           { label: "Atribute & variante", path: "/admin/products/attributes" },
-          { label: "Filtre (UI)", path: "/admin/products/filters" },
-          { label: "Import/Export", path: "/admin/products/import-export" },
-          { label: "Feed-uri produse", path: "/admin/products/feeds" },
           { label: "Review-uri", path: "/admin/products/reviews" },
-          { label: "Produse digitale", path: "/admin/products/digital" },
+          { label: "Import/Export", path: "/admin/products/import-export" },
           { label: "SEO produse", path: "/admin/products/seo" },
         ],
       },
@@ -62,9 +51,8 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         children: [
           { label: "Stocuri", path: "/admin/stock" },
           { label: "Mișcări stoc", path: "/admin/stock/movements" },
-          { label: "Alerte stoc minim", path: "/admin/stock/alerts" },
+          { label: "Alerte stoc", path: "/admin/stock/alerts" },
           { label: "Inventar", path: "/admin/stock/inventory" },
-          { label: "Loturi / Serii", path: "/admin/stock/lots" },
         ],
       },
     ],
@@ -79,7 +67,6 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Grupuri clienți", path: "/admin/customers/groups" },
           { label: "Puncte fidelitate", path: "/admin/customers/loyalty" },
           { label: "Tichete suport", path: "/admin/customers/tickets" },
-          { label: "Calendar (follow-up)", path: "/admin/customers/calendar" },
           { label: "Segmentare", path: "/admin/customers/segments" },
         ],
       },
@@ -87,13 +74,11 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         label: "Marketing", icon: Megaphone,
         children: [
           { label: "Cupoane & reduceri", path: "/admin/coupons" },
-          { label: "Prețuri speciale", path: "/admin/marketing/pricing" },
-          { label: "Promoții în coș", path: "/admin/marketing/promotions" },
-          { label: "Upsell / Cross-sell", path: "/admin/marketing/upsell" },
+          { label: "Promoții", path: "/admin/marketing/promotions" },
           { label: "Campanii email", path: "/admin/newsletter" },
-          { label: "Bannere & popups", path: "/admin/marketing/banners" },
           { label: "Automatizări", path: "/admin/marketing/automations" },
-          { label: "Afiliere", path: "/admin/marketing/affiliates" },
+          { label: "Bannere & popups", path: "/admin/marketing/banners" },
+          { label: "Upsell / Cross-sell", path: "/admin/marketing/upsell" },
         ],
       },
     ],
@@ -106,9 +91,8 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         children: [
           { label: "Pagini (CMS)", path: "/admin/content/pages" },
           { label: "Blog", path: "/admin/content/blog" },
-          { label: "Meniu & navigație", path: "/admin/content/menus" },
-          { label: "Bannere / landing pages", path: "/admin/content/landing" },
           { label: "Media library", path: "/admin/content/media" },
+          { label: "Meniu & navigație", path: "/admin/content/menus" },
           { label: "Șabloane email", path: "/admin/content/email-templates" },
         ],
       },
@@ -117,10 +101,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         children: [
           { label: "eMAG Marketplace", path: "/admin/channels/emag" },
           { label: "Google Shopping", path: "/admin/channels/google" },
-          { label: "Facebook / Instagram", path: "/admin/channels/facebook" },
-          { label: "TikTok Shop", path: "/admin/channels/tiktok" },
-          { label: "Comparatoare", path: "/admin/channels/comparators" },
-          { label: "EasySales / BaseLinker", path: "/admin/channels/aggregators" },
+          { label: "Facebook Shop", path: "/admin/channels/facebook" },
           { label: "Conectori externi", path: "/admin/channels/connectors" },
         ],
       },
@@ -134,9 +115,6 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         children: [
           { label: "Metode de plată", path: "/admin/payments/methods" },
           { label: "Rate & Installments", path: "/admin/payments/installments" },
-          { label: "Stripe / PayPal", path: "/admin/payments/stripe" },
-          { label: "Setări plăți", path: "/admin/payments/settings" },
-          { label: "Status mapping", path: "/admin/payments/status" },
           { label: "Reconciliere", path: "/admin/payments/reconciliation" },
         ],
       },
@@ -147,7 +125,6 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Tarife transport", path: "/admin/shipping/rates" },
           { label: "AWB automat", path: "/admin/shipping/awb" },
           { label: "Tracking", path: "/admin/shipping/tracking" },
-          { label: "Reguli livrare", path: "/admin/shipping/rules" },
           { label: "Puncte ridicare", path: "/admin/shipping/pickup" },
         ],
       },
@@ -164,7 +141,6 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Produse top", path: "/admin/reports/top-products" },
           { label: "Conversie / funnel", path: "/admin/reports/conversion" },
           { label: "Marketing ROI", path: "/admin/reports/marketing" },
-          { label: "Stoc (rotire)", path: "/admin/reports/stock" },
           { label: "Export rapoarte", path: "/admin/reports/export" },
         ],
       },
@@ -177,11 +153,9 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         label: "Setări", icon: Settings,
         children: [
           { label: "General", path: "/admin/settings/general" },
-          { label: "Domenii", path: "/admin/settings/domains" },
           { label: "SEO global", path: "/admin/settings/seo" },
           { label: "Notificări", path: "/admin/settings/notifications" },
-          { label: "GDPR & confidențialitate", path: "/admin/settings/gdpr" },
-          { label: "Politici (T&C, Retur)", path: "/admin/settings/policies" },
+          { label: "GDPR & politici", path: "/admin/settings/gdpr" },
           { label: "Integrări", path: "/admin/settings/integrations" },
         ],
       },
@@ -191,16 +165,14 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Utilizatori", path: "/admin/users" },
           { label: "Roluri & permisiuni", path: "/admin/users/roles" },
           { label: "Audit log", path: "/admin/users/audit" },
-          { label: "2FA admin", path: "/admin/users/2fa" },
         ],
       },
       {
-        label: "Module / App Store", icon: Puzzle,
+        label: "Module", icon: Puzzle,
         children: [
           { label: "Module instalate", path: "/admin/modules" },
           { label: "Marketplace", path: "/admin/modules/marketplace" },
-          { label: "Status sănătate", path: "/admin/modules/health" },
-          { label: "Logs & retry queue", path: "/admin/modules/logs" },
+          { label: "Logs & health", path: "/admin/modules/logs" },
         ],
       },
     ],
@@ -221,9 +193,6 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
         if (item.children?.some((c) => location.pathname === c.path || location.pathname.startsWith(c.path + "/"))) {
           expanded.push(item.label);
         }
-        if (item.path && location.pathname === item.path) {
-          expanded.push(item.label);
-        }
       });
     });
     return expanded;
@@ -240,44 +209,44 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
     );
   };
 
-  const handleNavClick = () => {
-    onClose?.();
-  };
+  const handleNavClick = () => onClose?.();
 
   return (
     <>
       {open && (
-        <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onClose} />
+        <div className="fixed inset-0 z-40 bg-black/70 lg:hidden backdrop-blur-sm" onClick={onClose} />
       )}
 
       <aside
         className={cn(
-          "w-[260px] min-h-screen bg-card border-r flex flex-col shrink-0 transition-transform duration-200",
+          "w-[260px] min-h-screen bg-card border-r border-border flex flex-col shrink-0 transition-transform duration-200",
           "fixed lg:static z-50 lg:z-auto lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
-        <div className="p-4 border-b flex items-center justify-between shrink-0">
+        {/* Brand */}
+        <div className="p-4 border-b border-border flex items-center justify-between shrink-0">
           <Link to="/admin" className="flex items-center gap-2.5" onClick={handleNavClick}>
-            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-              <Store className="w-5 h-5 text-primary-foreground" />
+            <div className="w-9 h-9 rounded-lg bg-primary/20 cyber-border-glow border flex items-center justify-center">
+              <Store className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h2 className="font-bold text-sm leading-tight">MegaShop</h2>
-              <p className="text-[11px] text-muted-foreground">Panou Admin</p>
+              <h2 className="font-bold text-sm leading-tight text-foreground cyber-text-glow">MegaShop</h2>
+              <p className="text-[11px] text-muted-foreground font-mono-cyber">ADMIN PANEL</p>
             </div>
           </Link>
-          <button onClick={onClose} className="lg:hidden p-1 rounded-md hover:bg-muted">
+          <button onClick={onClose} className="lg:hidden p-1 rounded-md hover:bg-muted text-muted-foreground">
             <X className="w-5 h-5" />
           </button>
         </div>
 
+        {/* Nav */}
         <ScrollArea className="flex-1">
-          <nav className="p-2 space-y-1">
+          <nav className="p-2 space-y-0.5">
             {menuSections.map((section, sIdx) => (
               <div key={sIdx}>
                 {section.title && (
-                  <p className="px-3 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  <p className="px-3 pt-5 pb-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-primary/60 font-mono-cyber">
                     {section.title}
                   </p>
                 )}
@@ -293,10 +262,10 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                         to={item.path!}
                         onClick={handleNavClick}
                         className={cn(
-                          "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                          "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150",
                           isActive(item.path!)
-                            ? "bg-primary text-primary-foreground shadow-sm"
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                            ? "bg-primary/15 text-primary cyber-glow border border-primary/30"
+                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                         )}
                       >
                         <item.icon className="w-[18px] h-[18px] shrink-0" />
@@ -310,10 +279,10 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                       <button
                         onClick={() => toggleMenu(item.label)}
                         className={cn(
-                          "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                          "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150",
                           isParentActive
-                            ? "text-primary bg-primary/10"
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                            ? "text-primary"
+                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                         )}
                       >
                         <item.icon className="w-[18px] h-[18px] shrink-0" />
@@ -326,17 +295,17 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                         />
                       </button>
                       {isExpanded && (
-                        <div className="ml-4 pl-3 border-l border-border/50 space-y-0.5 mt-0.5 mb-1">
+                        <div className="ml-4 pl-3 border-l border-primary/20 space-y-0.5 mt-0.5 mb-1">
                           {item.children!.map((child) => (
                             <Link
                               key={child.path}
                               to={child.path}
                               onClick={handleNavClick}
                               className={cn(
-                                "flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[13px] transition-colors",
+                                "flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[13px] transition-all duration-150",
                                 isActive(child.path)
-                                  ? "text-primary font-medium bg-primary/5"
-                                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                  ? "text-primary font-medium bg-primary/10 border-l-2 border-primary -ml-[1px] pl-[9px]"
+                                  : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
                               )}
                             >
                               {child.label}
@@ -352,10 +321,11 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
           </nav>
         </ScrollArea>
 
-        <div className="p-2 border-t shrink-0">
+        {/* Footer */}
+        <div className="p-2 border-t border-border shrink-0">
           <Link
             to="/"
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Înapoi la magazin
