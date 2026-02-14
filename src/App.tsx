@@ -15,6 +15,7 @@ import Auth from "./pages/Auth";
 import Account from "./pages/Account";
 import Favorites from "./pages/Favorites";
 import Compare from "./pages/Compare";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
               <Route path="/account" element={<Account />} />
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/compare" element={<Compare />} />
+              <Route path="/admin" element={<Admin />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </CartProvider>
