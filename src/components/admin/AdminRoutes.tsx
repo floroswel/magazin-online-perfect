@@ -61,7 +61,7 @@ export default function AdminRoutes() {
       <Route path="coupons" element={<AdminCoupons />} />
       <Route path="marketing/promotions" element={<AdminPlaceholder title="Promoții" description="Promoții în coș: cadouri, transport gratuit, reduceri automate." />} />
       <Route path="newsletter" element={<AdminNewsletter />} />
-      <Route path="marketing/automations" element={<AdminPlaceholder title="Automatizări" description="Fluxuri automate: abandon cart, post-purchase review, welcome series." />} />
+      <Route path="marketing/automations" element={<AdminAutomations />} />
       <Route path="marketing/banners" element={<AdminPlaceholder title="Bannere & Popups" description="Gestionare bannere promovionale și popups pe site." />} />
       <Route path="marketing/upsell" element={<AdminPlaceholder title="Upsell / Cross-sell" description="Configurare recomandări de upsell și cross-sell pe pagini de produs și coș." />} />
 
