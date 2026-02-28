@@ -403,6 +403,122 @@ export type Database = {
           },
         ]
       }
+      connector_instances: {
+        Row: {
+          config_json: Json | null
+          connector_id: string
+          enabled: boolean | null
+          error_count: number | null
+          id: string
+          installed_at: string | null
+          installed_by: string | null
+          last_error: string | null
+          last_sync_at: string | null
+          status: string | null
+          sync_frequency_minutes: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          config_json?: Json | null
+          connector_id: string
+          enabled?: boolean | null
+          error_count?: number | null
+          id?: string
+          installed_at?: string | null
+          installed_by?: string | null
+          last_error?: string | null
+          last_sync_at?: string | null
+          status?: string | null
+          sync_frequency_minutes?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          config_json?: Json | null
+          connector_id?: string
+          enabled?: boolean | null
+          error_count?: number | null
+          id?: string
+          installed_at?: string | null
+          installed_by?: string | null
+          last_error?: string | null
+          last_sync_at?: string | null
+          status?: string | null
+          sync_frequency_minutes?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connector_instances_connector_id_fkey"
+            columns: ["connector_id"]
+            isOneToOne: false
+            referencedRelation: "connectors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      connectors: {
+        Row: {
+          author: string | null
+          category: string
+          created_at: string | null
+          description: string | null
+          documentation_url: string | null
+          events_subscribed: string[] | null
+          icon_url: string | null
+          id: string
+          is_official: boolean | null
+          is_published: boolean | null
+          key: string
+          min_platform_version: string | null
+          name: string
+          permissions: string[] | null
+          settings_schema: Json | null
+          updated_at: string | null
+          version: string | null
+          webhooks_provided: string[] | null
+        }
+        Insert: {
+          author?: string | null
+          category: string
+          created_at?: string | null
+          description?: string | null
+          documentation_url?: string | null
+          events_subscribed?: string[] | null
+          icon_url?: string | null
+          id?: string
+          is_official?: boolean | null
+          is_published?: boolean | null
+          key: string
+          min_platform_version?: string | null
+          name: string
+          permissions?: string[] | null
+          settings_schema?: Json | null
+          updated_at?: string | null
+          version?: string | null
+          webhooks_provided?: string[] | null
+        }
+        Update: {
+          author?: string | null
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          documentation_url?: string | null
+          events_subscribed?: string[] | null
+          icon_url?: string | null
+          id?: string
+          is_official?: boolean | null
+          is_published?: boolean | null
+          key?: string
+          min_platform_version?: string | null
+          name?: string
+          permissions?: string[] | null
+          settings_schema?: Json | null
+          updated_at?: string | null
+          version?: string | null
+          webhooks_provided?: string[] | null
+        }
+        Relationships: []
+      }
       coupon_usage: {
         Row: {
           coupon_id: string
@@ -684,6 +800,45 @@ export type Database = {
           message?: string
           meta_json?: Json | null
           scope?: string
+        }
+        Relationships: []
+      }
+      integration_events: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          entity_id: string | null
+          entity_type: string
+          event_type: string
+          id: string
+          payload: Json | null
+          processed: boolean | null
+          processed_at: string | null
+          source: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          entity_id?: string | null
+          entity_type: string
+          event_type: string
+          id?: string
+          payload?: Json | null
+          processed?: boolean | null
+          processed_at?: string | null
+          source?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          event_type?: string
+          id?: string
+          payload?: Json | null
+          processed?: boolean | null
+          processed_at?: string | null
+          source?: string | null
         }
         Relationships: []
       }
@@ -2486,6 +2641,68 @@ export type Database = {
         }
         Relationships: []
       }
+      sync_logs: {
+        Row: {
+          action: string
+          completed_at: string | null
+          connector_instance_id: string
+          duration_ms: number | null
+          error_details: Json | null
+          id: string
+          items_created: number | null
+          items_failed: number | null
+          items_processed: number | null
+          items_skipped: number | null
+          items_updated: number | null
+          request_data: Json | null
+          response_data: Json | null
+          started_at: string | null
+          status: string | null
+        }
+        Insert: {
+          action: string
+          completed_at?: string | null
+          connector_instance_id: string
+          duration_ms?: number | null
+          error_details?: Json | null
+          id?: string
+          items_created?: number | null
+          items_failed?: number | null
+          items_processed?: number | null
+          items_skipped?: number | null
+          items_updated?: number | null
+          request_data?: Json | null
+          response_data?: Json | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          action?: string
+          completed_at?: string | null
+          connector_instance_id?: string
+          duration_ms?: number | null
+          error_details?: Json | null
+          id?: string
+          items_created?: number | null
+          items_failed?: number | null
+          items_processed?: number | null
+          items_skipped?: number | null
+          items_updated?: number | null
+          request_data?: Json | null
+          response_data?: Json | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sync_logs_connector_instance_id_fkey"
+            columns: ["connector_instance_id"]
+            isOneToOne: false
+            referencedRelation: "connector_instances"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -2609,6 +2826,71 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      webhook_queue: {
+        Row: {
+          attempts: number | null
+          connector_instance_id: string | null
+          created_at: string | null
+          direction: string
+          error_message: string | null
+          headers: Json | null
+          id: string
+          max_attempts: number | null
+          method: string | null
+          next_retry_at: string | null
+          payload: Json | null
+          processed_at: string | null
+          response_body: string | null
+          response_status: number | null
+          status: string | null
+          url: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          connector_instance_id?: string | null
+          created_at?: string | null
+          direction: string
+          error_message?: string | null
+          headers?: Json | null
+          id?: string
+          max_attempts?: number | null
+          method?: string | null
+          next_retry_at?: string | null
+          payload?: Json | null
+          processed_at?: string | null
+          response_body?: string | null
+          response_status?: number | null
+          status?: string | null
+          url?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          connector_instance_id?: string | null
+          created_at?: string | null
+          direction?: string
+          error_message?: string | null
+          headers?: Json | null
+          id?: string
+          max_attempts?: number | null
+          method?: string | null
+          next_retry_at?: string | null
+          payload?: Json | null
+          processed_at?: string | null
+          response_body?: string | null
+          response_status?: number | null
+          status?: string | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "webhook_queue_connector_instance_id_fkey"
+            columns: ["connector_instance_id"]
+            isOneToOne: false
+            referencedRelation: "connector_instances"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
