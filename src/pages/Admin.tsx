@@ -49,15 +49,15 @@ export default function Admin() {
     <div className="flex min-h-screen bg-background">
       <AdminSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col overflow-auto">
-        <header className="sticky top-0 z-30 bg-card/90 backdrop-blur-md border-b border-border px-4 lg:px-6 py-3 flex items-center gap-3">
-          <Button variant="ghost" size="icon" className="lg:hidden shrink-0 text-muted-foreground hover:text-primary" onClick={() => setSidebarOpen(true)}>
-            <Menu className="w-5 h-5" />
+        <header className="sticky top-0 z-30 bg-card/90 backdrop-blur-md border-b border-border px-2 lg:px-4 py-1.5 flex items-center gap-2">
+          <Button variant="ghost" size="icon" className="lg:hidden shrink-0 h-7 w-7 text-muted-foreground hover:text-primary" onClick={() => setSidebarOpen(true)}>
+            <Menu className="w-4 h-4" />
           </Button>
           <AdminGlobalSearch />
           <AdminNotifications />
         </header>
         <main className="flex-1">
-          <div className="p-4 lg:p-8 max-w-7xl">
+          <div className="p-2.5 lg:p-5 max-w-7xl">
             <AdminRoutes />
           </div>
         </main>
