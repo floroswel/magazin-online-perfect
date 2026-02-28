@@ -159,4 +159,26 @@
   .font-mono-cyber {
     font-family: 'JetBrains Mono', monospace;
   }
+
+  /* Admin scrollbar — light */
+  .admin-panel ::-webkit-scrollbar-track {
+    background: hsl(210 20% 96%);
+  }
+  .admin-panel ::-webkit-scrollbar-thumb {
+    background: hsl(220 13% 80%);
+  }
+  .admin-panel ::-webkit-scrollbar-thumb:hover {
+    background: hsl(220 13% 65%);
+  }
+
+  /* Admin sidebar scrollbar — dark */
+  .admin-sidebar ::-webkit-scrollbar-track {
+    background: hsl(222 47% 16%);
+  }
+  .admin-sidebar ::-webkit-scrollbar-thumb {
+    background: hsl(222 30% 30%);
+  }
+  .admin-sidebar ::-webkit-scrollbar-thumb:hover {
+    background: hsl(222 30% 40%);
+  }
 }
