@@ -124,6 +124,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Tarife transport", path: "/admin/shipping/rates" },
           { label: "AWB automat", path: "/admin/shipping/awb" },
           { label: "Tracking", path: "/admin/shipping/tracking" },
+          { label: "Webhooks", path: "/admin/shipping/webhooks" },
           { label: "Puncte ridicare", path: "/admin/shipping/pickup" },
         ],
       },
