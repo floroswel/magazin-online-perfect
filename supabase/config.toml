@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.cron-import]
 verify_jwt = false
+
+[functions.integration-sdk]
+verify_jwt = false

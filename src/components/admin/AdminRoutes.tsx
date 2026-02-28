@@ -109,9 +109,9 @@ export default function AdminRoutes() {
       <Route path="users/roles" element={<AdminRolesPermissions />} />
       <Route path="users/audit" element={<AdminAuditLog />} />
 
-      {/* Module */}
-      <Route path="modules" element={<AdminPlaceholder title="Module Instalate" description="Vizualizare module active și stare sănătate." />} />
-      <Route path="modules/marketplace" element={<AdminPlaceholder title="Marketplace" description="Descoperă și instalează module noi." />} />
+      {/* Module / App Store */}
+      <Route path="modules" element={<AdminAppStore />} />
+      <Route path="modules/marketplace" element={<AdminAppStore />} />
       <Route path="modules/logs" element={<AdminPlaceholder title="Logs & Health" description="Logs integrare, retry queue și diagnosticare erori." />} />
     </Routes>
   );
