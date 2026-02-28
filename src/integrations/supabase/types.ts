@@ -160,6 +160,92 @@ export type Database = {
         }
         Relationships: []
       }
+      automation_runs: {
+        Row: {
+          actions_executed: Json | null
+          automation_id: string
+          created_at: string
+          duration_ms: number | null
+          error_message: string | null
+          id: string
+          status: string
+          trigger_payload: Json | null
+        }
+        Insert: {
+          actions_executed?: Json | null
+          automation_id: string
+          created_at?: string
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          status?: string
+          trigger_payload?: Json | null
+        }
+        Update: {
+          actions_executed?: Json | null
+          automation_id?: string
+          created_at?: string
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          status?: string
+          trigger_payload?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_runs_automation_id_fkey"
+            columns: ["automation_id"]
+            isOneToOne: false
+            referencedRelation: "automations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      automations: {
+        Row: {
+          actions: Json
+          conditions: Json
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          last_run_at: string | null
+          name: string
+          run_count: number
+          trigger_event: string
+          updated_at: string
+        }
+        Insert: {
+          actions?: Json
+          conditions?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          last_run_at?: string | null
+          name: string
+          run_count?: number
+          trigger_event: string
+          updated_at?: string
+        }
+        Update: {
+          actions?: Json
+          conditions?: Json
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          last_run_at?: string | null
+          name?: string
+          run_count?: number
+          trigger_event?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       banners: {
         Row: {
           active: boolean
@@ -2832,17 +2918,22 @@ export type Database = {
           attempts: number | null
           connector_instance_id: string | null
           created_at: string | null
+          dead_letter: boolean
           direction: string
           error_message: string | null
           headers: Json | null
           id: string
+          idempotency_key: string | null
+          last_error: string | null
           max_attempts: number | null
+          max_retries: number
           method: string | null
           next_retry_at: string | null
           payload: Json | null
           processed_at: string | null
           response_body: string | null
           response_status: number | null
+          retry_count: number
           status: string | null
           url: string | null
         }
@@ -2850,17 +2941,22 @@ export type Database = {
           attempts?: number | null
           connector_instance_id?: string | null
           created_at?: string | null
+          dead_letter?: boolean
           direction: string
           error_message?: string | null
           headers?: Json | null
           id?: string
+          idempotency_key?: string | null
+          last_error?: string | null
           max_attempts?: number | null
+          max_retries?: number
           method?: string | null
           next_retry_at?: string | null
           payload?: Json | null
           processed_at?: string | null
           response_body?: string | null
           response_status?: number | null
+          retry_count?: number
           status?: string | null
           url?: string | null
         }
@@ -2868,17 +2964,22 @@ export type Database = {
           attempts?: number | null
           connector_instance_id?: string | null
           created_at?: string | null
+          dead_letter?: boolean
           direction?: string
           error_message?: string | null
           headers?: Json | null
           id?: string
+          idempotency_key?: string | null
+          last_error?: string | null
           max_attempts?: number | null
+          max_retries?: number
           method?: string | null
           next_retry_at?: string | null
           payload?: Json | null
           processed_at?: string | null
           response_body?: string | null
           response_status?: number | null
+          retry_count?: number
           status?: string | null
           url?: string | null
         }
