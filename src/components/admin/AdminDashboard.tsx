@@ -86,69 +86,69 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       {/* KPI Cards */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <Card className="border-l-4 border-l-green-500">
+        <Card className="border-l-4 border-l-emerald-500 shadow-sm hover:shadow-md transition-shadow">
           <CardContent className="p-5">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Venituri Totale</p>
-                <p className="text-2xl font-bold mt-1">{totalRevenue.toLocaleString("ro-RO", { maximumFractionDigits: 0 })} RON</p>
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Venituri Totale</p>
+                <p className="text-2xl font-bold mt-1 text-foreground">{totalRevenue.toLocaleString("ro-RO", { maximumFractionDigits: 0 })} RON</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Astăzi: <span className="text-green-600 font-semibold">{todayRevenue.toLocaleString("ro-RO", { maximumFractionDigits: 0 })} RON</span>
+                  Astăzi: <span className="text-emerald-600 font-semibold">{todayRevenue.toLocaleString("ro-RO", { maximumFractionDigits: 0 })} RON</span>
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-green-600" />
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-emerald-600" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-blue-500">
+        <Card className="border-l-4 border-l-blue-500 shadow-sm hover:shadow-md transition-shadow">
           <CardContent className="p-5">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Comenzi</p>
-                <p className="text-2xl font-bold mt-1">{orders.length}</p>
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Comenzi</p>
+                <p className="text-2xl font-bold mt-1 text-foreground">{orders.length}</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   Astăzi: <span className="text-blue-600 font-semibold">{todayOrders.length}</span>
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center">
                 <ShoppingCart className="w-5 h-5 text-blue-600" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-purple-500">
+        <Card className="border-l-4 border-l-violet-500 shadow-sm hover:shadow-md transition-shadow">
           <CardContent className="p-5">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Produse</p>
-                <p className="text-2xl font-bold mt-1">{products.length}</p>
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Produse</p>
+                <p className="text-2xl font-bold mt-1 text-foreground">{products.length}</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Stoc scăzut: <span className="text-orange-600 font-semibold">{lowStockProducts.length}</span>
+                  Stoc scăzut: <span className="text-amber-600 font-semibold">{lowStockProducts.length}</span>
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                <Package className="w-5 h-5 text-purple-600" />
+              <div className="w-10 h-10 rounded-xl bg-violet-50 border border-violet-200 flex items-center justify-center">
+                <Package className="w-5 h-5 text-violet-600" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-orange-500">
+        <Card className="border-l-4 border-l-amber-500 shadow-sm hover:shadow-md transition-shadow">
           <CardContent className="p-5">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Abonați Newsletter</p>
-                <p className="text-2xl font-bold mt-1">{activeSubs}</p>
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Abonați Newsletter</p>
+                <p className="text-2xl font-bold mt-1 text-foreground">{activeSubs}</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  În așteptare: <span className="text-orange-600 font-semibold">{pendingOrders} comenzi</span>
+                  În așteptare: <span className="text-amber-600 font-semibold">{pendingOrders} comenzi</span>
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
-                <Users className="w-5 h-5 text-orange-600" />
+              <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center">
+                <Users className="w-5 h-5 text-amber-600" />
               </div>
             </div>
           </CardContent>
