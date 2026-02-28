@@ -200,7 +200,7 @@ export default function AdminDashboard() {
         <CardContent>
           <div className="h-[260px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={last7DaysData} barSize={28}>
+              <ComposedChart data={last7DaysData} barSize={28}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 13% 88%)" vertical={false} />
                 <XAxis
                   dataKey="name"
@@ -209,11 +209,21 @@ export default function AdminDashboard() {
                   tickLine={false}
                 />
                 <YAxis
+                  yAxisId="left"
                   tick={{ fontSize: 11, fill: "hsl(220 10% 46%)" }}
                   axisLine={false}
                   tickLine={false}
                   tickFormatter={(v) => `${v.toLocaleString("ro-RO")} RON`}
                   width={90}
+                />
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  tick={{ fontSize: 11, fill: "hsl(220 10% 46%)" }}
+                  axisLine={false}
+                  tickLine={false}
+                  allowDecimals={false}
+                  width={40}
                 />
                 <RechartsTooltip
                   contentStyle={{
@@ -226,12 +236,27 @@ export default function AdminDashboard() {
                   formatter={(value: number, name: string) => [
                     name === "vanzari"
                       ? `${value.toLocaleString("ro-RO")} RON`
-                      : value,
+                      : `${value} comenzi`,
                     name === "vanzari" ? "Vânzări" : "Comenzi",
                   ]}
                 />
-                <Bar dataKey="vanzari" fill="hsl(220 70% 50%)" radius={[4, 4, 0, 0]} name="vanzari" />
-              </BarChart>
+                <Legend
+                  formatter={(value) => (value === "vanzari" ? "Vânzări (RON)" : "Comenzi")}
+                  iconSize={10}
+                  wrapperStyle={{ fontSize: "12px" }}
+                />
+                <Bar yAxisId="left" dataKey="vanzari" fill="hsl(220 70% 50%)" radius={[4, 4, 0, 0]} name="vanzari" />
+                <Line
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="comenzi"
+                  stroke="hsl(150 60% 40%)"
+                  strokeWidth={2.5}
+                  dot={{ r: 4, fill: "hsl(150 60% 40%)", strokeWidth: 2, stroke: "white" }}
+                  activeDot={{ r: 6 }}
+                  name="comenzi"
+                />
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
         </CardContent>
