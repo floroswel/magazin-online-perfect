@@ -24,6 +24,7 @@ import AdminInvoices from "./orders/AdminInvoices";
 import AdminUsers from "./users/AdminUsers";
 import AdminAppStore from "./integrations/AdminAppStore";
 import AdminAutomations from "./marketing/AdminAutomations";
+import AdminWebhooks from "./shipping/AdminWebhooks";
 
 export default function AdminRoutes() {
   return (
