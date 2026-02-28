@@ -24,6 +24,7 @@ import AdminInvoices from "./orders/AdminInvoices";
 import AdminUsers from "./users/AdminUsers";
 import AdminAppStore from "./integrations/AdminAppStore";
 import AdminAutomations from "./marketing/AdminAutomations";
+import AdminWebhooks from "./shipping/AdminWebhooks";
 
 export default function AdminRoutes() {
   return (
@@ -89,6 +90,7 @@ export default function AdminRoutes() {
       <Route path="shipping/rates" element={<AdminPlaceholder title="Tarife Transport" description="Reguli de tarifare pe greutate, valoare sau categorie." />} />
       <Route path="shipping/awb" element={<AdminPlaceholder title="AWB Automat" description="Generare automată AWB pentru comenzi confirmate." />} />
       <Route path="shipping/tracking" element={<AdminPlaceholder title="Tracking" description="Urmărire comenzi în timp real." />} />
+      <Route path="shipping/webhooks" element={<AdminWebhooks />} />
       <Route path="shipping/pickup" element={<AdminPlaceholder title="Puncte Ridicare" description="Easybox, PUDO și alte puncte de ridicare." />} />
 
       {/* Rapoarte */}
