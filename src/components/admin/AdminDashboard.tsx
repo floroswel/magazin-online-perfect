@@ -235,6 +235,7 @@ export default function AdminDashboard() {
         </CardContent>
       </Card>
 
+      <div className="grid lg:grid-cols-3 gap-6">
         {/* Recent Orders */}
         <Card className="lg:col-span-2">
           <CardHeader className="pb-3">
