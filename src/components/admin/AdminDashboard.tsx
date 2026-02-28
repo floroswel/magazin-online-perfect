@@ -92,6 +92,28 @@ export default function AdminDashboard() {
   const todayOrders = orders.filter((o: any) => new Date(o.created_at) >= today);
   const todayRevenue = todayOrders.reduce((s: number, o: any) => s + Number(o.total), 0);
 
+  // Last 7 days chart data
+  const last7DaysData = useMemo(() => {
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const dayStart = startOfDay(subDays(new Date(), i));
+      const dayEnd = new Date(dayStart);
+      dayEnd.setHours(23, 59, 59, 999);
+
+      const dayOrders = orders.filter((o: any) => {
+        const d = new Date(o.created_at);
+        return d >= dayStart && d <= dayEnd;
+      });
+
+      days.push({
+        name: format(dayStart, "EEE dd", { locale: ro }),
+        vanzari: dayOrders.reduce((s: number, o: any) => s + Number(o.total), 0),
+        comenzi: dayOrders.length,
+      });
+    }
+    return days;
+  }, [orders]);
+
   return (
     <div className="space-y-6">
       {/* KPI Cards */}
