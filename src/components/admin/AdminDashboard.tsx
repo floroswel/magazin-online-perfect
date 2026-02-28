@@ -187,7 +187,54 @@ export default function AdminDashboard() {
         </Card>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      {/* Sales Chart — Last 7 Days */}
+      <Card className="shadow-sm">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-emerald-600" />
+            Vânzări — Ultimele 7 zile
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[260px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={last7DaysData} barSize={28}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 13% 88%)" vertical={false} />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fontSize: 11, fill: "hsl(220 10% 46%)" }}
+                  axisLine={{ stroke: "hsl(220 13% 88%)" }}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fontSize: 11, fill: "hsl(220 10% 46%)" }}
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={(v) => `${v.toLocaleString("ro-RO")} RON`}
+                  width={90}
+                />
+                <RechartsTooltip
+                  contentStyle={{
+                    backgroundColor: "white",
+                    border: "1px solid hsl(220 13% 88%)",
+                    borderRadius: "8px",
+                    fontSize: "12px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                  }}
+                  formatter={(value: number, name: string) => [
+                    name === "vanzari"
+                      ? `${value.toLocaleString("ro-RO")} RON`
+                      : value,
+                    name === "vanzari" ? "Vânzări" : "Comenzi",
+                  ]}
+                />
+                <Bar dataKey="vanzari" fill="hsl(220 70% 50%)" radius={[4, 4, 0, 0]} name="vanzari" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+
         {/* Recent Orders */}
         <Card className="lg:col-span-2">
           <CardHeader className="pb-3">
