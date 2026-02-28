@@ -14,6 +14,7 @@ export default function Admin() {
   const { isAdmin, loading: adminLoading } = useAdmin();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   if (authLoading || adminLoading) {
     return (
@@ -47,7 +48,12 @@ export default function Admin() {
 
   return (
     <div className="admin-panel flex min-h-screen bg-background">
-      <AdminSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <AdminSidebar
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed((c) => !c)}
+      />
       <div className="flex-1 flex flex-col overflow-auto">
         <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-border px-2 lg:px-4 py-1.5 flex items-center gap-2 shadow-sm">
           <Button variant="ghost" size="icon" className="lg:hidden shrink-0 h-7 w-7 text-muted-foreground hover:text-primary" onClick={() => setSidebarOpen(true)}>

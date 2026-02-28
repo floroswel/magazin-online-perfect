@@ -4,10 +4,16 @@ import {
   LayoutDashboard, Package, ShoppingCart,
   BarChart3, ArrowLeft, Store, X, ChevronDown, Warehouse, Users,
   Megaphone, FileText, Globe, CreditCard, Truck, Settings, Shield,
-  Puzzle,
+  Puzzle, PanelLeftClose, PanelLeftOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const menuSections: { title?: string; items: MenuItem[] }[] = [
   {
@@ -182,9 +188,11 @@ interface MenuItem {
 interface AdminSidebarProps {
   open?: boolean;
   onClose?: () => void;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
-export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
+export default function AdminSidebar({ open, onClose, collapsed = false, onToggleCollapse }: AdminSidebarProps) {
   const location = useLocation();
   const [expandedMenus, setExpandedMenus] = useState<string[]>(() => {
     const expanded: string[] = [];
@@ -211,26 +219,40 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
 
   const handleNavClick = () => onClose?.();
 
+  const isParentActiveForItem = (item: MenuItem) =>
+    item.children?.some((c) => isActive(c.path)) ?? false;
+
   return (
-    <>
+    <TooltipProvider delayDuration={0}>
+      {/* Mobile overlay */}
       {open && (
         <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onClose} />
       )}
 
       <aside
         className={cn(
-          "admin-sidebar w-[210px] min-h-screen bg-[hsl(222,47%,16%)] border-r border-[hsl(222,30%,24%)] flex flex-col shrink-0 transition-transform duration-200",
+          "admin-sidebar min-h-screen bg-[hsl(222,47%,16%)] border-r border-[hsl(222,30%,24%)] flex flex-col shrink-0 transition-all duration-200",
           "fixed lg:static z-50 lg:z-auto lg:translate-x-0",
-          open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          open ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+          // On mobile always full width, on desktop respect collapsed
+          "w-[210px]",
+          collapsed && "lg:w-[56px]"
         )}
       >
-        {/* Brand — navy header */}
+        {/* Brand */}
         <div className="px-2.5 py-2 border-b border-[hsl(222,30%,24%)] flex items-center justify-between shrink-0">
-          <Link to="/admin" className="flex items-center gap-1.5" onClick={handleNavClick}>
-            <div className="w-7 h-7 rounded bg-[hsl(210,100%,65%)]/20 border border-[hsl(210,100%,65%)]/30 flex items-center justify-center">
+          <Link to="/admin" className="flex items-center gap-1.5 overflow-hidden" onClick={handleNavClick}>
+            <div className="w-7 h-7 rounded bg-[hsl(210,100%,65%)]/20 border border-[hsl(210,100%,65%)]/30 flex items-center justify-center shrink-0">
               <Store className="w-3.5 h-3.5 text-[hsl(210,100%,65%)]" />
             </div>
-            <div>
+            {!collapsed && (
+              <div className="hidden lg:block">
+                <h2 className="font-bold text-xs leading-tight text-white">MegaShop</h2>
+                <p className="text-[9px] text-[hsl(210,15%,60%)] font-medium leading-none">ADMIN</p>
+              </div>
+            )}
+            {/* Mobile always shows brand text */}
+            <div className="lg:hidden">
               <h2 className="font-bold text-xs leading-tight text-white">MegaShop</h2>
               <p className="text-[9px] text-[hsl(210,15%,60%)] font-medium leading-none">ADMIN</p>
             </div>
@@ -240,21 +262,74 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
           </button>
         </div>
 
-        {/* Nav — ultra compact, navy theme */}
+        {/* Navigation */}
         <ScrollArea className="flex-1">
           <nav className="p-1.5 space-y-px">
             {menuSections.map((section, sIdx) => (
               <div key={sIdx}>
-                {section.title && (
+                {section.title && !collapsed && (
                   <p className="px-2 pt-3 pb-1 text-[9px] font-bold uppercase tracking-[0.15em] text-[hsl(210,100%,65%)]/60">
                     {section.title}
                   </p>
                 )}
+                {/* Collapsed: separator line instead of title */}
+                {section.title && collapsed && (
+                  <div className="hidden lg:block mx-2 my-2 border-t border-[hsl(210,100%,65%)]/15" />
+                )}
                 {section.items.map((item) => {
                   const isExpanded = expandedMenus.includes(item.label);
                   const hasChildren = !!item.children;
-                  const isParentActive = hasChildren && item.children!.some((c) => isActive(c.path));
+                  const isParentActive = hasChildren && isParentActiveForItem(item);
 
+                  // === COLLAPSED MODE (desktop only) ===
+                  if (collapsed && !hasChildren) {
+                    return (
+                      <Tooltip key={item.label}>
+                        <TooltipTrigger asChild>
+                          <Link
+                            to={item.path!}
+                            onClick={handleNavClick}
+                            className={cn(
+                              "hidden lg:flex items-center justify-center w-full h-9 rounded transition-all duration-100",
+                              isActive(item.path!)
+                                ? "bg-[hsl(210,100%,65%)]/15 text-[hsl(210,100%,75%)] border border-[hsl(210,100%,65%)]/25"
+                                : "text-[hsl(210,15%,70%)] hover:text-white hover:bg-white/5"
+                            )}
+                          >
+                            <item.icon className="w-4 h-4" />
+                          </Link>
+                        </TooltipTrigger>
+                        <TooltipContent side="right" className="text-xs">
+                          {item.label}
+                        </TooltipContent>
+                      </Tooltip>
+                    );
+                  }
+
+                  if (collapsed && hasChildren) {
+                    return (
+                      <Tooltip key={item.label}>
+                        <TooltipTrigger asChild>
+                          <button
+                            onClick={() => onToggleCollapse?.()}
+                            className={cn(
+                              "hidden lg:flex items-center justify-center w-full h-9 rounded transition-all duration-100",
+                              isParentActive
+                                ? "text-[hsl(210,100%,75%)] bg-[hsl(210,100%,65%)]/10"
+                                : "text-[hsl(210,15%,70%)] hover:text-white hover:bg-white/5"
+                            )}
+                          >
+                            <item.icon className="w-4 h-4" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="right" className="text-xs">
+                          {item.label}
+                        </TooltipContent>
+                      </Tooltip>
+                    );
+                  }
+
+                  // === EXPANDED MODE (desktop + mobile) ===
                   if (!hasChildren) {
                     return (
                       <Link
@@ -265,7 +340,8 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                           "flex items-center gap-2 px-2 py-1 rounded text-xs font-medium transition-all duration-100",
                           isActive(item.path!)
                             ? "bg-[hsl(210,100%,65%)]/15 text-[hsl(210,100%,75%)] border border-[hsl(210,100%,65%)]/25"
-                            : "text-[hsl(210,15%,70%)] hover:text-white hover:bg-white/5"
+                            : "text-[hsl(210,15%,70%)] hover:text-white hover:bg-white/5",
+                          collapsed && "lg:hidden"
                         )}
                       >
                         <item.icon className="w-3.5 h-3.5 shrink-0" />
@@ -275,7 +351,7 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                   }
 
                   return (
-                    <div key={item.label}>
+                    <div key={item.label} className={cn(collapsed && "lg:hidden")}>
                       <button
                         onClick={() => toggleMenu(item.label)}
                         className={cn(
@@ -317,20 +393,39 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                   );
                 })}
               </div>
-            ))}</nav>
+            ))}
+          </nav>
         </ScrollArea>
 
-        {/* Footer — compact */}
-        <div className="p-1.5 border-t border-[hsl(222,30%,24%)] shrink-0">
+        {/* Footer */}
+        <div className="p-1.5 border-t border-[hsl(222,30%,24%)] shrink-0 space-y-0.5">
+          {/* Collapse toggle — desktop only */}
+          <button
+            onClick={onToggleCollapse}
+            className="hidden lg:flex items-center justify-center gap-1.5 w-full px-2 py-1 rounded text-[11px] text-[hsl(210,15%,60%)] hover:text-white hover:bg-white/5 transition-colors"
+          >
+            {collapsed ? (
+              <PanelLeftOpen className="w-3.5 h-3.5" />
+            ) : (
+              <>
+                <PanelLeftClose className="w-3.5 h-3.5" />
+                <span>Restrânge</span>
+              </>
+            )}
+          </button>
           <Link
             to="/"
-            className="flex items-center gap-1.5 px-2 py-1 rounded text-[11px] text-[hsl(210,15%,60%)] hover:text-white hover:bg-white/5 transition-colors"
+            className={cn(
+              "flex items-center gap-1.5 px-2 py-1 rounded text-[11px] text-[hsl(210,15%,60%)] hover:text-white hover:bg-white/5 transition-colors",
+              collapsed ? "lg:justify-center" : ""
+            )}
           >
             <ArrowLeft className="w-3 h-3" />
-            Magazin
+            {!collapsed && <span className="hidden lg:inline">Magazin</span>}
+            <span className="lg:hidden">Magazin</span>
           </Link>
         </div>
       </aside>
-    </>
+    </TooltipProvider>
   );
 }
