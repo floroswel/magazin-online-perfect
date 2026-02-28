@@ -144,6 +144,46 @@ export default function AdminDashboard() {
     }
     return days;
   }, [orders]);
+  // Activity feed — combine orders, returns, stock moves
+  const activityFeed = useMemo(() => {
+    const items: { type: string; id: string; label: string; detail: string; time: string; icon: "order" | "return" | "stock" }[] = [];
+
+    orders.slice(0, 10).forEach((o: any) => {
+      items.push({
+        type: "order",
+        id: o.id,
+        label: `Comandă #${o.id.slice(0, 8)}`,
+        detail: `${Number(o.total).toFixed(0)} RON — ${statusLabels[o.status] || o.status}`,
+        time: o.created_at,
+        icon: "order",
+      });
+    });
+
+    recentReturns.forEach((r: any) => {
+      items.push({
+        type: "return",
+        id: r.id,
+        label: `Retur #${r.id.slice(0, 8)}`,
+        detail: `${r.reason} — ${statusLabels[r.status] || r.status}`,
+        time: r.created_at,
+        icon: "return",
+      });
+    });
+
+    recentStockMoves.forEach((m: any) => {
+      const sign = m.movement_type === "in" ? "+" : m.movement_type === "out" ? "-" : "";
+      items.push({
+        type: "stock",
+        id: m.id,
+        label: `Mișcare stoc`,
+        detail: `${sign}${m.quantity} buc — ${m.notes || m.movement_type}`,
+        time: m.created_at,
+        icon: "stock",
+      });
+    });
+
+    return items.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 12);
+  }, [orders, recentReturns, recentStockMoves]);
 
   return (
     <div className="space-y-6">
