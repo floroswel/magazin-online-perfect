@@ -84,6 +84,32 @@ export default function AdminDashboard() {
     },
   });
 
+  const { data: recentReturns = [] } = useQuery({
+    queryKey: ["admin-dashboard-returns"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("returns")
+        .select("id, order_id, status, reason, created_at")
+        .order("created_at", { ascending: false })
+        .limit(10);
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: recentStockMoves = [] } = useQuery({
+    queryKey: ["admin-dashboard-stock-moves"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("stock_movements")
+        .select("id, movement_type, quantity, product_id, created_at, notes")
+        .order("created_at", { ascending: false })
+        .limit(10);
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const totalRevenue = orders.reduce((s: number, o: any) => s + Number(o.total), 0);
   const pendingOrders = orders.filter((o: any) => o.status === "pending").length;
   const lowStockProducts = products.filter((p: any) => p.stock <= 5);
