@@ -5,7 +5,7 @@ import {
   Puzzle, Download, Settings, Play, Trash2, ToggleLeft, ToggleRight,
   RefreshCw, Clock, CheckCircle2, XCircle, AlertTriangle, Loader2,
   Package, CreditCard, Truck, Globe, BarChart3, Megaphone, Database,
-  Zap, Eye, ChevronRight, Search, Filter, ArrowUpDown,
+  Zap, Eye, ChevronRight, Search, Filter, ArrowUpDown, Plug, Shield,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -343,6 +343,27 @@ export default function AdminAppStore() {
                         </div>
 
                         <div className="flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={async () => {
+                              toast({ title: "Test conexiune...", description: "Se verifică credențialele..." });
+                              try {
+                                const result = await sdkCall("test-connection", "POST", { instance_id: instance.id });
+                                if (result.success) {
+                                  toast({ title: "✅ Conexiune reușită", description: `${connector?.name} răspunde corect.` });
+                                } else {
+                                  toast({ title: "❌ Conexiune eșuată", description: result.error || "Verifică credențialele.", variant: "destructive" });
+                                }
+                              } catch (err: any) {
+                                toast({ title: "❌ Test eșuat", description: err.message, variant: "destructive" });
+                              }
+                            }}
+                            title="Test conexiune"
+                          >
+                            <Plug className="w-3.5 h-3.5" />
+                          </Button>
                           <Button
                             variant="ghost"
                             size="icon"

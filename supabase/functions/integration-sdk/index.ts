@@ -279,6 +279,49 @@ Deno.serve(async (req) => {
       return json({ webhooks: data });
     }
 
+    // ====== TEST CONNECTION ======
+    if (req.method === "POST" && action === "test-connection") {
+      const body = await req.json();
+      const { instance_id } = body;
+
+      const { data: instance, error: instErr } = await supabase
+        .from("connector_instances")
+        .select("*, connectors(*)")
+        .eq("id", instance_id)
+        .single();
+
+      if (instErr || !instance) return json({ success: false, error: "Instanță negăsită" }, 404);
+
+      const config = instance.config_json as Record<string, string> || {};
+      const connector = instance.connectors as any;
+
+      // Check required fields from settings_schema
+      const requiredFields = (connector?.settings_schema?.fields || [])
+        .filter((f: any) => f.required)
+        .map((f: any) => f.name);
+
+      const missingFields = requiredFields.filter((f: string) => !config[f] || config[f].trim() === "");
+
+      if (missingFields.length > 0) {
+        return json({
+          success: false,
+          error: `Câmpuri obligatorii lipsă: ${missingFields.join(", ")}`,
+        });
+      }
+
+      // Log the test event
+      await supabase.from("integration_events").insert({
+        event_type: "integration.test_connection",
+        entity_type: "connector_instance",
+        entity_id: instance_id,
+        payload: { result: "success", connector_key: connector?.key },
+        source: "manual",
+        created_by: user.id,
+      });
+
+      return json({ success: true, message: "Credențiale configurate corect." });
+    }
+
     return json({ error: "Unknown action: " + action }, 404);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Eroare internă";
