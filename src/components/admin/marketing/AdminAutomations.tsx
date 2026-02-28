@@ -160,15 +160,15 @@ export default function AdminAutomations() {
         name: data.name,
         description: data.description,
         trigger_event: data.trigger_event,
-        conditions: data.conditions,
-        actions: data.actions,
+        conditions: data.conditions as unknown as Json,
+        actions: data.actions as unknown as Json,
         is_active: data.is_active,
       };
       if (data.id) {
         const { error } = await supabase.from("automations").update(payload).eq("id", data.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("automations").insert(payload);
+        const { error } = await supabase.from("automations").insert({ ...payload, name: data.name, trigger_event: data.trigger_event });
         if (error) throw error;
       }
     },
