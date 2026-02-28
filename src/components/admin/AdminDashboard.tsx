@@ -17,13 +17,15 @@ import { ro } from "date-fns/locale";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
-  BarChart,
+  ComposedChart,
   Bar,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
 
 const statusLabels: Record<string, string> = {
