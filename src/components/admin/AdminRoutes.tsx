@@ -22,6 +22,7 @@ import AdminRolesPermissions from "./users/AdminRolesPermissions";
 import AdminReturns from "./orders/AdminReturns";
 import AdminUsers from "./users/AdminUsers";
 import AdminAppStore from "./integrations/AdminAppStore";
+import AdminAutomations from "./marketing/AdminAutomations";
 
 export default function AdminRoutes() {
   return (
