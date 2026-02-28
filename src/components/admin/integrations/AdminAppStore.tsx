@@ -347,6 +347,27 @@ export default function AdminAppStore() {
                             variant="ghost"
                             size="icon"
                             className="h-7 w-7"
+                            onClick={async () => {
+                              toast({ title: "Test conexiune...", description: "Se verifică credențialele..." });
+                              try {
+                                const result = await sdkCall("test-connection", "POST", { instance_id: instance.id });
+                                if (result.success) {
+                                  toast({ title: "✅ Conexiune reușită", description: `${connector?.name} răspunde corect.` });
+                                } else {
+                                  toast({ title: "❌ Conexiune eșuată", description: result.error || "Verifică credențialele.", variant: "destructive" });
+                                }
+                              } catch (err: any) {
+                                toast({ title: "❌ Test eșuat", description: err.message, variant: "destructive" });
+                              }
+                            }}
+                            title="Test conexiune"
+                          >
+                            <Plug className="w-3.5 h-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
                             onClick={() => syncMutation.mutate(instance.id)}
                             disabled={syncMutation.isPending || instance.status === "syncing"}
                             title="Sincronizare manuală"
