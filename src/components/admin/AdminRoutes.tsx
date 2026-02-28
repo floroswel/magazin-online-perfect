@@ -32,7 +32,7 @@ export default function AdminRoutes() {
 
       {/* Comenzi */}
       <Route path="orders" element={<AdminOrders />} />
-      <Route path="orders/invoices" element={<AdminPlaceholder title="Facturi & Documente" description="Gestionare facturi, avize și documente fiscale pentru comenzi." />} />
+      <Route path="orders/invoices" element={<AdminInvoices />} />
       <Route path="orders/returns" element={<AdminReturns />} />
       <Route path="orders/abandoned" element={<AdminPlaceholder title="Coșuri Abandonate" description="Vizualizare și recuperare coșuri abandonate prin email automat." />} />
 
