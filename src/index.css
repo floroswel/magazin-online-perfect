@@ -51,6 +51,57 @@
     --cyber-surface: 220 22% 9%;
     --cyber-glow: 185 100% 60%;
   }
+
+  /* ADMIN PANEL — eMAG-style: navy sidebar + white content */
+  .admin-panel {
+    --background: 210 20% 96%;
+    --foreground: 220 20% 14%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 14%;
+
+    --primary: 220 70% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 92%;
+    --secondary-foreground: 220 20% 14%;
+
+    --muted: 220 14% 94%;
+    --muted-foreground: 220 10% 46%;
+
+    --accent: 220 14% 90%;
+    --accent-foreground: 220 20% 14%;
+
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 88%;
+    --input: 220 13% 88%;
+    --ring: 220 70% 50%;
+  }
+
+  /* Admin sidebar stays dark navy */
+  .admin-sidebar {
+    --background: 222 47% 16%;
+    --foreground: 210 20% 85%;
+
+    --card: 222 47% 16%;
+    --card-foreground: 210 20% 85%;
+
+    --primary: 210 100% 65%;
+    --primary-foreground: 222 47% 10%;
+
+    --muted: 222 35% 22%;
+    --muted-foreground: 210 15% 60%;
+
+    --accent: 222 35% 22%;
+    --accent-foreground: 210 20% 90%;
+
+    --border: 222 30% 24%;
+  }
 }
 
 @layer base {
@@ -107,5 +158,27 @@
 
   .font-mono-cyber {
     font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Admin scrollbar — light */
+  .admin-panel ::-webkit-scrollbar-track {
+    background: hsl(210 20% 96%);
+  }
+  .admin-panel ::-webkit-scrollbar-thumb {
+    background: hsl(220 13% 80%);
+  }
+  .admin-panel ::-webkit-scrollbar-thumb:hover {
+    background: hsl(220 13% 65%);
+  }
+
+  /* Admin sidebar scrollbar — dark */
+  .admin-sidebar ::-webkit-scrollbar-track {
+    background: hsl(222 47% 16%);
+  }
+  .admin-sidebar ::-webkit-scrollbar-thumb {
+    background: hsl(222 30% 30%);
+  }
+  .admin-sidebar ::-webkit-scrollbar-thumb:hover {
+    background: hsl(222 30% 40%);
   }
 }
