@@ -71,6 +71,7 @@ export default function AdminProducts() {
   const [specVal, setSpecVal] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState<any>(null);
+  const [generatingDesc, setGeneratingDesc] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
 
