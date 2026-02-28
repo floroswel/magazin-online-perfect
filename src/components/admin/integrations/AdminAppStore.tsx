@@ -5,7 +5,7 @@ import {
   Puzzle, Download, Settings, Play, Trash2, ToggleLeft, ToggleRight,
   RefreshCw, Clock, CheckCircle2, XCircle, AlertTriangle, Loader2,
   Package, CreditCard, Truck, Globe, BarChart3, Megaphone, Database,
-  Zap, Eye, ChevronRight, Search, Filter, ArrowUpDown,
+  Zap, Eye, ChevronRight, Search, Filter, ArrowUpDown, Plug, Shield,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
