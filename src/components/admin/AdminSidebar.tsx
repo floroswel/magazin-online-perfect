@@ -9,13 +9,6 @@ import {
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-interface MenuItem {
-  label: string;
-  icon: any;
-  path?: string;
-  children?: { label: string; path: string }[];
-}
-
 const menuSections: { title?: string; items: MenuItem[] }[] = [
   {
     items: [
@@ -179,6 +172,13 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
   },
 ];
 
+interface MenuItem {
+  label: string;
+  icon: any;
+  path?: string;
+  children?: { label: string; path: string }[];
+}
+
 interface AdminSidebarProps {
   open?: boolean;
   onClose?: () => void;
@@ -214,39 +214,39 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
   return (
     <>
       {open && (
-        <div className="fixed inset-0 z-40 bg-black/70 lg:hidden backdrop-blur-sm" onClick={onClose} />
+        <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onClose} />
       )}
 
       <aside
         className={cn(
-          "w-[210px] min-h-screen bg-card border-r border-border flex flex-col shrink-0 transition-transform duration-200",
+          "admin-sidebar w-[210px] min-h-screen bg-[hsl(222,47%,16%)] border-r border-[hsl(222,30%,24%)] flex flex-col shrink-0 transition-transform duration-200",
           "fixed lg:static z-50 lg:z-auto lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
-        {/* Brand — compact */}
-        <div className="px-2.5 py-2 border-b border-border flex items-center justify-between shrink-0">
+        {/* Brand — navy header */}
+        <div className="px-2.5 py-2 border-b border-[hsl(222,30%,24%)] flex items-center justify-between shrink-0">
           <Link to="/admin" className="flex items-center gap-1.5" onClick={handleNavClick}>
-            <div className="w-7 h-7 rounded bg-primary/20 cyber-border-glow border flex items-center justify-center">
-              <Store className="w-3.5 h-3.5 text-primary" />
+            <div className="w-7 h-7 rounded bg-[hsl(210,100%,65%)]/20 border border-[hsl(210,100%,65%)]/30 flex items-center justify-center">
+              <Store className="w-3.5 h-3.5 text-[hsl(210,100%,65%)]" />
             </div>
             <div>
-              <h2 className="font-bold text-xs leading-tight text-foreground">MegaShop</h2>
-              <p className="text-[9px] text-muted-foreground font-mono-cyber leading-none">ADMIN</p>
+              <h2 className="font-bold text-xs leading-tight text-white">MegaShop</h2>
+              <p className="text-[9px] text-[hsl(210,15%,60%)] font-medium leading-none">ADMIN</p>
             </div>
           </Link>
-          <button onClick={onClose} className="lg:hidden p-0.5 rounded hover:bg-muted text-muted-foreground">
+          <button onClick={onClose} className="lg:hidden p-0.5 rounded hover:bg-white/10 text-[hsl(210,15%,60%)]">
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Nav — ultra compact */}
+        {/* Nav — ultra compact, navy theme */}
         <ScrollArea className="flex-1">
           <nav className="p-1.5 space-y-px">
             {menuSections.map((section, sIdx) => (
               <div key={sIdx}>
                 {section.title && (
-                  <p className="px-2 pt-3 pb-1 text-[9px] font-bold uppercase tracking-[0.15em] text-primary/60 font-mono-cyber">
+                  <p className="px-2 pt-3 pb-1 text-[9px] font-bold uppercase tracking-[0.15em] text-[hsl(210,100%,65%)]/60">
                     {section.title}
                   </p>
                 )}
@@ -264,8 +264,8 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                         className={cn(
                           "flex items-center gap-2 px-2 py-1 rounded text-xs font-medium transition-all duration-100",
                           isActive(item.path!)
-                            ? "bg-primary/15 text-primary border border-primary/30"
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                            ? "bg-[hsl(210,100%,65%)]/15 text-[hsl(210,100%,75%)] border border-[hsl(210,100%,65%)]/25"
+                            : "text-[hsl(210,15%,70%)] hover:text-white hover:bg-white/5"
                         )}
                       >
                         <item.icon className="w-3.5 h-3.5 shrink-0" />
@@ -281,8 +281,8 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                         className={cn(
                           "w-full flex items-center gap-2 px-2 py-1 rounded text-xs font-medium transition-all duration-100",
                           isParentActive
-                            ? "text-primary"
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                            ? "text-[hsl(210,100%,75%)]"
+                            : "text-[hsl(210,15%,70%)] hover:text-white hover:bg-white/5"
                         )}
                       >
                         <item.icon className="w-3.5 h-3.5 shrink-0" />
@@ -295,7 +295,7 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                         />
                       </button>
                       {isExpanded && (
-                        <div className="ml-3.5 pl-2 border-l border-primary/20 space-y-px mt-px mb-0.5">
+                        <div className="ml-3.5 pl-2 border-l border-[hsl(210,100%,65%)]/20 space-y-px mt-px mb-0.5">
                           {item.children!.map((child) => (
                             <Link
                               key={child.path}
@@ -304,8 +304,8 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                               className={cn(
                                 "flex items-center px-1.5 py-[3px] rounded text-[11px] transition-all duration-100 leading-tight",
                                 isActive(child.path)
-                                  ? "text-primary font-medium bg-primary/10 border-l-2 border-primary -ml-px pl-[5px]"
-                                  : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
+                                  ? "text-white font-medium bg-[hsl(210,100%,65%)]/15 border-l-2 border-[hsl(210,100%,65%)] -ml-px pl-[5px]"
+                                  : "text-[hsl(210,15%,60%)] hover:text-white hover:bg-white/5"
                               )}
                             >
                               {child.label}
@@ -317,15 +317,14 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                   );
                 })}
               </div>
-            ))}
-          </nav>
+            ))}</nav>
         </ScrollArea>
 
         {/* Footer — compact */}
-        <div className="p-1.5 border-t border-border shrink-0">
+        <div className="p-1.5 border-t border-[hsl(222,30%,24%)] shrink-0">
           <Link
             to="/"
-            className="flex items-center gap-1.5 px-2 py-1 rounded text-[11px] text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors"
+            className="flex items-center gap-1.5 px-2 py-1 rounded text-[11px] text-[hsl(210,15%,60%)] hover:text-white hover:bg-white/5 transition-colors"
           >
             <ArrowLeft className="w-3 h-3" />
             Magazin
