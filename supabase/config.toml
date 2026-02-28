@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.integration-sdk]
 verify_jwt = false
+
+[functions.generate-description]
+verify_jwt = false

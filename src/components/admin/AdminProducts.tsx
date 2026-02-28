@@ -15,7 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   Plus, Pencil, Trash2, Search, Upload, X, Image as ImageIcon,
   ChevronRight, ChevronLeft, Package, DollarSign, Warehouse, Camera, Globe,
-  Copy, Eye, Check, Layers
+  Copy, Eye, Check, Layers, Sparkles, Loader2
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
