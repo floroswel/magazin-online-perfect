@@ -417,6 +417,42 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Activity Feed */}
+      <Card className="shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Activity className="w-4 h-4 text-blue-600" />
+            Activitate Live
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {activityFeed.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-6">Nicio activitate recentă.</p>
+          ) : (
+            <div className="space-y-1">
+              {activityFeed.map((item) => {
+                const IconComp = item.icon === "order" ? ShoppingCart : item.icon === "return" ? RotateCcw : ArrowDownUp;
+                const iconBg = item.icon === "order" ? "bg-blue-50 text-blue-600" : item.icon === "return" ? "bg-orange-50 text-orange-600" : "bg-violet-50 text-violet-600";
+                return (
+                  <div key={item.id} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-muted/40 transition-colors">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${iconBg}`}>
+                      <IconComp className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{item.label}</p>
+                      <p className="text-xs text-muted-foreground truncate">{item.detail}</p>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground shrink-0">
+                      {format(new Date(item.time), "dd MMM, HH:mm", { locale: ro })}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
