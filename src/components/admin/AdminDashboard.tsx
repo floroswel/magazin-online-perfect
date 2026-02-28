@@ -11,6 +11,9 @@ import {
   AlertTriangle,
   ArrowUpRight,
   Clock,
+  RotateCcw,
+  ArrowDownUp,
+  Activity,
 } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import { ro } from "date-fns/locale";
@@ -81,6 +84,32 @@ export default function AdminDashboard() {
     },
   });
 
+  const { data: recentReturns = [] } = useQuery({
+    queryKey: ["admin-dashboard-returns"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("returns")
+        .select("id, order_id, status, reason, created_at")
+        .order("created_at", { ascending: false })
+        .limit(10);
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: recentStockMoves = [] } = useQuery({
+    queryKey: ["admin-dashboard-stock-moves"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("stock_movements")
+        .select("id, movement_type, quantity, product_id, created_at, notes")
+        .order("created_at", { ascending: false })
+        .limit(10);
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const totalRevenue = orders.reduce((s: number, o: any) => s + Number(o.total), 0);
   const pendingOrders = orders.filter((o: any) => o.status === "pending").length;
   const lowStockProducts = products.filter((p: any) => p.stock <= 5);
@@ -115,6 +144,46 @@ export default function AdminDashboard() {
     }
     return days;
   }, [orders]);
+  // Activity feed — combine orders, returns, stock moves
+  const activityFeed = useMemo(() => {
+    const items: { type: string; id: string; label: string; detail: string; time: string; icon: "order" | "return" | "stock" }[] = [];
+
+    orders.slice(0, 10).forEach((o: any) => {
+      items.push({
+        type: "order",
+        id: o.id,
+        label: `Comandă #${o.id.slice(0, 8)}`,
+        detail: `${Number(o.total).toFixed(0)} RON — ${statusLabels[o.status] || o.status}`,
+        time: o.created_at,
+        icon: "order",
+      });
+    });
+
+    recentReturns.forEach((r: any) => {
+      items.push({
+        type: "return",
+        id: r.id,
+        label: `Retur #${r.id.slice(0, 8)}`,
+        detail: `${r.reason} — ${statusLabels[r.status] || r.status}`,
+        time: r.created_at,
+        icon: "return",
+      });
+    });
+
+    recentStockMoves.forEach((m: any) => {
+      const sign = m.movement_type === "in" ? "+" : m.movement_type === "out" ? "-" : "";
+      items.push({
+        type: "stock",
+        id: m.id,
+        label: `Mișcare stoc`,
+        detail: `${sign}${m.quantity} buc — ${m.notes || m.movement_type}`,
+        time: m.created_at,
+        icon: "stock",
+      });
+    });
+
+    return items.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 12);
+  }, [orders, recentReturns, recentStockMoves]);
 
   return (
     <div className="space-y-6">
@@ -348,6 +417,42 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Activity Feed */}
+      <Card className="shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Activity className="w-4 h-4 text-blue-600" />
+            Activitate Live
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {activityFeed.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-6">Nicio activitate recentă.</p>
+          ) : (
+            <div className="space-y-1">
+              {activityFeed.map((item) => {
+                const IconComp = item.icon === "order" ? ShoppingCart : item.icon === "return" ? RotateCcw : ArrowDownUp;
+                const iconBg = item.icon === "order" ? "bg-blue-50 text-blue-600" : item.icon === "return" ? "bg-orange-50 text-orange-600" : "bg-violet-50 text-violet-600";
+                return (
+                  <div key={item.id} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-muted/40 transition-colors">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${iconBg}`}>
+                      <IconComp className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{item.label}</p>
+                      <p className="text-xs text-muted-foreground truncate">{item.detail}</p>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground shrink-0">
+                      {format(new Date(item.time), "dd MMM, HH:mm", { locale: ro })}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
