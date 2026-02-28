@@ -20,6 +20,7 @@ import AdminLoyalty from "./customers/AdminLoyalty";
 import AdminSupportTickets from "./customers/AdminSupportTickets";
 import AdminRolesPermissions from "./users/AdminRolesPermissions";
 import AdminReturns from "./orders/AdminReturns";
+import AdminInvoices from "./orders/AdminInvoices";
 import AdminUsers from "./users/AdminUsers";
 import AdminAppStore from "./integrations/AdminAppStore";
 import AdminAutomations from "./marketing/AdminAutomations";
