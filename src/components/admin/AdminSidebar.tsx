@@ -219,34 +219,34 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
 
       <aside
         className={cn(
-          "w-[260px] min-h-screen bg-card border-r border-border flex flex-col shrink-0 transition-transform duration-200",
+          "w-[210px] min-h-screen bg-card border-r border-border flex flex-col shrink-0 transition-transform duration-200",
           "fixed lg:static z-50 lg:z-auto lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
-        {/* Brand */}
-        <div className="p-4 border-b border-border flex items-center justify-between shrink-0">
-          <Link to="/admin" className="flex items-center gap-2.5" onClick={handleNavClick}>
-            <div className="w-9 h-9 rounded-lg bg-primary/20 cyber-border-glow border flex items-center justify-center">
-              <Store className="w-5 h-5 text-primary" />
+        {/* Brand — compact */}
+        <div className="px-2.5 py-2 border-b border-border flex items-center justify-between shrink-0">
+          <Link to="/admin" className="flex items-center gap-1.5" onClick={handleNavClick}>
+            <div className="w-7 h-7 rounded bg-primary/20 cyber-border-glow border flex items-center justify-center">
+              <Store className="w-3.5 h-3.5 text-primary" />
             </div>
             <div>
-              <h2 className="font-bold text-sm leading-tight text-foreground cyber-text-glow">MegaShop</h2>
-              <p className="text-[11px] text-muted-foreground font-mono-cyber">ADMIN PANEL</p>
+              <h2 className="font-bold text-xs leading-tight text-foreground">MegaShop</h2>
+              <p className="text-[9px] text-muted-foreground font-mono-cyber leading-none">ADMIN</p>
             </div>
           </Link>
-          <button onClick={onClose} className="lg:hidden p-1 rounded-md hover:bg-muted text-muted-foreground">
-            <X className="w-5 h-5" />
+          <button onClick={onClose} className="lg:hidden p-0.5 rounded hover:bg-muted text-muted-foreground">
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Nav */}
+        {/* Nav — ultra compact */}
         <ScrollArea className="flex-1">
-          <nav className="p-2 space-y-0.5">
+          <nav className="p-1.5 space-y-px">
             {menuSections.map((section, sIdx) => (
               <div key={sIdx}>
                 {section.title && (
-                  <p className="px-3 pt-5 pb-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-primary/60 font-mono-cyber">
+                  <p className="px-2 pt-3 pb-1 text-[9px] font-bold uppercase tracking-[0.15em] text-primary/60 font-mono-cyber">
                     {section.title}
                   </p>
                 )}
@@ -262,13 +262,13 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                         to={item.path!}
                         onClick={handleNavClick}
                         className={cn(
-                          "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150",
+                          "flex items-center gap-2 px-2 py-1 rounded text-xs font-medium transition-all duration-100",
                           isActive(item.path!)
-                            ? "bg-primary/15 text-primary cyber-glow border border-primary/30"
+                            ? "bg-primary/15 text-primary border border-primary/30"
                             : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                         )}
                       >
-                        <item.icon className="w-[18px] h-[18px] shrink-0" />
+                        <item.icon className="w-3.5 h-3.5 shrink-0" />
                         {item.label}
                       </Link>
                     );
@@ -279,32 +279,32 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                       <button
                         onClick={() => toggleMenu(item.label)}
                         className={cn(
-                          "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150",
+                          "w-full flex items-center gap-2 px-2 py-1 rounded text-xs font-medium transition-all duration-100",
                           isParentActive
                             ? "text-primary"
                             : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                         )}
                       >
-                        <item.icon className="w-[18px] h-[18px] shrink-0" />
-                        <span className="flex-1 text-left">{item.label}</span>
+                        <item.icon className="w-3.5 h-3.5 shrink-0" />
+                        <span className="flex-1 text-left truncate">{item.label}</span>
                         <ChevronDown
                           className={cn(
-                            "w-4 h-4 shrink-0 transition-transform duration-200",
+                            "w-3 h-3 shrink-0 transition-transform duration-150",
                             isExpanded && "rotate-180"
                           )}
                         />
                       </button>
                       {isExpanded && (
-                        <div className="ml-4 pl-3 border-l border-primary/20 space-y-0.5 mt-0.5 mb-1">
+                        <div className="ml-3.5 pl-2 border-l border-primary/20 space-y-px mt-px mb-0.5">
                           {item.children!.map((child) => (
                             <Link
                               key={child.path}
                               to={child.path}
                               onClick={handleNavClick}
                               className={cn(
-                                "flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[13px] transition-all duration-150",
+                                "flex items-center px-1.5 py-[3px] rounded text-[11px] transition-all duration-100 leading-tight",
                                 isActive(child.path)
-                                  ? "text-primary font-medium bg-primary/10 border-l-2 border-primary -ml-[1px] pl-[9px]"
+                                  ? "text-primary font-medium bg-primary/10 border-l-2 border-primary -ml-px pl-[5px]"
                                   : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
                               )}
                             >
@@ -321,14 +321,14 @@ export default function AdminSidebar({ open, onClose }: AdminSidebarProps) {
           </nav>
         </ScrollArea>
 
-        {/* Footer */}
-        <div className="p-2 border-t border-border shrink-0">
+        {/* Footer — compact */}
+        <div className="p-1.5 border-t border-border shrink-0">
           <Link
             to="/"
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors"
+            className="flex items-center gap-1.5 px-2 py-1 rounded text-[11px] text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
-            Înapoi la magazin
+            <ArrowLeft className="w-3 h-3" />
+            Magazin
           </Link>
         </div>
       </aside>
