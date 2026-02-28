@@ -311,7 +311,35 @@ export default function AdminProducts() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Descriere</Label>
+              <div className="flex items-center justify-between">
+                <Label>Descriere</Label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={!form.name.trim() || generatingDesc}
+                  onClick={async () => {
+                    setGeneratingDesc(true);
+                    try {
+                      const categoryName = categories.find((c: any) => c.id === form.category_id)?.name;
+                      const { data, error } = await supabase.functions.invoke("generate-description", {
+                        body: { name: form.name, brand: form.brand, category: categoryName, specs: form.specs },
+                      });
+                      if (error) throw error;
+                      if (data?.error) throw new Error(data.error);
+                      setForm((f) => ({ ...f, description: data.description }));
+                      toast.success("Descriere generată cu AI!");
+                    } catch (err: any) {
+                      toast.error(err.message || "Eroare la generare");
+                    }
+                    setGeneratingDesc(false);
+                  }}
+                  className="gap-1.5 text-xs"
+                >
+                  {generatingDesc ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                  {generatingDesc ? "Generez..." : "Generează cu AI"}
+                </Button>
+              </div>
               <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={4} placeholder="Descrierea produsului..." />
             </div>
             <div className="flex items-center gap-3">
