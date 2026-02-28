@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,10 +12,19 @@ import {
   ArrowUpRight,
   Clock,
 } from "lucide-react";
-import { format } from "date-fns";
+import { format, subDays, startOfDay } from "date-fns";
 import { ro } from "date-fns/locale";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as RechartsTooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 const statusLabels: Record<string, string> = {
   pending: "În așteptare",
@@ -81,6 +91,28 @@ export default function AdminDashboard() {
   today.setHours(0, 0, 0, 0);
   const todayOrders = orders.filter((o: any) => new Date(o.created_at) >= today);
   const todayRevenue = todayOrders.reduce((s: number, o: any) => s + Number(o.total), 0);
+
+  // Last 7 days chart data
+  const last7DaysData = useMemo(() => {
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const dayStart = startOfDay(subDays(new Date(), i));
+      const dayEnd = new Date(dayStart);
+      dayEnd.setHours(23, 59, 59, 999);
+
+      const dayOrders = orders.filter((o: any) => {
+        const d = new Date(o.created_at);
+        return d >= dayStart && d <= dayEnd;
+      });
+
+      days.push({
+        name: format(dayStart, "EEE dd", { locale: ro }),
+        vanzari: dayOrders.reduce((s: number, o: any) => s + Number(o.total), 0),
+        comenzi: dayOrders.length,
+      });
+    }
+    return days;
+  }, [orders]);
 
   return (
     <div className="space-y-6">
@@ -154,6 +186,54 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Sales Chart — Last 7 Days */}
+      <Card className="shadow-sm">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-emerald-600" />
+            Vânzări — Ultimele 7 zile
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[260px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={last7DaysData} barSize={28}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 13% 88%)" vertical={false} />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fontSize: 11, fill: "hsl(220 10% 46%)" }}
+                  axisLine={{ stroke: "hsl(220 13% 88%)" }}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fontSize: 11, fill: "hsl(220 10% 46%)" }}
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={(v) => `${v.toLocaleString("ro-RO")} RON`}
+                  width={90}
+                />
+                <RechartsTooltip
+                  contentStyle={{
+                    backgroundColor: "white",
+                    border: "1px solid hsl(220 13% 88%)",
+                    borderRadius: "8px",
+                    fontSize: "12px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                  }}
+                  formatter={(value: number, name: string) => [
+                    name === "vanzari"
+                      ? `${value.toLocaleString("ro-RO")} RON`
+                      : value,
+                    name === "vanzari" ? "Vânzări" : "Comenzi",
+                  ]}
+                />
+                <Bar dataKey="vanzari" fill="hsl(220 70% 50%)" radius={[4, 4, 0, 0]} name="vanzari" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Recent Orders */}
