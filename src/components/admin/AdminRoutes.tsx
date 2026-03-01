@@ -131,7 +131,7 @@ export default function AdminRoutes() {
       <Route path="marketing/reports" element={<AdminPlaceholder title="Rapoarte Marketing" description="Conversie campanii, utilizare vouchere, ROI per canal." />} />
 
       {/* ═══════════ CONȚINUT ═══════════ */}
-      <Route path="content/pages" element={<AdminPlaceholder title="Pagini (CMS)" description="Editor de pagini statice: Despre noi, Contact, Politici." />} />
+      <Route path="content/pages" element={<AdminCmsPages />} />
       <Route path="content/page-builder" element={<AdminPlaceholder title="Page Builder" description="Drag & drop page builder pentru pagini personalizate." />} />
       <Route path="content/homepage" element={<AdminPlaceholder title="Homepage" description="Editare secțiuni homepage: hero, categorii, produse recomandate." />} />
       <Route path="content/landing" element={<AdminPlaceholder title="Landing Pages" description="Pagini de campanie cu tracking și A/B testing." />} />
