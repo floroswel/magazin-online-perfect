@@ -110,7 +110,7 @@ export default function AdminPaymentMethods() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["payment-methods"] });
       setEditMethod(null);
-      toast({ title: "Metodă ștearsă" });
+      toast.success("Metodă ștearsă");
     },
   });
 
