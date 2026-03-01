@@ -199,7 +199,7 @@ export default function AdminImportExport() {
   const updateMapping = (colIndex: number, field: string) => {
     setColumnMapping((prev) => {
       const next = { ...prev };
-      if (!field) { delete next[colIndex]; }
+      if (!field || field === "none") { delete next[colIndex]; }
       else {
         Object.keys(next).forEach((k) => { if (next[Number(k)] === field && Number(k) !== colIndex) delete next[Number(k)]; });
         next[colIndex] = field;
