@@ -9,8 +9,6 @@ import { useCart } from "@/hooks/useCart";
 import { useComparison } from "@/hooks/useComparison";
 import { Badge } from "@/components/ui/badge";
 import SearchAutocomplete from "@/components/SearchAutocomplete";
-import { useComparison } from "@/hooks/useComparison";
-import { Badge } from "@/components/ui/badge";
 
 const categories = [
   { name: "Telefoane", slug: "telefoane" },
