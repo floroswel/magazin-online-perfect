@@ -98,7 +98,7 @@ export default function AdminPaymentMethods() {
       queryClient.invalidateQueries({ queryKey: ["payment-methods"] });
       setEditMethod(null);
       setShowAdd(false);
-      toast({ title: "Metodă salvată cu succes" });
+      toast.success("Metodă salvată cu succes");
     },
   });
 
