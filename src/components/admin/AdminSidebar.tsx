@@ -172,6 +172,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Tranzacții", path: "/admin/payments/transactions" },
           { label: "Refund-uri", path: "/admin/payments/refunds" },
           { label: "Rate & Installments", path: "/admin/payments/installments" },
+          { label: "Mokka (Config)", path: "/admin/payments/mokka" },
           { label: "Decontări", path: "/admin/payments/settlements" },
           { label: "Reconciliere", path: "/admin/payments/reconciliation" },
         ],
