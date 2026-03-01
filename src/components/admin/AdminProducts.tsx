@@ -640,6 +640,12 @@ export default function AdminProducts() {
           <p className="text-sm text-muted-foreground">Gestionare catalog de produse</p>
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
+          {selectedIds.size > 0 && (
+            <Button variant="destructive" onClick={() => setBulkDeleteConfirm(true)} disabled={bulkDeleting} className="gap-2">
+              <Trash2 className="w-4 h-4" />
+              {bulkDeleting ? "Se șterg..." : `Șterge ${selectedIds.size} produse`}
+            </Button>
+          )}
           <div className="relative flex-1 sm:flex-initial">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Caută produse..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 w-full sm:w-64" />
