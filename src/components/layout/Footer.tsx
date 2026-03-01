@@ -10,7 +10,7 @@ import { z } from "zod";
 const emailSchema = z.string().trim().email("Adresa de email nu este validă").max(255);
 
 interface FooterPage { title: string; slug: string; placement: string }
-interface LegalBadge { title: string; url: string; image: string }
+interface LegalBadge { title: string; url: string; image: string; description?: string }
 
 export default function Footer() {
   const [email, setEmail] = useState("");
