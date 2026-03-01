@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
+import MokkaOrangePrice from "@/components/mokka/MokkaOrangePrice";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
