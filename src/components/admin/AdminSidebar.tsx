@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Package, ShoppingCart,
   BarChart3, ArrowLeft, Store, X, ChevronDown, Warehouse, Users,
   Megaphone, FileText, Globe, CreditCard, Truck, Settings, Shield,
-  Puzzle, PanelLeftClose, PanelLeftOpen,
+  Puzzle, PanelLeftClose, PanelLeftOpen, Plug,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -39,7 +39,6 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Comenzi cu probleme", path: "/admin/orders/issues" },
           { label: "Facturi & documente", path: "/admin/orders/invoices" },
           { label: "Retururi (RMA)", path: "/admin/orders/returns" },
-          { label: "Coșuri abandonate", path: "/admin/orders/abandoned" },
         ],
       },
       {
@@ -101,6 +100,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Etichete (tag-uri)", path: "/admin/customers/tags" },
           { label: "Puncte fidelitate", path: "/admin/customers/loyalty" },
           { label: "Blacklist", path: "/admin/customers/blacklist" },
+          { label: "Coșuri abandonate", path: "/admin/customers/abandoned" },
           { label: "Tichete suport", path: "/admin/customers/tickets" },
           { label: "GDPR & date", path: "/admin/customers/gdpr" },
           { label: "Import clienți", path: "/admin/customers/import" },
@@ -129,10 +129,10 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
     ],
   },
   {
-    title: "CONȚINUT & CANALE",
+    title: "CONȚINUT",
     items: [
       {
-        label: "Conținut", icon: FileText,
+        label: "Conținut & Pagini", icon: FileText,
         children: [
           { label: "Pagini (CMS)", path: "/admin/content/pages" },
           { label: "Page Builder", path: "/admin/content/page-builder" },
@@ -148,20 +148,6 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Termeni & politici", path: "/admin/content/legal" },
         ],
       },
-      {
-        label: "Multi-canal", icon: Globe,
-        children: [
-          { label: "eMAG Marketplace", path: "/admin/channels/emag" },
-          { label: "Google Shopping", path: "/admin/channels/google" },
-          { label: "Facebook Shop", path: "/admin/channels/facebook" },
-          { label: "Allegro", path: "/admin/channels/allegro" },
-          { label: "OLX", path: "/admin/channels/olx" },
-          { label: "Price.ro", path: "/admin/channels/pricero" },
-          { label: "Compari.ro", path: "/admin/channels/compariro" },
-          { label: "API extern", path: "/admin/channels/api" },
-          { label: "Conectori externi", path: "/admin/channels/connectors" },
-        ],
-      },
     ],
   },
   {
@@ -171,7 +157,6 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         label: "Plăți", icon: CreditCard,
         children: [
           { label: "Metode de plată", path: "/admin/payments/methods" },
-          { label: "Gateway-uri", path: "/admin/payments/gateways" },
           { label: "Tranzacții", path: "/admin/payments/transactions" },
           { label: "Refund-uri", path: "/admin/payments/refunds" },
           { label: "Rate & Installments", path: "/admin/payments/installments" },
@@ -193,6 +178,68 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Puncte ridicare", path: "/admin/shipping/pickup" },
           { label: "Programări livrare", path: "/admin/shipping/scheduling" },
           { label: "Webhooks", path: "/admin/shipping/webhooks" },
+        ],
+      },
+    ],
+  },
+  {
+    title: "INTEGRĂRI",
+    items: [
+      {
+        label: "Integrări", icon: Plug,
+        children: [
+          { label: "Toate integrările", path: "/admin/integrations" },
+          { label: "App Store", path: "/admin/integrations/app-store" },
+          // -- Plăți --
+          { label: "Stripe", path: "/admin/integrations/stripe" },
+          { label: "PayPal", path: "/admin/integrations/paypal" },
+          { label: "Netopia", path: "/admin/integrations/netopia" },
+          { label: "euPlătesc", path: "/admin/integrations/euplatesc" },
+          { label: "Plăți Online", path: "/admin/integrations/plati-online" },
+          { label: "TBI Bank", path: "/admin/integrations/tbi-bank" },
+          { label: "PayPo", path: "/admin/integrations/paypo" },
+          { label: "LeanPay", path: "/admin/integrations/leanpay" },
+          { label: "Banca Transilvania", path: "/admin/integrations/banca-transilvania" },
+          { label: "SmartBuyBT", path: "/admin/integrations/smartbuybt" },
+          { label: "ePay", path: "/admin/integrations/epay" },
+          { label: "Revolut", path: "/admin/integrations/revolut" },
+          // -- Curieri --
+          { label: "Fan Courier", path: "/admin/integrations/fan-courier" },
+          { label: "Sameday", path: "/admin/integrations/sameday" },
+          { label: "GLS", path: "/admin/integrations/gls" },
+          { label: "Cargus", path: "/admin/integrations/cargus" },
+          { label: "DPD", path: "/admin/integrations/dpd" },
+          { label: "DHL", path: "/admin/integrations/dhl" },
+          // -- Contabilitate --
+          { label: "SmartBill", path: "/admin/integrations/smartbill" },
+          // -- Marketing --
+          { label: "Facebook Pixel", path: "/admin/integrations/facebook-pixel" },
+          { label: "TikTok Pixel", path: "/admin/integrations/tiktok-pixel" },
+          { label: "Google Ads", path: "/admin/integrations/google-ads" },
+          { label: "Google Analytics", path: "/admin/integrations/google-analytics" },
+          { label: "Google Tag Manager", path: "/admin/integrations/gtm" },
+          { label: "Mailchimp", path: "/admin/integrations/mailchimp" },
+          // -- Marketplace --
+          { label: "eMAG Marketplace", path: "/admin/integrations/emag" },
+          { label: "Google Shopping", path: "/admin/integrations/google-shopping" },
+          { label: "Facebook Shop", path: "/admin/integrations/facebook-shop" },
+          { label: "Compari.ro", path: "/admin/integrations/compariro" },
+          { label: "Price.ro", path: "/admin/integrations/pricero" },
+          // -- Autentificare --
+          { label: "Facebook Login", path: "/admin/integrations/facebook-login" },
+          { label: "Google Login", path: "/admin/integrations/google-login" },
+          // -- Altele --
+          { label: "NOD", path: "/admin/integrations/nod" },
+          { label: "SSL Certificate", path: "/admin/integrations/ssl" },
+        ],
+      },
+      {
+        label: "Multi-canal", icon: Globe,
+        children: [
+          { label: "Allegro", path: "/admin/channels/allegro" },
+          { label: "OLX", path: "/admin/channels/olx" },
+          { label: "API extern", path: "/admin/channels/api" },
+          { label: "Conectori externi", path: "/admin/channels/connectors" },
         ],
       },
     ],
@@ -234,7 +281,6 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Notificări", path: "/admin/settings/notifications" },
           { label: "Securitate", path: "/admin/settings/security" },
           { label: "GDPR & politici", path: "/admin/settings/gdpr" },
-          { label: "Integrări", path: "/admin/settings/integrations" },
         ],
       },
       {
@@ -249,10 +295,8 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         ],
       },
       {
-        label: "Module", icon: Puzzle,
+        label: "Aplicații", icon: Puzzle,
         children: [
-          { label: "Module instalate", path: "/admin/modules" },
-          { label: "Marketplace", path: "/admin/modules/marketplace" },
           { label: "Generator AI", path: "/admin/modules/ai-generator" },
           { label: "Logs & health", path: "/admin/modules/logs" },
         ],
@@ -394,7 +438,7 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                             className={cn(
                               "hidden lg:flex items-center justify-center w-full h-9 rounded transition-all duration-100",
                               isParentActive
-                                ? "text-[hsl(210,100%,75%)] bg-[hsl(210,100%,65%)]/10"
+                                ? "bg-[hsl(210,100%,65%)]/15 text-[hsl(210,100%,75%)] border border-[hsl(210,100%,65%)]/25"
                                 : "text-[hsl(210,15%,70%)] hover:text-white hover:bg-white/5"
                             )}
                           >
@@ -415,25 +459,24 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                         to={item.path!}
                         onClick={handleNavClick}
                         className={cn(
-                          "flex items-center gap-2 px-2 py-1 rounded text-xs font-medium transition-all duration-100",
+                          "flex items-center gap-2 px-2 h-8 rounded text-[11px] font-medium transition-all duration-100",
                           isActive(item.path!)
                             ? "bg-[hsl(210,100%,65%)]/15 text-[hsl(210,100%,75%)] border border-[hsl(210,100%,65%)]/25"
-                            : "text-[hsl(210,15%,70%)] hover:text-white hover:bg-white/5",
-                          collapsed && "lg:hidden"
+                            : "text-[hsl(210,15%,70%)] hover:text-white hover:bg-white/5"
                         )}
                       >
                         <item.icon className="w-3.5 h-3.5 shrink-0" />
-                        {item.label}
+                        <span className="truncate">{item.label}</span>
                       </Link>
                     );
                   }
 
                   return (
-                    <div key={item.label} className={cn(collapsed && "lg:hidden")}>
+                    <div key={item.label}>
                       <button
                         onClick={() => toggleMenu(item.label)}
                         className={cn(
-                          "w-full flex items-center gap-2 px-2 py-1 rounded text-xs font-medium transition-all duration-100",
+                          "flex items-center gap-2 w-full px-2 h-8 rounded text-[11px] font-medium transition-all duration-100",
                           isParentActive
                             ? "text-[hsl(210,100%,75%)]"
                             : "text-[hsl(210,15%,70%)] hover:text-white hover:bg-white/5"
@@ -443,23 +486,23 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                         <span className="flex-1 text-left truncate">{item.label}</span>
                         <ChevronDown
                           className={cn(
-                            "w-3 h-3 shrink-0 transition-transform duration-150",
+                            "w-3 h-3 shrink-0 transition-transform duration-200",
                             isExpanded && "rotate-180"
                           )}
                         />
                       </button>
                       {isExpanded && (
-                        <div className="ml-3.5 pl-2 border-l border-[hsl(210,100%,65%)]/20 space-y-px mt-px mb-0.5">
+                        <div className="ml-3 pl-2 border-l border-[hsl(222,30%,24%)] space-y-px mt-0.5">
                           {item.children!.map((child) => (
                             <Link
                               key={child.path}
                               to={child.path}
                               onClick={handleNavClick}
                               className={cn(
-                                "flex items-center px-1.5 py-[3px] rounded text-[11px] transition-all duration-100 leading-tight",
+                                "block px-2 py-1 rounded text-[10px] transition-all duration-100",
                                 isActive(child.path)
-                                  ? "text-white font-medium bg-[hsl(210,100%,65%)]/15 border-l-2 border-[hsl(210,100%,65%)] -ml-px pl-[5px]"
-                                  : "text-[hsl(210,15%,60%)] hover:text-white hover:bg-white/5"
+                                  ? "bg-[hsl(210,100%,65%)]/10 text-[hsl(210,100%,75%)] font-semibold"
+                                  : "text-[hsl(210,15%,55%)] hover:text-[hsl(210,15%,80%)] hover:bg-white/5"
                               )}
                             >
                               {child.label}
@@ -476,31 +519,50 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
         </ScrollArea>
 
         {/* Footer */}
-        <div className="p-1.5 border-t border-[hsl(222,30%,24%)] shrink-0 space-y-0.5">
-          <button
-            onClick={onToggleCollapse}
-            className="hidden lg:flex items-center justify-center gap-1.5 w-full px-2 py-1 rounded text-[11px] text-[hsl(210,15%,60%)] hover:text-white hover:bg-white/5 transition-colors"
-          >
-            {collapsed ? (
-              <PanelLeftOpen className="w-3.5 h-3.5" />
-            ) : (
-              <>
-                <PanelLeftClose className="w-3.5 h-3.5" />
+        <div className="p-1.5 border-t border-[hsl(222,30%,24%)] space-y-1 shrink-0">
+          {!collapsed ? (
+            <>
+              <Link
+                to="/"
+                className="flex items-center gap-2 px-2 py-1.5 rounded text-[10px] text-[hsl(210,15%,55%)] hover:text-white hover:bg-white/5 transition-colors"
+              >
+                <ArrowLeft className="w-3 h-3" />
+                <span>Înapoi la magazin</span>
+              </Link>
+              <button
+                onClick={onToggleCollapse}
+                className="hidden lg:flex items-center gap-2 w-full px-2 py-1.5 rounded text-[10px] text-[hsl(210,15%,55%)] hover:text-white hover:bg-white/5 transition-colors"
+              >
+                <PanelLeftClose className="w-3 h-3" />
                 <span>Restrânge</span>
-              </>
-            )}
-          </button>
-          <Link
-            to="/"
-            className={cn(
-              "flex items-center gap-1.5 px-2 py-1 rounded text-[11px] text-[hsl(210,15%,60%)] hover:text-white hover:bg-white/5 transition-colors",
-              collapsed ? "lg:justify-center" : ""
-            )}
-          >
-            <ArrowLeft className="w-3 h-3" />
-            {!collapsed && <span className="hidden lg:inline">Magazin</span>}
-            <span className="lg:hidden">Magazin</span>
-          </Link>
+              </button>
+            </>
+          ) : (
+            <>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    to="/"
+                    className="hidden lg:flex items-center justify-center w-full h-8 rounded text-[hsl(210,15%,55%)] hover:text-white hover:bg-white/5 transition-colors"
+                  >
+                    <ArrowLeft className="w-3.5 h-3.5" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="text-xs">Înapoi la magazin</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={onToggleCollapse}
+                    className="hidden lg:flex items-center justify-center w-full h-8 rounded text-[hsl(210,15%,55%)] hover:text-white hover:bg-white/5 transition-colors"
+                  >
+                    <PanelLeftOpen className="w-3.5 h-3.5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="text-xs">Extinde</TooltipContent>
+              </Tooltip>
+            </>
+          )}
         </div>
       </aside>
     </TooltipProvider>
