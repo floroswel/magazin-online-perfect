@@ -835,7 +835,41 @@ export default function AdminProducts() {
         </DialogContent>
       </Dialog>
 
-      {/* Quick Preview */}
+      {/* Bulk Delete Confirmation */}
+      <Dialog open={bulkDeleteConfirm} onOpenChange={(open) => !open && setBulkDeleteConfirm(false)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Ștergere în masă</DialogTitle>
+            <DialogDescription>Ești sigur că vrei să ștergi {selectedIds.size} produse? Acțiunea este ireversibilă.</DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setBulkDeleteConfirm(false)}>Renunță</Button>
+            <Button variant="destructive" disabled={bulkDeleting} onClick={async () => {
+              setBulkDeleting(true);
+              try {
+                const ids = Array.from(selectedIds);
+                const batchSize = 50;
+                for (let i = 0; i < ids.length; i += batchSize) {
+                  const batch = ids.slice(i, i + batchSize);
+                  const { error } = await supabase.from("products").delete().in("id", batch);
+                  if (error) throw error;
+                }
+                queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+                toast.success(`${ids.length} produse șterse!`);
+                setSelectedIds(new Set());
+                setBulkDeleteConfirm(false);
+              } catch (err: any) {
+                toast.error(err.message);
+              } finally {
+                setBulkDeleting(false);
+              }
+            }}>
+              {bulkDeleting ? "Se șterg..." : `Șterge ${selectedIds.size} produse`}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={!!previewOpen} onOpenChange={(open) => !open && setPreviewOpen(null)}>
         <DialogContent className="max-w-lg">
           {previewOpen && (
