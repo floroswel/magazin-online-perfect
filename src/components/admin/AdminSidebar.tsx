@@ -28,6 +28,15 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         label: "Comenzi", icon: ShoppingCart,
         children: [
           { label: "Toate comenzile", path: "/admin/orders" },
+          { label: "Comenzi noi", path: "/admin/orders/new" },
+          { label: "În procesare", path: "/admin/orders/processing" },
+          { label: "În livrare", path: "/admin/orders/shipping" },
+          { label: "Livrate", path: "/admin/orders/delivered" },
+          { label: "Anulate", path: "/admin/orders/cancelled" },
+          { label: "Comenzi marketplace", path: "/admin/orders/marketplace" },
+          { label: "Comenzi B2B", path: "/admin/orders/b2b" },
+          { label: "Comenzi recurente", path: "/admin/orders/recurring" },
+          { label: "Comenzi cu probleme", path: "/admin/orders/issues" },
           { label: "Facturi & documente", path: "/admin/orders/invoices" },
           { label: "Retururi (RMA)", path: "/admin/orders/returns" },
           { label: "Coșuri abandonate", path: "/admin/orders/abandoned" },
@@ -40,8 +49,17 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Categorii", path: "/admin/categories" },
           { label: "Mărci", path: "/admin/products/brands" },
           { label: "Atribute & variante", path: "/admin/products/attributes" },
+          { label: "Seturi de atribute", path: "/admin/products/attribute-sets" },
+          { label: "Specificații tehnice", path: "/admin/products/specs" },
+          { label: "Produse în promoție", path: "/admin/products/promo" },
+          { label: "Produse fără imagine", path: "/admin/products/no-image" },
+          { label: "Produse fără descriere", path: "/admin/products/no-description" },
           { label: "Review-uri", path: "/admin/products/reviews" },
+          { label: "Întrebări produse", path: "/admin/products/questions" },
+          { label: "Produse similare", path: "/admin/products/related" },
+          { label: "Compatibilități", path: "/admin/products/compatibility" },
           { label: "Import/Export", path: "/admin/products/import-export" },
+          { label: "Actualizare în masă", path: "/admin/products/bulk-update" },
           { label: "SEO produse", path: "/admin/products/seo" },
         ],
       },
@@ -49,9 +67,19 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         label: "Stoc & Depozit", icon: Warehouse,
         children: [
           { label: "Stocuri", path: "/admin/stock" },
+          { label: "Depozite", path: "/admin/stock/warehouses" },
+          { label: "Transferuri stoc", path: "/admin/stock/transfers" },
           { label: "Mișcări stoc", path: "/admin/stock/movements" },
-          { label: "Alerte stoc", path: "/admin/stock/alerts" },
+          { label: "Ajustări stoc", path: "/admin/stock/adjustments" },
           { label: "Inventar", path: "/admin/stock/inventory" },
+          { label: "NIR (Recepție)", path: "/admin/stock/nir" },
+          { label: "Seriale / IMEI", path: "/admin/stock/serials" },
+          { label: "Loturi", path: "/admin/stock/batches" },
+          { label: "Expirări", path: "/admin/stock/expiry" },
+          { label: "Picking list", path: "/admin/stock/picking" },
+          { label: "Alerte stoc", path: "/admin/stock/alerts" },
+          { label: "Furnizori", path: "/admin/stock/suppliers" },
+          { label: "Aprovizionare", path: "/admin/stock/reorder" },
         ],
       },
     ],
@@ -62,11 +90,20 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
       {
         label: "Clienți / CRM", icon: Users,
         children: [
-          { label: "Clienți", path: "/admin/customers" },
+          { label: "Toți clienții", path: "/admin/customers" },
+          { label: "Clienți noi", path: "/admin/customers/new" },
+          { label: "Clienți activi", path: "/admin/customers/active" },
+          { label: "Clienți inactivi", path: "/admin/customers/inactive" },
+          { label: "Clienți VIP", path: "/admin/customers/vip" },
+          { label: "Clienți B2B", path: "/admin/customers/b2b" },
           { label: "Grupuri clienți", path: "/admin/customers/groups" },
+          { label: "Segmentare", path: "/admin/customers/segments" },
+          { label: "Etichete (tag-uri)", path: "/admin/customers/tags" },
           { label: "Puncte fidelitate", path: "/admin/customers/loyalty" },
           { label: "Tichete suport", path: "/admin/customers/tickets" },
-          { label: "Segmentare", path: "/admin/customers/segments" },
+          { label: "GDPR & date", path: "/admin/customers/gdpr" },
+          { label: "Import clienți", path: "/admin/customers/import" },
+          { label: "Export clienți", path: "/admin/customers/export" },
         ],
       },
       {
@@ -75,9 +112,16 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Cupoane & reduceri", path: "/admin/coupons" },
           { label: "Promoții", path: "/admin/marketing/promotions" },
           { label: "Campanii email", path: "/admin/newsletter" },
+          { label: "Campanii SMS", path: "/admin/marketing/sms" },
+          { label: "Coș abandonat", path: "/admin/marketing/abandoned-cart" },
           { label: "Automatizări", path: "/admin/marketing/automations" },
           { label: "Bannere & popups", path: "/admin/marketing/banners" },
           { label: "Upsell / Cross-sell", path: "/admin/marketing/upsell" },
+          { label: "Feed-uri marketing", path: "/admin/marketing/feeds" },
+          { label: "Pixel tracking", path: "/admin/marketing/pixels" },
+          { label: "Recomandări", path: "/admin/marketing/recommendations" },
+          { label: "Teste A/B", path: "/admin/marketing/ab-tests" },
+          { label: "Rapoarte marketing", path: "/admin/marketing/reports" },
         ],
       },
     ],
@@ -89,10 +133,16 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         label: "Conținut", icon: FileText,
         children: [
           { label: "Pagini (CMS)", path: "/admin/content/pages" },
+          { label: "Page Builder", path: "/admin/content/page-builder" },
+          { label: "Homepage", path: "/admin/content/homepage" },
+          { label: "Landing pages", path: "/admin/content/landing" },
           { label: "Blog", path: "/admin/content/blog" },
           { label: "Media library", path: "/admin/content/media" },
           { label: "Meniu & navigație", path: "/admin/content/menus" },
+          { label: "Traduceri", path: "/admin/content/translations" },
           { label: "Șabloane email", path: "/admin/content/email-templates" },
+          { label: "SEO & redirecționări", path: "/admin/content/seo" },
+          { label: "Termeni & politici", path: "/admin/content/legal" },
         ],
       },
       {
@@ -101,6 +151,11 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "eMAG Marketplace", path: "/admin/channels/emag" },
           { label: "Google Shopping", path: "/admin/channels/google" },
           { label: "Facebook Shop", path: "/admin/channels/facebook" },
+          { label: "Allegro", path: "/admin/channels/allegro" },
+          { label: "OLX", path: "/admin/channels/olx" },
+          { label: "Price.ro", path: "/admin/channels/pricero" },
+          { label: "Compari.ro", path: "/admin/channels/compariro" },
+          { label: "API extern", path: "/admin/channels/api" },
           { label: "Conectori externi", path: "/admin/channels/connectors" },
         ],
       },
@@ -113,7 +168,11 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         label: "Plăți", icon: CreditCard,
         children: [
           { label: "Metode de plată", path: "/admin/payments/methods" },
+          { label: "Gateway-uri", path: "/admin/payments/gateways" },
+          { label: "Tranzacții", path: "/admin/payments/transactions" },
+          { label: "Refund-uri", path: "/admin/payments/refunds" },
           { label: "Rate & Installments", path: "/admin/payments/installments" },
+          { label: "Decontări", path: "/admin/payments/settlements" },
           { label: "Reconciliere", path: "/admin/payments/reconciliation" },
         ],
       },
@@ -123,9 +182,13 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Curieri", path: "/admin/shipping/carriers" },
           { label: "Tarife transport", path: "/admin/shipping/rates" },
           { label: "AWB automat", path: "/admin/shipping/awb" },
+          { label: "Etichete", path: "/admin/shipping/labels" },
           { label: "Tracking", path: "/admin/shipping/tracking" },
-          { label: "Webhooks", path: "/admin/shipping/webhooks" },
+          { label: "Lockere / Easybox", path: "/admin/shipping/lockers" },
+          { label: "Livrări internaționale", path: "/admin/shipping/international" },
           { label: "Puncte ridicare", path: "/admin/shipping/pickup" },
+          { label: "Programări livrare", path: "/admin/shipping/scheduling" },
+          { label: "Webhooks", path: "/admin/shipping/webhooks" },
         ],
       },
     ],
@@ -139,8 +202,13 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Vânzări", path: "/admin/reports" },
           { label: "Profit & costuri", path: "/admin/reports/profit" },
           { label: "Produse top", path: "/admin/reports/top-products" },
+          { label: "Produse lente", path: "/admin/reports/slow-movers" },
+          { label: "Clienți", path: "/admin/reports/customers" },
+          { label: "Stoc & rotație", path: "/admin/reports/inventory" },
           { label: "Conversie / funnel", path: "/admin/reports/conversion" },
           { label: "Marketing ROI", path: "/admin/reports/marketing" },
+          { label: "Financiar", path: "/admin/reports/financial" },
+          { label: "Rapoarte custom", path: "/admin/reports/custom" },
           { label: "Export rapoarte", path: "/admin/reports/export" },
         ],
       },
@@ -153,8 +221,12 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         label: "Setări", icon: Settings,
         children: [
           { label: "General", path: "/admin/settings/general" },
+          { label: "Taxe (TVA)", path: "/admin/settings/taxes" },
+          { label: "Magazin", path: "/admin/settings/store" },
+          { label: "Email / SMTP", path: "/admin/settings/email" },
           { label: "SEO global", path: "/admin/settings/seo" },
           { label: "Notificări", path: "/admin/settings/notifications" },
+          { label: "Securitate", path: "/admin/settings/security" },
           { label: "GDPR & politici", path: "/admin/settings/gdpr" },
           { label: "Integrări", path: "/admin/settings/integrations" },
         ],
@@ -164,6 +236,9 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         children: [
           { label: "Utilizatori", path: "/admin/users" },
           { label: "Roluri & permisiuni", path: "/admin/users/roles" },
+          { label: "Sesiuni active", path: "/admin/users/sessions" },
+          { label: "2FA", path: "/admin/users/2fa" },
+          { label: "IP whitelist", path: "/admin/users/ip-whitelist" },
           { label: "Audit log", path: "/admin/users/audit" },
         ],
       },
@@ -235,7 +310,6 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
           "admin-sidebar min-h-screen bg-[hsl(222,47%,16%)] border-r border-[hsl(222,30%,24%)] flex flex-col shrink-0 transition-all duration-200",
           "fixed lg:static z-50 lg:z-auto lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
-          // On mobile always full width, on desktop respect collapsed
           "w-[210px]",
           collapsed && "lg:w-[56px]"
         )}
@@ -252,7 +326,6 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                 <p className="text-[9px] text-[hsl(210,15%,60%)] font-medium leading-none">ADMIN</p>
               </div>
             )}
-            {/* Mobile always shows brand text */}
             <div className="lg:hidden">
               <h2 className="font-bold text-xs leading-tight text-white">MegaShop</h2>
               <p className="text-[9px] text-[hsl(210,15%,60%)] font-medium leading-none">ADMIN</p>
@@ -273,7 +346,6 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                     {section.title}
                   </p>
                 )}
-                {/* Collapsed: separator line instead of title */}
                 {section.title && collapsed && (
                   <div className="hidden lg:block mx-2 my-2 border-t border-[hsl(210,100%,65%)]/15" />
                 )}
@@ -282,7 +354,6 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                   const hasChildren = !!item.children;
                   const isParentActive = hasChildren && isParentActiveForItem(item);
 
-                  // === COLLAPSED MODE (desktop only) ===
                   if (collapsed && !hasChildren) {
                     return (
                       <Tooltip key={item.label}>
@@ -330,7 +401,6 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                     );
                   }
 
-                  // === EXPANDED MODE (desktop + mobile) ===
                   if (!hasChildren) {
                     return (
                       <Link
@@ -400,7 +470,6 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
 
         {/* Footer */}
         <div className="p-1.5 border-t border-[hsl(222,30%,24%)] shrink-0 space-y-0.5">
-          {/* Collapse toggle — desktop only */}
           <button
             onClick={onToggleCollapse}
             className="hidden lg:flex items-center justify-center gap-1.5 w-full px-2 py-1 rounded text-[11px] text-[hsl(210,15%,60%)] hover:text-white hover:bg-white/5 transition-colors"
