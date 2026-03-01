@@ -150,11 +150,11 @@ export default function AdminRoutes() {
       <Route path="payments/reconciliation" element={<AdminPlaceholder title="Reconciliere" description="Verificare plăți, rambursări și status tranzacții." />} />
 
       {/* ═══════════ LIVRARE ═══════════ */}
-      <Route path="shipping/carriers" element={<AdminPlaceholder title="Curieri" description="Configurare curieri: Fan Courier, Sameday, DPD, Cargus, GLS." />} />
-      <Route path="shipping/rates" element={<AdminPlaceholder title="Tarife Transport" description="Reguli de tarifare: greutate, volum, valoare, destinație, transport gratuit." />} />
+      <Route path="shipping/carriers" element={<AdminCarriers />} />
+      <Route path="shipping/rates" element={<AdminShippingRates />} />
       <Route path="shipping/awb" element={<AdminPlaceholder title="AWB Automat" description="Generare automată AWB pentru comenzi confirmate." />} />
       <Route path="shipping/labels" element={<AdminPlaceholder title="Etichete" description="Generare și printare etichete de expediere." />} />
-      <Route path="shipping/tracking" element={<AdminPlaceholder title="Tracking" description="Urmărire comenzi în timp real cu timeline de evenimente." />} />
+      <Route path="shipping/tracking" element={<AdminTracking />} />
       <Route path="shipping/lockers" element={<AdminPlaceholder title="Lockere / Easybox" description="Hartă lockere, selecție la checkout, Easybox Sameday, DPD Box." />} />
       <Route path="shipping/international" element={<AdminPlaceholder title="Livrări Internaționale" description="Configurare curieri și tarife pentru livrări în afara României." />} />
       <Route path="shipping/pickup" element={<AdminPlaceholder title="Puncte Ridicare" description="Easybox, PUDO și alte puncte de ridicare." />} />
