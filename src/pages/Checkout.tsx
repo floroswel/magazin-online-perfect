@@ -331,6 +331,7 @@ export default function Checkout() {
             </div>
           </div>
         </form>
+        <MokkaModal isOpen={mokkaModalOpen} onClose={() => setMokkaModalOpen(false)} iframeUrl={mokkaIframeUrl} />
       </div>
     </Layout>
   );
