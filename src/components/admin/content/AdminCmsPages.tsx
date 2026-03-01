@@ -379,6 +379,7 @@ export default function AdminCmsPages({ filterLegal }: { filterLegal?: boolean }
               <TableRow>
                 <TableHead className="text-xs">Titlu</TableHead>
                 <TableHead className="text-xs">Slug</TableHead>
+                <TableHead className="text-xs">Plasare</TableHead>
                 <TableHead className="text-xs">Status</TableHead>
                 <TableHead className="text-xs">Actualizat</TableHead>
                 <TableHead className="text-xs text-right">Acțiuni</TableHead>
@@ -389,6 +390,11 @@ export default function AdminCmsPages({ filterLegal }: { filterLegal?: boolean }
                 <TableRow key={page.id} className="cursor-pointer hover:bg-muted/50" onClick={() => openEdit(page)}>
                   <TableCell className="text-xs font-medium">{page.title}</TableCell>
                   <TableCell className="text-xs text-muted-foreground">/{page.slug}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className="text-[10px]">
+                      {PLACEMENT_OPTIONS.find(o => o.value === page.placement)?.label || page.placement}
+                    </Badge>
+                  </TableCell>
                   <TableCell>
                     <Badge variant={page.published ? "default" : "secondary"} className="text-[10px]">
                       {page.published ? "Publicată" : "Ciornă"}
