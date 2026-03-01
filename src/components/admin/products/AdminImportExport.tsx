@@ -127,6 +127,7 @@ export default function AdminImportExport() {
   const [loadingSchedules, setLoadingSchedules] = useState(true);
   const [newSchedule, setNewSchedule] = useState({ name: "", feed_url: "", interval_minutes: "60" });
   const [addingSchedule, setAddingSchedule] = useState(false);
+  const [categories, setCategories] = useState<{ id: string; name: string; slug: string }[]>([]);
 
   // CSV mapping state
   const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
