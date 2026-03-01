@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
+import MokkaOrangePrice from "@/components/mokka/MokkaOrangePrice";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
@@ -122,9 +123,6 @@ export default function ProductDetail() {
   const specs = product.specs && typeof product.specs === "object" ? Object.entries(product.specs as Record<string, string>) : [];
   const discount = product.old_price ? Math.round(((product.old_price - product.price) / product.old_price) * 100) : 0;
 
-  // Installment preview
-  const monthlyRate3 = (product.price / 3).toFixed(2);
-
   return (
     <Layout>
       <div className="container py-6">
@@ -161,12 +159,8 @@ export default function ProductDetail() {
               )}
             </div>
 
-            {/* Installment preview */}
-            <div className="bg-emag-blue/5 border border-emag-blue/20 rounded-lg p-3">
-              <p className="text-sm font-medium text-emag-blue">
-                💳 sau de la <span className="font-bold">{monthlyRate3} lei/lună</span> în 3 rate fără dobândă prin Mokka
-              </p>
-            </div>
+            {/* Mokka installment preview */}
+            <MokkaOrangePrice price={product.price} months={3} />
 
             <p className="text-muted-foreground">{product.description}</p>
 

@@ -63,6 +63,10 @@ export default {
           surface: "hsl(var(--cyber-surface))",
           glow: "hsl(var(--cyber-glow))",
         },
+        mokka: {
+          DEFAULT: "hsl(var(--mokka))",
+          foreground: "hsl(var(--mokka-foreground))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

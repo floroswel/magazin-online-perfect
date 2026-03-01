@@ -4,6 +4,7 @@ import { ArrowRight, Zap, Truck, Shield, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
+import MokkaBanner from "@/components/mokka/MokkaBanner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -86,6 +87,9 @@ export default function Index() {
           </div>
         )}
       </section>
+
+      {/* Mokka banner */}
+      <MokkaBanner />
 
       {/* Deals */}
       {deals.length > 0 && (
