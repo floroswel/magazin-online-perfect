@@ -265,7 +265,7 @@ serve(async (req) => {
       const { order_id, status, decision } = payload;
 
       console.log("Mokka Callback:", { order_id, status, decision });
-
+      await logRequest("callback", order_id, payload, { decision, status }, decision === "approved" ? "success" : "pending");
       if (decision === "approved" && status === "hold") {
         await supabase
           .from("orders")
