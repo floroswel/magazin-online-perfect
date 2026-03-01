@@ -59,6 +59,7 @@ function cleanProduct(item: Record<string, any>): ProductRow | null {
     sku: item.sku || item.cod || null,
     meta_title: item.meta_title || null,
     meta_description: item.meta_description || null,
+    canonical_url: item.canonical_url || null,
     tags: Array.isArray(item.tags) ? item.tags : null,
     warranty_months: parseInt(item.warranty_months || item.garantie) || null,
     status: item.status || null,
