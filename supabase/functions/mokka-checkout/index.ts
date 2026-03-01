@@ -96,8 +96,11 @@ serve(async (req) => {
       const data = await response.json();
 
       if (!response.ok) {
+        await logRequest("checkout", order_id, requestData, data, "error", `HTTP ${response.status}`);
         throw new Error(`Mokka API error [${response.status}]: ${JSON.stringify(data)}`);
       }
+
+      await logRequest("checkout", order_id, requestData, data, "success");
 
       // Store transaction
       await supabase
