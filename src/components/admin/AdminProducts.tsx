@@ -73,6 +73,7 @@ export default function AdminProducts() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkDeleting, setBulkDeleting] = useState(false);
   const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState<any>(null);
   const [generatingDesc, setGeneratingDesc] = useState(false);
   const [removingBg, setRemovingBg] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
