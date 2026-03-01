@@ -261,32 +261,25 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Ensure unique slugs
-    const existingSlugs = new Set<string>();
-    const { data: dbSlugs } = await supabase.from("products").select("slug");
-    dbSlugs?.forEach((p) => existingSlugs.add(p.slug));
+    // Prepare products with slugs
+    const toUpsert = products.map((p) => ({
+      ...p,
+      slug: p.slug || slugify(p.name),
+    }));
 
-    const toInsert = products.map((p) => {
-      let slug = p.slug || slugify(p.name);
-      let counter = 1;
-      while (existingSlugs.has(slug)) {
-        slug = `${p.slug || slugify(p.name)}-${counter}`;
-        counter++;
-      }
-      existingSlugs.add(slug);
-      return { ...p, slug };
-    });
-
-    // Batch insert
+    // Batch upsert (update existing products by slug, insert new ones)
     const batchSize = 50;
     let inserted = 0;
     let errors = 0;
 
-    for (let i = 0; i < toInsert.length; i += batchSize) {
-      const batch = toInsert.slice(i, i + batchSize);
-      const { data, error } = await supabase.from("products").insert(batch).select("id");
+    for (let i = 0; i < toUpsert.length; i += batchSize) {
+      const batch = toUpsert.slice(i, i + batchSize);
+      const { data, error } = await supabase
+        .from("products")
+        .upsert(batch, { onConflict: "slug" })
+        .select("id");
       if (error) {
-        console.error("Batch insert error:", error);
+        console.error("Batch upsert error:", error);
         errors += batch.length;
       } else {
         inserted += data.length;
