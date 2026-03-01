@@ -57,11 +57,12 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        cyber: {
-          cyan: "hsl(var(--cyber-cyan))",
-          gold: "hsl(var(--cyber-gold))",
-          surface: "hsl(var(--cyber-surface))",
-          glow: "hsl(var(--cyber-glow))",
+        emag: {
+          blue: "hsl(var(--emag-blue))",
+          "blue-light": "hsl(var(--emag-blue-light))",
+          orange: "hsl(var(--emag-orange))",
+          yellow: "hsl(var(--emag-yellow))",
+          dark: "hsl(var(--emag-dark))",
         },
         mokka: {
           DEFAULT: "hsl(var(--mokka))",
@@ -82,15 +83,15 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "cyber-pulse": {
-          "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.6" },
+        "fade-in": {
+          from: { opacity: "0", transform: "translateY(8px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "cyber-pulse": "cyber-pulse 2s ease-in-out infinite",
+        "fade-in": "fade-in 0.3s ease-out",
       },
     },
   },

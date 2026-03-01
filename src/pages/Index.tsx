@@ -29,17 +29,17 @@ export default function Index() {
   return (
     <Layout>
       {/* Hero Banner */}
-      <section className="emag-gradient">
+      <section className="emag-gradient text-white">
         <div className="container py-10 md:py-16">
           <div className="max-w-2xl">
-            <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
+            <h1 className="text-3xl md:text-5xl font-bold mb-4">
               Cele mai bune oferte sunt aici! 🔥
             </h1>
-            <p className="text-lg text-foreground/80 mb-6">
+            <p className="text-lg text-white/80 mb-6">
               Descoperă mii de produse la prețuri imbatabile. Livrare rapidă în toată România.
             </p>
             <Link to="/catalog">
-              <Button size="lg" className="font-semibold text-base">
+              <Button size="lg" className="font-semibold text-base bg-primary hover:bg-primary/90 text-primary-foreground">
                 Vezi toate produsele
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
