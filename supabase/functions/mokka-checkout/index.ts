@@ -233,7 +233,49 @@ serve(async (req) => {
       }
     }
 
-    if (action === "callback" || action === "check_status") {
+    if (action === "callback") {
+      // Mokka sends callback with order_id, status, decision
+      const { order_id, status, decision } = payload;
+
+      console.log("Mokka Callback:", { order_id, status, decision });
+
+      if (decision === "approved" && status === "hold") {
+        await supabase
+          .from("orders")
+          .update({ payment_status: "authorized" })
+          .eq("id", order_id);
+
+        await supabase
+          .from("payment_transactions")
+          .update({ status: "authorized", provider_response: payload })
+          .eq("order_id", order_id)
+          .eq("installments_provider", "mokka");
+      } else if (decision === "approved") {
+        await supabase
+          .from("orders")
+          .update({ payment_status: "paid" })
+          .eq("id", order_id);
+
+        await supabase
+          .from("payment_transactions")
+          .update({ status: "completed", provider_response: payload })
+          .eq("order_id", order_id)
+          .eq("installments_provider", "mokka");
+      } else if (decision === "rejected") {
+        await supabase
+          .from("payment_transactions")
+          .update({ status: "failed", provider_response: payload })
+          .eq("order_id", order_id)
+          .eq("installments_provider", "mokka");
+      }
+
+      // Always respond 200 OK to Mokka
+      return new Response(JSON.stringify({ received: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "check_status") {
       const { application_id } = payload;
 
       const response = await fetch(`${MOKKA_API_URL}/api/v1/applications/${application_id}`, {
@@ -246,31 +288,7 @@ serve(async (req) => {
         throw new Error(`Mokka status check failed [${response.status}]: ${JSON.stringify(data)}`);
       }
 
-      if (data.status) {
-        const mappedStatus = data.status === "approved" ? "completed" : data.status === "rejected" ? "failed" : "pending";
-
-        await supabase
-          .from("payment_transactions")
-          .update({ status: mappedStatus, provider_response: data })
-          .eq("external_id", application_id);
-
-        if (mappedStatus === "completed") {
-          const { data: txn } = await supabase
-            .from("payment_transactions")
-            .select("order_id")
-            .eq("external_id", application_id)
-            .single();
-
-          if (txn?.order_id) {
-            await supabase
-              .from("orders")
-              .update({ payment_status: "paid" })
-              .eq("id", txn.order_id);
-          }
-        }
-      }
-
-      return new Response(JSON.stringify({ success: true, status: data.status }), {
+      return new Response(JSON.stringify({ success: true, status: data.status, data }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
