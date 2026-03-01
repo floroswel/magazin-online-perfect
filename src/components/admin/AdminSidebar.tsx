@@ -141,6 +141,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Blog", path: "/admin/content/blog" },
           { label: "Media library", path: "/admin/content/media" },
           { label: "Meniu & navigație", path: "/admin/content/menus" },
+          { label: "Scripturi custom", path: "/admin/content/scripts" },
           { label: "Traduceri", path: "/admin/content/translations" },
           { label: "Șabloane email", path: "/admin/content/email-templates" },
           { label: "SEO & redirecționări", path: "/admin/content/seo" },
