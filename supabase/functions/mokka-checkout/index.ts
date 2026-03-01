@@ -189,8 +189,10 @@ serve(async (req) => {
       const data = await response.json();
 
       if (!response.ok) {
+        await logRequest("cancel", order_id, requestData, data, "error", `HTTP ${response.status}`);
         throw new Error(`Mokka cancel error [${response.status}]: ${JSON.stringify(data)}`);
       }
+      await logRequest("cancel", order_id, requestData, data, data.status === 0 ? "success" : "error");
 
       if (data.status === 0) {
         await supabase
