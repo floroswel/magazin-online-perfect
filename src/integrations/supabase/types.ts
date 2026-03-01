@@ -604,6 +604,7 @@ export type Database = {
           id: string
           meta_description: string | null
           meta_title: string | null
+          placement: string
           published: boolean
           slug: string
           title: string
@@ -615,6 +616,7 @@ export type Database = {
           id?: string
           meta_description?: string | null
           meta_title?: string | null
+          placement?: string
           published?: boolean
           slug: string
           title: string
@@ -626,6 +628,7 @@ export type Database = {
           id?: string
           meta_description?: string | null
           meta_title?: string | null
+          placement?: string
           published?: boolean
           slug?: string
           title?: string
