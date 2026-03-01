@@ -272,6 +272,7 @@ Deno.serve(async (req) => {
       if (p.sku != null) clean.sku = p.sku;
       if (p.meta_title != null) clean.meta_title = p.meta_title;
       if (p.meta_description != null) clean.meta_description = p.meta_description;
+      if (p.canonical_url != null) clean.canonical_url = p.canonical_url;
       if (p.tags != null) clean.tags = p.tags;
       if (p.warranty_months != null) clean.warranty_months = p.warranty_months;
       if (p.status != null) clean.status = p.status;
