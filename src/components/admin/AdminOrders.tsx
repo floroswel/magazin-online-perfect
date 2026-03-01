@@ -415,7 +415,7 @@ export default function AdminOrders() {
                         <div className="text-sm text-muted-foreground">
                           <p className="capitalize">{detailOrder.payment_method || "Ramburs"}</p>
                           {installments && (
-                            <p className="text-xs mt-1">{installments.count} rate × {Number(installments.monthlyAmount).toFixed(2)} RON via {installments.provider}</p>
+                            <p className="text-xs mt-1">{installments.months || installments.count} rate × {Number(installments.monthly_amount || installments.monthlyAmount || 0).toFixed(2)} RON via {installments.provider}</p>
                           )}
                         </div>
                       </CardContent>
