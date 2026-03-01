@@ -22,6 +22,7 @@ interface CmsPage {
   meta_title: string | null;
   meta_description: string | null;
   published: boolean;
+  placement: string;
   created_at: string;
   updated_at: string;
 }
