@@ -120,6 +120,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Upsell / Cross-sell", path: "/admin/marketing/upsell" },
           { label: "Feed-uri marketing", path: "/admin/marketing/feeds" },
           { label: "Pixel tracking", path: "/admin/marketing/pixels" },
+          { label: "Program afiliere", path: "/admin/marketing/affiliates" },
           { label: "Recomandări", path: "/admin/marketing/recommendations" },
           { label: "Teste A/B", path: "/admin/marketing/ab-tests" },
           { label: "Rapoarte marketing", path: "/admin/marketing/reports" },
