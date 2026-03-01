@@ -10,7 +10,7 @@ import { toast } from "sonner";
 interface AbandonedCart {
   id: string;
   user_email: string | null;
-  items: any[];
+  items: any;
   total: number;
   recovery_email_sent: boolean;
   recovered: boolean;
