@@ -18,6 +18,7 @@ import Compare from "./pages/Compare";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import CmsPage from "./pages/CmsPage";
+import CustomScriptInjector from "./components/CustomScriptInjector";
 
 const queryClient = new QueryClient();
 
