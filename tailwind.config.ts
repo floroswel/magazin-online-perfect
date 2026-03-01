@@ -57,11 +57,12 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        cyber: {
-          cyan: "hsl(var(--cyber-cyan))",
-          gold: "hsl(var(--cyber-gold))",
-          surface: "hsl(var(--cyber-surface))",
-          glow: "hsl(var(--cyber-glow))",
+        emag: {
+          blue: "hsl(var(--emag-blue))",
+          "blue-light": "hsl(var(--emag-blue-light))",
+          orange: "hsl(var(--emag-orange))",
+          yellow: "hsl(var(--emag-yellow))",
+          dark: "hsl(var(--emag-dark))",
         },
         mokka: {
           DEFAULT: "hsl(var(--mokka))",
