@@ -264,8 +264,6 @@ export default function AdminImportExport() {
       delete product._category_name; // cleanup preview field
       return product;
     }).filter(Boolean);
-      return product;
-    }).filter(Boolean);
 
     if (allProducts.length === 0) { toast.error("Niciun produs valid de importat"); return; }
     setImporting(true);
