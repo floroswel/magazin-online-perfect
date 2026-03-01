@@ -180,11 +180,11 @@ export default function AdminProducts() {
         images: product.images,
         featured: product.featured,
         category_id: product.category_id,
+        meta_title: product.meta_title || null,
+        meta_description: product.meta_description || null,
         specs: {
           ...product.specs,
           ...(variants.length > 0 ? { _variants: variants } : {}),
-          ...(product.meta_title ? { _meta_title: product.meta_title } : {}),
-          ...(product.meta_description ? { _meta_description: product.meta_description } : {}),
         },
       };
       if (product.id) {
