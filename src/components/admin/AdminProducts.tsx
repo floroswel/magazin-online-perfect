@@ -70,6 +70,9 @@ export default function AdminProducts() {
   const [specKey, setSpecKey] = useState("");
   const [specVal, setSpecVal] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
   const [previewOpen, setPreviewOpen] = useState<any>(null);
   const [generatingDesc, setGeneratingDesc] = useState(false);
   const [removingBg, setRemovingBg] = useState<string | null>(null);
@@ -638,6 +641,12 @@ export default function AdminProducts() {
           <p className="text-sm text-muted-foreground">Gestionare catalog de produse</p>
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
+          {selectedIds.size > 0 && (
+            <Button variant="destructive" onClick={() => setBulkDeleteConfirm(true)} disabled={bulkDeleting} className="gap-2">
+              <Trash2 className="w-4 h-4" />
+              {bulkDeleting ? "Se șterg..." : `Șterge ${selectedIds.size} produse`}
+            </Button>
+          )}
           <div className="relative flex-1 sm:flex-initial">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Caută produse..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 w-full sm:w-64" />
@@ -655,8 +664,20 @@ export default function AdminProducts() {
             <div className="text-center py-12 text-muted-foreground">Se încarcă...</div>
           ) : (
             <Table>
-              <TableHeader>
+               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-10">
+                    <Checkbox
+                      checked={filtered.length > 0 && filtered.every((p: any) => selectedIds.has(p.id))}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedIds(new Set(filtered.map((p: any) => p.id)));
+                        } else {
+                          setSelectedIds(new Set());
+                        }
+                      }}
+                    />
+                  </TableHead>
                   <TableHead>Produs</TableHead>
                   <TableHead>Categorie</TableHead>
                   <TableHead>Preț</TableHead>
@@ -667,7 +688,19 @@ export default function AdminProducts() {
               </TableHeader>
               <TableBody>
                 {filtered.map((p: any) => (
-                  <TableRow key={p.id} className="group">
+                  <TableRow key={p.id} className={cn("group", selectedIds.has(p.id) && "bg-primary/5")}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.has(p.id)}
+                        onCheckedChange={(checked) => {
+                          setSelectedIds((prev) => {
+                            const next = new Set(prev);
+                            if (checked) next.add(p.id); else next.delete(p.id);
+                            return next;
+                          });
+                        }}
+                      />
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         {p.image_url ? (
@@ -725,7 +758,7 @@ export default function AdminProducts() {
                 ))}
                 {filtered.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">Niciun produs găsit.</TableCell>
+                    <TableCell colSpan={7} className="text-center py-12 text-muted-foreground">Niciun produs găsit.</TableCell>
                   </TableRow>
                 )}
               </TableBody>
@@ -802,7 +835,41 @@ export default function AdminProducts() {
         </DialogContent>
       </Dialog>
 
-      {/* Quick Preview */}
+      {/* Bulk Delete Confirmation */}
+      <Dialog open={bulkDeleteConfirm} onOpenChange={(open) => !open && setBulkDeleteConfirm(false)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Ștergere în masă</DialogTitle>
+            <DialogDescription>Ești sigur că vrei să ștergi {selectedIds.size} produse? Acțiunea este ireversibilă.</DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setBulkDeleteConfirm(false)}>Renunță</Button>
+            <Button variant="destructive" disabled={bulkDeleting} onClick={async () => {
+              setBulkDeleting(true);
+              try {
+                const ids = Array.from(selectedIds);
+                const batchSize = 50;
+                for (let i = 0; i < ids.length; i += batchSize) {
+                  const batch = ids.slice(i, i + batchSize);
+                  const { error } = await supabase.from("products").delete().in("id", batch);
+                  if (error) throw error;
+                }
+                queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+                toast.success(`${ids.length} produse șterse!`);
+                setSelectedIds(new Set());
+                setBulkDeleteConfirm(false);
+              } catch (err: any) {
+                toast.error(err.message);
+              } finally {
+                setBulkDeleting(false);
+              }
+            }}>
+              {bulkDeleting ? "Se șterg..." : `Șterge ${selectedIds.size} produse`}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={!!previewOpen} onOpenChange={(open) => !open && setPreviewOpen(null)}>
         <DialogContent className="max-w-lg">
           {previewOpen && (
