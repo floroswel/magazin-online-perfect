@@ -13,11 +13,19 @@ interface ProductRow {
   old_price?: number | null;
   stock?: number;
   description?: string | null;
+  short_description?: string | null;
   image_url?: string | null;
+  images?: string[] | null;
   brand?: string | null;
   category_id?: string | null;
   specs?: Record<string, unknown> | null;
   featured?: boolean;
+  sku?: string | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  tags?: string[] | null;
+  warranty_months?: number | null;
+  status?: string | null;
 }
 
 function slugify(text: string): string {
@@ -29,6 +37,34 @@ function slugify(text: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
+function cleanProduct(item: Record<string, any>): ProductRow | null {
+  const name = item.name || item.title || item.nume || item.titlu;
+  const price = parseFloat(item.price || item.pret || item["preț"] || "0");
+  if (!name || isNaN(price) || price <= 0) return null;
+
+  return {
+    name,
+    slug: item.slug || slugify(name),
+    price,
+    old_price: parseFloat(item.old_price || item.pret_vechi) || null,
+    stock: parseInt(item.stock || item.stoc || item.cantitate || "0") || 0,
+    description: item.description || item.descriere || null,
+    short_description: item.short_description || null,
+    image_url: item.image_url || item.image || item.imagine || null,
+    images: Array.isArray(item.images) ? item.images : null,
+    brand: item.brand || item.marca || item.producator || null,
+    category_id: item.category_id || null,
+    specs: item.specs || item.specificatii || null,
+    featured: item.featured === true || item.featured === "true" || item.featured === "1",
+    sku: item.sku || item.cod || null,
+    meta_title: item.meta_title || null,
+    meta_description: item.meta_description || null,
+    tags: Array.isArray(item.tags) ? item.tags : null,
+    warranty_months: parseInt(item.warranty_months || item.garantie) || null,
+    status: item.status || null,
+  };
+}
+
 function parseCSV(text: string): ProductRow[] {
   const lines = text.split("\n").filter((l) => l.trim());
   if (lines.length < 2) return [];
@@ -37,7 +73,6 @@ function parseCSV(text: string): ProductRow[] {
   const products: ProductRow[] = [];
 
   for (let i = 1; i < lines.length; i++) {
-    // Simple CSV parsing (handles basic quoted fields)
     const values: string[] = [];
     let current = "";
     let inQuotes = false;
@@ -58,23 +93,8 @@ function parseCSV(text: string): ProductRow[] {
       row[h] = values[idx] || "";
     });
 
-    const name = row["name"] || row["nume"] || row["title"] || row["titlu"];
-    const price = parseFloat(row["price"] || row["pret"] || row["preț"] || "0");
-
-    if (!name || isNaN(price) || price <= 0) continue;
-
-    products.push({
-      name,
-      slug: row["slug"] || slugify(name),
-      price,
-      old_price: row["old_price"] || row["pret_vechi"] ? parseFloat(row["old_price"] || row["pret_vechi"]) || null : null,
-      stock: parseInt(row["stock"] || row["stoc"] || "0") || 0,
-      description: row["description"] || row["descriere"] || null,
-      image_url: row["image_url"] || row["imagine"] || null,
-      brand: row["brand"] || row["marca"] || null,
-      category_id: row["category_id"] || null,
-      featured: row["featured"] === "true" || row["featured"] === "1",
-    });
+    const product = cleanProduct(row);
+    if (product) products.push(product);
   }
 
   return products;
@@ -86,7 +106,6 @@ function parseJSONFeed(data: unknown): ProductRow[] {
   if (Array.isArray(data)) {
     items = data;
   } else if (typeof data === "object" && data !== null) {
-    // Try common feed structures
     const obj = data as Record<string, unknown>;
     if (Array.isArray(obj.products)) items = obj.products;
     else if (Array.isArray(obj.items)) items = obj.items;
@@ -95,30 +114,11 @@ function parseJSONFeed(data: unknown): ProductRow[] {
   }
 
   return items
-    .map((item: any) => {
-      const name = item.name || item.title || item.nume || item.titlu;
-      const price = parseFloat(item.price || item.pret || "0");
-      if (!name || isNaN(price) || price <= 0) return null;
-
-      return {
-        name,
-        slug: item.slug || slugify(name),
-        price,
-        old_price: item.old_price || item.pret_vechi || null,
-        stock: parseInt(item.stock || item.stoc || "0") || 0,
-        description: item.description || item.descriere || null,
-        image_url: item.image_url || item.image || item.imagine || null,
-        brand: item.brand || item.marca || null,
-        category_id: item.category_id || null,
-        specs: item.specs || item.specificatii || null,
-        featured: item.featured === true || item.featured === "1",
-      } as ProductRow;
-    })
+    .map((item: any) => cleanProduct(item))
     .filter(Boolean) as ProductRow[];
 }
 
 function parseXMLFeed(text: string): ProductRow[] {
-  // Simple XML parser for product feeds
   const products: ProductRow[] = [];
   const productRegex = /<(?:product|produs|item)[^>]*>([\s\S]*?)<\/(?:product|produs|item)>/gi;
   let match;
@@ -133,22 +133,22 @@ function parseXMLFeed(text: string): ProductRow[] {
       return "";
     };
 
-    const name = getVal(["name", "title", "nume", "titlu"]);
-    const price = parseFloat(getVal(["price", "pret"]));
-    if (!name || isNaN(price) || price <= 0) continue;
+    const row: Record<string, string> = {
+      name: getVal(["name", "title", "nume", "titlu"]),
+      price: getVal(["price", "pret"]),
+      old_price: getVal(["old_price", "pret_vechi"]),
+      stock: getVal(["stock", "stoc"]),
+      description: getVal(["description", "descriere"]),
+      image_url: getVal(["image_url", "image", "imagine", "image_link"]),
+      brand: getVal(["brand", "marca"]),
+      slug: getVal(["slug"]),
+      category_id: getVal(["category_id"]),
+      sku: getVal(["sku", "cod"]),
+      featured: getVal(["featured"]),
+    };
 
-    products.push({
-      name,
-      slug: getVal(["slug"]) || slugify(name),
-      price,
-      old_price: parseFloat(getVal(["old_price", "pret_vechi"])) || null,
-      stock: parseInt(getVal(["stock", "stoc"])) || 0,
-      description: getVal(["description", "descriere"]) || null,
-      image_url: getVal(["image_url", "image", "imagine", "image_link"]) || null,
-      brand: getVal(["brand", "marca"]) || null,
-      category_id: getVal(["category_id"]) || null,
-      featured: getVal(["featured"]) === "true",
-    });
+    const product = cleanProduct(row);
+    if (product) products.push(product);
   }
 
   return products;
@@ -164,12 +164,10 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceKey);
 
-    // Verify admin via auth header (skip for service role key - used by cron)
+    // Verify admin via auth header
     const authHeader = req.headers.get("authorization");
     if (authHeader) {
       const token = authHeader.replace("Bearer ", "");
-      
-      // Allow service role key (used by cron-import)
       if (token !== serviceKey) {
         const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
         const userClient = createClient(supabaseUrl, anonKey);
@@ -182,7 +180,6 @@ Deno.serve(async (req) => {
           });
         }
 
-        // Check admin role
         const { data: roleData } = await supabase
           .from("user_roles")
           .select("role")
@@ -205,7 +202,6 @@ Deno.serve(async (req) => {
     const contentType = req.headers.get("content-type") || "";
 
     if (contentType.includes("multipart/form-data")) {
-      // CSV file upload
       const formData = await req.formData();
       const file = formData.get("file");
       if (!file || !(file instanceof File)) {
@@ -218,11 +214,9 @@ Deno.serve(async (req) => {
       products = parseCSV(text);
       source = "csv";
     } else {
-      // JSON body: could be direct products or feed_url
       const body = await req.json();
 
       if (body.feed_url) {
-        // Fetch from external URL
         const feedRes = await fetch(body.feed_url);
         if (!feedRes.ok) {
           return new Response(JSON.stringify({ error: `Eroare la feed URL: ${feedRes.status}` }), {
@@ -245,7 +239,6 @@ Deno.serve(async (req) => {
           source = "csv_feed";
         }
       } else if (body.products) {
-        // Direct API: array of products
         products = parseJSONFeed(body.products);
         source = "api";
       } else if (Array.isArray(body)) {
@@ -261,13 +254,29 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Prepare products with slugs
-    const toUpsert = products.map((p) => ({
-      ...p,
-      slug: p.slug || slugify(p.name),
-    }));
+    // Clean nulls from each product before upsert
+    const toUpsert = products.map((p) => {
+      const clean: Record<string, any> = { name: p.name, slug: p.slug || slugify(p.name), price: p.price };
+      if (p.old_price != null) clean.old_price = p.old_price;
+      if (p.stock != null) clean.stock = p.stock;
+      if (p.description != null) clean.description = p.description;
+      if (p.short_description != null) clean.short_description = p.short_description;
+      if (p.image_url != null) clean.image_url = p.image_url;
+      if (p.images != null) clean.images = p.images;
+      if (p.brand != null) clean.brand = p.brand;
+      if (p.category_id != null) clean.category_id = p.category_id;
+      if (p.specs != null) clean.specs = p.specs;
+      if (p.featured) clean.featured = true;
+      if (p.sku != null) clean.sku = p.sku;
+      if (p.meta_title != null) clean.meta_title = p.meta_title;
+      if (p.meta_description != null) clean.meta_description = p.meta_description;
+      if (p.tags != null) clean.tags = p.tags;
+      if (p.warranty_months != null) clean.warranty_months = p.warranty_months;
+      if (p.status != null) clean.status = p.status;
+      return clean;
+    });
 
-    // Batch upsert (update existing products by slug, insert new ones)
+    // Batch upsert
     const batchSize = 50;
     let inserted = 0;
     let errors = 0;
@@ -287,26 +296,14 @@ Deno.serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({
-        success: true,
-        source,
-        total_parsed: products.length,
-        inserted,
-        errors,
-      }),
-      {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      JSON.stringify({ success: true, source, total_parsed: products.length, inserted, errors }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
     console.error("Import error:", err);
     return new Response(
       JSON.stringify({ error: err instanceof Error ? err.message : "Eroare necunoscută" }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });
