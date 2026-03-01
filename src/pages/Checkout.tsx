@@ -28,6 +28,8 @@ export default function Checkout() {
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
   const [couponLoading, setCouponLoading] = useState(false);
+  const [mokkaModalOpen, setMokkaModalOpen] = useState(false);
+  const [mokkaIframeUrl, setMokkaIframeUrl] = useState("");
 
   if (!user) return <Layout><div className="container py-16 text-center"><p>Autentifică-te mai întâi.</p><Link to="/auth"><Button className="mt-4">Autentifică-te</Button></Link></div></Layout>;
   if (items.length === 0) return <Layout><div className="container py-16 text-center"><p>Coșul este gol.</p><Link to="/catalog"><Button className="mt-4">Vezi produse</Button></Link></div></Layout>;
