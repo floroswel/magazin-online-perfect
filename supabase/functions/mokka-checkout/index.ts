@@ -189,6 +189,50 @@ serve(async (req) => {
       }
     }
 
+    if (action === "return") {
+      const { order_id, amount, reason } = payload;
+
+      const requestData: Record<string, unknown> = {
+        order_id,
+        amount: amount.toString(),
+        reason,
+      };
+
+      const signature = await generateMokkaSignature(requestData, MOKKA_API_KEY);
+      const storeParam = MOKKA_STORE_ID ? `store_id=${MOKKA_STORE_ID}&` : "";
+      const apiUrl = `${MOKKA_API_URL}/factoring/v1/return?${storeParam}signature=${signature}`;
+
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(`Mokka return error [${response.status}]: ${JSON.stringify(data)}`);
+      }
+
+      if (data.status === 0) {
+        await supabase
+          .from("payment_transactions")
+          .update({
+            status: "refunded",
+            refunded_amount: amount,
+            provider_response: data,
+          })
+          .eq("order_id", order_id)
+          .eq("installments_provider", "mokka");
+
+        return new Response(JSON.stringify({ success: true }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      } else {
+        throw new Error(`Mokka return rejected: ${JSON.stringify(data)}`);
+      }
+    }
+
     if (action === "callback" || action === "check_status") {
       const { application_id } = payload;
 
