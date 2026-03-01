@@ -27,6 +27,7 @@ import AdminAutomations from "./marketing/AdminAutomations";
 import AdminWebhooks from "./shipping/AdminWebhooks";
 import AdminPaymentMethods from "./payments/AdminPaymentMethods";
 import AdminTransactions from "./payments/AdminTransactions";
+import AdminRefunds from "./payments/AdminRefunds";
 import AdminCarriers from "./shipping/AdminCarriers";
 import AdminShippingRates from "./shipping/AdminShippingRates";
 import AdminTracking from "./shipping/AdminTracking";
