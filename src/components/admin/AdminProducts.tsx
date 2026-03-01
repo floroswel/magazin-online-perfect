@@ -576,10 +576,19 @@ export default function AdminProducts() {
               <Label>Galerie imagini ({form.images.length})</Label>
               <div className="flex flex-wrap gap-2">
                 {form.images.map((url, idx) => (
-                  <div key={idx} className="relative w-20 h-20 rounded-lg overflow-hidden border border-border">
+                  <div key={idx} className="relative w-20 h-20 rounded-lg overflow-hidden border border-border group">
                     <img src={url} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
                     <button type="button" onClick={() => setForm((f) => ({ ...f, images: f.images.filter((_, i) => i !== idx) }))} className="absolute top-0.5 right-0.5 bg-destructive text-destructive-foreground rounded-full p-0.5">
                       <X className="w-3 h-3" />
+                    </button>
+                    <button
+                      type="button"
+                      disabled={removingBg === `gallery-${idx}`}
+                      onClick={() => removeBackground(url, idx)}
+                      className="absolute bottom-0.5 left-0.5 bg-primary text-primary-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                      title="Elimină fundal"
+                    >
+                      {removingBg === `gallery-${idx}` ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
                     </button>
                   </div>
                 ))}
