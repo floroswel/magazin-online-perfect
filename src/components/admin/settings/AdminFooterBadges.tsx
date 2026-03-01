@@ -26,7 +26,7 @@ export default function AdminFooterBadges() {
       .single()
       .then(({ data }) => {
         if (data?.value_json && Array.isArray(data.value_json)) {
-          setBadges(data.value_json as Badge[]);
+          setBadges(data.value_json as unknown as Badge[]);
         }
         setLoading(false);
       });
