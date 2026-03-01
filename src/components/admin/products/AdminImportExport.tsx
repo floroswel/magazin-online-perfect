@@ -57,24 +57,28 @@ const PRODUCT_FIELDS = [
 ];
 
 function autoDetectMapping(header: string): string {
-  const h = header.toLowerCase().trim().replace(/"/g, "");
+  const h = header.toLowerCase().trim().replace(/"/g, "").replace(/_/g, " ");
   const map: Record<string, string> = {
-    name: "name", nume: "name", title: "name", titlu: "name", "product name": "name", denumire: "name",
-    price: "price", pret: "price", preț: "price",
-    old_price: "old_price", pret_vechi: "old_price", "preț vechi": "old_price",
+    name: "name", nume: "name", title: "name", titlu: "name", "product name": "name", denumire: "name", "nume produs": "name",
+    price: "price", pret: "price", preț: "price", "pret vanzare": "price", "preț vânzare": "price",
+    "old price": "old_price", "pret vechi": "old_price", "preț vechi": "old_price", "pret initial": "old_price",
     stock: "stock", stoc: "stock", cantitate: "stock", qty: "stock", quantity: "stock",
     description: "description", descriere: "description",
-    short_description: "short_description", "descriere scurtă": "short_description",
-    image_url: "image_url", imagine: "image_url", image: "image_url", "image link": "image_url", poza: "image_url",
-    images: "images", imagini: "images", galerie: "images",
+    "short description": "short_description", "descriere scurta": "short_description", "descriere scurtă": "short_description",
+    "image url": "image_url", imagine: "image_url", image: "image_url", "image link": "image_url", poza: "image_url", foto: "image_url", "url imagine": "image_url",
+    images: "images", imagini: "images", galerie: "images", "gallery images": "images",
     brand: "brand", marca: "brand", producator: "brand", producător: "brand", manufacturer: "brand",
     slug: "slug", url: "slug", permalink: "slug",
-    sku: "sku", cod: "sku", "cod produs": "sku",
-    category_id: "category_id", categorie: "category_id", category: "category_id",
-    featured: "featured", promovat: "featured",
-    meta_title: "meta_title", meta_description: "meta_description",
+    sku: "sku", cod: "sku", "cod produs": "sku", "cod articol": "sku", barcode: "sku", ean: "sku",
+    "category id": "category_id",
+    category: "category_name", categorie: "category_name", "category name": "category_name", "nume categorie": "category_name",
+    featured: "featured", promovat: "featured", recomandat: "featured",
+    status: "status", stare: "status",
+    "meta title": "meta_title", "titlu seo": "meta_title",
+    "meta description": "meta_description", "descriere seo": "meta_description",
+    "canonical url": "canonical_url",
     tags: "tags", taguri: "tags", etichete: "tags",
-    warranty_months: "warranty_months", garantie: "warranty_months", garanție: "warranty_months",
+    "warranty months": "warranty_months", garantie: "warranty_months", garanție: "warranty_months", "luni garantie": "warranty_months",
   };
   return map[h] || "";
 }
