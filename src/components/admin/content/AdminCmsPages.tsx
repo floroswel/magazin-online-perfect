@@ -167,7 +167,7 @@ export default function AdminCmsPages({ filterLegal }: { filterLegal?: boolean }
       return;
     }
     const { error } = await supabase.from("cms_pages").insert(
-      missing.map(p => ({ title: p.title, slug: p.slug, body_html: `<h1>${p.title}</h1><p>Conținut de completat.</p>`, published: false }))
+      missing.map(p => ({ title: p.title, slug: p.slug, placement: p.placement, body_html: `<h1>${p.title}</h1><p>Conținut de completat.</p>`, published: false }))
     );
     if (error) toast.error(error.message);
     else { toast.success(`${missing.length} pagini create!`); loadPages(); }
