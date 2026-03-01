@@ -201,14 +201,14 @@ export default function Checkout() {
                     <CreditCard className="h-4 w-4 text-muted-foreground" /> Card online
                   </Label>
                 </div>
-                <div className="flex items-center space-x-2 border rounded-lg p-3 bg-emag-blue/5">
+                <div className="flex items-center space-x-2 border rounded-lg p-3 border-mokka/30 bg-mokka/5">
                   <RadioGroupItem value="mokka" id="mokka" />
                   <Label htmlFor="mokka" className="cursor-pointer flex-1">
                     <div className="flex items-center gap-2">
-                      <Wallet className="h-4 w-4 text-emag-blue" />
+                      <Wallet className="h-4 w-4 text-mokka" />
                       <div>
-                        <span className="font-semibold">Mokka by TBI Bank</span>
-                        <p className="text-xs text-muted-foreground">Plătește în rate fără dobândă*</p>
+                        <span className="font-semibold text-mokka">Mokka – Plată în avans</span>
+                        <p className="text-xs text-muted-foreground">Rate fără card · Primești instant banii, plătești în rate</p>
                       </div>
                     </div>
                   </Label>
