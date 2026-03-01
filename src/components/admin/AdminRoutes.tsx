@@ -139,10 +139,10 @@ export default function AdminRoutes() {
       <Route path="channels/connectors" element={<AdminPlaceholder title="Conectori Externi" description="Gestionare API keys, webhooks și integrări terțe." />} />
 
       {/* ═══════════ PLĂȚI ═══════════ */}
-      <Route path="payments/methods" element={<AdminPlaceholder title="Metode de Plată" description="Configurare metode: card, ramburs, transfer bancar, rate." />} />
-      <Route path="payments/gateways" element={<AdminPlaceholder title="Gateway-uri Plată" description="Configurare detaliată: Netopia, EuPlatesc, Stripe, PayPal — chei API, comisioane." />} />
-      <Route path="payments/transactions" element={<AdminPlaceholder title="Tranzacții" description="Istoric complet al tranzacțiilor de plată — status, sume, detalii." />} />
-      <Route path="payments/refunds" element={<AdminPlaceholder title="Refund-uri" description="Rambursări parțiale și totale cu motiv și tracking." />} />
+      <Route path="payments/methods" element={<AdminPaymentMethods />} />
+      <Route path="payments/gateways" element={<AdminPaymentMethods />} />
+      <Route path="payments/transactions" element={<AdminTransactions />} />
+      <Route path="payments/refunds" element={<AdminRefunds />} />
       <Route path="payments/installments" element={<AdminPlaceholder title="Rate & Installments" description="Integrare Mokka, TBI, PayPo, Alpha Bank pentru plăți în rate." />} />
       <Route path="payments/settlements" element={<AdminPlaceholder title="Decontări" description="Perioade de decontare, sume și reconciliere cu gateway-uri." />} />
       <Route path="payments/reconciliation" element={<AdminPlaceholder title="Reconciliere" description="Verificare plăți, rambursări și status tranzacții." />} />
