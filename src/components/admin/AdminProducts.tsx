@@ -223,7 +223,7 @@ export default function AdminProducts() {
   const openEdit = (product: any) => {
     const specs = product.specs || {};
     const savedVariants = specs._variants || [];
-    const { _variants, _meta_title, _meta_description, ...cleanSpecs } = specs;
+    const { _variants, ...cleanSpecs } = specs;
     setEditingId(product.id);
     setForm({
       name: product.name,
@@ -238,8 +238,8 @@ export default function AdminProducts() {
       featured: product.featured || false,
       category_id: product.category_id || null,
       specs: cleanSpecs,
-      meta_title: _meta_title || "",
-      meta_description: _meta_description || "",
+      meta_title: product.meta_title || "",
+      meta_description: product.meta_description || "",
     });
     setVariants(savedVariants);
     setStep(0);
