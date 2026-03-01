@@ -538,7 +538,7 @@ export default function AdminProducts() {
               <Label>Imagine principală</Label>
               <div className="flex gap-3 items-start">
                 {form.image_url ? (
-                  <div className="relative w-28 h-28 rounded-lg overflow-hidden border border-border">
+              <div className="relative w-28 h-28 rounded-lg overflow-hidden border border-border">
                     <img src={form.image_url} alt="Preview" className="w-full h-full object-cover" />
                     <button type="button" onClick={() => setForm({ ...form, image_url: "" })} className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-0.5">
                       <X className="w-3 h-3" />
@@ -551,9 +551,22 @@ export default function AdminProducts() {
                 )}
                 <div className="flex-1 space-y-2">
                   <input ref={fileInputRef} type="file" accept="image/*" onChange={handleMainImageUpload} className="hidden" />
-                  <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
-                    <Upload className="w-4 h-4 mr-1" /> {uploading ? "Se încarcă..." : "Încarcă imagine"}
-                  </Button>
+                  <div className="flex gap-2 flex-wrap">
+                    <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+                      <Upload className="w-4 h-4 mr-1" /> {uploading ? "Se încarcă..." : "Încarcă imagine"}
+                    </Button>
+                    {form.image_url && (
+                      <Button
+                        type="button" variant="outline" size="sm"
+                        disabled={removingBg === "main"}
+                        onClick={() => removeBackground(form.image_url, "main")}
+                        className="gap-1.5"
+                      >
+                        {removingBg === "main" ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                        {removingBg === "main" ? "Procesez..." : "Elimină fundal (AI)"}
+                      </Button>
+                    )}
+                  </div>
                   <p className="text-xs text-muted-foreground">sau introdu URL:</p>
                   <Input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="https://..." className="text-xs" />
                 </div>
