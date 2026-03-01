@@ -281,6 +281,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Notificări", path: "/admin/settings/notifications" },
           { label: "Securitate", path: "/admin/settings/security" },
           { label: "GDPR & politici", path: "/admin/settings/gdpr" },
+          { label: "Badge-uri legale footer", path: "/admin/settings/footer-badges" },
         ],
       },
       {
