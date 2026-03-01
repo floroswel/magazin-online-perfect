@@ -145,8 +145,10 @@ serve(async (req) => {
       const data = await response.json();
 
       if (!response.ok) {
+        await logRequest("finish", order_id, requestData, data, "error", `HTTP ${response.status}`);
         throw new Error(`Mokka finish error [${response.status}]: ${JSON.stringify(data)}`);
       }
+      await logRequest("finish", order_id, requestData, data, data.status === 0 ? "success" : "error");
 
       if (data.status === 0) {
         // Mark order as paid
