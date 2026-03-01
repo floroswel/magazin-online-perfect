@@ -285,6 +285,17 @@ export default function AdminCmsPages({ filterLegal }: { filterLegal?: boolean }
                   <Label className="text-xs">Publicată</Label>
                   <Switch checked={form.published} onCheckedChange={v => setForm(f => ({ ...f, published: v }))} />
                 </div>
+                <div>
+                  <Label className="text-xs">Unde apare pagina?</Label>
+                  <Select value={form.placement} onValueChange={v => setForm(f => ({ ...f, placement: v }))}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {PLACEMENT_OPTIONS.map(o => (
+                        <SelectItem key={o.value} value={o.value} className="text-xs">{o.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <Button onClick={handleSave} disabled={saving} className="w-full">
                   {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                   {saving ? "Se salvează..." : "Salvează"}
