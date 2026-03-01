@@ -23,6 +23,7 @@ interface ProductRow {
   sku?: string | null;
   meta_title?: string | null;
   meta_description?: string | null;
+  canonical_url?: string | null;
   tags?: string[] | null;
   warranty_months?: number | null;
   status?: string | null;
@@ -59,6 +60,7 @@ function cleanProduct(item: Record<string, any>): ProductRow | null {
     sku: item.sku || item.cod || null,
     meta_title: item.meta_title || null,
     meta_description: item.meta_description || null,
+    canonical_url: item.canonical_url || null,
     tags: Array.isArray(item.tags) ? item.tags : null,
     warranty_months: parseInt(item.warranty_months || item.garantie) || null,
     status: item.status || null,
@@ -270,6 +272,7 @@ Deno.serve(async (req) => {
       if (p.sku != null) clean.sku = p.sku;
       if (p.meta_title != null) clean.meta_title = p.meta_title;
       if (p.meta_description != null) clean.meta_description = p.meta_description;
+      if (p.canonical_url != null) clean.canonical_url = p.canonical_url;
       if (p.tags != null) clean.tags = p.tags;
       if (p.warranty_months != null) clean.warranty_months = p.warranty_months;
       if (p.status != null) clean.status = p.status;

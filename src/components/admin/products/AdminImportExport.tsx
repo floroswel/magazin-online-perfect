@@ -42,36 +42,43 @@ const PRODUCT_FIELDS = [
   { key: "short_description", label: "Descriere scurtă" },
   { key: "image_url", label: "URL imagine principală" },
   { key: "images", label: "Galerie imagini (separate prin |)" },
-  { key: "brand", label: "Brand" },
+  { key: "brand", label: "Brand / Producător" },
   { key: "slug", label: "Slug (URL)" },
   { key: "sku", label: "SKU / Cod produs" },
-  { key: "category_id", label: "ID categorie" },
+  { key: "category_id", label: "ID categorie (UUID)" },
+  { key: "category_name", label: "Nume categorie" },
   { key: "featured", label: "Produs featured" },
+  { key: "status", label: "Status (active/draft)" },
   { key: "meta_title", label: "Meta titlu (SEO)" },
   { key: "meta_description", label: "Meta descriere (SEO)" },
+  { key: "canonical_url", label: "URL canonic (SEO)" },
   { key: "tags", label: "Taguri (separate prin |)" },
   { key: "warranty_months", label: "Garanție (luni)" },
 ];
 
 function autoDetectMapping(header: string): string {
-  const h = header.toLowerCase().trim().replace(/"/g, "");
+  const h = header.toLowerCase().trim().replace(/"/g, "").replace(/_/g, " ");
   const map: Record<string, string> = {
-    name: "name", nume: "name", title: "name", titlu: "name", "product name": "name", denumire: "name",
-    price: "price", pret: "price", preț: "price",
-    old_price: "old_price", pret_vechi: "old_price", "preț vechi": "old_price",
+    name: "name", nume: "name", title: "name", titlu: "name", "product name": "name", denumire: "name", "nume produs": "name",
+    price: "price", pret: "price", preț: "price", "pret vanzare": "price", "preț vânzare": "price",
+    "old price": "old_price", "pret vechi": "old_price", "preț vechi": "old_price", "pret initial": "old_price",
     stock: "stock", stoc: "stock", cantitate: "stock", qty: "stock", quantity: "stock",
     description: "description", descriere: "description",
-    short_description: "short_description", "descriere scurtă": "short_description",
-    image_url: "image_url", imagine: "image_url", image: "image_url", "image link": "image_url", poza: "image_url",
-    images: "images", imagini: "images", galerie: "images",
+    "short description": "short_description", "descriere scurta": "short_description", "descriere scurtă": "short_description",
+    "image url": "image_url", imagine: "image_url", image: "image_url", "image link": "image_url", poza: "image_url", foto: "image_url", "url imagine": "image_url",
+    images: "images", imagini: "images", galerie: "images", "gallery images": "images",
     brand: "brand", marca: "brand", producator: "brand", producător: "brand", manufacturer: "brand",
     slug: "slug", url: "slug", permalink: "slug",
-    sku: "sku", cod: "sku", "cod produs": "sku",
-    category_id: "category_id", categorie: "category_id", category: "category_id",
-    featured: "featured", promovat: "featured",
-    meta_title: "meta_title", meta_description: "meta_description",
+    sku: "sku", cod: "sku", "cod produs": "sku", "cod articol": "sku", barcode: "sku", ean: "sku",
+    "category id": "category_id",
+    category: "category_name", categorie: "category_name", "category name": "category_name", "nume categorie": "category_name",
+    featured: "featured", promovat: "featured", recomandat: "featured",
+    status: "status", stare: "status",
+    "meta title": "meta_title", "titlu seo": "meta_title",
+    "meta description": "meta_description", "descriere seo": "meta_description",
+    "canonical url": "canonical_url",
     tags: "tags", taguri: "tags", etichete: "tags",
-    warranty_months: "warranty_months", garantie: "warranty_months", garanție: "warranty_months",
+    "warranty months": "warranty_months", garantie: "warranty_months", garanție: "warranty_months", "luni garantie": "warranty_months",
   };
   return map[h] || "";
 }
@@ -120,6 +127,7 @@ export default function AdminImportExport() {
   const [loadingSchedules, setLoadingSchedules] = useState(true);
   const [newSchedule, setNewSchedule] = useState({ name: "", feed_url: "", interval_minutes: "60" });
   const [addingSchedule, setAddingSchedule] = useState(false);
+  const [categories, setCategories] = useState<{ id: string; name: string; slug: string }[]>([]);
 
   // CSV mapping state
   const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
@@ -128,7 +136,10 @@ export default function AdminImportExport() {
   const [mappingStep, setMappingStep] = useState<"idle" | "mapping" | "preview">("idle");
   const [csvFileName, setCsvFileName] = useState("");
 
-  useEffect(() => { fetchSchedules(); }, []);
+  useEffect(() => {
+    fetchSchedules();
+    supabase.from("categories").select("id, name, slug").order("name").then(({ data }) => setCategories(data || []));
+  }, []);
 
   const fetchSchedules = async () => {
     setLoadingSchedules(true);
@@ -213,38 +224,44 @@ export default function AdminImportExport() {
     return mapped.includes("name") && mapped.includes("price");
   }, [columnMapping]);
 
+  const resolveCategory = (name: string): string | null => {
+    if (!name) return null;
+    const lower = name.toLowerCase().trim();
+    const cat = categories.find(c => c.name.toLowerCase() === lower || c.slug === lower);
+    return cat?.id || null;
+  };
+
+  const transformRow = (row: string[]): Record<string, any> | null => {
+    const product: Record<string, any> = {};
+    Object.entries(columnMapping).forEach(([colIdx, field]) => {
+      const val = row[Number(colIdx)] || "";
+      if (!val) return;
+      if (field === "price" || field === "old_price" || field === "warranty_months") product[field] = parseFloat(val) || null;
+      else if (field === "stock") product[field] = parseInt(val) || 0;
+      else if (field === "featured") product[field] = val === "true" || val === "1" || val.toLowerCase() === "da";
+      else if (field === "images" || field === "tags") product[field] = val.split("|").map((s: string) => s.trim()).filter(Boolean);
+      else if (field === "category_name") {
+        const catId = resolveCategory(val);
+        if (catId) product.category_id = catId;
+        product._category_name = val; // keep for preview
+      }
+      else product[field] = val;
+    });
+    if (!product.name || !product.price) return null;
+    return product;
+  };
+
   const previewProducts = useMemo(() => {
     if (!mappingValid) return [];
-    return csvRows.slice(0, 5).map((row) => {
-      const product: Record<string, any> = {};
-      Object.entries(columnMapping).forEach(([colIdx, field]) => {
-        const val = row[Number(colIdx)] || "";
-        if (!val) return;
-        if (field === "price" || field === "old_price" || field === "warranty_months") product[field] = parseFloat(val) || null;
-        else if (field === "stock") product[field] = parseInt(val) || 0;
-        else if (field === "featured") product[field] = val === "true" || val === "1" || val.toLowerCase() === "da";
-        else if (field === "images" || field === "tags") product[field] = val.split("|").map((s: string) => s.trim()).filter(Boolean);
-        else product[field] = val;
-      });
-      if (!product.name || !product.price) return null;
-      return product;
-    }).filter(Boolean);
-  }, [csvRows, columnMapping, mappingValid]);
+    return csvRows.slice(0, 5).map((row) => transformRow(row)).filter(Boolean);
+  }, [csvRows, columnMapping, mappingValid, categories]);
 
   const handleMappedImport = async () => {
     const allProducts = csvRows.map((row) => {
-      const product: Record<string, any> = {};
-      Object.entries(columnMapping).forEach(([colIdx, field]) => {
-        const val = row[Number(colIdx)] || "";
-        if (!val) return;
-        if (field === "price" || field === "old_price" || field === "warranty_months") product[field] = parseFloat(val) || null;
-        else if (field === "stock") product[field] = parseInt(val) || 0;
-        else if (field === "featured") product[field] = val === "true" || val === "1" || val.toLowerCase() === "da";
-        else if (field === "images" || field === "tags") product[field] = val.split("|").map((s: string) => s.trim()).filter(Boolean);
-        else product[field] = val;
-      });
-      if (!product.name || !product.price) return null;
+      const product = transformRow(row);
+      if (!product) return null;
       if (!product.slug) product.slug = slugify(product.name);
+      delete product._category_name; // cleanup preview field
       return product;
     }).filter(Boolean);
 
