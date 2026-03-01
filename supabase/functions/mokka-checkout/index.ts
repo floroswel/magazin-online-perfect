@@ -36,6 +36,7 @@ serve(async (req) => {
       throw new Error("MOKKA_API_KEY is not configured");
     }
 
+    const MOKKA_STORE_ID = Deno.env.get("MOKKA_STORE_ID");
     const MOKKA_API_URL = Deno.env.get("MOKKA_API_URL") || "https://demo-backend.mokka.ro";
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -45,39 +46,33 @@ serve(async (req) => {
     const { action, ...payload } = await req.json();
 
     if (action === "create_application") {
-      // Create a Mokka payment application
       const { order_id, amount, items, customer, redirect_url } = payload;
 
-      const mokkaPayload = {
-        amount: Math.round(amount * 100), // cents
-        currency: "RON",
-        order_id,
-        items: items.map((item: any) => ({
-          name: item.name,
-          quantity: item.quantity,
-          price: Math.round(item.price * 100),
-        })),
-        customer: {
-          first_name: customer.first_name,
-          last_name: customer.last_name,
-          email: customer.email,
-          phone: customer.phone,
-        },
-        redirect_url,
+      const requestData: Record<string, unknown> = {
         callback_url: `${supabaseUrl}/functions/v1/mokka-checkout`,
+        redirect_url: redirect_url || `${supabaseUrl}/functions/v1/mokka-checkout`,
+        primary_phone: customer.phone,
+        primary_email: customer.email,
+        current_order: {
+          order_id,
+          amount: amount.toString(),
+          items: items.map((item: any) => ({
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+        },
       };
 
-      // Generate Mokka signature
-      const signature = await generateMokkaSignature(mokkaPayload, MOKKA_API_KEY);
+      const signature = await generateMokkaSignature(requestData, MOKKA_API_KEY);
 
-      const response = await fetch(`${MOKKA_API_URL}/api/v1/applications`, {
+      const storeParam = MOKKA_STORE_ID ? `store_id=${MOKKA_STORE_ID}&` : "";
+      const apiUrl = `${MOKKA_API_URL}/factoring/v1/precheck/auth?${storeParam}signature=${signature}`;
+
+      const response = await fetch(apiUrl, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${MOKKA_API_KEY}`,
-          "Content-Type": "application/json",
-          "X-Signature": signature,
-        },
-        body: JSON.stringify(mokkaPayload),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestData),
       });
 
       const data = await response.json();
@@ -86,7 +81,7 @@ serve(async (req) => {
         throw new Error(`Mokka API error [${response.status}]: ${JSON.stringify(data)}`);
       }
 
-      // Store application reference
+      // Store transaction
       await supabase
         .from("payment_transactions")
         .insert({
@@ -98,19 +93,20 @@ serve(async (req) => {
           installments_count: payload.installments || 3,
         });
 
-      return new Response(JSON.stringify({ success: true, iframe_url: data.iframe_url || data.redirect_url, application_id: data.id }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      if (data.iframe_url) {
+        return new Response(JSON.stringify({ success: true, iframeUrl: data.iframe_url, application_id: data.id }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      } else {
+        throw new Error("Mokka nu a returnat iframe_url");
+      }
     }
 
     if (action === "callback" || action === "check_status") {
-      // Handle Mokka callback / status check
       const { application_id } = payload;
 
       const response = await fetch(`${MOKKA_API_URL}/api/v1/applications/${application_id}`, {
-        headers: {
-          Authorization: `Bearer ${MOKKA_API_KEY}`,
-        },
+        headers: { Authorization: `Bearer ${MOKKA_API_KEY}` },
       });
 
       const data = await response.json();
@@ -119,19 +115,14 @@ serve(async (req) => {
         throw new Error(`Mokka status check failed [${response.status}]: ${JSON.stringify(data)}`);
       }
 
-      // Update transaction status
       if (data.status) {
         const mappedStatus = data.status === "approved" ? "completed" : data.status === "rejected" ? "failed" : "pending";
 
         await supabase
           .from("payment_transactions")
-          .update({
-            status: mappedStatus,
-            provider_response: data,
-          })
+          .update({ status: mappedStatus, provider_response: data })
           .eq("external_id", application_id);
 
-        // If approved, update order payment status
         if (mappedStatus === "completed") {
           const { data: txn } = await supabase
             .from("payment_transactions")
