@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Upload, Globe, Code, Download, CheckCircle2, AlertCircle, FileSpreadsheet, Loader2, Clock, Trash2, Play, Plus } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Upload, Globe, Code, Download, CheckCircle2, AlertCircle, FileSpreadsheet, Loader2, Clock, Trash2, Play, Plus, ArrowRight, Eye, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 
 interface ImportResult {
@@ -29,6 +30,74 @@ interface ScheduledImport {
   last_run_at: string | null;
   last_result: any;
   created_at: string;
+}
+
+const PRODUCT_FIELDS = [
+  { key: "", label: "— Nu mapa —" },
+  { key: "name", label: "Nume produs *" },
+  { key: "price", label: "Preț *" },
+  { key: "old_price", label: "Preț vechi" },
+  { key: "stock", label: "Stoc" },
+  { key: "description", label: "Descriere" },
+  { key: "short_description", label: "Descriere scurtă" },
+  { key: "image_url", label: "URL imagine principală" },
+  { key: "images", label: "Galerie imagini (separate prin |)" },
+  { key: "brand", label: "Brand" },
+  { key: "slug", label: "Slug (URL)" },
+  { key: "sku", label: "SKU / Cod produs" },
+  { key: "category_id", label: "ID categorie" },
+  { key: "featured", label: "Produs featured" },
+  { key: "meta_title", label: "Meta titlu (SEO)" },
+  { key: "meta_description", label: "Meta descriere (SEO)" },
+  { key: "tags", label: "Taguri (separate prin |)" },
+  { key: "warranty_months", label: "Garanție (luni)" },
+];
+
+function autoDetectMapping(header: string): string {
+  const h = header.toLowerCase().trim().replace(/"/g, "");
+  const map: Record<string, string> = {
+    name: "name", nume: "name", title: "name", titlu: "name", "product name": "name", denumire: "name",
+    price: "price", pret: "price", preț: "price",
+    old_price: "old_price", pret_vechi: "old_price", "preț vechi": "old_price",
+    stock: "stock", stoc: "stock", cantitate: "stock", qty: "stock", quantity: "stock",
+    description: "description", descriere: "description",
+    short_description: "short_description", "descriere scurtă": "short_description",
+    image_url: "image_url", imagine: "image_url", image: "image_url", "image link": "image_url", poza: "image_url",
+    images: "images", imagini: "images", galerie: "images",
+    brand: "brand", marca: "brand", producator: "brand", producător: "brand", manufacturer: "brand",
+    slug: "slug", url: "slug", permalink: "slug",
+    sku: "sku", cod: "sku", "cod produs": "sku",
+    category_id: "category_id", categorie: "category_id", category: "category_id",
+    featured: "featured", promovat: "featured",
+    meta_title: "meta_title", meta_description: "meta_description",
+    tags: "tags", taguri: "tags", etichete: "tags",
+    warranty_months: "warranty_months", garantie: "warranty_months", garanție: "warranty_months",
+  };
+  return map[h] || "";
+}
+
+function parseCSVLocal(text: string): { headers: string[]; rows: string[][] } {
+  const lines = text.split("\n").filter((l) => l.trim());
+  if (lines.length < 2) return { headers: [], rows: [] };
+  const parseLine = (line: string): string[] => {
+    const values: string[] = [];
+    let current = "";
+    let inQuotes = false;
+    for (const char of line) {
+      if (char === '"') { inQuotes = !inQuotes; }
+      else if (char === "," && !inQuotes) { values.push(current.trim()); current = ""; }
+      else { current += char; }
+    }
+    values.push(current.trim());
+    return values;
+  };
+  const headers = parseLine(lines[0]);
+  const rows = lines.slice(1).map(parseLine);
+  return { headers, rows };
+}
+
+function slugify(text: string): string {
+  return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
 const INTERVAL_OPTIONS = [
@@ -52,38 +121,27 @@ export default function AdminImportExport() {
   const [newSchedule, setNewSchedule] = useState({ name: "", feed_url: "", interval_minutes: "60" });
   const [addingSchedule, setAddingSchedule] = useState(false);
 
-  useEffect(() => {
-    fetchSchedules();
-  }, []);
+  // CSV mapping state
+  const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
+  const [csvRows, setCsvRows] = useState<string[][]>([]);
+  const [columnMapping, setColumnMapping] = useState<Record<number, string>>({});
+  const [mappingStep, setMappingStep] = useState<"idle" | "mapping" | "preview">("idle");
+  const [csvFileName, setCsvFileName] = useState("");
+
+  useEffect(() => { fetchSchedules(); }, []);
 
   const fetchSchedules = async () => {
     setLoadingSchedules(true);
-    const { data, error } = await supabase
-      .from("scheduled_imports")
-      .select("*")
-      .order("created_at", { ascending: false });
+    const { data, error } = await supabase.from("scheduled_imports").select("*").order("created_at", { ascending: false });
     if (!error) setSchedules(data || []);
     setLoadingSchedules(false);
   };
 
   const handleAddSchedule = async () => {
-    if (!newSchedule.name.trim() || !newSchedule.feed_url.trim()) {
-      toast.error("Completează numele și URL-ul feed-ului");
-      return;
-    }
+    if (!newSchedule.name.trim() || !newSchedule.feed_url.trim()) { toast.error("Completează numele și URL-ul feed-ului"); return; }
     setAddingSchedule(true);
-    const { error } = await supabase.from("scheduled_imports").insert({
-      name: newSchedule.name.trim(),
-      feed_url: newSchedule.feed_url.trim(),
-      interval_minutes: parseInt(newSchedule.interval_minutes),
-    });
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Import programat adăugat!");
-      setNewSchedule({ name: "", feed_url: "", interval_minutes: "60" });
-      fetchSchedules();
-    }
+    const { error } = await supabase.from("scheduled_imports").insert({ name: newSchedule.name.trim(), feed_url: newSchedule.feed_url.trim(), interval_minutes: parseInt(newSchedule.interval_minutes) });
+    if (error) { toast.error(error.message); } else { toast.success("Import programat adăugat!"); setNewSchedule({ name: "", feed_url: "", interval_minutes: "60" }); fetchSchedules(); }
     setAddingSchedule(false);
   };
 
@@ -103,68 +161,112 @@ export default function AdminImportExport() {
     toast.info(`Se rulează importul "${schedule.name}"...`);
     try {
       const headers = await getAuthHeaders();
-      const res = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/import-products`,
-        {
-          method: "POST",
-          headers: { ...headers, "Content-Type": "application/json" },
-          body: JSON.stringify({ feed_url: schedule.feed_url }),
-        }
-      );
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/import-products`, { method: "POST", headers: { ...headers, "Content-Type": "application/json" }, body: JSON.stringify({ feed_url: schedule.feed_url }) });
       const data = await res.json();
-      if (data.success) {
-        toast.success(`${data.inserted} produse importate din "${schedule.name}"!`);
-      } else {
-        toast.error(data.error || "Eroare la import");
-      }
-      // Update last_run_at locally
-      await supabase.from("scheduled_imports").update({
-        last_run_at: new Date().toISOString(),
-        last_result: data,
-      }).eq("id", schedule.id);
+      if (data.success) { toast.success(`${data.inserted} produse importate din "${schedule.name}"!`); } else { toast.error(data.error || "Eroare la import"); }
+      await supabase.from("scheduled_imports").update({ last_run_at: new Date().toISOString(), last_result: data }).eq("id", schedule.id);
       fetchSchedules();
-    } catch (err: any) {
-      toast.error(err.message);
-    }
+    } catch (err: any) { toast.error(err.message); }
   };
 
   const getAuthHeaders = async () => {
     const { data: { session } } = await supabase.auth.getSession();
-    return {
-      "Authorization": `Bearer ${session?.access_token}`,
-      "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-    };
+    return { "Authorization": `Bearer ${session?.access_token}`, "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY };
   };
 
-  const handleCSVUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // CSV Step 1: Parse and show mapping
+  const handleCSVSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setCsvFileName(file.name);
+    setResult(null);
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const text = ev.target?.result as string;
+      const { headers, rows } = parseCSVLocal(text);
+      if (headers.length === 0) { toast.error("Fișierul CSV este gol sau invalid"); return; }
+      setCsvHeaders(headers);
+      setCsvRows(rows);
+      const autoMap: Record<number, string> = {};
+      headers.forEach((h, i) => { const detected = autoDetectMapping(h); if (detected) autoMap[i] = detected; });
+      setColumnMapping(autoMap);
+      setMappingStep("mapping");
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
+  const updateMapping = (colIndex: number, field: string) => {
+    setColumnMapping((prev) => {
+      const next = { ...prev };
+      if (!field) { delete next[colIndex]; }
+      else {
+        Object.keys(next).forEach((k) => { if (next[Number(k)] === field && Number(k) !== colIndex) delete next[Number(k)]; });
+        next[colIndex] = field;
+      }
+      return next;
+    });
+  };
+
+  const mappingValid = useMemo(() => {
+    const mapped = Object.values(columnMapping);
+    return mapped.includes("name") && mapped.includes("price");
+  }, [columnMapping]);
+
+  const previewProducts = useMemo(() => {
+    if (!mappingValid) return [];
+    return csvRows.slice(0, 5).map((row) => {
+      const product: Record<string, any> = {};
+      Object.entries(columnMapping).forEach(([colIdx, field]) => {
+        const val = row[Number(colIdx)] || "";
+        if (!val) return;
+        if (field === "price" || field === "old_price" || field === "warranty_months") product[field] = parseFloat(val) || null;
+        else if (field === "stock") product[field] = parseInt(val) || 0;
+        else if (field === "featured") product[field] = val === "true" || val === "1" || val.toLowerCase() === "da";
+        else if (field === "images" || field === "tags") product[field] = val.split("|").map((s: string) => s.trim()).filter(Boolean);
+        else product[field] = val;
+      });
+      if (!product.name || !product.price) return null;
+      return product;
+    }).filter(Boolean);
+  }, [csvRows, columnMapping, mappingValid]);
+
+  const handleMappedImport = async () => {
+    const allProducts = csvRows.map((row) => {
+      const product: Record<string, any> = {};
+      Object.entries(columnMapping).forEach(([colIdx, field]) => {
+        const val = row[Number(colIdx)] || "";
+        if (!val) return;
+        if (field === "price" || field === "old_price" || field === "warranty_months") product[field] = parseFloat(val) || null;
+        else if (field === "stock") product[field] = parseInt(val) || 0;
+        else if (field === "featured") product[field] = val === "true" || val === "1" || val.toLowerCase() === "da";
+        else if (field === "images" || field === "tags") product[field] = val.split("|").map((s: string) => s.trim()).filter(Boolean);
+        else product[field] = val;
+      });
+      if (!product.name || !product.price) return null;
+      if (!product.slug) product.slug = slugify(product.name);
+      return product;
+    }).filter(Boolean);
+
+    if (allProducts.length === 0) { toast.error("Niciun produs valid de importat"); return; }
     setImporting(true);
     setResult(null);
-
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
       const headers = await getAuthHeaders();
-      const res = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/import-products`,
-        { method: "POST", headers, body: formData }
-      );
-
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/import-products`, { method: "POST", headers: { ...headers, "Content-Type": "application/json" }, body: JSON.stringify({ products: allProducts }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Eroare la import");
-
       setResult(data);
+      setMappingStep("idle");
+      setCsvHeaders([]);
+      setCsvRows([]);
+      setColumnMapping({});
       toast.success(`${data.inserted} produse importate din CSV!`);
-    } catch (err: any) {
-      toast.error(err.message);
-    } finally {
-      setImporting(false);
-      e.target.value = "";
-    }
+    } catch (err: any) { toast.error(err.message); }
+    finally { setImporting(false); }
   };
+
+  const resetMapping = () => { setMappingStep("idle"); setCsvHeaders([]); setCsvRows([]); setColumnMapping({}); setCsvFileName(""); };
 
   const handleFeedImport = async () => {
     if (!feedUrl.trim()) { toast.error("Introdu URL-ul feed-ului"); return; }
