@@ -40,8 +40,15 @@ const PRESET_PAGES = [
   { title: "GDPR", slug: "gdpr" },
 ];
 
+const PLACEMENT_OPTIONS = [
+  { value: "footer_info", label: "Footer — Informații" },
+  { value: "footer_help", label: "Footer — Ajutor" },
+  { value: "header_nav", label: "Header — Navigație" },
+  { value: "none", label: "Nicăieri (ascunsă)" },
+];
+
 const EMPTY_FORM = {
-  title: "", slug: "", body_html: "", meta_title: "", meta_description: "", published: false,
+  title: "", slug: "", body_html: "", meta_title: "", meta_description: "", published: false, placement: "footer_info",
 };
 
 export default function AdminCmsPages({ filterLegal }: { filterLegal?: boolean }) {
