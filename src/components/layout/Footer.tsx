@@ -39,16 +39,16 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-emag-dark text-card mt-auto">
+    <footer className="bg-secondary text-white mt-auto">
       <div className="container py-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-lg font-bold mb-4 text-emag-yellow">🛒 MegaShop</h3>
-            <p className="text-sm text-muted-foreground">Cel mai mare magazin online din România cu mii de produse la prețuri imbatabile.</p>
+            <p className="text-sm text-white/70">Cel mai mare magazin online din România cu mii de produse la prețuri imbatabile.</p>
           </div>
           <div>
             <h4 className="font-semibold mb-3">Informații</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <ul className="space-y-2 text-sm text-white/70">
               <li><Link to="/" className="hover:text-emag-yellow transition-colors">Despre noi</Link></li>
               <li><Link to="/" className="hover:text-emag-yellow transition-colors">Contact</Link></li>
               <li><Link to="/" className="hover:text-emag-yellow transition-colors">Termeni și condiții</Link></li>
@@ -57,7 +57,7 @@ export default function Footer() {
           </div>
           <div>
             <h4 className="font-semibold mb-3">Ajutor</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <ul className="space-y-2 text-sm text-white/70">
               <li><Link to="/" className="hover:text-emag-yellow transition-colors">Livrare</Link></li>
               <li><Link to="/" className="hover:text-emag-yellow transition-colors">Returnare</Link></li>
               <li><Link to="/" className="hover:text-emag-yellow transition-colors">Garanție</Link></li>
@@ -66,27 +66,27 @@ export default function Footer() {
           </div>
           <div>
             <h4 className="font-semibold mb-3">Newsletter</h4>
-            <p className="text-sm text-muted-foreground mb-3">Primește oferte exclusive și noutăți direct pe email.</p>
+            <p className="text-sm text-white/70 mb-3">Primește oferte exclusive și noutăți direct pe email.</p>
             <form onSubmit={handleSubscribe} className="flex gap-2">
               <Input
                 type="email"
                 placeholder="Email-ul tău"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-background/10 border-muted text-card placeholder:text-muted-foreground"
+                className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                 required
               />
-              <Button type="submit" size="icon" disabled={loading} className="shrink-0 bg-emag-yellow hover:bg-emag-yellow/90 text-emag-dark">
+              <Button type="submit" size="icon" disabled={loading} className="shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground">
                 <Mail className="w-4 h-4" />
               </Button>
             </form>
-            <div className="mt-4 space-y-2 text-sm text-muted-foreground">
+            <div className="mt-4 space-y-2 text-sm text-white/70">
               <p>📞 0800 123 456</p>
               <p>✉️ contact@megashop.ro</p>
             </div>
           </div>
         </div>
-        <div className="border-t border-muted mt-8 pt-6 text-center text-sm text-muted-foreground">
+        <div className="border-t border-white/20 mt-8 pt-6 text-center text-sm text-white/50">
           © 2026 MegaShop. Toate drepturile rezervate.
         </div>
       </div>

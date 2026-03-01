@@ -36,10 +36,10 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Top bar */}
-      <div className="emag-gradient">
+      {/* Top bar — dark blue */}
+      <div className="emag-header-gradient">
         <div className="container flex items-center gap-4 py-3">
-          <Link to="/" className="flex-shrink-0 text-2xl font-bold text-foreground">
+          <Link to="/" className="flex-shrink-0 text-2xl font-bold text-white">
             🛒 MegaShop
           </Link>
 
@@ -49,7 +49,7 @@ export default function Header() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Caută produse..."
-                className="w-full pr-12 bg-card border-none h-11 rounded-lg"
+                className="w-full pr-12 bg-white border-none h-11 rounded-lg text-foreground placeholder:text-muted-foreground"
               />
               <Button type="submit" size="icon" className="absolute right-1 top-1 h-9 w-9 rounded-md bg-primary hover:bg-primary/90">
                 <Search className="h-4 w-4" />
@@ -61,22 +61,22 @@ export default function Header() {
             {user ? (
               <>
                 <Link to="/compare" className="relative">
-                  <Button variant="ghost" size="icon" className="text-foreground hover:bg-secondary/20">
+                  <Button variant="ghost" size="icon" className="text-white/90 hover:text-white hover:bg-white/10">
                     <GitCompare className="h-5 w-5" />
                     {comparisonItems.length > 0 && (
-                      <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-emag-blue text-primary-foreground">
+                      <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-primary text-primary-foreground">
                         {comparisonItems.length}
                       </Badge>
                     )}
                   </Button>
                 </Link>
                 <Link to="/favorites">
-                  <Button variant="ghost" size="icon" className="text-foreground hover:bg-secondary/20">
+                  <Button variant="ghost" size="icon" className="text-white/90 hover:text-white hover:bg-white/10">
                     <Heart className="h-5 w-5" />
                   </Button>
                 </Link>
                 <Link to="/cart" className="relative">
-                  <Button variant="ghost" size="icon" className="text-foreground hover:bg-secondary/20">
+                  <Button variant="ghost" size="icon" className="text-white/90 hover:text-white hover:bg-white/10">
                     <ShoppingCart className="h-5 w-5" />
                     {totalItems > 0 && (
                       <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-primary text-primary-foreground">
@@ -87,30 +87,44 @@ export default function Header() {
                 </Link>
                 {isAdmin && (
                   <Link to="/admin">
-                    <Button variant="ghost" size="icon" className="text-foreground hover:bg-secondary/20">
+                    <Button variant="ghost" size="icon" className="text-white/90 hover:text-white hover:bg-white/10">
                       <Shield className="h-5 w-5" />
                     </Button>
                   </Link>
                 )}
                 <Link to="/account">
-                  <Button variant="ghost" size="icon" className="text-foreground hover:bg-secondary/20">
+                  <Button variant="ghost" size="icon" className="text-white/90 hover:text-white hover:bg-white/10">
                     <User className="h-5 w-5" />
                   </Button>
                 </Link>
-                <Button variant="ghost" size="icon" className="text-foreground hover:bg-secondary/20" onClick={signOut}>
+                <Button variant="ghost" size="icon" className="text-white/90 hover:text-white hover:bg-white/10" onClick={signOut}>
                   <LogOut className="h-5 w-5" />
                 </Button>
               </>
             ) : (
               <Link to="/auth">
-                <Button variant="secondary" size="sm" className="font-semibold">
+                <Button size="sm" className="font-semibold bg-primary hover:bg-primary/90 text-primary-foreground">
                   Autentificare
                 </Button>
               </Link>
             )}
-            <Button variant="ghost" size="icon" className="md:hidden text-foreground" onClick={() => setMobileMenu(!mobileMenu)}>
+            <Button variant="ghost" size="icon" className="md:hidden text-white" onClick={() => setMobileMenu(!mobileMenu)}>
               {mobileMenu ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Trust badges bar */}
+      <div className="emag-trust-bar">
+        <div className="container py-2 flex items-center justify-center gap-8 text-white text-sm">
+          <div className="flex items-center gap-2">
+            <Shield className="h-4 w-4 text-emag-yellow" />
+            <span className="font-medium">Produse Garantate</span>
+          </div>
+          <div className="hidden sm:flex items-center gap-2">
+            <ShoppingCart className="h-4 w-4 text-emag-yellow" />
+            <span className="font-medium">Livrare Gratuită peste 200 lei</span>
           </div>
         </div>
       </div>

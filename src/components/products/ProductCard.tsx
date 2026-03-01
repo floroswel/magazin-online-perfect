@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ShoppingCart, Heart, Star } from "lucide-react";
+import { ShoppingCart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCart } from "@/hooks/useCart";
@@ -32,10 +32,10 @@ export default function ProductCard({ product }: Props) {
 
   return (
     <Link to={`/product/${product.slug}`}>
-      <Card className="group h-full hover:shadow-lg transition-all duration-200 border-border/50 overflow-hidden">
-        <div className="relative aspect-square overflow-hidden bg-card p-4">
+      <Card className="group h-full hover:shadow-lg transition-all duration-200 border-border overflow-hidden bg-card">
+        <div className="relative aspect-square overflow-hidden bg-white p-4">
           {discount > 0 && (
-            <span className="absolute top-2 left-2 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-sm z-10">
+            <span className="absolute top-2 left-2 bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded-sm z-10">
               -{discount}%
             </span>
           )}
@@ -59,7 +59,7 @@ export default function ProductCard({ product }: Props) {
             <span className="text-xs text-muted-foreground ml-1">({product.review_count})</span>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-lg font-bold text-primary">
+            <span className="text-lg font-bold text-foreground">
               {product.price.toLocaleString("ro-RO")} lei
             </span>
             {product.old_price && (
@@ -70,11 +70,11 @@ export default function ProductCard({ product }: Props) {
           </div>
           <Button
             onClick={handleAddToCart}
-            className="w-full mt-2"
+            className="w-full mt-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
             size="sm"
           >
             <ShoppingCart className="h-4 w-4 mr-1" />
-            Adaugă în coș
+            Cumpără Acum
           </Button>
         </CardContent>
       </Card>
