@@ -127,6 +127,7 @@ export default function AdminCmsPages({ filterLegal }: { filterLegal?: boolean }
       meta_title: form.meta_title.trim() || null,
       meta_description: form.meta_description.trim() || null,
       published: form.published,
+      placement: form.placement,
       updated_at: new Date().toISOString(),
     };
 
