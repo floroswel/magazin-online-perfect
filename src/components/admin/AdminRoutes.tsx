@@ -60,7 +60,6 @@ export default function AdminRoutes() {
       <Route path="orders/issues" element={<AdminPlaceholder title="Comenzi cu Probleme" description="Plată eșuată, stoc insuficient sau alte probleme." />} />
       <Route path="orders/invoices" element={<AdminInvoices />} />
       <Route path="orders/returns" element={<AdminReturns />} />
-      <Route path="orders/abandoned" element={<AdminAbandonedCarts />} />
 
       {/* ═══════════ PRODUSE ═══════════ */}
       <Route path="products" element={<AdminProducts />} />
@@ -108,6 +107,7 @@ export default function AdminRoutes() {
       <Route path="customers/tags" element={<AdminPlaceholder title="Etichete (Tag-uri)" description="Adăugare manuală/automată de tag-uri pe clienți pentru segmentare." />} />
       <Route path="customers/loyalty" element={<AdminLoyalty />} />
       <Route path="customers/blacklist" element={<AdminBlacklist />} />
+      <Route path="customers/abandoned" element={<AdminAbandonedCarts />} />
       <Route path="customers/tickets" element={<AdminSupportTickets />} />
       <Route path="customers/gdpr" element={<AdminPlaceholder title="GDPR & Date Personale" description="Export date client, ștergere cont, gestionare consimțăminte." />} />
       <Route path="customers/import" element={<AdminPlaceholder title="Import Clienți" description="Import clienți din fișier CSV cu mapare câmpuri." />} />
@@ -143,20 +143,8 @@ export default function AdminRoutes() {
       <Route path="content/seo" element={<AdminPlaceholder title="SEO & Redirecționări" description="Meta tags, robots.txt, sitemap.xml, redirecționări 301/302, pagină 404." />} />
       <Route path="content/legal" element={<AdminPlaceholder title="Termeni & Politici" description="Termeni și condiții, politică confidențialitate, politică cookie." />} />
 
-      {/* ═══════════ MULTI-CANAL ═══════════ */}
-      <Route path="channels/emag" element={<AdminPlaceholder title="eMAG Marketplace" description="Sincronizare produse, prețuri, stoc și comenzi cu eMAG." />} />
-      <Route path="channels/google" element={<AdminPlaceholder title="Google Shopping" description="Feed produse pentru Google Merchant Center și Performance Max." />} />
-      <Route path="channels/facebook" element={<AdminPlaceholder title="Facebook Shop" description="Sincronizare catalog Facebook & Instagram Shop." />} />
-      <Route path="channels/allegro" element={<AdminPlaceholder title="Allegro" description="Sincronizare produse și comenzi cu Allegro Marketplace." />} />
-      <Route path="channels/olx" element={<AdminPlaceholder title="OLX" description="Publicare și sincronizare anunțuri pe OLX." />} />
-      <Route path="channels/pricero" element={<AdminPlaceholder title="Price.ro" description="Feed automat XML pentru comparatorul de prețuri Price.ro." />} />
-      <Route path="channels/compariro" element={<AdminPlaceholder title="Compari.ro" description="Feed produse pentru Compari.ro cu sincronizare automată." />} />
-      <Route path="channels/api" element={<AdminPlaceholder title="API Extern" description="Documentație API, chei de acces și playground pentru integrări." />} />
-      <Route path="channels/connectors" element={<AdminPlaceholder title="Conectori Externi" description="Gestionare API keys, webhooks și integrări terțe." />} />
-
       {/* ═══════════ PLĂȚI ═══════════ */}
       <Route path="payments/methods" element={<AdminPaymentMethods />} />
-      <Route path="payments/gateways" element={<AdminPaymentMethods />} />
       <Route path="payments/transactions" element={<AdminTransactions />} />
       <Route path="payments/refunds" element={<AdminRefunds />} />
       <Route path="payments/installments" element={<AdminMokkaSettings />} />
@@ -175,6 +163,50 @@ export default function AdminRoutes() {
       <Route path="shipping/pickup" element={<AdminPlaceholder title="Puncte Ridicare" description="Easybox, PUDO și alte puncte de ridicare." />} />
       <Route path="shipping/scheduling" element={<AdminPlaceholder title="Programări Livrare" description="Interval orar și dată preferată pentru livrare." />} />
       <Route path="shipping/webhooks" element={<AdminWebhooks />} />
+
+      {/* ═══════════ INTEGRĂRI ═══════════ */}
+      <Route path="integrations" element={<AdminAppStore />} />
+      <Route path="integrations/app-store" element={<AdminAppStore />} />
+      <Route path="integrations/stripe" element={<AdminPlaceholder title="Stripe" description="Configurare Stripe: chei API, webhook endpoint, metode de plată acceptate." />} />
+      <Route path="integrations/paypal" element={<AdminPlaceholder title="PayPal" description="Configurare PayPal: Client ID, Secret, mod sandbox/live." />} />
+      <Route path="integrations/netopia" element={<AdminPlaceholder title="Netopia Payments" description="Configurare Netopia: chei publice/private, URL notificare, mod test." />} />
+      <Route path="integrations/euplatesc" element={<AdminPlaceholder title="euPlătesc" description="Configurare euPlătesc: MID, cheia secretă, callback URL." />} />
+      <Route path="integrations/plati-online" element={<AdminPlaceholder title="Plăți Online" description="Configurare plăți-online.ro: API key, IPN URL, mod test." />} />
+      <Route path="integrations/tbi-bank" element={<AdminPlaceholder title="TBI Bank" description="Configurare TBI Bank pentru plata în rate: credențiale, limite, condiții." />} />
+      <Route path="integrations/paypo" element={<AdminPlaceholder title="PayPo" description="Configurare PayPo: API key, condiții de eligibilitate, mod test." />} />
+      <Route path="integrations/leanpay" element={<AdminPlaceholder title="LeanPay" description="Configurare LeanPay: chei API, limite rate, callback URL." />} />
+      <Route path="integrations/banca-transilvania" element={<AdminPlaceholder title="Banca Transilvania" description="Configurare BT Pay: Terminal ID, chei, 3D Secure." />} />
+      <Route path="integrations/smartbuybt" element={<AdminPlaceholder title="SmartBuyBT" description="Configurare SmartBuyBT de la Banca Transilvania pentru plata în rate." />} />
+      <Route path="integrations/epay" element={<AdminPlaceholder title="ePay" description="Configurare ePay: API key, webhook, mod test/live." />} />
+      <Route path="integrations/revolut" element={<AdminPlaceholder title="Revolut" description="Configurare Revolut Business: API key, webhook, mod sandbox." />} />
+      <Route path="integrations/fan-courier" element={<AdminPlaceholder title="Fan Courier" description="Configurare Fan Courier: utilizator API, parolă, generare AWB automat." />} />
+      <Route path="integrations/sameday" element={<AdminPlaceholder title="Sameday" description="Configurare Sameday: API key, Easybox, generare AWB." />} />
+      <Route path="integrations/gls" element={<AdminPlaceholder title="GLS" description="Configurare GLS: cont client, API key, servicii disponibile." />} />
+      <Route path="integrations/cargus" element={<AdminPlaceholder title="Cargus" description="Configurare Cargus: API key, locații preluare, AWB automat." />} />
+      <Route path="integrations/dpd" element={<AdminPlaceholder title="DPD" description="Configurare DPD: utilizator API, DPD Box, tracking automat." />} />
+      <Route path="integrations/dhl" element={<AdminPlaceholder title="DHL" description="Configurare DHL Express: API key, servicii internaționale." />} />
+      <Route path="integrations/smartbill" element={<AdminPlaceholder title="SmartBill" description="Configurare SmartBill: email cont, API token, serie facturi, generare automată." />} />
+      <Route path="integrations/facebook-pixel" element={<AdminPlaceholder title="Facebook Pixel" description="Configurare Meta Pixel: ID pixel, evenimente tracked, Conversions API." />} />
+      <Route path="integrations/tiktok-pixel" element={<AdminPlaceholder title="TikTok Pixel" description="Configurare TikTok Pixel: ID pixel, evenimente e-commerce." />} />
+      <Route path="integrations/google-ads" element={<AdminPlaceholder title="Google Ads" description="Configurare Google Ads: conversion tracking, remarketing tag." />} />
+      <Route path="integrations/google-analytics" element={<AdminPlaceholder title="Google Analytics" description="Configurare GA4: Measurement ID, e-commerce enhanced tracking." />} />
+      <Route path="integrations/gtm" element={<AdminPlaceholder title="Google Tag Manager" description="Configurare GTM: Container ID, data layer events." />} />
+      <Route path="integrations/mailchimp" element={<AdminPlaceholder title="Mailchimp" description="Configurare Mailchimp: API key, liste, sincronizare clienți." />} />
+      <Route path="integrations/emag" element={<AdminPlaceholder title="eMAG Marketplace" description="Sincronizare produse, prețuri, stoc și comenzi cu eMAG." />} />
+      <Route path="integrations/google-shopping" element={<AdminPlaceholder title="Google Shopping" description="Feed produse pentru Google Merchant Center și Performance Max." />} />
+      <Route path="integrations/facebook-shop" element={<AdminPlaceholder title="Facebook Shop" description="Sincronizare catalog Facebook & Instagram Shop." />} />
+      <Route path="integrations/compariro" element={<AdminPlaceholder title="Compari.ro" description="Feed produse pentru Compari.ro cu sincronizare automată." />} />
+      <Route path="integrations/pricero" element={<AdminPlaceholder title="Price.ro" description="Feed automat XML pentru comparatorul de prețuri Price.ro." />} />
+      <Route path="integrations/facebook-login" element={<AdminPlaceholder title="Facebook Login" description="Configurare Facebook Login: App ID, App Secret, redirect URI." />} />
+      <Route path="integrations/google-login" element={<AdminPlaceholder title="Google Login" description="Configurare Google Login: Client ID, Client Secret, OAuth consent." />} />
+      <Route path="integrations/nod" element={<AdminPlaceholder title="NOD" description="Integrare NOD: utilizator API, API key, sincronizare catalog și stoc." />} />
+      <Route path="integrations/ssl" element={<AdminPlaceholder title="Certificat SSL" description="Configurare certificat SSL: activare, verificare domeniu, reînnoire automată." />} />
+
+      {/* ═══════════ MULTI-CANAL ═══════════ */}
+      <Route path="channels/allegro" element={<AdminPlaceholder title="Allegro" description="Sincronizare produse și comenzi cu Allegro Marketplace." />} />
+      <Route path="channels/olx" element={<AdminPlaceholder title="OLX" description="Publicare și sincronizare anunțuri pe OLX." />} />
+      <Route path="channels/api" element={<AdminPlaceholder title="API Extern" description="Documentație API, chei de acces și playground pentru integrări." />} />
+      <Route path="channels/connectors" element={<AdminPlaceholder title="Conectori Externi" description="Gestionare API keys, webhooks și integrări terțe." />} />
 
       {/* ═══════════ RAPOARTE ═══════════ */}
       <Route path="reports" element={<AdminReports />} />
@@ -198,7 +230,6 @@ export default function AdminRoutes() {
       <Route path="settings/notifications" element={<AdminPlaceholder title="Notificări" description="Configurare notificări email, SMS și push — admin și client." />} />
       <Route path="settings/security" element={<AdminPlaceholder title="Securitate" description="Parolă minimă, blocare după încercări eșuate, reCAPTCHA." />} />
       <Route path="settings/gdpr" element={<AdminPlaceholder title="GDPR & Politici" description="Texte consimțământ, perioadă retenție date, export/ștergere automată." />} />
-      <Route path="settings/integrations" element={<AdminPlaceholder title="Integrări" description="Chei API, webhooks și configurare servicii externe." />} />
       <Route path="settings/checkout" element={<AdminPlaceholder title="Setări Checkout" description="Tip checkout (standard/one-page), guest checkout, câmpuri obligatorii." />} />
       <Route path="settings/cart" element={<AdminPlaceholder title="Setări Coș" description="Mod afișare, recomandări, comportament adăugare, ordine produse." />} />
 
@@ -210,9 +241,7 @@ export default function AdminRoutes() {
       <Route path="users/ip-whitelist" element={<AdminPlaceholder title="IP Whitelist" description="Restricționare acces admin doar de pe IP-uri specifice." />} />
       <Route path="users/audit" element={<AdminAuditLog />} />
 
-      {/* ═══════════ MODULE / APP STORE ═══════════ */}
-      <Route path="modules" element={<AdminAppStore />} />
-      <Route path="modules/marketplace" element={<AdminAppStore />} />
+      {/* ═══════════ APLICAȚII ═══════════ */}
       <Route path="modules/ai-generator" element={<AdminAIGenerator />} />
       <Route path="modules/logs" element={<AdminPlaceholder title="Logs & Health" description="Logs integrare, retry queue și diagnosticare erori." />} />
     </Routes>
