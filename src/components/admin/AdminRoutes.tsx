@@ -42,6 +42,7 @@ import AdminAffiliates from "./marketing/AdminAffiliates";
 import AdminBrands from "./products/AdminBrands";
 import AdminReviews from "./products/AdminReviews";
 import AdminCmsPages from "./content/AdminCmsPages";
+import AdminPromotions from "./marketing/AdminPromotions";
 
 export default function AdminRoutes() {
   return (
