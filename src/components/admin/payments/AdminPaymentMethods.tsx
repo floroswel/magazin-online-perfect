@@ -59,7 +59,7 @@ export default function AdminPaymentMethods() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["payment-methods"] });
-      toast({ title: "Status actualizat" });
+      toast.success("Status actualizat");
     },
   });
 
