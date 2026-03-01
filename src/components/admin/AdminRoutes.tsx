@@ -31,6 +31,7 @@ import AdminRefunds from "./payments/AdminRefunds";
 import AdminCarriers from "./shipping/AdminCarriers";
 import AdminShippingRates from "./shipping/AdminShippingRates";
 import AdminTracking from "./shipping/AdminTracking";
+import AdminMokkaSettings from "./payments/AdminMokkaSettings";
 
 export default function AdminRoutes() {
   return (
