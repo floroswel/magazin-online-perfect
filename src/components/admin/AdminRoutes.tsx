@@ -117,7 +117,7 @@ export default function AdminRoutes() {
 
       {/* ═══════════ MARKETING ═══════════ */}
       <Route path="coupons" element={<AdminCoupons />} />
-      <Route path="marketing/promotions" element={<AdminPlaceholder title="Promoții" description="Promoții avansate: reduceri procentuale, BOGO, pachete, transport gratuit, scheduling." />} />
+      <Route path="marketing/promotions" element={<AdminPromotions />} />
       <Route path="newsletter" element={<AdminNewsletter />} />
       <Route path="marketing/sms" element={<AdminPlaceholder title="Campanii SMS" description="Notificări și promoții prin SMS." />} />
       <Route path="marketing/abandoned-cart" element={<AdminAbandonedCarts />} />
