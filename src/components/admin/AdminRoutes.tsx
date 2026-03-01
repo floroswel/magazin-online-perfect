@@ -25,6 +25,9 @@ import AdminUsers from "./users/AdminUsers";
 import AdminAppStore from "./integrations/AdminAppStore";
 import AdminAutomations from "./marketing/AdminAutomations";
 import AdminWebhooks from "./shipping/AdminWebhooks";
+import AdminPaymentMethods from "./payments/AdminPaymentMethods";
+import AdminTransactions from "./payments/AdminTransactions";
+import AdminRefunds from "./payments/AdminRefunds";
 
 export default function AdminRoutes() {
   return (
