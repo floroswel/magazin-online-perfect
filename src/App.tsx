@@ -17,6 +17,7 @@ import Favorites from "./pages/Favorites";
 import Compare from "./pages/Compare";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import CmsPage from "./pages/CmsPage";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="/account" element={<Account />} />
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/compare" element={<Compare />} />
+              <Route path="/page/:slug" element={<CmsPage />} />
               <Route path="/admin/*" element={<Admin />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

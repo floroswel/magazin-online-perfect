@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -9,9 +9,25 @@ import { z } from "zod";
 
 const emailSchema = z.string().trim().email("Adresa de email nu este validă").max(255);
 
+interface FooterPage { title: string; slug: string; placement: string }
+
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [pages, setPages] = useState<FooterPage[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("cms_pages")
+      .select("title, slug, placement")
+      .eq("published", true)
+      .in("placement", ["footer_info", "footer_help"])
+      .order("title")
+      .then(({ data }) => setPages(data || []));
+  }, []);
+
+  const infoPages = pages.filter(p => p.placement === "footer_info");
+  const helpPages = pages.filter(p => p.placement === "footer_help");
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,19 +65,31 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-3">Informații</h4>
             <ul className="space-y-2 text-sm text-white/70">
-              <li><Link to="/" className="hover:text-emag-yellow transition-colors">Despre noi</Link></li>
-              <li><Link to="/" className="hover:text-emag-yellow transition-colors">Contact</Link></li>
-              <li><Link to="/" className="hover:text-emag-yellow transition-colors">Termeni și condiții</Link></li>
-              <li><Link to="/" className="hover:text-emag-yellow transition-colors">Politica de confidențialitate</Link></li>
+              {infoPages.length > 0 ? infoPages.map(p => (
+                <li key={p.slug}><Link to={`/page/${p.slug}`} className="hover:text-emag-yellow transition-colors">{p.title}</Link></li>
+              )) : (
+                <>
+                  <li><Link to="/page/despre-noi" className="hover:text-emag-yellow transition-colors">Despre noi</Link></li>
+                  <li><Link to="/page/contact" className="hover:text-emag-yellow transition-colors">Contact</Link></li>
+                  <li><Link to="/page/termeni-si-conditii" className="hover:text-emag-yellow transition-colors">Termeni și condiții</Link></li>
+                  <li><Link to="/page/politica-de-confidentialitate" className="hover:text-emag-yellow transition-colors">Politica de confidențialitate</Link></li>
+                </>
+              )}
             </ul>
           </div>
           <div>
             <h4 className="font-semibold mb-3">Ajutor</h4>
             <ul className="space-y-2 text-sm text-white/70">
-              <li><Link to="/" className="hover:text-emag-yellow transition-colors">Livrare</Link></li>
-              <li><Link to="/" className="hover:text-emag-yellow transition-colors">Returnare</Link></li>
-              <li><Link to="/" className="hover:text-emag-yellow transition-colors">Garanție</Link></li>
-              <li><Link to="/" className="hover:text-emag-yellow transition-colors">FAQ</Link></li>
+              {helpPages.length > 0 ? helpPages.map(p => (
+                <li key={p.slug}><Link to={`/page/${p.slug}`} className="hover:text-emag-yellow transition-colors">{p.title}</Link></li>
+              )) : (
+                <>
+                  <li><Link to="/page/livrare" className="hover:text-emag-yellow transition-colors">Livrare</Link></li>
+                  <li><Link to="/page/returnare" className="hover:text-emag-yellow transition-colors">Returnare</Link></li>
+                  <li><Link to="/page/garantie" className="hover:text-emag-yellow transition-colors">Garanție</Link></li>
+                  <li><Link to="/page/faq" className="hover:text-emag-yellow transition-colors">FAQ</Link></li>
+                </>
+              )}
             </ul>
           </div>
           <div>

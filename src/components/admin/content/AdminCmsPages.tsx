@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -21,25 +22,33 @@ interface CmsPage {
   meta_title: string | null;
   meta_description: string | null;
   published: boolean;
+  placement: string;
   created_at: string;
   updated_at: string;
 }
 
 const PRESET_PAGES = [
-  { title: "Despre noi", slug: "despre-noi" },
-  { title: "Contact", slug: "contact" },
-  { title: "Termeni și Condiții", slug: "termeni-si-conditii" },
-  { title: "Politica de Confidențialitate", slug: "politica-de-confidentialitate" },
-  { title: "Politica Cookie", slug: "politica-cookie" },
-  { title: "Livrare", slug: "livrare" },
-  { title: "Returnare", slug: "returnare" },
-  { title: "Garanție", slug: "garantie" },
-  { title: "FAQ", slug: "faq" },
-  { title: "GDPR", slug: "gdpr" },
+  { title: "Despre noi", slug: "despre-noi", placement: "footer_info" },
+  { title: "Contact", slug: "contact", placement: "footer_info" },
+  { title: "Termeni și Condiții", slug: "termeni-si-conditii", placement: "footer_info" },
+  { title: "Politica de Confidențialitate", slug: "politica-de-confidentialitate", placement: "footer_info" },
+  { title: "Politica Cookie", slug: "politica-cookie", placement: "footer_info" },
+  { title: "Livrare", slug: "livrare", placement: "footer_help" },
+  { title: "Returnare", slug: "returnare", placement: "footer_help" },
+  { title: "Garanție", slug: "garantie", placement: "footer_help" },
+  { title: "FAQ", slug: "faq", placement: "footer_help" },
+  { title: "GDPR", slug: "gdpr", placement: "footer_info" },
+];
+
+const PLACEMENT_OPTIONS = [
+  { value: "footer_info", label: "Footer — Informații" },
+  { value: "footer_help", label: "Footer — Ajutor" },
+  { value: "header_nav", label: "Header — Navigație" },
+  { value: "none", label: "Nicăieri (ascunsă)" },
 ];
 
 const EMPTY_FORM = {
-  title: "", slug: "", body_html: "", meta_title: "", meta_description: "", published: false,
+  title: "", slug: "", body_html: "", meta_title: "", meta_description: "", published: false, placement: "footer_info",
 };
 
 export default function AdminCmsPages({ filterLegal }: { filterLegal?: boolean }) {
@@ -89,6 +98,7 @@ export default function AdminCmsPages({ filterLegal }: { filterLegal?: boolean }
       meta_title: page.meta_title || "",
       meta_description: page.meta_description || "",
       published: page.published,
+      placement: page.placement || "footer_info",
     });
     setEditorTab("visual");
     setShowEditor(true);
@@ -117,6 +127,7 @@ export default function AdminCmsPages({ filterLegal }: { filterLegal?: boolean }
       meta_title: form.meta_title.trim() || null,
       meta_description: form.meta_description.trim() || null,
       published: form.published,
+      placement: form.placement,
       updated_at: new Date().toISOString(),
     };
 
@@ -156,7 +167,7 @@ export default function AdminCmsPages({ filterLegal }: { filterLegal?: boolean }
       return;
     }
     const { error } = await supabase.from("cms_pages").insert(
-      missing.map(p => ({ title: p.title, slug: p.slug, body_html: `<h1>${p.title}</h1><p>Conținut de completat.</p>`, published: false }))
+      missing.map(p => ({ title: p.title, slug: p.slug, placement: p.placement, body_html: `<h1>${p.title}</h1><p>Conținut de completat.</p>`, published: false }))
     );
     if (error) toast.error(error.message);
     else { toast.success(`${missing.length} pagini create!`); loadPages(); }
@@ -273,6 +284,17 @@ export default function AdminCmsPages({ filterLegal }: { filterLegal?: boolean }
                 <div className="flex items-center justify-between">
                   <Label className="text-xs">Publicată</Label>
                   <Switch checked={form.published} onCheckedChange={v => setForm(f => ({ ...f, published: v }))} />
+                </div>
+                <div>
+                  <Label className="text-xs">Unde apare pagina?</Label>
+                  <Select value={form.placement} onValueChange={v => setForm(f => ({ ...f, placement: v }))}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {PLACEMENT_OPTIONS.map(o => (
+                        <SelectItem key={o.value} value={o.value} className="text-xs">{o.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <Button onClick={handleSave} disabled={saving} className="w-full">
                   {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
