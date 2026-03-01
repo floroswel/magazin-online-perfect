@@ -43,7 +43,7 @@ export default function AdminFooterBadges() {
     toast.success("Badge-uri salvate!");
   };
 
-  const add = () => setBadges(prev => [...prev, { title: "", url: "", image: "" }]);
+  const add = () => setBadges(prev => [...prev, { title: "", url: "", image: "", description: "" }]);
 
   const update = (i: number, field: keyof Badge, value: string) =>
     setBadges(prev => prev.map((b, idx) => idx === i ? { ...b, [field]: value } : b));
