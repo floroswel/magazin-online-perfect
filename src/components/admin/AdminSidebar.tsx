@@ -253,6 +253,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         children: [
           { label: "Module instalate", path: "/admin/modules" },
           { label: "Marketplace", path: "/admin/modules/marketplace" },
+          { label: "Generator AI", path: "/admin/modules/ai-generator" },
           { label: "Logs & health", path: "/admin/modules/logs" },
         ],
       },
