@@ -123,9 +123,6 @@ export default function ProductDetail() {
   const specs = product.specs && typeof product.specs === "object" ? Object.entries(product.specs as Record<string, string>) : [];
   const discount = product.old_price ? Math.round(((product.old_price - product.price) / product.old_price) * 100) : 0;
 
-  // Installment preview
-  const monthlyRate3 = (product.price / 3).toFixed(2);
-
   return (
     <Layout>
       <div className="container py-6">
