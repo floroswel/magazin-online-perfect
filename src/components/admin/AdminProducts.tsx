@@ -758,7 +758,7 @@ export default function AdminProducts() {
                 ))}
                 {filtered.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">Niciun produs găsit.</TableCell>
+                    <TableCell colSpan={7} className="text-center py-12 text-muted-foreground">Niciun produs găsit.</TableCell>
                   </TableRow>
                 )}
               </TableBody>
