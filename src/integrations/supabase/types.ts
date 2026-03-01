@@ -1269,6 +1269,138 @@ export type Database = {
         }
         Relationships: []
       }
+      mokka_logs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          ip_address: string | null
+          method: string
+          order_id: string | null
+          request_data: Json | null
+          response_data: Json | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          ip_address?: string | null
+          method: string
+          order_id?: string | null
+          request_data?: Json | null
+          response_data?: Json | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          ip_address?: string | null
+          method?: string
+          order_id?: string | null
+          request_data?: Json | null
+          response_data?: Json | null
+          status?: string
+        }
+        Relationships: []
+      }
+      mokka_settings: {
+        Row: {
+          accepted_terms: string[]
+          api_url: string
+          category_type: string
+          checkout_label: string | null
+          commission_rate: number | null
+          country_type: string
+          customer_group_type: string
+          demo_mode: boolean
+          differentiated_limit: boolean
+          enabled_snippet: boolean
+          excluded_categories: string[] | null
+          excluded_customer_groups: string[] | null
+          id: string
+          interest_rate: number | null
+          ip_whitelist: string[] | null
+          ip_whitelist_enabled: boolean
+          max_order_value: number | null
+          min_order_value: number | null
+          order_value_type: string
+          secret_key: string | null
+          selected_categories: string[] | null
+          selected_countries: string[] | null
+          selected_customer_groups: string[] | null
+          shipping_methods: string[] | null
+          shipping_methods_type: string
+          show_footer_icon: boolean
+          sort_order: number
+          store_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          accepted_terms?: string[]
+          api_url?: string
+          category_type?: string
+          checkout_label?: string | null
+          commission_rate?: number | null
+          country_type?: string
+          customer_group_type?: string
+          demo_mode?: boolean
+          differentiated_limit?: boolean
+          enabled_snippet?: boolean
+          excluded_categories?: string[] | null
+          excluded_customer_groups?: string[] | null
+          id?: string
+          interest_rate?: number | null
+          ip_whitelist?: string[] | null
+          ip_whitelist_enabled?: boolean
+          max_order_value?: number | null
+          min_order_value?: number | null
+          order_value_type?: string
+          secret_key?: string | null
+          selected_categories?: string[] | null
+          selected_countries?: string[] | null
+          selected_customer_groups?: string[] | null
+          shipping_methods?: string[] | null
+          shipping_methods_type?: string
+          show_footer_icon?: boolean
+          sort_order?: number
+          store_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          accepted_terms?: string[]
+          api_url?: string
+          category_type?: string
+          checkout_label?: string | null
+          commission_rate?: number | null
+          country_type?: string
+          customer_group_type?: string
+          demo_mode?: boolean
+          differentiated_limit?: boolean
+          enabled_snippet?: boolean
+          excluded_categories?: string[] | null
+          excluded_customer_groups?: string[] | null
+          id?: string
+          interest_rate?: number | null
+          ip_whitelist?: string[] | null
+          ip_whitelist_enabled?: boolean
+          max_order_value?: number | null
+          min_order_value?: number | null
+          order_value_type?: string
+          secret_key?: string | null
+          selected_categories?: string[] | null
+          selected_countries?: string[] | null
+          selected_customer_groups?: string[] | null
+          shipping_methods?: string[] | null
+          shipping_methods_type?: string
+          show_footer_icon?: boolean
+          sort_order?: number
+          store_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       newsletter_campaigns: {
         Row: {
           content: string
