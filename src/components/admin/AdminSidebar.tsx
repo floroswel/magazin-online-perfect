@@ -100,6 +100,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Segmentare", path: "/admin/customers/segments" },
           { label: "Etichete (tag-uri)", path: "/admin/customers/tags" },
           { label: "Puncte fidelitate", path: "/admin/customers/loyalty" },
+          { label: "Blacklist", path: "/admin/customers/blacklist" },
           { label: "Tichete suport", path: "/admin/customers/tickets" },
           { label: "GDPR & date", path: "/admin/customers/gdpr" },
           { label: "Import clienți", path: "/admin/customers/import" },
