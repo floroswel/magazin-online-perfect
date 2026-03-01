@@ -67,11 +67,15 @@ serve(async (req) => {
         callback_url: `${supabaseUrl}/functions/v1/mokka-checkout`,
       };
 
+      // Generate Mokka signature
+      const signature = await generateMokkaSignature(mokkaPayload, MOKKA_API_KEY);
+
       const response = await fetch(`${MOKKA_API_URL}/api/v1/applications`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${MOKKA_API_KEY}`,
           "Content-Type": "application/json",
+          "X-Signature": signature,
         },
         body: JSON.stringify(mokkaPayload),
       });
