@@ -136,7 +136,10 @@ export default function AdminImportExport() {
   const [mappingStep, setMappingStep] = useState<"idle" | "mapping" | "preview">("idle");
   const [csvFileName, setCsvFileName] = useState("");
 
-  useEffect(() => { fetchSchedules(); }, []);
+  useEffect(() => {
+    fetchSchedules();
+    supabase.from("categories").select("id, name, slug").order("name").then(({ data }) => setCategories(data || []));
+  }, []);
 
   const fetchSchedules = async () => {
     setLoadingSchedules(true);
