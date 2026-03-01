@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      abandoned_carts: {
+        Row: {
+          created_at: string
+          id: string
+          items: Json
+          last_activity_at: string
+          recovered: boolean | null
+          recovered_at: string | null
+          recovery_email_sent: boolean | null
+          recovery_email_sent_at: string | null
+          total: number | null
+          user_email: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          items?: Json
+          last_activity_at?: string
+          recovered?: boolean | null
+          recovered_at?: string | null
+          recovery_email_sent?: boolean | null
+          recovery_email_sent_at?: string | null
+          total?: number | null
+          user_email?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          items?: Json
+          last_activity_at?: string
+          recovered?: boolean | null
+          recovered_at?: string | null
+          recovery_email_sent?: boolean | null
+          recovery_email_sent_at?: string | null
+          total?: number | null
+          user_email?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       addresses: {
         Row: {
           address: string
@@ -52,6 +94,137 @@ export type Database = {
           label?: string | null
           phone?: string
           postal_code?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      affiliate_clicks: {
+        Row: {
+          affiliate_id: string
+          created_at: string
+          id: string
+          ip_address: string | null
+          landing_url: string | null
+          referrer_url: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          affiliate_id: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          landing_url?: string | null
+          referrer_url?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          affiliate_id?: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          landing_url?: string | null
+          referrer_url?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_clicks_affiliate_id_fkey"
+            columns: ["affiliate_id"]
+            isOneToOne: false
+            referencedRelation: "affiliates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      affiliate_conversions: {
+        Row: {
+          affiliate_id: string
+          commission_amount: number
+          created_at: string
+          id: string
+          order_id: string | null
+          order_total: number
+          status: string
+        }
+        Insert: {
+          affiliate_id: string
+          commission_amount?: number
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          order_total?: number
+          status?: string
+        }
+        Update: {
+          affiliate_id?: string
+          commission_amount?: number
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          order_total?: number
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_conversions_affiliate_id_fkey"
+            columns: ["affiliate_id"]
+            isOneToOne: false
+            referencedRelation: "affiliates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_conversions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      affiliates: {
+        Row: {
+          affiliate_code: string
+          commission_rate: number
+          created_at: string
+          id: string
+          payment_details: Json | null
+          payment_method: string | null
+          status: string
+          total_clicks: number | null
+          total_earnings: number | null
+          total_orders: number | null
+          total_paid: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          affiliate_code: string
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          payment_details?: Json | null
+          payment_method?: string | null
+          status?: string
+          total_clicks?: number | null
+          total_earnings?: number | null
+          total_orders?: number | null
+          total_paid?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          affiliate_code?: string
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          payment_details?: Json | null
+          payment_method?: string | null
+          status?: string
+          total_clicks?: number | null
+          total_earnings?: number | null
+          total_orders?: number | null
+          total_paid?: number | null
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -722,6 +895,81 @@ export type Database = {
           is_active?: boolean | null
           pricing_rules?: Json | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      custom_scripts: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          location: string
+          name: string
+          script_type: string
+          updated_at: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          location?: string
+          name: string
+          script_type?: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          location?: string
+          name?: string
+          script_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      customer_blacklist: {
+        Row: {
+          blocked_actions: string[] | null
+          created_at: string
+          created_by: string | null
+          email: string | null
+          expires_at: string | null
+          id: string
+          ip_address: string | null
+          is_active: boolean | null
+          phone: string | null
+          reason: string
+          user_id: string | null
+        }
+        Insert: {
+          blocked_actions?: string[] | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean | null
+          phone?: string | null
+          reason: string
+          user_id?: string | null
+        }
+        Update: {
+          blocked_actions?: string[] | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean | null
+          phone?: string | null
+          reason?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -2030,6 +2278,68 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "product_questions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_reviews: {
+        Row: {
+          admin_reply: string | null
+          body: string | null
+          cons: string | null
+          created_at: string
+          helpful_count: number | null
+          id: string
+          product_id: string
+          pros: string | null
+          rating: number
+          status: string
+          title: string | null
+          updated_at: string
+          user_id: string
+          user_name: string | null
+          verified_purchase: boolean | null
+        }
+        Insert: {
+          admin_reply?: string | null
+          body?: string | null
+          cons?: string | null
+          created_at?: string
+          helpful_count?: number | null
+          id?: string
+          product_id: string
+          pros?: string | null
+          rating: number
+          status?: string
+          title?: string | null
+          updated_at?: string
+          user_id: string
+          user_name?: string | null
+          verified_purchase?: boolean | null
+        }
+        Update: {
+          admin_reply?: string | null
+          body?: string | null
+          cons?: string | null
+          created_at?: string
+          helpful_count?: number | null
+          id?: string
+          product_id?: string
+          pros?: string | null
+          rating?: number
+          status?: string
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+          user_name?: string | null
+          verified_purchase?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_reviews_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
