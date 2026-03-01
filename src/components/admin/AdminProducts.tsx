@@ -72,8 +72,32 @@ export default function AdminProducts() {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState<any>(null);
   const [generatingDesc, setGeneratingDesc] = useState(false);
+  const [removingBg, setRemovingBg] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+
+  const removeBackground = async (imageUrl: string, target: "main" | number) => {
+    setRemovingBg(target === "main" ? "main" : `gallery-${target}`);
+    try {
+      const { data, error } = await supabase.functions.invoke("remove-background", {
+        body: { image_url: imageUrl },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      if (target === "main") {
+        setForm((f) => ({ ...f, image_url: data.url }));
+      } else {
+        setForm((f) => ({
+          ...f,
+          images: f.images.map((img, i) => (i === target ? data.url : img)),
+        }));
+      }
+      toast.success("Fundal eliminat cu succes!");
+    } catch (err: any) {
+      toast.error(err.message || "Eroare la eliminarea fundalului");
+    }
+    setRemovingBg(null);
+  };
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["admin-products"],
