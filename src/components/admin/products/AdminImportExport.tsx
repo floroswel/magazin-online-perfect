@@ -224,38 +224,46 @@ export default function AdminImportExport() {
     return mapped.includes("name") && mapped.includes("price");
   }, [columnMapping]);
 
+  const resolveCategory = (name: string): string | null => {
+    if (!name) return null;
+    const lower = name.toLowerCase().trim();
+    const cat = categories.find(c => c.name.toLowerCase() === lower || c.slug === lower);
+    return cat?.id || null;
+  };
+
+  const transformRow = (row: string[]): Record<string, any> | null => {
+    const product: Record<string, any> = {};
+    Object.entries(columnMapping).forEach(([colIdx, field]) => {
+      const val = row[Number(colIdx)] || "";
+      if (!val) return;
+      if (field === "price" || field === "old_price" || field === "warranty_months") product[field] = parseFloat(val) || null;
+      else if (field === "stock") product[field] = parseInt(val) || 0;
+      else if (field === "featured") product[field] = val === "true" || val === "1" || val.toLowerCase() === "da";
+      else if (field === "images" || field === "tags") product[field] = val.split("|").map((s: string) => s.trim()).filter(Boolean);
+      else if (field === "category_name") {
+        const catId = resolveCategory(val);
+        if (catId) product.category_id = catId;
+        product._category_name = val; // keep for preview
+      }
+      else product[field] = val;
+    });
+    if (!product.name || !product.price) return null;
+    return product;
+  };
+
   const previewProducts = useMemo(() => {
     if (!mappingValid) return [];
-    return csvRows.slice(0, 5).map((row) => {
-      const product: Record<string, any> = {};
-      Object.entries(columnMapping).forEach(([colIdx, field]) => {
-        const val = row[Number(colIdx)] || "";
-        if (!val) return;
-        if (field === "price" || field === "old_price" || field === "warranty_months") product[field] = parseFloat(val) || null;
-        else if (field === "stock") product[field] = parseInt(val) || 0;
-        else if (field === "featured") product[field] = val === "true" || val === "1" || val.toLowerCase() === "da";
-        else if (field === "images" || field === "tags") product[field] = val.split("|").map((s: string) => s.trim()).filter(Boolean);
-        else product[field] = val;
-      });
-      if (!product.name || !product.price) return null;
-      return product;
-    }).filter(Boolean);
-  }, [csvRows, columnMapping, mappingValid]);
+    return csvRows.slice(0, 5).map((row) => transformRow(row)).filter(Boolean);
+  }, [csvRows, columnMapping, mappingValid, categories]);
 
   const handleMappedImport = async () => {
     const allProducts = csvRows.map((row) => {
-      const product: Record<string, any> = {};
-      Object.entries(columnMapping).forEach(([colIdx, field]) => {
-        const val = row[Number(colIdx)] || "";
-        if (!val) return;
-        if (field === "price" || field === "old_price" || field === "warranty_months") product[field] = parseFloat(val) || null;
-        else if (field === "stock") product[field] = parseInt(val) || 0;
-        else if (field === "featured") product[field] = val === "true" || val === "1" || val.toLowerCase() === "da";
-        else if (field === "images" || field === "tags") product[field] = val.split("|").map((s: string) => s.trim()).filter(Boolean);
-        else product[field] = val;
-      });
-      if (!product.name || !product.price) return null;
+      const product = transformRow(row);
+      if (!product) return null;
       if (!product.slug) product.slug = slugify(product.name);
+      delete product._category_name; // cleanup preview field
+      return product;
+    }).filter(Boolean);
       return product;
     }).filter(Boolean);
 
