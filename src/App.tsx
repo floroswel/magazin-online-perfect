@@ -17,6 +17,7 @@ import Favorites from "./pages/Favorites";
 import Compare from "./pages/Compare";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import CmsPage from "./pages/CmsPage";
 
 const queryClient = new QueryClient();
 
