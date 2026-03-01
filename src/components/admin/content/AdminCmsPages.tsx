@@ -28,16 +28,16 @@ interface CmsPage {
 }
 
 const PRESET_PAGES = [
-  { title: "Despre noi", slug: "despre-noi" },
-  { title: "Contact", slug: "contact" },
-  { title: "Termeni și Condiții", slug: "termeni-si-conditii" },
-  { title: "Politica de Confidențialitate", slug: "politica-de-confidentialitate" },
-  { title: "Politica Cookie", slug: "politica-cookie" },
-  { title: "Livrare", slug: "livrare" },
-  { title: "Returnare", slug: "returnare" },
-  { title: "Garanție", slug: "garantie" },
-  { title: "FAQ", slug: "faq" },
-  { title: "GDPR", slug: "gdpr" },
+  { title: "Despre noi", slug: "despre-noi", placement: "footer_info" },
+  { title: "Contact", slug: "contact", placement: "footer_info" },
+  { title: "Termeni și Condiții", slug: "termeni-si-conditii", placement: "footer_info" },
+  { title: "Politica de Confidențialitate", slug: "politica-de-confidentialitate", placement: "footer_info" },
+  { title: "Politica Cookie", slug: "politica-cookie", placement: "footer_info" },
+  { title: "Livrare", slug: "livrare", placement: "footer_help" },
+  { title: "Returnare", slug: "returnare", placement: "footer_help" },
+  { title: "Garanție", slug: "garantie", placement: "footer_help" },
+  { title: "FAQ", slug: "faq", placement: "footer_help" },
+  { title: "GDPR", slug: "gdpr", placement: "footer_info" },
 ];
 
 const PLACEMENT_OPTIONS = [
