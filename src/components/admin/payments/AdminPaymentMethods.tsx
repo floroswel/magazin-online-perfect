@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import {
   CreditCard, Banknote, Building2, Wallet, GripVertical,
   Settings2, Plus, Trash2, CheckCircle2, XCircle,
@@ -59,7 +59,7 @@ export default function AdminPaymentMethods() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["payment-methods"] });
-      toast({ title: "Status actualizat" });
+      toast.success("Status actualizat");
     },
   });
 
@@ -98,7 +98,7 @@ export default function AdminPaymentMethods() {
       queryClient.invalidateQueries({ queryKey: ["payment-methods"] });
       setEditMethod(null);
       setShowAdd(false);
-      toast({ title: "Metodă salvată cu succes" });
+      toast.success("Metodă salvată cu succes");
     },
   });
 
@@ -110,7 +110,7 @@ export default function AdminPaymentMethods() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["payment-methods"] });
       setEditMethod(null);
-      toast({ title: "Metodă ștearsă" });
+      toast.success("Metodă ștearsă");
     },
   });
 

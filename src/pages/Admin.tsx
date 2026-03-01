@@ -55,7 +55,7 @@ export default function Admin() {
         onToggleCollapse={() => setSidebarCollapsed((c) => !c)}
       />
       <div className="flex-1 flex flex-col overflow-auto">
-        <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-border px-2 lg:px-4 py-1.5 flex items-center gap-2 shadow-sm">
+        <header className="sticky top-0 z-30 bg-background/90 backdrop-blur-md border-b border-border px-2 lg:px-4 py-1.5 flex items-center gap-2 shadow-sm">
           <Button variant="ghost" size="icon" className="lg:hidden shrink-0 h-7 w-7 text-muted-foreground hover:text-primary" onClick={() => setSidebarOpen(true)}>
             <Menu className="w-4 h-4" />
           </Button>
