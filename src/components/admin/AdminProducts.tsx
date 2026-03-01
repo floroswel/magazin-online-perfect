@@ -72,8 +72,32 @@ export default function AdminProducts() {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState<any>(null);
   const [generatingDesc, setGeneratingDesc] = useState(false);
+  const [removingBg, setRemovingBg] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+
+  const removeBackground = async (imageUrl: string, target: "main" | number) => {
+    setRemovingBg(target === "main" ? "main" : `gallery-${target}`);
+    try {
+      const { data, error } = await supabase.functions.invoke("remove-background", {
+        body: { image_url: imageUrl },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      if (target === "main") {
+        setForm((f) => ({ ...f, image_url: data.url }));
+      } else {
+        setForm((f) => ({
+          ...f,
+          images: f.images.map((img, i) => (i === target ? data.url : img)),
+        }));
+      }
+      toast.success("Fundal eliminat cu succes!");
+    } catch (err: any) {
+      toast.error(err.message || "Eroare la eliminarea fundalului");
+    }
+    setRemovingBg(null);
+  };
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["admin-products"],
@@ -514,7 +538,7 @@ export default function AdminProducts() {
               <Label>Imagine principală</Label>
               <div className="flex gap-3 items-start">
                 {form.image_url ? (
-                  <div className="relative w-28 h-28 rounded-lg overflow-hidden border border-border">
+              <div className="relative w-28 h-28 rounded-lg overflow-hidden border border-border">
                     <img src={form.image_url} alt="Preview" className="w-full h-full object-cover" />
                     <button type="button" onClick={() => setForm({ ...form, image_url: "" })} className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-0.5">
                       <X className="w-3 h-3" />
@@ -527,9 +551,22 @@ export default function AdminProducts() {
                 )}
                 <div className="flex-1 space-y-2">
                   <input ref={fileInputRef} type="file" accept="image/*" onChange={handleMainImageUpload} className="hidden" />
-                  <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
-                    <Upload className="w-4 h-4 mr-1" /> {uploading ? "Se încarcă..." : "Încarcă imagine"}
-                  </Button>
+                  <div className="flex gap-2 flex-wrap">
+                    <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+                      <Upload className="w-4 h-4 mr-1" /> {uploading ? "Se încarcă..." : "Încarcă imagine"}
+                    </Button>
+                    {form.image_url && (
+                      <Button
+                        type="button" variant="outline" size="sm"
+                        disabled={removingBg === "main"}
+                        onClick={() => removeBackground(form.image_url, "main")}
+                        className="gap-1.5"
+                      >
+                        {removingBg === "main" ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                        {removingBg === "main" ? "Procesez..." : "Elimină fundal (AI)"}
+                      </Button>
+                    )}
+                  </div>
                   <p className="text-xs text-muted-foreground">sau introdu URL:</p>
                   <Input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="https://..." className="text-xs" />
                 </div>
@@ -539,10 +576,19 @@ export default function AdminProducts() {
               <Label>Galerie imagini ({form.images.length})</Label>
               <div className="flex flex-wrap gap-2">
                 {form.images.map((url, idx) => (
-                  <div key={idx} className="relative w-20 h-20 rounded-lg overflow-hidden border border-border">
+                  <div key={idx} className="relative w-20 h-20 rounded-lg overflow-hidden border border-border group">
                     <img src={url} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
                     <button type="button" onClick={() => setForm((f) => ({ ...f, images: f.images.filter((_, i) => i !== idx) }))} className="absolute top-0.5 right-0.5 bg-destructive text-destructive-foreground rounded-full p-0.5">
                       <X className="w-3 h-3" />
+                    </button>
+                    <button
+                      type="button"
+                      disabled={removingBg === `gallery-${idx}`}
+                      onClick={() => removeBackground(url, idx)}
+                      className="absolute bottom-0.5 left-0.5 bg-primary text-primary-foreground rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                      title="Elimină fundal"
+                    >
+                      {removingBg === `gallery-${idx}` ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
                     </button>
                   </div>
                 ))}
