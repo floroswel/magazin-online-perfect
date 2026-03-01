@@ -43,7 +43,25 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { action, ...payload } = await req.json();
+    const body = await req.json();
+    const { action, ...payload } = body;
+
+    // Helper to log requests
+    const logRequest = async (method: string, orderId: string | null, requestData: any, responseData: any, status: string, errorMsg?: string) => {
+      try {
+        await supabase.from("mokka_logs").insert({
+          method,
+          order_id: orderId,
+          request_data: requestData,
+          response_data: responseData,
+          status,
+          error_message: errorMsg || null,
+          ip_address: req.headers.get("x-forwarded-for") || req.headers.get("cf-connecting-ip") || null,
+        });
+      } catch (e) {
+        console.error("Failed to log mokka request:", e);
+      }
+    };
 
     if (action === "create_application") {
       const { order_id, amount, items, customer, redirect_url } = payload;
