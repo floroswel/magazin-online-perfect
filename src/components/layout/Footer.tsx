@@ -114,8 +114,28 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="border-t border-white/20 mt-8 pt-6 text-center text-sm text-white/50">
-          © 2026 MegaShop. Toate drepturile rezervate.
+        <div className="border-t border-white/20 mt-8 pt-6 text-sm text-white/70 space-y-2">
+          <p className="font-semibold text-white">Soluționarea litigiilor</p>
+          <p>
+            Pentru soluționarea alternativă a litigiilor (SAL), puteți depune o cerere aici:{" "}
+            <a href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer" className="text-emag-yellow hover:underline">
+              reclamatiisal.anpc.ro
+            </a>{" "}
+            (ANPC – SAL)
+          </p>
+          <p>
+            Reclamații consumatori (ANPC – portal eServicii):{" "}
+            <a href="https://eservicii.anpc.ro/Depune-Cerere?serviciufilter-Category=Reclamatii+Consumatori" target="_blank" rel="noopener noreferrer" className="text-emag-yellow hover:underline">
+              eservicii.anpc.ro – Depune cerere
+            </a>
+          </p>
+          <p>
+            Platforma europeană de soluționare online a litigiilor (SOL/ODR) a fost întreruptă din 20.07.2025. Informații actuale:{" "}
+            <a href="https://consumer-redress.ec.europa.eu/index_en" target="_blank" rel="noopener noreferrer" className="text-emag-yellow hover:underline">
+              Consumer Redress in the EU
+            </a>
+          </p>
+          <p className="text-center text-white/50 pt-4">© 2026 MegaShop. Toate drepturile rezervate.</p>
         </div>
       </div>
     </footer>
