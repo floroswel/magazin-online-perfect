@@ -227,6 +227,8 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "General", path: "/admin/settings/general" },
           { label: "Taxe (TVA)", path: "/admin/settings/taxes" },
           { label: "Magazin", path: "/admin/settings/store" },
+          { label: "Coș de cumpărături", path: "/admin/settings/cart" },
+          { label: "Checkout", path: "/admin/settings/checkout" },
           { label: "Email / SMTP", path: "/admin/settings/email" },
           { label: "SEO global", path: "/admin/settings/seo" },
           { label: "Notificări", path: "/admin/settings/notifications" },
