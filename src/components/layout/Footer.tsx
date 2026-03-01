@@ -115,20 +115,23 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-white/20 mt-8 pt-6 flex flex-col items-center gap-3">
-          <div className="flex items-center gap-4">
-            <a href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer" title="ANPC – SAL">
-              <img src="https://wpfitness.suspended.suspended-page.com/wp-content/uploads/2020/01/anpc-1.png" alt="ANPC SAL" className="h-8 w-auto opacity-80 hover:opacity-100 transition-opacity" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+          <div className="flex items-center gap-5">
+            <a href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer" title="ANPC – Soluționarea Alternativă a Litigiilor">
+              <img src="/images/anpc-sal.png" alt="ANPC SAL" className="h-10 w-auto rounded opacity-90 hover:opacity-100 transition-opacity" />
             </a>
-            <a href="https://eservicii.anpc.ro/Depune-Cerere?serviciufilter-Category=Reclamatii+Consumatori" target="_blank" rel="noopener noreferrer" title="ANPC – Reclamații consumatori">
-              <img src="/images/eu-sol.png" alt="ANPC Reclamații" className="h-8 w-auto opacity-80 hover:opacity-100 transition-opacity" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+            <a href="https://eservicii.anpc.ro/Depune-Cerere?serviciufilter-Category=Reclamatii+Consumatori" target="_blank" rel="noopener noreferrer" title="ANPC – Reclamații Consumatori">
+              <img src="/images/anpc-sal.png" alt="ANPC Reclamații" className="h-10 w-auto rounded opacity-90 hover:opacity-100 transition-opacity" />
+            </a>
+            <a href="https://consumer-redress.ec.europa.eu/index_en" target="_blank" rel="noopener noreferrer" title="SOL/ODR – Platforma europeană">
+              <img src="/images/anpc-odr.png" alt="SOL ODR UE" className="h-10 w-auto rounded opacity-90 hover:opacity-100 transition-opacity" />
             </a>
           </div>
           <p className="text-[11px] text-white/50 text-center">
-            <a href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer" className="hover:text-emag-yellow">ANPC – SAL</a>
+            <a href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer" className="hover:text-emag-yellow transition-colors">ANPC – SAL</a>
             {" · "}
-            <a href="https://eservicii.anpc.ro/Depune-Cerere?serviciufilter-Category=Reclamatii+Consumatori" target="_blank" rel="noopener noreferrer" className="hover:text-emag-yellow">ANPC – Reclamații</a>
+            <a href="https://eservicii.anpc.ro/Depune-Cerere?serviciufilter-Category=Reclamatii+Consumatori" target="_blank" rel="noopener noreferrer" className="hover:text-emag-yellow transition-colors">ANPC – Reclamații</a>
             {" · "}
-            <a href="https://consumer-redress.ec.europa.eu/index_en" target="_blank" rel="noopener noreferrer" className="hover:text-emag-yellow">SOL/ODR – UE</a>
+            <a href="https://consumer-redress.ec.europa.eu/index_en" target="_blank" rel="noopener noreferrer" className="hover:text-emag-yellow transition-colors">SOL/ODR – UE</a>
           </p>
           <p className="text-center text-[11px] text-white/40">© 2026 MegaShop. Toate drepturile rezervate.</p>
         </div>
