@@ -40,6 +40,7 @@ const App = () => (
               <Route path="/account" element={<Account />} />
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/compare" element={<Compare />} />
+              <Route path="/page/:slug" element={<CmsPage />} />
               <Route path="/admin/*" element={<Admin />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
