@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Upload, Globe, Code, Download, CheckCircle2, AlertCircle, FileSpreadsheet, Loader2, Clock, Trash2, Play, Plus } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Upload, Globe, Code, Download, CheckCircle2, AlertCircle, FileSpreadsheet, Loader2, Clock, Trash2, Play, Plus, ArrowRight, Eye, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 
 interface ImportResult {
@@ -29,6 +30,74 @@ interface ScheduledImport {
   last_run_at: string | null;
   last_result: any;
   created_at: string;
+}
+
+const PRODUCT_FIELDS = [
+  { key: "", label: "— Nu mapa —" },
+  { key: "name", label: "Nume produs *" },
+  { key: "price", label: "Preț *" },
+  { key: "old_price", label: "Preț vechi" },
+  { key: "stock", label: "Stoc" },
+  { key: "description", label: "Descriere" },
+  { key: "short_description", label: "Descriere scurtă" },
+  { key: "image_url", label: "URL imagine principală" },
+  { key: "images", label: "Galerie imagini (separate prin |)" },
+  { key: "brand", label: "Brand" },
+  { key: "slug", label: "Slug (URL)" },
+  { key: "sku", label: "SKU / Cod produs" },
+  { key: "category_id", label: "ID categorie" },
+  { key: "featured", label: "Produs featured" },
+  { key: "meta_title", label: "Meta titlu (SEO)" },
+  { key: "meta_description", label: "Meta descriere (SEO)" },
+  { key: "tags", label: "Taguri (separate prin |)" },
+  { key: "warranty_months", label: "Garanție (luni)" },
+];
+
+function autoDetectMapping(header: string): string {
+  const h = header.toLowerCase().trim().replace(/"/g, "");
+  const map: Record<string, string> = {
+    name: "name", nume: "name", title: "name", titlu: "name", "product name": "name", denumire: "name",
+    price: "price", pret: "price", preț: "price",
+    old_price: "old_price", pret_vechi: "old_price", "preț vechi": "old_price",
+    stock: "stock", stoc: "stock", cantitate: "stock", qty: "stock", quantity: "stock",
+    description: "description", descriere: "description",
+    short_description: "short_description", "descriere scurtă": "short_description",
+    image_url: "image_url", imagine: "image_url", image: "image_url", "image link": "image_url", poza: "image_url",
+    images: "images", imagini: "images", galerie: "images",
+    brand: "brand", marca: "brand", producator: "brand", producător: "brand", manufacturer: "brand",
+    slug: "slug", url: "slug", permalink: "slug",
+    sku: "sku", cod: "sku", "cod produs": "sku",
+    category_id: "category_id", categorie: "category_id", category: "category_id",
+    featured: "featured", promovat: "featured",
+    meta_title: "meta_title", meta_description: "meta_description",
+    tags: "tags", taguri: "tags", etichete: "tags",
+    warranty_months: "warranty_months", garantie: "warranty_months", garanție: "warranty_months",
+  };
+  return map[h] || "";
+}
+
+function parseCSVLocal(text: string): { headers: string[]; rows: string[][] } {
+  const lines = text.split("\n").filter((l) => l.trim());
+  if (lines.length < 2) return { headers: [], rows: [] };
+  const parseLine = (line: string): string[] => {
+    const values: string[] = [];
+    let current = "";
+    let inQuotes = false;
+    for (const char of line) {
+      if (char === '"') { inQuotes = !inQuotes; }
+      else if (char === "," && !inQuotes) { values.push(current.trim()); current = ""; }
+      else { current += char; }
+    }
+    values.push(current.trim());
+    return values;
+  };
+  const headers = parseLine(lines[0]);
+  const rows = lines.slice(1).map(parseLine);
+  return { headers, rows };
+}
+
+function slugify(text: string): string {
+  return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
 const INTERVAL_OPTIONS = [
@@ -52,38 +121,27 @@ export default function AdminImportExport() {
   const [newSchedule, setNewSchedule] = useState({ name: "", feed_url: "", interval_minutes: "60" });
   const [addingSchedule, setAddingSchedule] = useState(false);
 
-  useEffect(() => {
-    fetchSchedules();
-  }, []);
+  // CSV mapping state
+  const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
+  const [csvRows, setCsvRows] = useState<string[][]>([]);
+  const [columnMapping, setColumnMapping] = useState<Record<number, string>>({});
+  const [mappingStep, setMappingStep] = useState<"idle" | "mapping" | "preview">("idle");
+  const [csvFileName, setCsvFileName] = useState("");
+
+  useEffect(() => { fetchSchedules(); }, []);
 
   const fetchSchedules = async () => {
     setLoadingSchedules(true);
-    const { data, error } = await supabase
-      .from("scheduled_imports")
-      .select("*")
-      .order("created_at", { ascending: false });
+    const { data, error } = await supabase.from("scheduled_imports").select("*").order("created_at", { ascending: false });
     if (!error) setSchedules(data || []);
     setLoadingSchedules(false);
   };
 
   const handleAddSchedule = async () => {
-    if (!newSchedule.name.trim() || !newSchedule.feed_url.trim()) {
-      toast.error("Completează numele și URL-ul feed-ului");
-      return;
-    }
+    if (!newSchedule.name.trim() || !newSchedule.feed_url.trim()) { toast.error("Completează numele și URL-ul feed-ului"); return; }
     setAddingSchedule(true);
-    const { error } = await supabase.from("scheduled_imports").insert({
-      name: newSchedule.name.trim(),
-      feed_url: newSchedule.feed_url.trim(),
-      interval_minutes: parseInt(newSchedule.interval_minutes),
-    });
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Import programat adăugat!");
-      setNewSchedule({ name: "", feed_url: "", interval_minutes: "60" });
-      fetchSchedules();
-    }
+    const { error } = await supabase.from("scheduled_imports").insert({ name: newSchedule.name.trim(), feed_url: newSchedule.feed_url.trim(), interval_minutes: parseInt(newSchedule.interval_minutes) });
+    if (error) { toast.error(error.message); } else { toast.success("Import programat adăugat!"); setNewSchedule({ name: "", feed_url: "", interval_minutes: "60" }); fetchSchedules(); }
     setAddingSchedule(false);
   };
 
@@ -103,68 +161,112 @@ export default function AdminImportExport() {
     toast.info(`Se rulează importul "${schedule.name}"...`);
     try {
       const headers = await getAuthHeaders();
-      const res = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/import-products`,
-        {
-          method: "POST",
-          headers: { ...headers, "Content-Type": "application/json" },
-          body: JSON.stringify({ feed_url: schedule.feed_url }),
-        }
-      );
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/import-products`, { method: "POST", headers: { ...headers, "Content-Type": "application/json" }, body: JSON.stringify({ feed_url: schedule.feed_url }) });
       const data = await res.json();
-      if (data.success) {
-        toast.success(`${data.inserted} produse importate din "${schedule.name}"!`);
-      } else {
-        toast.error(data.error || "Eroare la import");
-      }
-      // Update last_run_at locally
-      await supabase.from("scheduled_imports").update({
-        last_run_at: new Date().toISOString(),
-        last_result: data,
-      }).eq("id", schedule.id);
+      if (data.success) { toast.success(`${data.inserted} produse importate din "${schedule.name}"!`); } else { toast.error(data.error || "Eroare la import"); }
+      await supabase.from("scheduled_imports").update({ last_run_at: new Date().toISOString(), last_result: data }).eq("id", schedule.id);
       fetchSchedules();
-    } catch (err: any) {
-      toast.error(err.message);
-    }
+    } catch (err: any) { toast.error(err.message); }
   };
 
   const getAuthHeaders = async () => {
     const { data: { session } } = await supabase.auth.getSession();
-    return {
-      "Authorization": `Bearer ${session?.access_token}`,
-      "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-    };
+    return { "Authorization": `Bearer ${session?.access_token}`, "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY };
   };
 
-  const handleCSVUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // CSV Step 1: Parse and show mapping
+  const handleCSVSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setCsvFileName(file.name);
+    setResult(null);
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const text = ev.target?.result as string;
+      const { headers, rows } = parseCSVLocal(text);
+      if (headers.length === 0) { toast.error("Fișierul CSV este gol sau invalid"); return; }
+      setCsvHeaders(headers);
+      setCsvRows(rows);
+      const autoMap: Record<number, string> = {};
+      headers.forEach((h, i) => { const detected = autoDetectMapping(h); if (detected) autoMap[i] = detected; });
+      setColumnMapping(autoMap);
+      setMappingStep("mapping");
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
+  const updateMapping = (colIndex: number, field: string) => {
+    setColumnMapping((prev) => {
+      const next = { ...prev };
+      if (!field || field === "none") { delete next[colIndex]; }
+      else {
+        Object.keys(next).forEach((k) => { if (next[Number(k)] === field && Number(k) !== colIndex) delete next[Number(k)]; });
+        next[colIndex] = field;
+      }
+      return next;
+    });
+  };
+
+  const mappingValid = useMemo(() => {
+    const mapped = Object.values(columnMapping);
+    return mapped.includes("name") && mapped.includes("price");
+  }, [columnMapping]);
+
+  const previewProducts = useMemo(() => {
+    if (!mappingValid) return [];
+    return csvRows.slice(0, 5).map((row) => {
+      const product: Record<string, any> = {};
+      Object.entries(columnMapping).forEach(([colIdx, field]) => {
+        const val = row[Number(colIdx)] || "";
+        if (!val) return;
+        if (field === "price" || field === "old_price" || field === "warranty_months") product[field] = parseFloat(val) || null;
+        else if (field === "stock") product[field] = parseInt(val) || 0;
+        else if (field === "featured") product[field] = val === "true" || val === "1" || val.toLowerCase() === "da";
+        else if (field === "images" || field === "tags") product[field] = val.split("|").map((s: string) => s.trim()).filter(Boolean);
+        else product[field] = val;
+      });
+      if (!product.name || !product.price) return null;
+      return product;
+    }).filter(Boolean);
+  }, [csvRows, columnMapping, mappingValid]);
+
+  const handleMappedImport = async () => {
+    const allProducts = csvRows.map((row) => {
+      const product: Record<string, any> = {};
+      Object.entries(columnMapping).forEach(([colIdx, field]) => {
+        const val = row[Number(colIdx)] || "";
+        if (!val) return;
+        if (field === "price" || field === "old_price" || field === "warranty_months") product[field] = parseFloat(val) || null;
+        else if (field === "stock") product[field] = parseInt(val) || 0;
+        else if (field === "featured") product[field] = val === "true" || val === "1" || val.toLowerCase() === "da";
+        else if (field === "images" || field === "tags") product[field] = val.split("|").map((s: string) => s.trim()).filter(Boolean);
+        else product[field] = val;
+      });
+      if (!product.name || !product.price) return null;
+      if (!product.slug) product.slug = slugify(product.name);
+      return product;
+    }).filter(Boolean);
+
+    if (allProducts.length === 0) { toast.error("Niciun produs valid de importat"); return; }
     setImporting(true);
     setResult(null);
-
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
       const headers = await getAuthHeaders();
-      const res = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/import-products`,
-        { method: "POST", headers, body: formData }
-      );
-
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/import-products`, { method: "POST", headers: { ...headers, "Content-Type": "application/json" }, body: JSON.stringify({ products: allProducts }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Eroare la import");
-
       setResult(data);
+      setMappingStep("idle");
+      setCsvHeaders([]);
+      setCsvRows([]);
+      setColumnMapping({});
       toast.success(`${data.inserted} produse importate din CSV!`);
-    } catch (err: any) {
-      toast.error(err.message);
-    } finally {
-      setImporting(false);
-      e.target.value = "";
-    }
+    } catch (err: any) { toast.error(err.message); }
+    finally { setImporting(false); }
   };
+
+  const resetMapping = () => { setMappingStep("idle"); setCsvHeaders([]); setCsvRows([]); setColumnMapping({}); setCsvFileName(""); };
 
   const handleFeedImport = async () => {
     if (!feedUrl.trim()) { toast.error("Introdu URL-ul feed-ului"); return; }
@@ -312,33 +414,122 @@ export default function AdminImportExport() {
               <CardTitle className="text-lg flex items-center gap-2">
                 <FileSpreadsheet className="w-5 h-5 text-primary" />
                 Import din fișier CSV
+                {mappingStep !== "idle" && (
+                  <Badge variant="outline" className="ml-2">{csvFileName}</Badge>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="bg-muted/30 rounded-lg p-4 text-sm text-muted-foreground space-y-2">
-                <p className="font-medium text-foreground">Format CSV acceptat:</p>
-                <p>Prima linie = header cu numele coloanelor. Coloane acceptate:</p>
-                <code className="block bg-muted p-2 rounded text-xs">
-                  name, price, old_price, stock, description, image_url, brand, slug, category_id, featured
-                </code>
-                <p>Sau în română: <code className="text-xs">nume, pret, pret_vechi, stoc, descriere, imagine, marca</code></p>
-              </div>
+              {mappingStep === "idle" && (
+                <>
+                  <div className="bg-muted/30 rounded-lg p-4 text-sm text-muted-foreground space-y-2">
+                    <p className="font-medium text-foreground">Încarcă un fișier CSV cu produse</p>
+                    <p>Prima linie trebuie să conțină header-ul cu numele coloanelor. După încărcare vei putea mapa fiecare coloană la câmpul corespunzător.</p>
+                  </div>
+                  <div>
+                    <Label>Selectează fișier CSV</Label>
+                    <Input type="file" accept=".csv,.txt" onChange={handleCSVSelect} disabled={importing} className="cursor-pointer" />
+                  </div>
+                </>
+              )}
 
-              <div>
-                <Label>Selectează fișier CSV</Label>
-                <Input
-                  type="file"
-                  accept=".csv,.txt"
-                  onChange={handleCSVUpload}
-                  disabled={importing}
-                  className="cursor-pointer"
-                />
-              </div>
+              {mappingStep === "mapping" && (
+                <>
+                  <div className="bg-muted/30 rounded-lg p-4 text-sm text-muted-foreground space-y-1">
+                    <p className="font-medium text-foreground">Pasul 1: Mapare coloane</p>
+                    <p>Asociază coloanele din CSV cu câmpurile produselor. Câmpurile <span className="text-destructive font-medium">Nume</span> și <span className="text-destructive font-medium">Preț</span> sunt obligatorii.</p>
+                    <p className="text-xs">{csvRows.length} rânduri detectate în fișier.</p>
+                  </div>
 
-              {importing && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="w-4 h-4 animate-spin" /> Se importă...
-                </div>
+                  <div className="border border-border rounded-lg overflow-hidden">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-[200px]">Coloană CSV</TableHead>
+                          <TableHead className="w-[200px]">Exemplu valoare</TableHead>
+                          <TableHead><ArrowRight className="w-4 h-4 inline mr-1" />Câmp produs</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {csvHeaders.map((header, i) => (
+                          <TableRow key={i}>
+                            <TableCell className="font-mono text-sm">{header}</TableCell>
+                            <TableCell className="text-xs text-muted-foreground max-w-[200px] truncate">
+                              {csvRows[0]?.[i] || "—"}
+                            </TableCell>
+                            <TableCell>
+                              <Select value={columnMapping[i] || ""} onValueChange={(v) => updateMapping(i, v)}>
+                                <SelectTrigger className="w-full">
+                                  <SelectValue placeholder="Nu mapa" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {PRODUCT_FIELDS.map((f) => (
+                                    <SelectItem key={f.key} value={f.key || "none"}>{f.label}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <Button variant="outline" onClick={resetMapping}>
+                      <RotateCcw className="w-4 h-4 mr-2" /> Anulează
+                    </Button>
+                    <Button onClick={() => setMappingStep("preview")} disabled={!mappingValid}>
+                      <Eye className="w-4 h-4 mr-2" /> Previzualizare
+                    </Button>
+                    {!mappingValid && (
+                      <span className="text-xs text-destructive">Mapează cel puțin Nume și Preț</span>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {mappingStep === "preview" && (
+                <>
+                  <div className="bg-muted/30 rounded-lg p-4 text-sm text-muted-foreground space-y-1">
+                    <p className="font-medium text-foreground">Pasul 2: Previzualizare (primele 5 produse)</p>
+                    <p>{csvRows.length} produse totale vor fi importate/actualizate.</p>
+                  </div>
+
+                  <div className="border border-border rounded-lg overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          {Object.values(columnMapping).map((field) => (
+                            <TableHead key={field} className="whitespace-nowrap text-xs">
+                              {PRODUCT_FIELDS.find((f) => f.key === field)?.label || field}
+                            </TableHead>
+                          ))}
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {previewProducts.map((product: any, i: number) => (
+                          <TableRow key={i}>
+                            {Object.values(columnMapping).map((field) => (
+                              <TableCell key={field} className="text-xs max-w-[200px] truncate">
+                                {Array.isArray(product[field]) ? product[field].join(", ") : String(product[field] ?? "—")}
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <Button variant="outline" onClick={() => setMappingStep("mapping")}>
+                      <RotateCcw className="w-4 h-4 mr-2" /> Înapoi la mapare
+                    </Button>
+                    <Button onClick={handleMappedImport} disabled={importing}>
+                      {importing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Se importă {csvRows.length} produse...</> : <><Upload className="w-4 h-4 mr-2" /> Importă {csvRows.length} produse</>}
+                    </Button>
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>
