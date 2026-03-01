@@ -8,6 +8,7 @@ import { useAdmin } from "@/hooks/useAdmin";
 import { useCart } from "@/hooks/useCart";
 import { useComparison } from "@/hooks/useComparison";
 import { Badge } from "@/components/ui/badge";
+import SearchAutocomplete from "@/components/SearchAutocomplete";
 
 const categories = [
   { name: "Telefoane", slug: "telefoane" },
@@ -43,19 +44,7 @@ export default function Header() {
             🛒 MegaShop
           </Link>
 
-          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-2xl">
-            <div className="relative w-full">
-              <Input
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                placeholder="Caută produse..."
-                className="w-full pr-12 bg-white border-none h-11 rounded-lg text-foreground placeholder:text-muted-foreground"
-              />
-              <Button type="submit" size="icon" className="absolute right-1 top-1 h-9 w-9 rounded-md bg-primary hover:bg-primary/90">
-                <Search className="h-4 w-4" />
-              </Button>
-            </div>
-          </form>
+          <SearchAutocomplete className="hidden md:block flex-1 max-w-2xl" />
 
           <div className="flex items-center gap-1 ml-auto">
             {user ? (
