@@ -43,7 +43,25 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { action, ...payload } = await req.json();
+    const body = await req.json();
+    const { action, ...payload } = body;
+
+    // Helper to log requests
+    const logRequest = async (method: string, orderId: string | null, requestData: any, responseData: any, status: string, errorMsg?: string) => {
+      try {
+        await supabase.from("mokka_logs").insert({
+          method,
+          order_id: orderId,
+          request_data: requestData,
+          response_data: responseData,
+          status,
+          error_message: errorMsg || null,
+          ip_address: req.headers.get("x-forwarded-for") || req.headers.get("cf-connecting-ip") || null,
+        });
+      } catch (e) {
+        console.error("Failed to log mokka request:", e);
+      }
+    };
 
     if (action === "create_application") {
       const { order_id, amount, items, customer, redirect_url } = payload;
@@ -78,8 +96,11 @@ serve(async (req) => {
       const data = await response.json();
 
       if (!response.ok) {
+        await logRequest("checkout", order_id, requestData, data, "error", `HTTP ${response.status}`);
         throw new Error(`Mokka API error [${response.status}]: ${JSON.stringify(data)}`);
       }
+
+      await logRequest("checkout", order_id, requestData, data, "success");
 
       // Store transaction
       await supabase
@@ -124,8 +145,10 @@ serve(async (req) => {
       const data = await response.json();
 
       if (!response.ok) {
+        await logRequest("finish", order_id, requestData, data, "error", `HTTP ${response.status}`);
         throw new Error(`Mokka finish error [${response.status}]: ${JSON.stringify(data)}`);
       }
+      await logRequest("finish", order_id, requestData, data, data.status === 0 ? "success" : "error");
 
       if (data.status === 0) {
         // Mark order as paid
@@ -166,8 +189,10 @@ serve(async (req) => {
       const data = await response.json();
 
       if (!response.ok) {
+        await logRequest("cancel", order_id, requestData, data, "error", `HTTP ${response.status}`);
         throw new Error(`Mokka cancel error [${response.status}]: ${JSON.stringify(data)}`);
       }
+      await logRequest("cancel", order_id, requestData, data, data.status === 0 ? "success" : "error");
 
       if (data.status === 0) {
         await supabase
@@ -211,8 +236,10 @@ serve(async (req) => {
       const data = await response.json();
 
       if (!response.ok) {
+        await logRequest("return", order_id, requestData, data, "error", `HTTP ${response.status}`);
         throw new Error(`Mokka return error [${response.status}]: ${JSON.stringify(data)}`);
       }
+      await logRequest("return", order_id, requestData, data, data.status === 0 ? "success" : "error");
 
       if (data.status === 0) {
         await supabase
@@ -238,7 +265,7 @@ serve(async (req) => {
       const { order_id, status, decision } = payload;
 
       console.log("Mokka Callback:", { order_id, status, decision });
-
+      await logRequest("callback", order_id, payload, { decision, status }, decision === "approved" ? "success" : "pending");
       if (decision === "approved" && status === "hold") {
         await supabase
           .from("orders")

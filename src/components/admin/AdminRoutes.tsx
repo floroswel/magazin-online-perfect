@@ -31,6 +31,7 @@ import AdminRefunds from "./payments/AdminRefunds";
 import AdminCarriers from "./shipping/AdminCarriers";
 import AdminShippingRates from "./shipping/AdminShippingRates";
 import AdminTracking from "./shipping/AdminTracking";
+import AdminMokkaSettings from "./payments/AdminMokkaSettings";
 
 export default function AdminRoutes() {
   return (
@@ -146,7 +147,8 @@ export default function AdminRoutes() {
       <Route path="payments/gateways" element={<AdminPaymentMethods />} />
       <Route path="payments/transactions" element={<AdminTransactions />} />
       <Route path="payments/refunds" element={<AdminRefunds />} />
-      <Route path="payments/installments" element={<AdminPlaceholder title="Rate & Installments" description="Integrare Mokka, TBI, PayPo, Alpha Bank pentru plăți în rate." />} />
+      <Route path="payments/installments" element={<AdminMokkaSettings />} />
+      <Route path="payments/mokka" element={<AdminMokkaSettings />} />
       <Route path="payments/settlements" element={<AdminPlaceholder title="Decontări" description="Perioade de decontare, sume și reconciliere cu gateway-uri." />} />
       <Route path="payments/reconciliation" element={<AdminPlaceholder title="Reconciliere" description="Verificare plăți, rambursări și status tranzacții." />} />
 
