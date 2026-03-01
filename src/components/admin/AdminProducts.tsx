@@ -663,8 +663,20 @@ export default function AdminProducts() {
             <div className="text-center py-12 text-muted-foreground">Se încarcă...</div>
           ) : (
             <Table>
-              <TableHeader>
+               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-10">
+                    <Checkbox
+                      checked={filtered.length > 0 && filtered.every((p: any) => selectedIds.has(p.id))}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedIds(new Set(filtered.map((p: any) => p.id)));
+                        } else {
+                          setSelectedIds(new Set());
+                        }
+                      }}
+                    />
+                  </TableHead>
                   <TableHead>Produs</TableHead>
                   <TableHead>Categorie</TableHead>
                   <TableHead>Preț</TableHead>
@@ -675,7 +687,19 @@ export default function AdminProducts() {
               </TableHeader>
               <TableBody>
                 {filtered.map((p: any) => (
-                  <TableRow key={p.id} className="group">
+                  <TableRow key={p.id} className={cn("group", selectedIds.has(p.id) && "bg-primary/5")}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.has(p.id)}
+                        onCheckedChange={(checked) => {
+                          setSelectedIds((prev) => {
+                            const next = new Set(prev);
+                            if (checked) next.add(p.id); else next.delete(p.id);
+                            return next;
+                          });
+                        }}
+                      />
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         {p.image_url ? (
