@@ -1,11 +1,29 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { encode as hexEncode } from "https://deno.land/std@0.190.0/encoding/hex.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
+
+/**
+ * Generate Mokka SHA1 signature per their spec:
+ * 1. JSON.stringify the payload
+ * 2. Escape all " with \"
+ * 3. Append secret key
+ * 4. SHA1 hash → 40 hex chars
+ */
+async function generateMokkaSignature(jsonData: Record<string, unknown>, secretKey: string): Promise<string> {
+  const jsonString = JSON.stringify(jsonData);
+  const escapedString = jsonString.replace(/"/g, '\\"');
+  const stringToHash = escapedString + secretKey;
+  const data = new TextEncoder().encode(stringToHash);
+  const hashBuffer = await crypto.subtle.digest("SHA-1", data);
+  const hashArray = new Uint8Array(hashBuffer);
+  return new TextDecoder().decode(hexEncode(hashArray));
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
