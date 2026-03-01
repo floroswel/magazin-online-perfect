@@ -23,6 +23,7 @@ interface ProductRow {
   sku?: string | null;
   meta_title?: string | null;
   meta_description?: string | null;
+  canonical_url?: string | null;
   tags?: string[] | null;
   warranty_months?: number | null;
   status?: string | null;
