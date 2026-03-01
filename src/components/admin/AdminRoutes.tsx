@@ -43,6 +43,7 @@ import AdminBrands from "./products/AdminBrands";
 import AdminReviews from "./products/AdminReviews";
 import AdminCmsPages from "./content/AdminCmsPages";
 import AdminPromotions from "./marketing/AdminPromotions";
+import AdminFooterBadges from "./settings/AdminFooterBadges";
 
 export default function AdminRoutes() {
   return (
