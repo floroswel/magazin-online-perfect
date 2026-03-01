@@ -88,6 +88,9 @@ export default function Index() {
         )}
       </section>
 
+      {/* Mokka banner */}
+      <MokkaBanner />
+
       {/* Deals */}
       {deals.length > 0 && (
         <section className="bg-card py-8">

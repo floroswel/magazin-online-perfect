@@ -159,12 +159,8 @@ export default function ProductDetail() {
               )}
             </div>
 
-            {/* Installment preview */}
-            <div className="bg-emag-blue/5 border border-emag-blue/20 rounded-lg p-3">
-              <p className="text-sm font-medium text-emag-blue">
-                💳 sau de la <span className="font-bold">{monthlyRate3} lei/lună</span> în 3 rate fără dobândă prin Mokka
-              </p>
-            </div>
+            {/* Mokka installment preview */}
+            <MokkaOrangePrice price={product.price} months={3} />
 
             <p className="text-muted-foreground">{product.description}</p>
 
