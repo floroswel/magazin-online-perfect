@@ -10,11 +10,13 @@ import { z } from "zod";
 const emailSchema = z.string().trim().email("Adresa de email nu este validă").max(255);
 
 interface FooterPage { title: string; slug: string; placement: string }
+interface LegalBadge { title: string; url: string; image: string }
 
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [pages, setPages] = useState<FooterPage[]>([]);
+  const [badges, setBadges] = useState<LegalBadge[]>([]);
 
   useEffect(() => {
     supabase
@@ -24,6 +26,17 @@ export default function Footer() {
       .in("placement", ["footer_info", "footer_help"])
       .order("title")
       .then(({ data }) => setPages(data || []));
+
+    supabase
+      .from("app_settings")
+      .select("value_json")
+      .eq("key", "footer_legal_badges")
+      .single()
+      .then(({ data }) => {
+        if (data?.value_json && Array.isArray(data.value_json)) {
+          setBadges(data.value_json as unknown as LegalBadge[]);
+        }
+      });
   }, []);
 
   const infoPages = pages.filter(p => p.placement === "footer_info");
@@ -115,24 +128,27 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-white/20 mt-8 pt-6 flex flex-col items-center gap-3">
-          <div className="flex items-center gap-5">
-            <a href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer" title="ANPC – Soluționarea Alternativă a Litigiilor">
-              <img src="/images/anpc-sal.png" alt="ANPC SAL" className="h-10 w-auto rounded opacity-90 hover:opacity-100 transition-opacity" />
-            </a>
-            <a href="https://eservicii.anpc.ro/Depune-Cerere?serviciufilter-Category=Reclamatii+Consumatori" target="_blank" rel="noopener noreferrer" title="ANPC – Reclamații Consumatori">
-              <img src="/images/anpc-sal.png" alt="ANPC Reclamații" className="h-10 w-auto rounded opacity-90 hover:opacity-100 transition-opacity" />
-            </a>
-            <a href="https://consumer-redress.ec.europa.eu/index_en" target="_blank" rel="noopener noreferrer" title="SOL/ODR – Platforma europeană">
-              <img src="/images/anpc-odr.png" alt="SOL ODR UE" className="h-10 w-auto rounded opacity-90 hover:opacity-100 transition-opacity" />
-            </a>
-          </div>
-          <p className="text-[11px] text-white/50 text-center">
-            <a href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer" className="hover:text-emag-yellow transition-colors">ANPC – SAL</a>
-            {" · "}
-            <a href="https://eservicii.anpc.ro/Depune-Cerere?serviciufilter-Category=Reclamatii+Consumatori" target="_blank" rel="noopener noreferrer" className="hover:text-emag-yellow transition-colors">ANPC – Reclamații</a>
-            {" · "}
-            <a href="https://consumer-redress.ec.europa.eu/index_en" target="_blank" rel="noopener noreferrer" className="hover:text-emag-yellow transition-colors">SOL/ODR – UE</a>
-          </p>
+          {badges.length > 0 && (
+            <>
+              <div className="flex items-center gap-5">
+                {badges.map((badge, i) => (
+                  <a key={i} href={badge.url} target="_blank" rel="noopener noreferrer" title={badge.title}>
+                    <img src={badge.image} alt={badge.title} className="h-10 w-auto rounded opacity-90 hover:opacity-100 transition-opacity" />
+                  </a>
+                ))}
+              </div>
+              <p className="text-[11px] text-white/50 text-center">
+                {badges.map((badge, i) => (
+                  <span key={i}>
+                    {i > 0 && " · "}
+                    <a href={badge.url} target="_blank" rel="noopener noreferrer" className="hover:text-emag-yellow transition-colors">
+                      {badge.title}
+                    </a>
+                  </span>
+                ))}
+              </p>
+            </>
+          )}
           <p className="text-center text-[11px] text-white/40">© 2026 MegaShop. Toate drepturile rezervate.</p>
         </div>
       </div>
