@@ -43,6 +43,7 @@ import AdminBrands from "./products/AdminBrands";
 import AdminReviews from "./products/AdminReviews";
 import AdminCmsPages from "./content/AdminCmsPages";
 import AdminPromotions from "./marketing/AdminPromotions";
+import AdminFooterBadges from "./settings/AdminFooterBadges";
 
 export default function AdminRoutes() {
   return (
@@ -225,6 +226,7 @@ export default function AdminRoutes() {
 
       {/* ═══════════ SETĂRI ═══════════ */}
       <Route path="settings/general" element={<AdminGeneralSettings />} />
+      <Route path="settings/footer-badges" element={<AdminFooterBadges />} />
       <Route path="settings/taxes" element={<AdminPlaceholder title="Taxe (TVA)" description="TVA standard 19%, TVA redus 5%/9%, scutiri, reverse charge B2B." />} />
       <Route path="settings/store" element={<AdminPlaceholder title="Setări Magazin" description="Produse pe pagină, afișare stoc, ordine produse, review-uri, wishlist, comparare." />} />
       <Route path="settings/email" element={<AdminPlaceholder title="Email / SMTP" description="Configurare SMTP, template-uri email, test email, logo în email-uri." />} />
