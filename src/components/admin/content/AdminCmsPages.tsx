@@ -98,6 +98,7 @@ export default function AdminCmsPages({ filterLegal }: { filterLegal?: boolean }
       meta_title: page.meta_title || "",
       meta_description: page.meta_description || "",
       published: page.published,
+      placement: page.placement || "footer_info",
     });
     setEditorTab("visual");
     setShowEditor(true);
