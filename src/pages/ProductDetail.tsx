@@ -132,10 +132,12 @@ export default function ProductDetail() {
         </Link>
 
         <div className="grid md:grid-cols-2 gap-8">
-          {/* Image */}
-          <div className="bg-card rounded-lg p-8 flex items-center justify-center border">
-            <img src={product.image_url || "/placeholder.svg"} alt={product.name} className="max-h-96 object-contain" />
-          </div>
+          {/* Image Gallery */}
+          <ProductImageGallery
+            mainImage={product.image_url || "/placeholder.svg"}
+            images={product.images}
+            alt={product.name}
+          />
 
           {/* Details */}
           <div className="space-y-4">
