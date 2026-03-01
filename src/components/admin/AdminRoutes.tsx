@@ -41,6 +41,7 @@ import AdminCustomScripts from "./content/AdminCustomScripts";
 import AdminAffiliates from "./marketing/AdminAffiliates";
 import AdminBrands from "./products/AdminBrands";
 import AdminReviews from "./products/AdminReviews";
+import AdminCmsPages from "./content/AdminCmsPages";
 
 export default function AdminRoutes() {
   return (
@@ -130,7 +131,7 @@ export default function AdminRoutes() {
       <Route path="marketing/reports" element={<AdminPlaceholder title="Rapoarte Marketing" description="Conversie campanii, utilizare vouchere, ROI per canal." />} />
 
       {/* ═══════════ CONȚINUT ═══════════ */}
-      <Route path="content/pages" element={<AdminPlaceholder title="Pagini (CMS)" description="Editor de pagini statice: Despre noi, Contact, Politici." />} />
+      <Route path="content/pages" element={<AdminCmsPages />} />
       <Route path="content/page-builder" element={<AdminPlaceholder title="Page Builder" description="Drag & drop page builder pentru pagini personalizate." />} />
       <Route path="content/homepage" element={<AdminPlaceholder title="Homepage" description="Editare secțiuni homepage: hero, categorii, produse recomandate." />} />
       <Route path="content/landing" element={<AdminPlaceholder title="Landing Pages" description="Pagini de campanie cu tracking și A/B testing." />} />
@@ -141,7 +142,7 @@ export default function AdminRoutes() {
       <Route path="content/translations" element={<AdminPlaceholder title="Traduceri" description="Multi-language: limbi disponibile, traducere automată, URL-uri localizate." />} />
       <Route path="content/email-templates" element={<AdminPlaceholder title="Șabloane Email" description="Editare template-uri email tranzacționale și marketing." />} />
       <Route path="content/seo" element={<AdminPlaceholder title="SEO & Redirecționări" description="Meta tags, robots.txt, sitemap.xml, redirecționări 301/302, pagină 404." />} />
-      <Route path="content/legal" element={<AdminPlaceholder title="Termeni & Politici" description="Termeni și condiții, politică confidențialitate, politică cookie." />} />
+      <Route path="content/legal" element={<AdminCmsPages filterLegal />} />
 
       {/* ═══════════ PLĂȚI ═══════════ */}
       <Route path="payments/methods" element={<AdminPaymentMethods />} />
