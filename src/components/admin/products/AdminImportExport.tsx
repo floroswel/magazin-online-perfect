@@ -414,33 +414,122 @@ export default function AdminImportExport() {
               <CardTitle className="text-lg flex items-center gap-2">
                 <FileSpreadsheet className="w-5 h-5 text-primary" />
                 Import din fișier CSV
+                {mappingStep !== "idle" && (
+                  <Badge variant="outline" className="ml-2">{csvFileName}</Badge>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="bg-muted/30 rounded-lg p-4 text-sm text-muted-foreground space-y-2">
-                <p className="font-medium text-foreground">Format CSV acceptat:</p>
-                <p>Prima linie = header cu numele coloanelor. Coloane acceptate:</p>
-                <code className="block bg-muted p-2 rounded text-xs">
-                  name, price, old_price, stock, description, image_url, brand, slug, category_id, featured
-                </code>
-                <p>Sau în română: <code className="text-xs">nume, pret, pret_vechi, stoc, descriere, imagine, marca</code></p>
-              </div>
+              {mappingStep === "idle" && (
+                <>
+                  <div className="bg-muted/30 rounded-lg p-4 text-sm text-muted-foreground space-y-2">
+                    <p className="font-medium text-foreground">Încarcă un fișier CSV cu produse</p>
+                    <p>Prima linie trebuie să conțină header-ul cu numele coloanelor. După încărcare vei putea mapa fiecare coloană la câmpul corespunzător.</p>
+                  </div>
+                  <div>
+                    <Label>Selectează fișier CSV</Label>
+                    <Input type="file" accept=".csv,.txt" onChange={handleCSVSelect} disabled={importing} className="cursor-pointer" />
+                  </div>
+                </>
+              )}
 
-              <div>
-                <Label>Selectează fișier CSV</Label>
-                <Input
-                  type="file"
-                  accept=".csv,.txt"
-                  onChange={handleCSVUpload}
-                  disabled={importing}
-                  className="cursor-pointer"
-                />
-              </div>
+              {mappingStep === "mapping" && (
+                <>
+                  <div className="bg-muted/30 rounded-lg p-4 text-sm text-muted-foreground space-y-1">
+                    <p className="font-medium text-foreground">Pasul 1: Mapare coloane</p>
+                    <p>Asociază coloanele din CSV cu câmpurile produselor. Câmpurile <span className="text-destructive font-medium">Nume</span> și <span className="text-destructive font-medium">Preț</span> sunt obligatorii.</p>
+                    <p className="text-xs">{csvRows.length} rânduri detectate în fișier.</p>
+                  </div>
 
-              {importing && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="w-4 h-4 animate-spin" /> Se importă...
-                </div>
+                  <div className="border border-border rounded-lg overflow-hidden">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-[200px]">Coloană CSV</TableHead>
+                          <TableHead className="w-[200px]">Exemplu valoare</TableHead>
+                          <TableHead><ArrowRight className="w-4 h-4 inline mr-1" />Câmp produs</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {csvHeaders.map((header, i) => (
+                          <TableRow key={i}>
+                            <TableCell className="font-mono text-sm">{header}</TableCell>
+                            <TableCell className="text-xs text-muted-foreground max-w-[200px] truncate">
+                              {csvRows[0]?.[i] || "—"}
+                            </TableCell>
+                            <TableCell>
+                              <Select value={columnMapping[i] || ""} onValueChange={(v) => updateMapping(i, v)}>
+                                <SelectTrigger className="w-full">
+                                  <SelectValue placeholder="Nu mapa" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {PRODUCT_FIELDS.map((f) => (
+                                    <SelectItem key={f.key} value={f.key || "none"}>{f.label}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <Button variant="outline" onClick={resetMapping}>
+                      <RotateCcw className="w-4 h-4 mr-2" /> Anulează
+                    </Button>
+                    <Button onClick={() => setMappingStep("preview")} disabled={!mappingValid}>
+                      <Eye className="w-4 h-4 mr-2" /> Previzualizare
+                    </Button>
+                    {!mappingValid && (
+                      <span className="text-xs text-destructive">Mapează cel puțin Nume și Preț</span>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {mappingStep === "preview" && (
+                <>
+                  <div className="bg-muted/30 rounded-lg p-4 text-sm text-muted-foreground space-y-1">
+                    <p className="font-medium text-foreground">Pasul 2: Previzualizare (primele 5 produse)</p>
+                    <p>{csvRows.length} produse totale vor fi importate/actualizate.</p>
+                  </div>
+
+                  <div className="border border-border rounded-lg overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          {Object.values(columnMapping).map((field) => (
+                            <TableHead key={field} className="whitespace-nowrap text-xs">
+                              {PRODUCT_FIELDS.find((f) => f.key === field)?.label || field}
+                            </TableHead>
+                          ))}
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {previewProducts.map((product: any, i: number) => (
+                          <TableRow key={i}>
+                            {Object.values(columnMapping).map((field) => (
+                              <TableCell key={field} className="text-xs max-w-[200px] truncate">
+                                {Array.isArray(product[field]) ? product[field].join(", ") : String(product[field] ?? "—")}
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <Button variant="outline" onClick={() => setMappingStep("mapping")}>
+                      <RotateCcw className="w-4 h-4 mr-2" /> Înapoi la mapare
+                    </Button>
+                    <Button onClick={handleMappedImport} disabled={importing}>
+                      {importing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Se importă {csvRows.length} produse...</> : <><Upload className="w-4 h-4 mr-2" /> Importă {csvRows.length} produse</>}
+                    </Button>
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>
