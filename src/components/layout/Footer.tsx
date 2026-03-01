@@ -127,27 +127,28 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="border-t border-white/20 mt-8 pt-6 flex flex-col items-center gap-3">
+        <div className="border-t border-white/20 mt-8 pt-6 flex flex-col items-center gap-4">
           {badges.length > 0 && (
-            <>
-              <div className="flex items-center gap-5">
+            <div className="w-full max-w-3xl space-y-4">
+              <h4 className="font-semibold text-sm text-center">Soluționarea litigiilor</h4>
+              <div className="flex flex-wrap justify-center gap-6">
                 {badges.map((badge, i) => (
-                  <a key={i} href={badge.url} target="_blank" rel="noopener noreferrer" title={badge.title}>
-                    <img src={badge.image} alt={badge.title} className="h-10 w-auto rounded opacity-90 hover:opacity-100 transition-opacity" />
-                  </a>
+                  <div key={i} className="flex items-start gap-3 max-w-xs">
+                    {badge.image && (
+                      <a href={badge.url} target="_blank" rel="noopener noreferrer" className="shrink-0">
+                        <img src={badge.image} alt={badge.title} className="h-10 w-auto rounded opacity-90 hover:opacity-100 transition-opacity" />
+                      </a>
+                    )}
+                    <p className="text-[12px] text-white/60 leading-relaxed">
+                      {badge.description && <span>{badge.description} </span>}
+                      <a href={badge.url} target="_blank" rel="noopener noreferrer" className="text-emag-yellow hover:underline">
+                        {badge.title}
+                      </a>
+                    </p>
+                  </div>
                 ))}
               </div>
-              <p className="text-[11px] text-white/50 text-center">
-                {badges.map((badge, i) => (
-                  <span key={i}>
-                    {i > 0 && " · "}
-                    <a href={badge.url} target="_blank" rel="noopener noreferrer" className="hover:text-emag-yellow transition-colors">
-                      {badge.title}
-                    </a>
-                  </span>
-                ))}
-              </p>
-            </>
+            </div>
           )}
           <p className="text-center text-[11px] text-white/40">© 2026 MegaShop. Toate drepturile rezervate.</p>
         </div>

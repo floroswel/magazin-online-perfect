@@ -81,18 +81,24 @@ export default function AdminFooterBadges() {
                   {badge.image && (
                     <img src={badge.image} alt={badge.title} className="h-12 w-12 rounded object-contain bg-muted p-1 shrink-0" />
                   )}
-                  <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div>
-                      <Label className="text-xs">Titlu</Label>
-                      <Input value={badge.title} onChange={e => update(i, "title", e.target.value)} placeholder="ANPC – SAL" />
+                  <div className="flex-1 space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div>
+                        <Label className="text-xs">Titlu</Label>
+                        <Input value={badge.title} onChange={e => update(i, "title", e.target.value)} placeholder="ANPC – SAL" />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Link</Label>
+                        <Input value={badge.url} onChange={e => update(i, "url", e.target.value)} placeholder="https://reclamatiisal.anpc.ro/" />
+                      </div>
+                      <div>
+                        <Label className="text-xs">URL imagine</Label>
+                        <Input value={badge.image} onChange={e => update(i, "image", e.target.value)} placeholder="/images/anpc-sal.png" />
+                      </div>
                     </div>
                     <div>
-                      <Label className="text-xs">Link</Label>
-                      <Input value={badge.url} onChange={e => update(i, "url", e.target.value)} placeholder="https://reclamatiisal.anpc.ro/" />
-                    </div>
-                    <div>
-                      <Label className="text-xs">URL imagine</Label>
-                      <Input value={badge.image} onChange={e => update(i, "image", e.target.value)} placeholder="/images/anpc-sal.png" />
+                      <Label className="text-xs">Descriere (text afișat în footer)</Label>
+                      <Input value={badge.description || ""} onChange={e => update(i, "description", e.target.value)} placeholder="Pentru soluționarea alternativă a litigiilor..." />
                     </div>
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => remove(i)} className="text-destructive shrink-0 mt-4">
