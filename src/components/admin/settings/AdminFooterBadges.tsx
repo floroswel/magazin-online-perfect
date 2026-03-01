@@ -11,6 +11,7 @@ interface Badge {
   title: string;
   url: string;
   image: string;
+  description: string;
 }
 
 export default function AdminFooterBadges() {
