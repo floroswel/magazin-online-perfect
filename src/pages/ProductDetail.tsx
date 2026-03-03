@@ -42,6 +42,14 @@ export default function ProductDetail() {
       if (!prod) { setLoading(false); return; }
       setProduct(prod);
 
+      // Track in localStorage for homepage RecentlyViewed
+      try {
+        const ids: string[] = JSON.parse(localStorage.getItem("recently_viewed") || "[]");
+        const updated = [prod.id, ...ids.filter(id => id !== prod.id)].slice(0, 20);
+        localStorage.setItem("recently_viewed", JSON.stringify(updated));
+      } catch {}
+
+
       const [simRes, revRes, qRes] = await Promise.all([
         supabase.from("products").select("*").eq("category_id", prod.category_id!).neq("id", prod.id).limit(4),
         supabase.from("reviews").select("*").eq("product_id", prod.id).order("created_at", { ascending: false }),
