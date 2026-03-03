@@ -9,17 +9,7 @@ import { useCart } from "@/hooks/useCart";
 import { useComparison } from "@/hooks/useComparison";
 import { Badge } from "@/components/ui/badge";
 import SearchAutocomplete from "@/components/SearchAutocomplete";
-
-const categories = [
-  { name: "Telefoane", slug: "telefoane" },
-  { name: "Laptopuri", slug: "laptopuri" },
-  { name: "TV", slug: "tv" },
-  { name: "Electrocasnice", slug: "electrocasnice" },
-  { name: "Casă & Grădină", slug: "casa-gradina" },
-  { name: "Fashion", slug: "fashion" },
-  { name: "Sport", slug: "sport" },
-  { name: "Gaming", slug: "gaming" },
-];
+import MegaMenu from "./MegaMenu";
 
 export default function Header() {
   const { user, signOut } = useAuth();
