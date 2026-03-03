@@ -322,6 +322,40 @@ export default function ProductDetail() {
           </section>
         )}
       </div>
+
+      {/* Schema.org JSON-LD */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: product.name,
+        description: product.description || "",
+        image: product.image_url || "",
+        brand: product.brand ? { "@type": "Brand", name: product.brand } : undefined,
+        sku: product.sku || product.id,
+        offers: {
+          "@type": "Offer",
+          url: window.location.href,
+          priceCurrency: "RON",
+          price: product.price,
+          availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        },
+        aggregateRating: product.review_count && product.review_count > 0 ? {
+          "@type": "AggregateRating",
+          ratingValue: product.rating || 0,
+          reviewCount: product.review_count,
+        } : undefined,
+      }) }} />
+
+      {/* Sticky mobile Add to Cart */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border shadow-lg px-4 py-3 flex items-center gap-3">
+        <div className="flex-1 min-w-0">
+          <p className="text-xs text-muted-foreground truncate">{product.name}</p>
+          <p className="text-lg font-bold text-primary">{product.price.toLocaleString("ro-RO")} lei</p>
+        </div>
+        <Button onClick={handleAddToCart} className="shrink-0 font-semibold">
+          <ShoppingCart className="h-4 w-4 mr-1" /> Adaugă
+        </Button>
+      </div>
     </Layout>
   );
 }
