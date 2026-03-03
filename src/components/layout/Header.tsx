@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, GitCompare, Award, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,17 +9,8 @@ import { useCart } from "@/hooks/useCart";
 import { useComparison } from "@/hooks/useComparison";
 import { Badge } from "@/components/ui/badge";
 import SearchAutocomplete from "@/components/SearchAutocomplete";
-
-const categories = [
-  { name: "Telefoane", slug: "telefoane" },
-  { name: "Laptopuri", slug: "laptopuri" },
-  { name: "TV", slug: "tv" },
-  { name: "Electrocasnice", slug: "electrocasnice" },
-  { name: "Casă & Grădină", slug: "casa-gradina" },
-  { name: "Fashion", slug: "fashion" },
-  { name: "Sport", slug: "sport" },
-  { name: "Gaming", slug: "gaming" },
-];
+import MegaMenu from "./MegaMenu";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Header() {
   const { user, signOut } = useAuth();
@@ -29,6 +20,13 @@ export default function Header() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [mobileCategories, setMobileCategories] = useState<{ name: string; slug: string }[]>([]);
+
+  useEffect(() => {
+    supabase.from("categories").select("name, slug").is("parent_id", null).order("name").then(({ data }) => {
+      setMobileCategories(data || []);
+    });
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,23 +116,8 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Categories nav */}
-      <nav className="bg-card border-b shadow-sm">
-        <div className="container">
-          <ul className="hidden md:flex items-center gap-1 py-1 overflow-x-auto">
-            {categories.map(cat => (
-              <li key={cat.slug}>
-                <Link
-                  to={`/catalog?category=${cat.slug}`}
-                  className="block px-3 py-2 text-sm font-medium text-foreground hover:text-primary rounded-md hover:bg-muted transition-colors whitespace-nowrap"
-                >
-                  {cat.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </nav>
+      {/* Mega Menu */}
+      <MegaMenu />
 
       {/* Mobile menu */}
       {mobileMenu && (
@@ -149,7 +132,7 @@ export default function Header() {
               </div>
             </form>
             <ul className="space-y-1">
-              {categories.map(cat => (
+              {mobileCategories.map(cat => (
                 <li key={cat.slug}>
                   <Link
                     to={`/catalog?category=${cat.slug}`}

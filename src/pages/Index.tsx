@@ -1,52 +1,39 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Zap, Truck, Shield, RotateCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
 import MokkaBanner from "@/components/mokka/MokkaBanner";
+import HeroSlider from "@/components/home/HeroSlider";
+import CategoryGrid from "@/components/home/CategoryGrid";
+import FlashDeals from "@/components/home/FlashDeals";
+import BestSellers from "@/components/home/BestSellers";
+import BrandCarousel from "@/components/home/BrandCarousel";
+import RecentlyViewed from "@/components/home/RecentlyViewed";
+import BlogPreview from "@/components/home/BlogPreview";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
 export default function Index() {
   const [featured, setFeatured] = useState<Tables<"products">[]>([]);
-  const [deals, setDeals] = useState<Tables<"products">[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function load() {
-      const [featuredRes, dealsRes] = await Promise.all([
-        supabase.from("products").select("*").eq("featured", true).limit(8),
-        supabase.from("products").select("*").not("old_price", "is", null).order("created_at", { ascending: false }).limit(4),
-      ]);
-      setFeatured(featuredRes.data || []);
-      setDeals(dealsRes.data || []);
-      setLoading(false);
-    }
-    load();
+    supabase
+      .from("products")
+      .select("*")
+      .eq("featured", true)
+      .limit(8)
+      .then(({ data }) => {
+        setFeatured(data || []);
+        setLoading(false);
+      });
   }, []);
 
   return (
     <Layout>
-      {/* Hero Banner */}
-      <section className="emag-gradient text-white">
-        <div className="container py-10 md:py-16">
-          <div className="max-w-2xl">
-            <h1 className="text-3xl md:text-5xl font-bold mb-4">
-              Cele mai bune oferte sunt aici! 🔥
-            </h1>
-            <p className="text-lg text-white/80 mb-6">
-              Descoperă mii de produse la prețuri imbatabile. Livrare rapidă în toată România.
-            </p>
-            <Link to="/catalog">
-              <Button size="lg" className="font-semibold text-base bg-primary hover:bg-primary/90 text-primary-foreground">
-                Vezi toate produsele
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* Hero Banner Slider */}
+      <HeroSlider />
 
       {/* Benefits bar */}
       <section className="bg-card border-b">
@@ -66,6 +53,9 @@ export default function Index() {
           </div>
         </div>
       </section>
+
+      {/* Category grid */}
+      <CategoryGrid />
 
       {/* Featured products */}
       <section className="container py-8">
@@ -88,25 +78,23 @@ export default function Index() {
         )}
       </section>
 
+      {/* Flash Deals with countdown */}
+      <FlashDeals />
+
       {/* Mokka banner */}
       <MokkaBanner />
 
-      {/* Deals */}
-      {deals.length > 0 && (
-        <section className="bg-card py-8">
-          <div className="container">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-foreground">🔥 Oferte ale zilei</h2>
-              <Link to="/catalog" className="text-primary hover:underline text-sm font-medium flex items-center gap-1">
-                Vezi toate <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {deals.map(p => <ProductCard key={p.id} product={p} />)}
-            </div>
-          </div>
-        </section>
-      )}
+      {/* Best Sellers */}
+      <BestSellers />
+
+      {/* Brand carousel */}
+      <BrandCarousel />
+
+      {/* Recently viewed */}
+      <RecentlyViewed />
+
+      {/* Blog preview */}
+      <BlogPreview />
     </Layout>
   );
 }
