@@ -44,6 +44,7 @@ import AdminReviews from "./products/AdminReviews";
 import AdminCmsPages from "./content/AdminCmsPages";
 import AdminPromotions from "./marketing/AdminPromotions";
 import AdminFooterBadges from "./settings/AdminFooterBadges";
+import AdminFooterSettings from "./settings/AdminFooterSettings";
 
 export default function AdminRoutes() {
   return (
