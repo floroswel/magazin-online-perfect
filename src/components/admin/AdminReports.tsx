@@ -4,30 +4,25 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line, AreaChart, Area,
+  PieChart, Pie, Cell, LineChart, Line, AreaChart, Area, ComposedChart,
 } from "recharts";
-import { TrendingUp, ShoppingCart, Package, Users, Percent, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { TrendingUp, ShoppingCart, Package, Users, Percent, ArrowUpRight, ArrowDownRight, Download, AlertTriangle } from "lucide-react";
 
-const COLORS = ["hsl(0, 80%, 50%)", "hsl(42, 100%, 50%)", "hsl(210, 80%, 45%)", "hsl(150, 60%, 45%)", "hsl(280, 60%, 50%)", "hsl(30, 80%, 50%)"];
+const COLORS = ["hsl(0, 80%, 50%)", "hsl(42, 100%, 50%)", "hsl(210, 80%, 45%)", "hsl(150, 60%, 45%)", "hsl(280, 60%, 50%)", "hsl(30, 80%, 50%)", "hsl(180, 60%, 45%)", "hsl(330, 70%, 50%)"];
 
 function getDaysAgo(days: number) {
-  const d = new Date();
-  d.setDate(d.getDate() - days);
-  return d.toISOString();
+  const d = new Date(); d.setDate(d.getDate() - days); return d.toISOString();
 }
 
-function KpiCard({ icon: Icon, label, value, subtitle, trend }: {
-  icon: any; label: string; value: string; subtitle?: string; trend?: number;
-}) {
+function KpiCard({ icon: Icon, label, value, subtitle, trend }: { icon: any; label: string; value: string; subtitle?: string; trend?: number }) {
   return (
     <Card>
       <CardContent className="pt-5 pb-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-primary/10">
-            <Icon className="w-5 h-5 text-primary" />
-          </div>
+          <div className="p-2 rounded-lg bg-primary/10"><Icon className="w-5 h-5 text-primary" /></div>
           <div className="flex-1 min-w-0">
             <p className="text-xs text-muted-foreground truncate">{label}</p>
             <p className="text-xl font-bold text-foreground">{value}</p>
@@ -51,7 +46,6 @@ function KpiCard({ icon: Icon, label, value, subtitle, trend }: {
 
 export default function AdminReports() {
   const [period, setPeriod] = useState("30");
-
   const cutoff = useMemo(() => getDaysAgo(Number(period)), [period]);
   const prevCutoff = useMemo(() => getDaysAgo(Number(period) * 2), [period]);
 
@@ -60,7 +54,7 @@ export default function AdminReports() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("id, total, status, created_at, payment_method, user_id, order_items(quantity, price, product_id, products(name, category_id))")
+        .select("id, total, status, created_at, payment_method, user_id, discount_amount, order_items(quantity, price, product_id, products(name, category_id, brand))")
         .gte("created_at", prevCutoff)
         .order("created_at", { ascending: true });
       if (error) throw error;
@@ -71,8 +65,16 @@ export default function AdminReports() {
   const { data: products = [] } = useQuery({
     queryKey: ["admin-reports-products"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("products").select("id, name, stock, price");
+      const { data, error } = await supabase.from("products").select("id, name, stock, price, brand, category_id");
       if (error) throw error;
+      return data || [];
+    },
+  });
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ["admin-reports-categories"],
+    queryFn: async () => {
+      const { data } = await supabase.from("categories").select("id, name");
       return data || [];
     },
   });
@@ -86,7 +88,6 @@ export default function AdminReports() {
     },
   });
 
-  // Split current vs previous period
   const currentOrders = orders.filter((o: any) => o.created_at >= cutoff);
   const prevOrders = orders.filter((o: any) => o.created_at < cutoff);
 
@@ -104,10 +105,11 @@ export default function AdminReports() {
 
   const uniqueCustomers = new Set(currentOrders.map((o: any) => o.user_id)).size;
   const newProfiles = profiles.filter((p: any) => p.created_at >= cutoff).length;
-
   const lowStock = products.filter((p: any) => p.stock <= 5).length;
   const deliveredOrders = currentOrders.filter((o: any) => o.status === "delivered").length;
   const conversionRate = totalOrdersCount > 0 ? (deliveredOrders / totalOrdersCount) * 100 : 0;
+
+  const totalDiscount = currentOrders.reduce((s: number, o: any) => s + Number(o.discount_amount || 0), 0);
 
   // Daily revenue chart
   const dailyMap: Record<string, { date: string; revenue: number; orders: number }> = {};
@@ -126,10 +128,7 @@ export default function AdminReports() {
 
   // Payment pie
   const paymentMap: Record<string, number> = {};
-  currentOrders.forEach((o: any) => {
-    const m = o.payment_method || "ramburs";
-    paymentMap[m] = (paymentMap[m] || 0) + 1;
-  });
+  currentOrders.forEach((o: any) => { paymentMap[o.payment_method || "ramburs"] = (paymentMap[o.payment_method || "ramburs"] || 0) + 1; });
   const paymentChart = Object.entries(paymentMap).map(([name, value]) => ({ name, value }));
 
   // Top products
@@ -142,60 +141,100 @@ export default function AdminReports() {
       prodSales[name].revenue += Number(item.price) * item.quantity;
     });
   });
-  const topProducts = Object.values(prodSales).sort((a, b) => b.revenue - a.revenue).slice(0, 8);
+  const topProducts = Object.values(prodSales).sort((a, b) => b.revenue - a.revenue).slice(0, 10);
 
-  // Customers new vs returning
-  const firstOrderMap: Record<string, string> = {};
-  orders.forEach((o: any) => {
-    if (!firstOrderMap[o.user_id] || o.created_at < firstOrderMap[o.user_id]) {
-      firstOrderMap[o.user_id] = o.created_at;
-    }
+  // Category revenue
+  const catRevenue: Record<string, number> = {};
+  currentOrders.forEach((o: any) => {
+    o.order_items?.forEach((item: any) => {
+      const catId = item.products?.category_id;
+      const catName = categories.find((c: any) => c.id === catId)?.name || "Necategorizat";
+      catRevenue[catName] = (catRevenue[catName] || 0) + Number(item.price) * item.quantity;
+    });
   });
+  const categoryChart = Object.entries(catRevenue).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value).slice(0, 8);
+
+  // Brand revenue
+  const brandRevenue: Record<string, number> = {};
+  currentOrders.forEach((o: any) => {
+    o.order_items?.forEach((item: any) => {
+      const brand = item.products?.brand || "Fără brand";
+      brandRevenue[brand] = (brandRevenue[brand] || 0) + Number(item.price) * item.quantity;
+    });
+  });
+  const brandChart = Object.entries(brandRevenue).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value).slice(0, 8);
+
+  // Conversion funnel
+  const funnelData = [
+    { name: "Comenzi plasate", value: totalOrdersCount },
+    { name: "În procesare", value: currentOrders.filter((o: any) => ["processing", "shipped", "delivered"].includes(o.status)).length },
+    { name: "Expediate", value: currentOrders.filter((o: any) => ["shipped", "delivered"].includes(o.status)).length },
+    { name: "Livrate", value: deliveredOrders },
+  ];
+
+  // Customers: new vs returning
+  const firstOrderMap: Record<string, string> = {};
+  orders.forEach((o: any) => { if (!firstOrderMap[o.user_id] || o.created_at < firstOrderMap[o.user_id]) firstOrderMap[o.user_id] = o.created_at; });
   const newCustomersOrders = currentOrders.filter((o: any) => firstOrderMap[o.user_id] >= cutoff).length;
   const returningOrders = totalOrdersCount - newCustomersOrders;
 
+  // Stock alerts
+  const lowStockProducts = products.filter((p: any) => p.stock <= 5 && p.stock > 0).slice(0, 10);
+  const outOfStockProducts = products.filter((p: any) => p.stock <= 0).slice(0, 10);
+
+  // CSV Export
+  const exportCsv = () => {
+    const headers = "Data,ID Comanda,Total,Status,Plata\n";
+    const rows = currentOrders.map((o: any) => `${o.created_at.slice(0, 10)},${o.id.slice(0, 8)},${o.total},${o.status},${o.payment_method || "ramburs"}`).join("\n");
+    const blob = new Blob([headers + rows], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = `raport-${period}zile.csv`; a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-5">
-      {/* Period selector */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-foreground">Rapoarte</h2>
-        <Select value={period} onValueChange={setPeriod}>
-          <SelectTrigger className="w-[160px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="7">Ultimele 7 zile</SelectItem>
-            <SelectItem value="30">Ultimele 30 zile</SelectItem>
-            <SelectItem value="90">Ultimele 90 zile</SelectItem>
-            <SelectItem value="365">Ultimul an</SelectItem>
-          </SelectContent>
-        </Select>
+        <h2 className="text-lg font-bold text-foreground">Rapoarte & Analiză</h2>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={exportCsv}><Download className="h-4 w-4 mr-1" /> Export CSV</Button>
+          <Select value={period} onValueChange={setPeriod}>
+            <SelectTrigger className="w-[160px]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7">Ultimele 7 zile</SelectItem>
+              <SelectItem value="30">Ultimele 30 zile</SelectItem>
+              <SelectItem value="90">Ultimele 90 zile</SelectItem>
+              <SelectItem value="365">Ultimul an</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
         <KpiCard icon={TrendingUp} label="Venituri" value={`${totalRevenue.toFixed(0)} RON`} trend={revenueTrend} />
         <KpiCard icon={ShoppingCart} label="Comenzi" value={String(totalOrdersCount)} trend={ordersTrend} />
         <KpiCard icon={Package} label="Valoare medie" value={`${avgOrderValue.toFixed(0)} RON`} trend={avgTrend} />
         <KpiCard icon={Users} label="Clienți unici" value={String(uniqueCustomers)} subtitle={`${newProfiles} noi`} />
-        <KpiCard icon={Percent} label="Rată livrare" value={`${conversionRate.toFixed(1)}%`} subtitle={`${lowStock} stoc scăzut`} />
+        <KpiCard icon={Percent} label="Rată livrare" value={`${conversionRate.toFixed(1)}%`} subtitle={`${deliveredOrders} livrate`} />
+        <KpiCard icon={AlertTriangle} label="Stoc scăzut" value={String(lowStock)} subtitle={`${outOfStockProducts.length} epuizate`} />
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList>
+        <TabsList className="flex-wrap">
           <TabsTrigger value="overview">Prezentare generală</TabsTrigger>
-          <TabsTrigger value="products">Produse</TabsTrigger>
+          <TabsTrigger value="products">Produse & Categorii</TabsTrigger>
           <TabsTrigger value="customers">Clienți</TabsTrigger>
+          <TabsTrigger value="funnel">Conversie</TabsTrigger>
+          <TabsTrigger value="stock">Stoc</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
-          {/* Revenue + Orders daily */}
           <Card>
             <CardHeader><CardTitle className="text-sm">Venituri & Comenzi zilnice</CardTitle></CardHeader>
             <CardContent>
               {dailyChart.length > 0 ? (
                 <ResponsiveContainer width="100%" height={280}>
-                  <AreaChart data={dailyChart}>
+                  <ComposedChart data={dailyChart}>
                     <defs>
                       <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="hsl(0, 80%, 50%)" stopOpacity={0.3} />
@@ -209,11 +248,9 @@ export default function AdminReports() {
                     <Tooltip labelFormatter={(v) => new Date(v).toLocaleDateString("ro-RO")} formatter={(v: number, name: string) => [name === "revenue" ? `${v.toFixed(0)} RON` : v, name === "revenue" ? "Venituri" : "Comenzi"]} />
                     <Area yAxisId="left" type="monotone" dataKey="revenue" stroke="hsl(0, 80%, 50%)" fill="url(#revGrad)" />
                     <Line yAxisId="right" type="monotone" dataKey="orders" stroke="hsl(210, 80%, 45%)" strokeWidth={2} dot={false} />
-                  </AreaChart>
+                  </ComposedChart>
                 </ResponsiveContainer>
-              ) : (
-                <p className="text-center text-muted-foreground py-8">Nicio dată pentru perioada selectată.</p>
-              )}
+              ) : <p className="text-center text-muted-foreground py-8">Nicio dată pentru perioada selectată.</p>}
             </CardContent>
           </Card>
 
@@ -223,28 +260,21 @@ export default function AdminReports() {
               <CardContent>
                 {statusChart.length > 0 ? (
                   <ResponsiveContainer width="100%" height={220}>
-                    <PieChart>
-                      <Pie data={statusChart} cx="50%" cy="50%" outerRadius={75} innerRadius={40} dataKey="value" label={({ name, value }) => `${name}: ${value}`}>
-                        {statusChart.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
+                    <PieChart><Pie data={statusChart} cx="50%" cy="50%" outerRadius={75} innerRadius={40} dataKey="value" label={({ name, value }) => `${name}: ${value}`}>
+                      {statusChart.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                    </Pie><Tooltip /></PieChart>
                   </ResponsiveContainer>
                 ) : <p className="text-center text-muted-foreground py-8">Nicio comandă.</p>}
               </CardContent>
             </Card>
-
             <Card>
               <CardHeader><CardTitle className="text-sm">Metode de Plată</CardTitle></CardHeader>
               <CardContent>
                 {paymentChart.length > 0 ? (
                   <ResponsiveContainer width="100%" height={220}>
-                    <PieChart>
-                      <Pie data={paymentChart} cx="50%" cy="50%" outerRadius={75} innerRadius={40} dataKey="value" label={({ name, value }) => `${name}: ${value}`}>
-                        {paymentChart.map((_, i) => <Cell key={i} fill={COLORS[(i + 2) % COLORS.length]} />)}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
+                    <PieChart><Pie data={paymentChart} cx="50%" cy="50%" outerRadius={75} innerRadius={40} dataKey="value" label={({ name, value }) => `${name}: ${value}`}>
+                      {paymentChart.map((_, i) => <Cell key={i} fill={COLORS[(i + 2) % COLORS.length]} />)}
+                    </Pie><Tooltip /></PieChart>
                   </ResponsiveContainer>
                 ) : <p className="text-center text-muted-foreground py-8">Nicio plată.</p>}
               </CardContent>
@@ -252,7 +282,7 @@ export default function AdminReports() {
           </div>
         </TabsContent>
 
-        <TabsContent value="products">
+        <TabsContent value="products" className="space-y-4">
           <Card>
             <CardHeader><CardTitle className="text-sm">Top Produse (după venituri)</CardTitle></CardHeader>
             <CardContent>
@@ -269,6 +299,42 @@ export default function AdminReports() {
               ) : <p className="text-center text-muted-foreground py-8">Niciun produs vândut.</p>}
             </CardContent>
           </Card>
+
+          <div className="grid lg:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader><CardTitle className="text-sm">Venituri per Categorie</CardTitle></CardHeader>
+              <CardContent>
+                {categoryChart.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart data={categoryChart}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" tick={{ fontSize: 10 }} angle={-30} textAnchor="end" height={60} />
+                      <YAxis tick={{ fontSize: 11 }} />
+                      <Tooltip formatter={(v: number) => `${v.toFixed(0)} RON`} />
+                      <Bar dataKey="value" fill="hsl(210, 80%, 45%)" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : <p className="text-center text-muted-foreground py-8">Nicio dată.</p>}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader><CardTitle className="text-sm">Venituri per Brand</CardTitle></CardHeader>
+              <CardContent>
+                {brandChart.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart data={brandChart}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" tick={{ fontSize: 10 }} angle={-30} textAnchor="end" height={60} />
+                      <YAxis tick={{ fontSize: 11 }} />
+                      <Tooltip formatter={(v: number) => `${v.toFixed(0)} RON`} />
+                      <Bar dataKey="value" fill="hsl(150, 60%, 45%)" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : <p className="text-center text-muted-foreground py-8">Nicio dată.</p>}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="customers">
@@ -277,47 +343,87 @@ export default function AdminReports() {
               <CardHeader><CardTitle className="text-sm">Clienți noi vs. recurenți</CardTitle></CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={220}>
-                  <PieChart>
-                    <Pie
-                      data={[
-                        { name: "Noi", value: newCustomersOrders },
-                        { name: "Recurenți", value: returningOrders },
-                      ]}
-                      cx="50%" cy="50%" outerRadius={75} innerRadius={40} dataKey="value"
-                      label={({ name, value }) => `${name}: ${value}`}
-                    >
-                      <Cell fill="hsl(210, 80%, 45%)" />
-                      <Cell fill="hsl(150, 60%, 45%)" />
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
+                  <PieChart><Pie data={[{ name: "Noi", value: newCustomersOrders }, { name: "Recurenți", value: returningOrders }]} cx="50%" cy="50%" outerRadius={75} innerRadius={40} dataKey="value" label={({ name, value }) => `${name}: ${value}`}>
+                    <Cell fill="hsl(210, 80%, 45%)" /><Cell fill="hsl(150, 60%, 45%)" />
+                  </Pie><Tooltip /></PieChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
-
             <Card>
               <CardHeader><CardTitle className="text-sm">Statistici clienți</CardTitle></CardHeader>
               <CardContent className="space-y-3 pt-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Clienți unici (perioadă)</span>
-                  <span className="font-semibold text-foreground">{uniqueCustomers}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Conturi noi create</span>
-                  <span className="font-semibold text-foreground">{newProfiles}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Comenzi clienți noi</span>
-                  <span className="font-semibold text-foreground">{newCustomersOrders}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Comenzi clienți recurenți</span>
-                  <span className="font-semibold text-foreground">{returningOrders}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Valoare medie per client</span>
-                  <span className="font-semibold text-foreground">{uniqueCustomers > 0 ? (totalRevenue / uniqueCustomers).toFixed(0) : 0} RON</span>
-                </div>
+                {[
+                  ["Clienți unici (perioadă)", uniqueCustomers],
+                  ["Conturi noi create", newProfiles],
+                  ["Comenzi clienți noi", newCustomersOrders],
+                  ["Comenzi clienți recurenți", returningOrders],
+                  ["Valoare medie per client", uniqueCustomers > 0 ? `${(totalRevenue / uniqueCustomers).toFixed(0)} RON` : "0 RON"],
+                  ["Total discount-uri acordate", `${totalDiscount.toFixed(0)} RON`],
+                ].map(([label, val], i) => (
+                  <div key={i} className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">{label}</span>
+                    <span className="font-semibold text-foreground">{val}</span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="funnel">
+          <Card>
+            <CardHeader><CardTitle className="text-sm">Funnel Conversie Comenzi</CardTitle></CardHeader>
+            <CardContent>
+              <div className="space-y-3 max-w-md mx-auto">
+                {funnelData.map((step, i) => {
+                  const pct = funnelData[0].value > 0 ? (step.value / funnelData[0].value) * 100 : 0;
+                  return (
+                    <div key={step.name}>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="font-medium">{step.name}</span>
+                        <span className="text-muted-foreground">{step.value} ({pct.toFixed(0)}%)</span>
+                      </div>
+                      <div className="h-8 bg-muted rounded-md overflow-hidden">
+                        <div className="h-full rounded-md transition-all" style={{ width: `${pct}%`, backgroundColor: COLORS[i] }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="stock" className="space-y-4">
+          <div className="grid lg:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader><CardTitle className="text-sm flex items-center gap-2"><AlertTriangle className="h-4 w-4 text-yellow-500" /> Stoc scăzut (≤5 buc.)</CardTitle></CardHeader>
+              <CardContent>
+                {lowStockProducts.length === 0 ? <p className="text-sm text-muted-foreground">Toate produsele au stoc suficient.</p> : (
+                  <div className="space-y-2">
+                    {lowStockProducts.map((p: any) => (
+                      <div key={p.id} className="flex justify-between text-sm border-b border-border/50 pb-2">
+                        <span className="truncate flex-1 mr-2">{p.name}</span>
+                        <span className="font-bold text-yellow-600">{p.stock} buc.</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="text-sm flex items-center gap-2"><AlertTriangle className="h-4 w-4 text-destructive" /> Epuizate (0 buc.)</CardTitle></CardHeader>
+              <CardContent>
+                {outOfStockProducts.length === 0 ? <p className="text-sm text-muted-foreground">Niciun produs epuizat.</p> : (
+                  <div className="space-y-2">
+                    {outOfStockProducts.map((p: any) => (
+                      <div key={p.id} className="flex justify-between text-sm border-b border-border/50 pb-2">
+                        <span className="truncate flex-1 mr-2">{p.name}</span>
+                        <span className="font-bold text-destructive">Epuizat</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>

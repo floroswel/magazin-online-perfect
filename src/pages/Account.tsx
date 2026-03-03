@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Package, User as UserIcon, Award, Gift, RotateCcw } from "lucide-react";
+import { Package, User as UserIcon, Award, Gift, RotateCcw, MapPin, Plus, Trash2, Star, Clock, ChevronDown, ChevronUp, Truck, CheckCircle2, XCircle, Copy, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
 import Layout from "@/components/layout/Layout";
 import { useAuth } from "@/hooks/useAuth";
 import { useLoyalty } from "@/hooks/useLoyalty";
@@ -19,39 +20,43 @@ import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 
 const RETURN_REASONS = [
-  "Produs defect",
-  "Produs greșit livrat",
-  "Nu corespunde descrierii",
-  "Schimbare de opinie",
-  "Dimensiune/Culoare greșită",
-  "Ambalaj deteriorat",
-  "Altul",
+  "Produs defect", "Produs greșit livrat", "Nu corespunde descrierii",
+  "Schimbare de opinie", "Dimensiune/Culoare greșită", "Ambalaj deteriorat", "Altul",
 ];
-
 const RETURNABLE_STATUSES = ["delivered", "shipped"];
+const STATUS_TIMELINE = ["pending", "processing", "shipped", "delivered"];
 
 export default function Account() {
   const { user } = useAuth();
   const { totalPoints, currentLevel, nextLevel, levels, loading: loyaltyLoading } = useLoyalty();
   const [profile, setProfile] = useState<Tables<"profiles"> | null>(null);
-  const [orders, setOrders] = useState<Tables<"orders">[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
   const [existingReturns, setExistingReturns] = useState<Tables<"returns">[]>([]);
+  const [addresses, setAddresses] = useState<Tables<"addresses">[]>([]);
+  const [pointsHistory, setPointsHistory] = useState<Tables<"loyalty_points">[]>([]);
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
+  const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
 
   // Return dialog state
-  const [returnOrder, setReturnOrder] = useState<Tables<"orders"> | null>(null);
+  const [returnOrder, setReturnOrder] = useState<any>(null);
   const [returnReason, setReturnReason] = useState("");
   const [returnDetails, setReturnDetails] = useState("");
   const [submittingReturn, setSubmittingReturn] = useState(false);
+
+  // Address dialog
+  const [addressDialog, setAddressDialog] = useState(false);
+  const [addressForm, setAddressForm] = useState({ full_name: "", phone: "", address: "", city: "", county: "", postal_code: "", label: "Acasă" });
 
   useEffect(() => {
     if (!user) return;
     supabase.from("profiles").select("*").eq("user_id", user.id).single().then(({ data }) => {
       if (data) { setProfile(data); setEditName(data.full_name || ""); setEditPhone(data.phone || ""); }
     });
-    supabase.from("orders").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).then(({ data }) => setOrders(data || []));
+    supabase.from("orders").select("*, order_items(*, products(name, images))").eq("user_id", user.id).order("created_at", { ascending: false }).then(({ data }) => setOrders(data || []));
     supabase.from("returns").select("*").eq("user_id", user.id).then(({ data }) => setExistingReturns(data || []));
+    supabase.from("addresses").select("*").eq("user_id", user.id).order("is_default", { ascending: false }).then(({ data }) => setAddresses(data || []));
+    supabase.from("loyalty_points").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(50).then(({ data }) => setPointsHistory(data || []));
   }, [user]);
 
   const updateProfile = async () => {
@@ -65,41 +70,60 @@ export default function Account() {
     if (!user || !returnOrder || !returnReason) return;
     setSubmittingReturn(true);
     const { error } = await supabase.from("returns").insert({
-      order_id: returnOrder.id,
-      user_id: user.id,
-      reason: returnReason,
-      details: returnDetails || null,
-      items: [],
+      order_id: returnOrder.id, user_id: user.id, reason: returnReason, details: returnDetails || null, items: [],
     });
     setSubmittingReturn(false);
-    if (error) {
-      toast.error("Eroare la trimiterea cererii de retur");
-      return;
-    }
+    if (error) { toast.error("Eroare la trimiterea cererii de retur"); return; }
     toast.success("Cererea de retur a fost trimisă!");
-    setReturnOrder(null);
-    setReturnReason("");
-    setReturnDetails("");
-    // Refresh returns
+    setReturnOrder(null); setReturnReason(""); setReturnDetails("");
     const { data } = await supabase.from("returns").select("*").eq("user_id", user.id);
     setExistingReturns(data || []);
   };
 
   const hasReturn = (orderId: string) => existingReturns.some(r => r.order_id === orderId);
-
   const getReturnStatus = (orderId: string) => {
     const r = existingReturns.find(r => r.order_id === orderId);
     if (!r) return null;
-    const labels: Record<string, string> = {
-      pending: "În așteptare", approved: "Aprobat", rejected: "Respins",
-      shipped: "Expediat", received: "Recepționat", refunded: "Rambursat", closed: "Închis",
-    };
+    const labels: Record<string, string> = { pending: "În așteptare", approved: "Aprobat", rejected: "Respins", shipped: "Expediat", received: "Recepționat", refunded: "Rambursat", closed: "Închis" };
     return labels[r.status] || r.status;
+  };
+
+  const saveAddress = async () => {
+    if (!user) return;
+    const { error } = await supabase.from("addresses").insert({ ...addressForm, user_id: user.id });
+    if (error) { toast.error("Eroare la salvarea adresei"); return; }
+    toast.success("Adresă salvată!");
+    setAddressDialog(false);
+    setAddressForm({ full_name: "", phone: "", address: "", city: "", county: "", postal_code: "", label: "Acasă" });
+    const { data } = await supabase.from("addresses").select("*").eq("user_id", user.id).order("is_default", { ascending: false });
+    setAddresses(data || []);
+  };
+
+  const deleteAddress = async (id: string) => {
+    await supabase.from("addresses").delete().eq("id", id);
+    setAddresses(prev => prev.filter(a => a.id !== id));
+    toast.success("Adresă ștearsă");
+  };
+
+  const setDefaultAddress = async (id: string) => {
+    if (!user) return;
+    await supabase.from("addresses").update({ is_default: false }).eq("user_id", user.id);
+    await supabase.from("addresses").update({ is_default: true }).eq("id", id);
+    const { data } = await supabase.from("addresses").select("*").eq("user_id", user.id).order("is_default", { ascending: false });
+    setAddresses(data || []);
+    toast.success("Adresă implicită actualizată");
+  };
+
+  const copyReferralLink = () => {
+    const link = `${window.location.origin}/auth?ref=${user?.id?.slice(0, 8)}`;
+    navigator.clipboard.writeText(link);
+    toast.success("Link copiat!");
   };
 
   if (!user) return <Layout><div className="container py-16 text-center"><p>Autentifică-te.</p><Link to="/auth"><Button className="mt-4">Autentifică-te</Button></Link></div></Layout>;
 
   const statusLabels: Record<string, string> = { pending: "În așteptare", processing: "Se procesează", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată" };
+  const statusIcons: Record<string, any> = { pending: Clock, processing: Package, shipped: Truck, delivered: CheckCircle2, cancelled: XCircle };
 
   const progressToNext = nextLevel
     ? Math.min(100, ((totalPoints - (currentLevel?.min_points || 0)) / (nextLevel.min_points - (currentLevel?.min_points || 0))) * 100)
@@ -112,53 +136,156 @@ export default function Account() {
         <Tabs defaultValue="orders">
           <TabsList className="flex-wrap">
             <TabsTrigger value="orders"><Package className="h-4 w-4 mr-1" /> Comenzi</TabsTrigger>
+            <TabsTrigger value="addresses"><MapPin className="h-4 w-4 mr-1" /> Adrese</TabsTrigger>
             <TabsTrigger value="loyalty"><Award className="h-4 w-4 mr-1" /> Fidelitate</TabsTrigger>
             <TabsTrigger value="profile"><UserIcon className="h-4 w-4 mr-1" /> Profil</TabsTrigger>
           </TabsList>
 
+          {/* ORDERS TAB */}
           <TabsContent value="orders" className="mt-4 space-y-3">
             {orders.length === 0 ? (
               <p className="text-muted-foreground">Nu ai nicio comandă.</p>
-            ) : orders.map(o => (
-              <Card key={o.id}>
-                <CardContent className="p-4 flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-sm">Comanda #{o.id.slice(0, 8)}</p>
-                    <p className="text-xs text-muted-foreground">{new Date(o.created_at).toLocaleDateString("ro-RO")}</p>
-                    {o.payment_method && (
-                      <p className="text-xs text-muted-foreground capitalize">{o.payment_method}</p>
-                    )}
+            ) : orders.map(o => {
+              const isExpanded = expandedOrder === o.id;
+              const StatusIcon = statusIcons[o.status] || Package;
+              const currentStep = STATUS_TIMELINE.indexOf(o.status);
+              return (
+                <Card key={o.id} className="overflow-hidden">
+                  <div
+                    className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted/50 transition-colors"
+                    onClick={() => setExpandedOrder(isExpanded ? null : o.id)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <StatusIcon className="h-5 w-5 text-primary flex-shrink-0" />
+                      <div>
+                        <p className="font-medium text-sm">Comanda #{o.id.slice(0, 8)}</p>
+                        <p className="text-xs text-muted-foreground">{new Date(o.created_at).toLocaleDateString("ro-RO")} • {o.payment_method || "ramburs"}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <p className="font-bold text-primary">{Number(o.total).toLocaleString("ro-RO")} lei</p>
+                        <Badge variant={o.status === "delivered" ? "default" : "secondary"} className="text-xs">
+                          {statusLabels[o.status] || o.status}
+                        </Badge>
+                      </div>
+                      {isExpanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+                    </div>
                   </div>
-                  <div className="text-right space-y-1">
-                    <p className="font-bold text-primary">{o.total.toLocaleString("ro-RO")} lei</p>
-                    <p className="text-xs font-medium">{statusLabels[o.status] || o.status}</p>
-                    {(o as any).loyalty_points_earned > 0 && (
-                      <p className="text-xs text-emag-yellow">+{(o as any).loyalty_points_earned} puncte</p>
-                    )}
-                    {hasReturn(o.id) ? (
-                      <Badge variant="outline" className="text-xs">
-                        <RotateCcw className="w-3 h-3 mr-1" />
-                        Retur: {getReturnStatus(o.id)}
-                      </Badge>
-                    ) : RETURNABLE_STATUSES.includes(o.status) ? (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-xs gap-1"
-                        onClick={() => setReturnOrder(o)}
-                      >
-                        <RotateCcw className="w-3 h-3" />
-                        Solicită retur
+
+                  {isExpanded && (
+                    <div className="border-t px-4 py-4 space-y-4">
+                      {/* Tracking timeline */}
+                      {o.status !== "cancelled" && (
+                        <div className="flex items-center justify-between px-4">
+                          {STATUS_TIMELINE.map((step, i) => {
+                            const isActive = i <= currentStep;
+                            const labels: Record<string, string> = { pending: "Plasată", processing: "Procesare", shipped: "Expediată", delivered: "Livrată" };
+                            return (
+                              <div key={step} className="flex flex-col items-center flex-1">
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${isActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+                                  {i + 1}
+                                </div>
+                                <p className={`text-xs mt-1 ${isActive ? "font-semibold text-foreground" : "text-muted-foreground"}`}>{labels[step]}</p>
+                                {i < STATUS_TIMELINE.length - 1 && (
+                                  <div className={`hidden sm:block absolute h-0.5 w-full ${isActive && i < currentStep ? "bg-primary" : "bg-muted"}`} />
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+
+                      <Separator />
+
+                      {/* Order items */}
+                      <div className="space-y-2">
+                        <p className="text-sm font-semibold">Produse comandate</p>
+                        {o.order_items?.map((item: any) => (
+                          <div key={item.id} className="flex items-center gap-3 text-sm">
+                            <div className="w-12 h-12 rounded bg-muted flex items-center justify-center overflow-hidden flex-shrink-0">
+                              {item.products?.images?.[0] ? (
+                                <img src={item.products.images[0]} alt="" className="w-full h-full object-cover" />
+                              ) : (
+                                <Package className="h-5 w-5 text-muted-foreground" />
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="truncate font-medium">{item.products?.name || "Produs"}</p>
+                              <p className="text-xs text-muted-foreground">x{item.quantity}</p>
+                            </div>
+                            <p className="font-semibold">{(Number(item.price) * item.quantity).toLocaleString("ro-RO")} lei</p>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Points earned */}
+                      {o.loyalty_points_earned > 0 && (
+                        <div className="bg-primary/5 rounded-lg p-2 text-center text-sm">
+                          <Award className="h-4 w-4 inline mr-1 text-primary" />
+                          <span className="font-medium">+{o.loyalty_points_earned} puncte fidelitate</span>
+                        </div>
+                      )}
+
+                      {/* Return button */}
+                      <div className="flex justify-end">
+                        {hasReturn(o.id) ? (
+                          <Badge variant="outline" className="text-xs">
+                            <RotateCcw className="w-3 h-3 mr-1" /> Retur: {getReturnStatus(o.id)}
+                          </Badge>
+                        ) : RETURNABLE_STATUSES.includes(o.status) ? (
+                          <Button variant="outline" size="sm" className="text-xs gap-1" onClick={(e) => { e.stopPropagation(); setReturnOrder(o); }}>
+                            <RotateCcw className="w-3 h-3" /> Solicită retur
+                          </Button>
+                        ) : null}
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              );
+            })}
+          </TabsContent>
+
+          {/* ADDRESSES TAB */}
+          <TabsContent value="addresses" className="mt-4 space-y-3">
+            <div className="flex justify-between items-center">
+              <h2 className="font-semibold">Adresele mele</h2>
+              <Button size="sm" onClick={() => setAddressDialog(true)}>
+                <Plus className="h-4 w-4 mr-1" /> Adaugă adresă
+              </Button>
+            </div>
+            {addresses.length === 0 ? (
+              <p className="text-muted-foreground text-sm">Nu ai nicio adresă salvată.</p>
+            ) : addresses.map(addr => (
+              <Card key={addr.id} className={addr.is_default ? "ring-2 ring-primary" : ""}>
+                <CardContent className="p-4 flex items-start justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="font-semibold text-sm">{addr.label || "Adresă"}</p>
+                      {addr.is_default && <Badge variant="default" className="text-xs">Implicită</Badge>}
+                    </div>
+                    <p className="text-sm">{addr.full_name}</p>
+                    <p className="text-sm text-muted-foreground">{addr.address}, {addr.city}, {addr.county}</p>
+                    <p className="text-sm text-muted-foreground">{addr.phone}</p>
+                  </div>
+                  <div className="flex gap-1">
+                    {!addr.is_default && (
+                      <Button variant="ghost" size="sm" className="text-xs" onClick={() => setDefaultAddress(addr.id)}>
+                        <Star className="h-3 w-3 mr-1" /> Implicită
                       </Button>
-                    ) : null}
+                    )}
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => deleteAddress(addr.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </TabsContent>
 
+          {/* LOYALTY TAB */}
           <TabsContent value="loyalty" className="mt-4 space-y-4">
-            {/* Current level card */}
+            {/* Current level */}
             <Card className="overflow-hidden">
               <div className="p-6 text-center" style={{ background: `linear-gradient(135deg, ${currentLevel?.color || '#CD7F32'}22, ${currentLevel?.color || '#CD7F32'}11)` }}>
                 <span className="text-5xl">{currentLevel?.icon || '🥉'}</span>
@@ -178,6 +305,45 @@ export default function Account() {
               )}
             </Card>
 
+            {/* Referral */}
+            <Card>
+              <CardContent className="p-4">
+                <h3 className="font-semibold mb-2 flex items-center gap-2"><Gift className="h-4 w-4 text-primary" /> Recomandă un prieten</h3>
+                <p className="text-sm text-muted-foreground mb-3">Primești 50 de puncte pentru fiecare prieten care se înregistrează și plasează o comandă.</p>
+                <div className="flex gap-2">
+                  <Input value={`${window.location.origin}/auth?ref=${user?.id?.slice(0, 8)}`} readOnly className="text-xs" />
+                  <Button variant="outline" size="sm" onClick={copyReferralLink}>
+                    <Copy className="h-4 w-4 mr-1" /> Copiază
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Points history */}
+            <Card>
+              <CardHeader><CardTitle className="text-base flex items-center gap-2"><History className="h-4 w-4" /> Istoricul punctelor</CardTitle></CardHeader>
+              <CardContent>
+                {pointsHistory.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Nu ai acumulat puncte încă.</p>
+                ) : (
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {pointsHistory.map(p => (
+                      <div key={p.id} className="flex items-center justify-between text-sm border-b border-border/50 pb-2 last:border-0">
+                        <div>
+                          <p className="font-medium">{p.description || p.action}</p>
+                          <p className="text-xs text-muted-foreground">{new Date(p.created_at).toLocaleDateString("ro-RO")}</p>
+                        </div>
+                        <span className={`font-bold ${p.points >= 0 ? "text-green-600" : "text-destructive"}`}>
+                          {p.points >= 0 ? "+" : ""}{p.points}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Benefits */}
             {currentLevel && (
               <Card>
                 <CardHeader><CardTitle className="text-base">Beneficiile tale</CardTitle></CardHeader>
@@ -185,8 +351,7 @@ export default function Account() {
                   <ul className="space-y-2">
                     {(currentLevel.benefits || []).map((b, i) => (
                       <li key={i} className="flex items-center gap-2 text-sm">
-                        <Gift className="h-4 w-4 text-emag-yellow flex-shrink-0" />
-                        {b}
+                        <Gift className="h-4 w-4 text-primary flex-shrink-0" /> {b}
                       </li>
                     ))}
                   </ul>
@@ -194,21 +359,17 @@ export default function Account() {
               </Card>
             )}
 
+            {/* All levels */}
             <Card>
               <CardHeader><CardTitle className="text-base">Toate nivelurile</CardTitle></CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {levels.map(l => (
-                    <div
-                      key={l.id}
-                      className={`rounded-lg border p-3 text-center ${l.id === currentLevel?.id ? 'ring-2 ring-primary' : ''}`}
-                    >
+                    <div key={l.id} className={`rounded-lg border p-3 text-center ${l.id === currentLevel?.id ? 'ring-2 ring-primary' : ''}`}>
                       <span className="text-3xl">{l.icon}</span>
                       <p className="font-semibold mt-1">{l.name}</p>
                       <p className="text-xs text-muted-foreground">{l.min_points}+ puncte</p>
-                      {l.discount_percentage > 0 && (
-                        <p className="text-xs font-medium text-primary">{l.discount_percentage}% reducere</p>
-                      )}
+                      {l.discount_percentage > 0 && <p className="text-xs font-medium text-primary">{l.discount_percentage}% reducere</p>}
                     </div>
                   ))}
                 </div>
@@ -227,6 +388,7 @@ export default function Account() {
             </Card>
           </TabsContent>
 
+          {/* PROFILE TAB */}
           <TabsContent value="profile" className="mt-4">
             <Card>
               <CardHeader><CardTitle>Editare profil</CardTitle></CardHeader>
@@ -245,47 +407,60 @@ export default function Account() {
       <Dialog open={!!returnOrder} onOpenChange={(open) => !open && setReturnOrder(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <RotateCcw className="w-5 h-5 text-primary" />
-              Solicită retur
-            </DialogTitle>
-            <DialogDescription>
-              Comanda #{returnOrder?.id.slice(0, 8)} — {returnOrder?.total.toLocaleString("ro-RO")} lei
-            </DialogDescription>
+            <DialogTitle className="flex items-center gap-2"><RotateCcw className="w-5 h-5 text-primary" /> Solicită retur</DialogTitle>
+            <DialogDescription>Comanda #{returnOrder?.id.slice(0, 8)} — {Number(returnOrder?.total).toLocaleString("ro-RO")} lei</DialogDescription>
           </DialogHeader>
-
           <div className="space-y-4">
             <div>
               <Label>Motivul returului *</Label>
               <Select value={returnReason} onValueChange={setReturnReason}>
                 <SelectTrigger><SelectValue placeholder="Selectează motivul" /></SelectTrigger>
                 <SelectContent>
-                  {RETURN_REASONS.map(r => (
-                    <SelectItem key={r} value={r}>{r}</SelectItem>
-                  ))}
+                  {RETURN_REASONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
-
             <div>
               <Label>Detalii suplimentare</Label>
-              <Textarea
-                rows={3}
-                value={returnDetails}
-                onChange={e => setReturnDetails(e.target.value)}
-                placeholder="Descrie problema în detaliu..."
-              />
+              <Textarea rows={3} value={returnDetails} onChange={e => setReturnDetails(e.target.value)} placeholder="Descrie problema în detaliu..." />
             </div>
           </div>
-
           <DialogFooter>
             <Button variant="outline" onClick={() => setReturnOrder(null)}>Anulează</Button>
-            <Button
-              onClick={handleSubmitReturn}
-              disabled={!returnReason || submittingReturn}
-            >
+            <Button onClick={handleSubmitReturn} disabled={!returnReason || submittingReturn}>
               {submittingReturn ? "Se trimite..." : "Trimite cererea"}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Address Dialog */}
+      <Dialog open={addressDialog} onOpenChange={setAddressDialog}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Adaugă adresă</DialogTitle></DialogHeader>
+          <div className="space-y-3">
+            <div><Label>Etichetă</Label>
+              <Select value={addressForm.label} onValueChange={v => setAddressForm(p => ({ ...p, label: v }))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Acasă">Acasă</SelectItem>
+                  <SelectItem value="Birou">Birou</SelectItem>
+                  <SelectItem value="Altul">Altul</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div><Label>Nume complet *</Label><Input value={addressForm.full_name} onChange={e => setAddressForm(p => ({ ...p, full_name: e.target.value }))} /></div>
+            <div><Label>Telefon *</Label><Input value={addressForm.phone} onChange={e => setAddressForm(p => ({ ...p, phone: e.target.value }))} /></div>
+            <div><Label>Adresă *</Label><Input value={addressForm.address} onChange={e => setAddressForm(p => ({ ...p, address: e.target.value }))} /></div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><Label>Oraș *</Label><Input value={addressForm.city} onChange={e => setAddressForm(p => ({ ...p, city: e.target.value }))} /></div>
+              <div><Label>Județ *</Label><Input value={addressForm.county} onChange={e => setAddressForm(p => ({ ...p, county: e.target.value }))} /></div>
+            </div>
+            <div><Label>Cod poștal</Label><Input value={addressForm.postal_code} onChange={e => setAddressForm(p => ({ ...p, postal_code: e.target.value }))} /></div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddressDialog(false)}>Anulează</Button>
+            <Button onClick={saveAddress} disabled={!addressForm.full_name || !addressForm.phone || !addressForm.address || !addressForm.city || !addressForm.county}>Salvează</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
