@@ -95,6 +95,19 @@ export default function Index() {
 
       {/* Blog preview */}
       <BlogPreview />
+
+      {/* Schema.org JSON-LD */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "MegaShop",
+        url: window.location.origin,
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${window.location.origin}/catalog?search={search_term_string}`,
+          "query-input": "required name=search_term_string",
+        },
+      }) }} />
     </Layout>
   );
 }

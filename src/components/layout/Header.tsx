@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, GitCompare, Award, Shield } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, GitCompare, Award, Shield, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -105,6 +105,10 @@ export default function Header() {
       {/* Trust badges bar */}
       <div className="emag-trust-bar">
         <div className="container py-2 flex items-center justify-center gap-8 text-white text-sm">
+          <a href="tel:0800123456" className="flex items-center gap-2 hover:text-emag-yellow transition-colors">
+            <Phone className="h-4 w-4 text-emag-yellow" />
+            <span className="font-medium">0800 123 456</span>
+          </a>
           <div className="flex items-center gap-2">
             <Shield className="h-4 w-4 text-emag-yellow" />
             <span className="font-medium">Produse Garantate</span>
