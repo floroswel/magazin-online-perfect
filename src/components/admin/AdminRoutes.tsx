@@ -53,6 +53,7 @@ import AdminStoreSettings from "./settings/AdminStoreSettings";
 import AdminCheckoutSettings from "./settings/AdminCheckoutSettings";
 import AdminEmailSettings from "./settings/AdminEmailSettings";
 import AdminTaxSettings from "./settings/AdminTaxSettings";
+import AdminThemeEditor from "./settings/AdminThemeEditor";
 
 export default function AdminRoutes() {
   return (
@@ -235,6 +236,7 @@ export default function AdminRoutes() {
 
       {/* ═══════════ SETĂRI ═══════════ */}
       <Route path="settings/general" element={<AdminGeneralSettings />} />
+      <Route path="settings/theme" element={<AdminThemeEditor />} />
       <Route path="settings/footer-badges" element={<AdminFooterBadges />} />
       <Route path="settings/footer" element={<AdminFooterSettings />} />
       <Route path="settings/taxes" element={<AdminTaxSettings />} />
