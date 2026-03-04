@@ -9,6 +9,7 @@ import { useCurrency } from "@/hooks/useCurrency";
 export default function Cart() {
   const { user } = useAuth();
   const { items, totalPrice, updateQuantity, removeFromCart } = useCart();
+  const { format } = useCurrency();
 
   if (items.length === 0) {
     return (
