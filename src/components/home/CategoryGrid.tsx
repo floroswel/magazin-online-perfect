@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import type { Tables } from "@/integrations/supabase/types";
 import {
   Smartphone, Laptop, Tv, Refrigerator, Home, Shirt, Dumbbell, Gamepad2, Package, Zap
 } from "lucide-react";
@@ -9,6 +8,16 @@ import {
 const iconMap: Record<string, React.ElementType> = {
   Smartphone, Laptop, Tv, Refrigerator, Home, Shirt, Dumbbell, Gamepad2
 };
+
+interface Cat {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string | null;
+  image_url: string | null;
+  display_order: number;
+  visible: boolean;
+}
 
 interface DynCat {
   id: string;
@@ -20,16 +29,18 @@ interface DynCat {
 }
 
 export default function CategoryGrid() {
-  const [categories, setCategories] = useState<Tables<"categories">[]>([]);
+  const [categories, setCategories] = useState<Cat[]>([]);
   const [dynCategories, setDynCategories] = useState<DynCat[]>([]);
 
   useEffect(() => {
     supabase
       .from("categories")
-      .select("*")
+      .select("id, name, slug, icon, image_url, display_order, visible")
       .is("parent_id", null)
+      .eq("visible", true)
+      .order("display_order")
       .order("name")
-      .then(({ data }) => setCategories(data || []));
+      .then(({ data }) => setCategories((data as Cat[]) || []));
 
     supabase
       .from("dynamic_categories")
@@ -53,9 +64,13 @@ export default function CategoryGrid() {
               to={`/catalog?category=${cat.slug}`}
               className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card border border-border hover:border-primary hover:shadow-md transition-all group"
             >
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                <Icon className="h-6 w-6 text-primary" />
-              </div>
+              {cat.image_url ? (
+                <img src={cat.image_url} alt={cat.name} className="w-12 h-12 rounded-full object-cover" />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <Icon className="h-6 w-6 text-primary" />
+                </div>
+              )}
               <span className="text-xs font-medium text-foreground text-center leading-tight">{cat.name}</span>
             </Link>
           );

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import type { Tables } from "@/integrations/supabase/types";
 import {
   Smartphone, Laptop, Tv, Refrigerator, Home, Shirt, Dumbbell, Gamepad2, Package, ChevronRight, Zap
 } from "lucide-react";
@@ -9,6 +8,16 @@ import {
 const iconMap: Record<string, React.ElementType> = {
   Smartphone, Laptop, Tv, Refrigerator, Home, Shirt, Dumbbell, Gamepad2
 };
+
+interface Cat {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string | null;
+  parent_id: string | null;
+  show_in_nav: boolean;
+  display_order: number;
+}
 
 interface DynCat {
   id: string;
@@ -19,16 +28,18 @@ interface DynCat {
 }
 
 export default function MegaMenu() {
-  const [categories, setCategories] = useState<Tables<"categories">[]>([]);
+  const [categories, setCategories] = useState<Cat[]>([]);
   const [dynCategories, setDynCategories] = useState<DynCat[]>([]);
   const [hoveredCat, setHoveredCat] = useState<string | null>(null);
 
   useEffect(() => {
     supabase
       .from("categories")
-      .select("*")
+      .select("id, name, slug, icon, parent_id, show_in_nav, display_order")
+      .eq("visible", true)
+      .order("display_order")
       .order("name")
-      .then(({ data }) => setCategories(data || []));
+      .then(({ data }) => setCategories((data as Cat[]) || []));
 
     supabase
       .from("dynamic_categories")
@@ -38,8 +49,10 @@ export default function MegaMenu() {
       .then(({ data }) => setDynCategories((data || []) as unknown as DynCat[]));
   }, []);
 
-  const parents = categories.filter(c => !c.parent_id);
-  const getChildren = (parentId: string) => categories.filter(c => c.parent_id === parentId);
+  // Only show categories marked as show_in_nav
+  const navCategories = categories.filter(c => c.show_in_nav !== false);
+  const parents = navCategories.filter(c => !c.parent_id);
+  const getChildren = (parentId: string) => navCategories.filter(c => c.parent_id === parentId);
 
   return (
     <nav className="bg-card border-b shadow-sm relative">
@@ -79,7 +92,6 @@ export default function MegaMenu() {
               </li>
             );
           })}
-          {/* Dynamic categories */}
           {dynCategories.map(dcat => (
             <li key={`dyn-${dcat.slug}`}>
               <Link
