@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, GitCompare, Award, Shield, Phone, Truck, Zap, Star, Clock, Gift, RotateCcw, Percent, Sun, Moon } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, GitCompare, Award, Shield, Phone, Truck, Zap, Star, Clock, Gift, RotateCcw, Percent, Sun, Moon, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -33,7 +33,8 @@ export default function Header() {
   const { isDark, toggle: toggleDarkMode } = useDarkMode();
   const [search, setSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
-  const [mobileCategories, setMobileCategories] = useState<{ name: string; slug: string }[]>([]);
+  const [mobileCategories, setMobileCategories] = useState<{ id: string; name: string; slug: string; parent_id: string | null }[]>([]);
+  const [expandedMobileCat, setExpandedMobileCat] = useState<string | null>(null);
   const [trustBar, setTrustBar] = useState<TrustBarItem[]>([
     { icon: "phone", text: "0800 123 456", link: "tel:0800123456" },
     { icon: "shield", text: "Produse Garantate", link: "" },
@@ -41,8 +42,8 @@ export default function Header() {
   ]);
 
   useEffect(() => {
-    supabase.from("categories").select("name, slug").is("parent_id", null).order("name").then(({ data }) => {
-      setMobileCategories(data || []);
+    supabase.from("categories").select("id, name, slug, parent_id, show_in_nav").eq("visible", true).order("display_order").order("name").then(({ data }) => {
+      setMobileCategories((data as any[]) || []);
     });
     supabase.from("app_settings").select("key, value_json")
       .in("key", ["header_trust_bar"])
@@ -168,17 +169,43 @@ export default function Header() {
               </div>
             </form>
             <ul className="space-y-1">
-              {mobileCategories.map(cat => (
-                <li key={cat.slug}>
-                  <Link
-                    to={`/catalog?category=${cat.slug}`}
-                    onClick={() => setMobileMenu(false)}
-                    className="block px-3 py-2 text-sm font-medium hover:bg-muted rounded-md"
-                  >
-                    {cat.name}
-                  </Link>
-                </li>
-              ))}
+              {mobileCategories.filter(c => !c.parent_id).map(cat => {
+                const children = mobileCategories.filter(c => c.parent_id === cat.id);
+                const isExpanded = expandedMobileCat === cat.id;
+                return (
+                  <li key={cat.slug}>
+                    <div className="flex items-center">
+                      <Link
+                        to={`/catalog?category=${cat.slug}`}
+                        onClick={() => setMobileMenu(false)}
+                        className="flex-1 px-3 py-2 text-sm font-medium hover:bg-muted rounded-md"
+                      >
+                        {cat.name}
+                      </Link>
+                      {children.length > 0 && (
+                        <button onClick={() => setExpandedMobileCat(isExpanded ? null : cat.id)} className="px-2 py-2">
+                          <ChevronDown className={`h-4 w-4 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                        </button>
+                      )}
+                    </div>
+                    {children.length > 0 && isExpanded && (
+                      <ul className="ml-4 space-y-0.5">
+                        {children.map(child => (
+                          <li key={child.slug}>
+                            <Link
+                              to={`/catalog?category=${child.slug}`}
+                              onClick={() => setMobileMenu(false)}
+                              className="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-md"
+                            >
+                              {child.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
