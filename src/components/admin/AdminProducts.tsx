@@ -87,6 +87,7 @@ const STEPS = [
   { key: "basic", label: "Informații", icon: <Package className="w-4 h-4" /> },
   { key: "pricing", label: "Prețuri", icon: <DollarSign className="w-4 h-4" /> },
   { key: "variants", label: "Variante", icon: <Layers className="w-4 h-4" /> },
+  { key: "bundle", label: "Pachet", icon: <Package className="w-4 h-4" /> },
   { key: "inventory", label: "Stoc & Logistică", icon: <Warehouse className="w-4 h-4" /> },
   { key: "media", label: "Media", icon: <Camera className="w-4 h-4" /> },
   { key: "seo", label: "SEO & Organizare", icon: <Globe className="w-4 h-4" /> },
