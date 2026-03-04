@@ -146,8 +146,8 @@ export default function AdminRoutes() {
       <Route path="content/page-builder" element={<AdminPlaceholder title="Page Builder" description="Drag & drop page builder pentru pagini personalizate." />} />
       <Route path="content/homepage" element={<AdminHomepageSettings />} />
       <Route path="content/landing" element={<AdminPlaceholder title="Landing Pages" description="Pagini de campanie cu tracking și A/B testing." />} />
-      <Route path="content/blog" element={<AdminPlaceholder title="Blog" description="Publicare și gestionare articole de blog." />} />
-      <Route path="content/media" element={<AdminPlaceholder title="Media Library" description="Bibliotecă centralizată de imagini și fișiere media." />} />
+      <Route path="content/blog" element={<AdminBlog />} />
+      <Route path="content/media" element={<AdminMediaLibrary />} />
       <Route path="content/menus" element={<AdminPlaceholder title="Meniu & Navigație" description="Configurare meniuri de navigație principale și footer." />} />
       <Route path="content/scripts" element={<AdminCustomScripts />} />
       <Route path="content/translations" element={<AdminPlaceholder title="Traduceri" description="Multi-language: limbi disponibile, traducere automată, URL-uri localizate." />} />
