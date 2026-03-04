@@ -70,18 +70,19 @@ export default function Catalog() {
       const from = (currentPage - 1) * perPage;
       query = query.range(from, from + perPage - 1);
 
-      const { data, count } = await query;
-      let filtered = data || [];
+      // Server-side brand filter
       if (selectedBrands.length > 0) {
-        filtered = filtered.filter(p => p.brand && selectedBrands.includes(p.brand));
+        query = query.in("brand", selectedBrands);
       }
+
+      // Server-side rating filter (use minimum of selected ratings)
       if (selectedRatings.length > 0) {
-        filtered = filtered.filter(p => {
-          const r = Math.round(p.rating || 0);
-          return selectedRatings.some(sr => r >= sr);
-        });
+        const minRating = Math.min(...selectedRatings);
+        query = query.gte("rating", minRating);
       }
-      setProducts(filtered);
+
+      const { data, count } = await query;
+      setProducts(data || []);
       setTotalCount(count || 0);
       setLoading(false);
     }

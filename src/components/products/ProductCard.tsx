@@ -1,9 +1,9 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingCart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCart } from "@/hooks/useCart";
-import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -11,17 +11,12 @@ interface Props {
   product: Tables<"products">;
 }
 
-export default function ProductCard({ product }: Props) {
+function ProductCardInner({ product }: Props) {
   const { addToCart } = useCart();
-  const { user } = useAuth();
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!user) {
-      toast.error("Trebuie să fii autentificat pentru a adăuga în coș");
-      return;
-    }
     await addToCart(product.id);
     toast.success("Produs adăugat în coș!");
   };
@@ -42,6 +37,7 @@ export default function ProductCard({ product }: Props) {
           <img
             src={product.image_url || "/placeholder.svg"}
             alt={product.name}
+            loading="lazy"
             className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200"
           />
         </div>
@@ -81,3 +77,6 @@ export default function ProductCard({ product }: Props) {
     </Link>
   );
 }
+
+const ProductCard = memo(ProductCardInner);
+export default ProductCard;

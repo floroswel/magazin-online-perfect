@@ -12,6 +12,7 @@ import BrandCarousel from "@/components/home/BrandCarousel";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
 import BlogPreview from "@/components/home/BlogPreview";
 import { supabase } from "@/integrations/supabase/client";
+import { safeJsonLd } from "@/lib/sanitize-json-ld";
 import type { Tables } from "@/integrations/supabase/types";
 
 interface BenefitItem { icon: string; text: string }
@@ -119,7 +120,7 @@ export default function Index() {
       {sections.show_blog && <BlogPreview />}
 
       {/* Schema.org JSON-LD */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({
         "@context": "https://schema.org",
         "@type": "WebSite",
         name: "MegaShop",

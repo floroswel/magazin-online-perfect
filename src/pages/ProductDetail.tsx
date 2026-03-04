@@ -16,6 +16,7 @@ import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useComparison } from "@/hooks/useComparison";
 import { toast } from "sonner";
+import { safeJsonLd, sanitizeForJsonLd } from "@/lib/sanitize-json-ld";
 import type { Tables } from "@/integrations/supabase/types";
 
 export default function ProductDetail() {
@@ -85,7 +86,6 @@ export default function ProductDetail() {
   }, [slug, user]);
 
   const handleAddToCart = async () => {
-    if (!user) { toast.error("Autentifică-te pentru a adăuga în coș"); return; }
     if (product) { await addToCart(product.id, qty); toast.success("Adăugat în coș!"); }
   };
 
@@ -333,13 +333,13 @@ export default function ProductDetail() {
       </div>
 
       {/* Schema.org JSON-LD */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({
         "@context": "https://schema.org",
         "@type": "Product",
-        name: product.name,
-        description: product.description || "",
+        name: sanitizeForJsonLd(product.name),
+        description: sanitizeForJsonLd(product.description),
         image: product.image_url || "",
-        brand: product.brand ? { "@type": "Brand", name: product.brand } : undefined,
+        brand: product.brand ? { "@type": "Brand", name: sanitizeForJsonLd(product.brand) } : undefined,
         sku: product.sku || product.id,
         offers: {
           "@type": "Offer",
