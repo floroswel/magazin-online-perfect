@@ -91,21 +91,24 @@
   /* Admin sidebar stays dark navy */
   .admin-sidebar {
     --background: 222 47% 16%;
-    --foreground: 210 20% 85%;
+    --foreground: 210 15% 70%;
 
     --card: 222 47% 16%;
-    --card-foreground: 210 20% 85%;
+    --card-foreground: 210 15% 70%;
 
     --primary: 210 100% 65%;
-    --primary-foreground: 222 47% 10%;
+    --primary-foreground: 210 100% 75%;
 
     --muted: 222 35% 22%;
     --muted-foreground: 210 15% 60%;
 
     --accent: 222 35% 22%;
-    --accent-foreground: 210 20% 90%;
+    --accent-foreground: 0 0% 100%;
 
     --border: 222 30% 24%;
+
+    --sidebar-dim: 210 15% 55%;
+    --sidebar-hover: 210 15% 80%;
   }
 }
 
