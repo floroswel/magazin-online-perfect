@@ -779,7 +779,7 @@ export default function AdminProducts() {
                         {p.stock}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{p.brand || "—"}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{p.brands?.name || "—"}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
                         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setPreviewOpen(p)} title="Preview">
