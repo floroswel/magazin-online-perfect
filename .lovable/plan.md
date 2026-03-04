@@ -1,71 +1,68 @@
 
 
-# Plan: Integrate Stripe as Real Payment Provider
-
-## Overview
-
-Add real Stripe payment processing using Stripe Checkout Sessions (redirect flow). When a user selects "Card online" and places an order, they'll be redirected to Stripe's hosted checkout page. A webhook edge function handles payment confirmation and updates the order in the database.
+# Plan: Complete Transactional Email System with Resend
 
 ## Current State
-
-- `Checkout.tsx` has a "card" payment method option but no real payment processing -- it just inserts the order directly
-- `orders` table has `payment_status`, `payment_method`, `status` columns -- ready to use
-- `profiles` table does NOT have a `stripe_customer_id` column -- needs migration
-- Secrets already configured: `RESEND_API_KEY`, `MOKKA_API_KEY`, etc. -- need to add `STRIPE_SECRET_KEY`
+- `send-email` edge function already exists with Resend integration and HTML templates for `order_placed`, `order_status`, `welcome`, `return_status`
+- `RESEND_API_KEY` secret already configured
+- Checkout already calls `send-email` after order placement (line 179 of Checkout.tsx)
+- AdminOrders already sends `order_status` email when status changes (line 61 of AdminOrders.tsx)
+- Sender is hardcoded as `"Magazin <onboarding@resend.dev>"` -- needs to be dynamic from `app_settings`
+- No email logging exists in the database
+- Shipping update email exists but doesn't include tracking info or delivery address
 
 ## Implementation Steps
 
-### 1. Add Stripe Secret Key
-Use the `add_secret` tool to request `STRIPE_SECRET_KEY` from the user. Also store `STRIPE_WEBHOOK_SECRET` for webhook signature verification.
-
-### 2. Database Migration
-Add `stripe_customer_id` column to `profiles` table and `stripe_session_id` column to `orders` table for tracking.
-
+### 1. Database Migration: Create `email_logs` table
 ```sql
-ALTER TABLE profiles ADD COLUMN stripe_customer_id text;
-ALTER TABLE orders ADD COLUMN stripe_session_id text;
+CREATE TABLE email_logs (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  to_email text NOT NULL,
+  from_email text,
+  subject text NOT NULL,
+  type text NOT NULL,
+  status text NOT NULL DEFAULT 'sent',
+  resend_id text,
+  error_message text,
+  metadata jsonb DEFAULT '{}',
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+ALTER TABLE email_logs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Admins manage email logs" ON email_logs FOR ALL TO authenticated
+  USING (has_role(auth.uid(), 'admin')) WITH CHECK (has_role(auth.uid(), 'admin'));
 ```
 
-### 3. Edge Function: `create-checkout-session`
-- Receives: order ID, customer email, line items, success/cancel URLs
-- Creates or retrieves Stripe Customer (stores `stripe_customer_id` on profile)
-- Creates a Stripe Checkout Session in `payment` mode
-- Updates order with `stripe_session_id`
-- Returns the session URL for redirect
+### 2. Rewrite `send-email` edge function
+Key changes:
+- Fetch `email_settings` from `app_settings` table using service role to get dynamic `from_email` and `from_name`
+- Add `shipping_update` email type with tracking number, courier name, and delivery address in the template
+- Enhance `order_placed` template to include delivery address
+- Log every email sent (or failed) into the `email_logs` table
+- Add `test` email type for the admin settings page test button
 
-### 4. Edge Function: `stripe-webhook`
-- `verify_jwt = false` (public endpoint for Stripe callbacks)
-- Validates webhook signature using `STRIPE_WEBHOOK_SECRET`
-- Handles `checkout.session.completed`: updates order `payment_status` to `paid`, `status` to `processing`
-- Handles `checkout.session.expired`: updates order `payment_status` to `failed`
-- Triggers confirmation email via `send-email` function on success
+### 3. Enhance email templates
+- **Order confirmation**: Add delivery address section, order items table with images reference, and store branding from settings
+- **Shipping update** (new type `shipping_update`): Include AWB/tracking number, courier name, estimated delivery, and a tracking link
+- **Order status**: Already works, just add delivery address context for shipped status
 
-### 5. Modify `Checkout.tsx`
-- When `paymentMethod === "card"`: after creating the order (with `payment_status: 'pending'`), call `create-checkout-session` edge function and redirect to Stripe URL
-- For non-card methods (ramburs, mokka, paypo): keep existing flow unchanged
-- Do NOT clear cart until payment is confirmed (for card payments, clear on return to success page)
+### 4. Update AdminOrders status change
+- When status changes to `shipped`, pass additional data: `trackingNumber`, `courierName`, `shippingAddress` from the order record to the `send-email` call using `shipping_update` type instead of generic `order_status`
 
-### 6. Add Payment Success/Cancel Pages
-- `/checkout/success?session_id=...` -- verifies session, shows confirmation, clears cart
-- `/checkout/cancel` -- shows "payment cancelled" message, links back to checkout
+### 5. Admin Email Logs viewer
+- Create `AdminEmailLogs.tsx` component showing sent emails in a table (recipient, type, subject, status, date)
+- Add route in `AdminRoutes.tsx`
 
-### 7. Update `supabase/config.toml`
-Register new edge functions with `verify_jwt = false`.
+### 6. No changes needed for password reset
+- Supabase Auth handles password reset emails natively; already configured and working via `ForgotPassword.tsx`
 
 ## Files to Create
-- `supabase/functions/create-checkout-session/index.ts`
-- `supabase/functions/stripe-webhook/index.ts`
-- `src/pages/CheckoutSuccess.tsx`
-- `src/pages/CheckoutCancel.tsx`
+- `src/components/admin/settings/AdminEmailLogs.tsx`
 
 ## Files to Modify
-- `src/pages/Checkout.tsx` -- split card flow to redirect to Stripe
-- `src/App.tsx` -- add new routes
-- `supabase/config.toml` -- register new functions
+- `supabase/functions/send-email/index.ts` (major rewrite: dynamic sender, email logging, shipping template, test type)
+- `src/components/admin/AdminOrders.tsx` (send `shipping_update` type when status = shipped)
+- `src/components/admin/AdminRoutes.tsx` (add email logs route)
 
-## Key Design Decisions
-- Using Stripe Checkout (redirect) instead of embedded Payment Element -- simpler, PCI-compliant, no Stripe.js dependency on frontend
-- Cart clearing for card payments happens on the success page, not at order creation
-- Order is created first with `payment_status: 'pending'`, then Stripe session is created referencing it
-- Webhook is the source of truth for payment confirmation (not the redirect)
+## Database Migration
+- Create `email_logs` table with RLS for admin-only access
 
