@@ -58,11 +58,11 @@ function ProductCardInner({ product }: Props) {
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-lg font-bold text-foreground">
-              {product.price.toLocaleString("ro-RO")} lei
+              {format(product.price)}
             </span>
             {product.old_price && (
               <span className="text-xs text-muted-foreground line-through">
-                {product.old_price.toLocaleString("ro-RO")} lei
+                {format(product.old_price)}
               </span>
             )}
           </div>

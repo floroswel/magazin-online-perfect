@@ -79,8 +79,8 @@ export default function Compare() {
                 <TableCell className="font-medium text-muted-foreground">Preț</TableCell>
                 {comparisonItems.map(p => (
                   <TableCell key={p.id}>
-                    <span className="text-lg font-bold text-primary">{p.price.toLocaleString("ro-RO")} lei</span>
-                    {p.old_price && <span className="block text-xs text-muted-foreground line-through">{p.old_price.toLocaleString("ro-RO")} lei</span>}
+                    <span className="text-lg font-bold text-primary">{format(p.price)}</span>
+                    {p.old_price && <span className="block text-xs text-muted-foreground line-through">{format(p.old_price)}</span>}
                   </TableCell>
                 ))}
               </TableRow>

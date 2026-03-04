@@ -67,15 +67,15 @@ export default function Cart() {
             <h2 className="font-bold text-lg">Sumar comandă</h2>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Subtotal</span>
-              <span>{totalPrice.toLocaleString("ro-RO")} lei</span>
+              <span>{format(totalPrice)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Livrare</span>
-              <span className={shipping === 0 ? "text-green-600 font-medium" : ""}>{shipping === 0 ? "GRATUITĂ" : `${shipping} lei`}</span>
+              <span className={shipping === 0 ? "text-green-600 font-medium" : ""}>{shipping === 0 ? "GRATUITĂ" : format(shipping)}</span>
             </div>
             <div className="border-t pt-3 flex justify-between font-bold text-lg">
               <span>Total</span>
-              <span className="text-primary">{(totalPrice + shipping).toLocaleString("ro-RO")} lei</span>
+              <span className="text-primary">{format(totalPrice + shipping)}</span>
             </div>
             <Link to="/checkout" className="block">
               <Button className="w-full font-semibold" size="lg">Finalizează comanda</Button>

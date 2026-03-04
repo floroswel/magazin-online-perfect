@@ -386,7 +386,7 @@ export default function Checkout() {
               </div>
               {(paymentMethod === "mokka" || paymentMethod === "paypo") && (
                 <div className="text-center text-sm text-emag-blue font-medium">
-                  sau {installmentMonths} × {getInstallmentAmount()} lei/lună
+                  sau {installmentMonths} × {format(parseFloat(getInstallmentAmount()))}/lună
                 </div>
               )}
               {pointsEarned > 0 && (

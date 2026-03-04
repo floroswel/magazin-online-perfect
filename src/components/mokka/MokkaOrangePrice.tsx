@@ -16,7 +16,7 @@ export default function MokkaOrangePrice({ price, months = 3 }: MokkaOrangePrice
         <TooltipTrigger asChild>
           <div className="bg-mokka/5 border border-mokka/20 rounded-lg p-3 cursor-help">
             <p className="text-sm font-medium text-mokka">
-              💳 sau de la <span className="font-bold">{monthly} lei/lună</span> în {months} rate fără dobândă prin{" "}
+              💳 sau de la <span className="font-bold">{format(monthly)}/lună</span> în {months} rate fără dobândă prin{" "}
               <span className="font-bold">Mokka</span>
             </p>
           </div>

@@ -369,7 +369,7 @@ export default function ProductDetail() {
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border shadow-lg px-4 py-3 flex items-center gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-xs text-muted-foreground truncate">{product.name}</p>
-          <p className="text-lg font-bold text-primary">{product.price.toLocaleString("ro-RO")} lei</p>
+          <p className="text-lg font-bold text-primary">{format(product.price)}</p>
         </div>
         <Button onClick={handleAddToCart} className="shrink-0 font-semibold">
           <ShoppingCart className="h-4 w-4 mr-1" /> Adaugă
