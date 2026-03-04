@@ -59,6 +59,9 @@ const AdminEmailSettings = lazy(() => import("./settings/AdminEmailSettings"));
 const AdminTaxSettings = lazy(() => import("./settings/AdminTaxSettings"));
 const AdminThemeEditor = lazy(() => import("./settings/AdminThemeEditor"));
 const Admin2FA = lazy(() => import("./settings/Admin2FA"));
+const AdminPageBuilder = lazy(() => import("./content/AdminPageBuilder"));
+const AdminTranslations = lazy(() => import("./content/AdminTranslations"));
+const AdminCurrencySettings = lazy(() => import("./settings/AdminCurrencySettings"));
 export default function AdminRoutes() {
   return (
     <Suspense fallback={<Fallback />}>
