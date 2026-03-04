@@ -1037,7 +1037,7 @@ export default function AdminProducts() {
           </div>
         );
 
-      case 4: // Media
+      case 5: // Media
         return (
           <div className="space-y-4">
             <div className="space-y-2">
