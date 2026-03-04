@@ -789,7 +789,7 @@ export default function AdminProducts() {
                           <Pencil className="w-4 h-4" />
                         </Button>
                         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
-                          const dup = { ...emptyForm, name: p.name + " (copie)", slug: generateSlug(p.name + " copie"), price: p.price, old_price: p.old_price, stock: p.stock, description: p.description || "", brand: p.brand || "", image_url: p.image_url || "", images: p.images || [], category_id: p.category_id };
+                          const dup = { ...emptyForm, name: p.name + " (copie)", slug: generateSlug(p.name + " copie"), price: p.price, old_price: p.old_price, stock: p.stock, description: p.description || "", brand_id: p.brand_id || null, image_url: p.image_url || "", images: p.images || [], category_id: p.category_id };
                           setForm(dup);
                           setEditingId(null);
                           setStep(0);
