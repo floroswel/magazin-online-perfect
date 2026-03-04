@@ -33,7 +33,8 @@ export default function Header() {
   const { isDark, toggle: toggleDarkMode } = useDarkMode();
   const [search, setSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
-  const [mobileCategories, setMobileCategories] = useState<{ name: string; slug: string }[]>([]);
+  const [mobileCategories, setMobileCategories] = useState<{ id: string; name: string; slug: string; parent_id: string | null }[]>([]);
+  const [expandedMobileCat, setExpandedMobileCat] = useState<string | null>(null);
   const [trustBar, setTrustBar] = useState<TrustBarItem[]>([
     { icon: "phone", text: "0800 123 456", link: "tel:0800123456" },
     { icon: "shield", text: "Produse Garantate", link: "" },
