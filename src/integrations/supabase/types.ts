@@ -2476,6 +2476,7 @@ export type Database = {
           published_at: string | null
           rating: number | null
           review_count: number | null
+          search_vector: unknown
           short_description: string | null
           sku: string | null
           slug: string
@@ -2504,6 +2505,7 @@ export type Database = {
           published_at?: string | null
           rating?: number | null
           review_count?: number | null
+          search_vector?: unknown
           short_description?: string | null
           sku?: string | null
           slug: string
@@ -2532,6 +2534,7 @@ export type Database = {
           published_at?: string | null
           rating?: number | null
           review_count?: number | null
+          search_vector?: unknown
           short_description?: string | null
           sku?: string | null
           slug?: string
@@ -3489,6 +3492,21 @@ export type Database = {
         }
         Returns: boolean
       }
+      search_products: {
+        Args: { result_limit?: number; search_term: string }
+        Returns: {
+          brand: string
+          category_name: string
+          id: string
+          image_url: string
+          name: string
+          price: number
+          rank: number
+          slug: string
+        }[]
+      }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       app_role:
