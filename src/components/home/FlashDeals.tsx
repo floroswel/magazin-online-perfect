@@ -53,7 +53,7 @@ export default function FlashDeals({ title = "Oferte Flash" }: { title?: string 
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5 text-destructive">
               <Flame className="h-6 w-6" />
-              <h2 className="text-2xl font-bold text-foreground">Oferte Flash</h2>
+              <h2 className="text-2xl font-bold text-foreground">{title}</h2>
             </div>
             <div className="flex items-center gap-1 text-sm font-mono bg-foreground text-background rounded-md px-3 py-1.5">
               <Clock className="h-3.5 w-3.5 mr-1" />
