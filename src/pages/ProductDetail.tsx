@@ -209,7 +209,39 @@ export default function ProductDetail() {
             <MokkaOrangePrice price={activePrice} months={3} />
             <VariantSelector productId={product.id} basePrice={product.price} lowStockThreshold={product.low_stock_threshold || 5} onVariantSelect={setSelectedVariant} onHasVariants={setHasVariants} />
 
-            {/* Short description */}
+            {/* Bundle savings badge */}
+            {isBundle && bundleSavings > 0 && (
+              <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 flex items-center gap-2">
+                <Badge className="bg-green-600 text-white">-{bundleSavingsPercent}%</Badge>
+                <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                  Economisești {format(bundleSavings)} cumpărând pachetul!
+                </span>
+              </div>
+            )}
+
+            {/* Bundle components list */}
+            {isBundle && bundleComponents.length > 0 && (
+              <div className="space-y-2 border border-border rounded-lg p-3">
+                <p className="text-sm font-semibold text-foreground">📦 Conținut pachet:</p>
+                {bundleComponents.map((bc: any) => (
+                  <div key={bc.id} className="flex items-center gap-3">
+                    {bc.product?.image_url ? (
+                      <img src={bc.product.image_url} alt={bc.product.name} className="w-10 h-10 object-cover rounded border border-border" />
+                    ) : (
+                      <div className="w-10 h-10 bg-muted rounded" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{bc.product?.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {bc.quantity > 1 ? `${bc.quantity}× ` : ""}
+                        <span className="line-through">{format(bc.product?.price * bc.quantity)}</span>
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {product.short_description && (
               <p className="text-muted-foreground">{product.short_description}</p>
             )}
