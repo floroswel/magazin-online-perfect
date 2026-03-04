@@ -16,6 +16,7 @@ export default function Catalog() {
   const [searchParams, setSearchParams] = useSearchParams();
   const categorySlug = searchParams.get("category");
   const searchQuery = searchParams.get("search");
+  const smartSlug = searchParams.get("smart");
 
   const [products, setProducts] = useState<Tables<"products">[]>([]);
   const [categories, setCategories] = useState<Tables<"categories">[]>([]);
