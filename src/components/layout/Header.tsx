@@ -28,6 +28,7 @@ export default function Header() {
   const { totalItems } = useCart();
   const { comparisonItems } = useComparison();
   const navigate = useNavigate();
+  const branding = useStoreBranding();
   const [search, setSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
   const [mobileCategories, setMobileCategories] = useState<{ name: string; slug: string }[]>([]);
@@ -36,9 +37,6 @@ export default function Header() {
     { icon: "shield", text: "Produse Garantate", link: "" },
     { icon: "truck", text: "Livrare Gratuită peste 200 lei", link: "" },
   ]);
-  const [branding, setBranding] = useState<StoreBranding>({
-    name: "MegaShop", emoji: "🛒", tagline: "", phone: "0800 123 456", email: "", copyright: "",
-  });
 
   useEffect(() => {
     supabase.from("categories").select("name, slug").is("parent_id", null).order("name").then(({ data }) => {
