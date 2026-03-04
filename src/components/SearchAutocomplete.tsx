@@ -32,6 +32,7 @@ function highlightMatch(text: string, query: string) {
 
 export default function SearchAutocomplete({ className }: { className?: string }) {
   const navigate = useNavigate();
+  const { format } = useCurrency();
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [open, setOpen] = useState(false);
