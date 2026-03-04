@@ -378,7 +378,7 @@ export default function Checkout() {
               )}
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Livrare</span>
-                <span>{shipping === 0 ? "GRATUITĂ" : `${shipping} lei`}</span>
+                <span>{shipping === 0 ? "GRATUITĂ" : format(shipping)}</span>
               </div>
               <div className="border-t pt-3 flex justify-between font-bold text-lg">
                 <span>Total</span>
