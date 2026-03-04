@@ -166,17 +166,20 @@ export default function ProductDetail() {
             </div>
 
             <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-bold text-primary">{product.price.toLocaleString("ro-RO")} lei</span>
+              <span className="text-3xl font-bold text-primary">{activePrice.toLocaleString("ro-RO")} lei</span>
               {product.old_price && (
                 <>
                   <span className="text-lg text-muted-foreground line-through">{product.old_price.toLocaleString("ro-RO")} lei</span>
-                  <span className="bg-primary text-primary-foreground text-sm font-bold px-2 py-1 rounded">-{discount}%</span>
+                  {discount > 0 && <span className="bg-primary text-primary-foreground text-sm font-bold px-2 py-1 rounded">-{discount}%</span>}
                 </>
               )}
             </div>
 
             {/* Mokka installment preview */}
-            <MokkaOrangePrice price={product.price} months={3} />
+            <MokkaOrangePrice price={activePrice} months={3} />
+
+            {/* Variant Selector */}
+            <VariantSelector productId={product.id} basePrice={product.price} onVariantSelect={setSelectedVariant} />
 
             <p className="text-muted-foreground">{product.description}</p>
 
