@@ -26,6 +26,7 @@ export default function ProductDetail() {
   const { user } = useAuth();
   const { addToCart } = useCart();
   const { addToComparison, isInComparison } = useComparison();
+  const { format, currency, convert } = useCurrency();
   const [product, setProduct] = useState<Tables<"products"> | null>(null);
   const [similar, setSimilar] = useState<Tables<"products">[]>([]);
   const [reviews, setReviews] = useState<Tables<"reviews">[]>([]);
