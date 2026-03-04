@@ -103,6 +103,7 @@ const emptyForm: ProductForm = {
   featured: false, visible: true, status: "active",
   category_id: null, additional_category_ids: [], tags: [],
   specs: {}, meta_title: "", meta_description: "", related_product_ids: [],
+  product_type: "simple", bundle_pricing_mode: "fixed", bundle_discount_percent: 0, bundle_components: [],
 };
 
 export default function AdminProducts() {
