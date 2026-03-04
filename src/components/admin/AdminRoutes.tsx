@@ -315,6 +315,7 @@ export default function AdminRoutes() {
         <Route path="settings/taxes" element={<AdminTaxSettings />} />
         <Route path="settings/store" element={<AdminStoreSettings />} />
         <Route path="settings/email" element={<AdminEmailSettings />} />
+        <Route path="settings/email-logs" element={<AdminEmailLogs />} />
         <Route path="settings/seo" element={<AdminSeoSettings />} />
         <Route path="settings/notifications" element={<AdminNotificationSettings />} />
         <Route path="settings/security" element={<AdminSecuritySettings />} />

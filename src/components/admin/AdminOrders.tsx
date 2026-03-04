@@ -131,7 +131,7 @@ export default function AdminOrders() {
     if (["cancel", "refund"].includes(action)) {
       setConfirmAction({ order, action, label: labels[action] });
     } else {
-      updateStatus.mutate({ id: order.id, status: statusMap[action], userEmail: order.user_email });
+      updateStatus.mutate({ id: order.id, status: statusMap[action], userEmail: order.user_email, order });
     }
   };
 
@@ -142,6 +142,7 @@ export default function AdminOrders() {
       id: confirmAction.order.id,
       status: statusMap[confirmAction.action],
       userEmail: confirmAction.order.user_email,
+      order: confirmAction.order,
     });
   };
 
