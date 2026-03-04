@@ -13,6 +13,7 @@ import RecentlyViewed from "@/components/home/RecentlyViewed";
 import BlogPreview from "@/components/home/BlogPreview";
 import { supabase } from "@/integrations/supabase/client";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
+import { useStoreBranding } from "@/hooks/useStoreBranding";
 import type { Tables } from "@/integrations/supabase/types";
 
 interface BenefitItem { icon: string; text: string }
