@@ -26,6 +26,7 @@ import Install from "./pages/Install";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import CustomScriptInjector from "./components/CustomScriptInjector";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const queryClient = new QueryClient();
 
@@ -42,24 +43,26 @@ const App = () => (
           <CurrencyProvider>
           <CartProvider>
             <CustomScriptInjector />
+            <ErrorBoundary>
             <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/catalog" element={<Catalog />} />
-              <Route path="/product/:slug" element={<ProductDetail />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/account" element={<Account />} />
-              <Route path="/favorites" element={<Favorites />} />
-              <Route path="/compare" element={<Compare />} />
-              <Route path="/page/:slug" element={<CmsPage />} />
-              <Route path="/install" element={<Install />} />
-              <Route path="/admin/*" element={<Admin />} />
+              <Route path="/" element={<ErrorBoundary><Index /></ErrorBoundary>} />
+              <Route path="/catalog" element={<ErrorBoundary><Catalog /></ErrorBoundary>} />
+              <Route path="/product/:slug" element={<ErrorBoundary><ProductDetail /></ErrorBoundary>} />
+              <Route path="/cart" element={<ErrorBoundary><Cart /></ErrorBoundary>} />
+              <Route path="/checkout" element={<ErrorBoundary><Checkout /></ErrorBoundary>} />
+              <Route path="/order-confirmation/:orderId" element={<ErrorBoundary><OrderConfirmation /></ErrorBoundary>} />
+              <Route path="/auth" element={<ErrorBoundary><Auth /></ErrorBoundary>} />
+              <Route path="/forgot-password" element={<ErrorBoundary><ForgotPassword /></ErrorBoundary>} />
+              <Route path="/reset-password" element={<ErrorBoundary><ResetPassword /></ErrorBoundary>} />
+              <Route path="/account" element={<ErrorBoundary><Account /></ErrorBoundary>} />
+              <Route path="/favorites" element={<ErrorBoundary><Favorites /></ErrorBoundary>} />
+              <Route path="/compare" element={<ErrorBoundary><Compare /></ErrorBoundary>} />
+              <Route path="/page/:slug" element={<ErrorBoundary><CmsPage /></ErrorBoundary>} />
+              <Route path="/install" element={<ErrorBoundary><Install /></ErrorBoundary>} />
+              <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </ErrorBoundary>
           </CartProvider>
           </CurrencyProvider>
           </I18nProvider>
