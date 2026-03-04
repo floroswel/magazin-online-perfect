@@ -29,8 +29,13 @@ export default function Admin() {
     );
   }
 
+  useEffect(() => {
+    if (!authLoading && !adminLoading && !user) {
+      navigate("/auth");
+    }
+  }, [user, authLoading, adminLoading, navigate]);
+
   if (!user) {
-    navigate("/auth");
     return null;
   }
 
