@@ -204,8 +204,8 @@ export default function ProductDetail() {
               </Button>
             </div>
 
-            <p className={`text-sm font-medium ${product.stock > 0 ? "text-green-600" : "text-destructive"}`}>
-              {product.stock > 0 ? `✓ În stoc (${product.stock} buc.)` : "✗ Stoc epuizat"}
+            <p className={`text-sm font-medium ${activeStock > 0 ? "text-green-600" : "text-destructive"}`}>
+              {activeStock > 0 ? `✓ În stoc (${activeStock} buc.)` : "✗ Stoc epuizat"}
             </p>
             {product.stock > 0 && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
