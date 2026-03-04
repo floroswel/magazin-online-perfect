@@ -90,7 +90,7 @@ export function usePricingRules() {
     }
   }
 
-  function getProductDiscount(product: Tables<"products">): AppliedDiscount | null {
+  function getProductDiscount(product: Tables<"products"> & { brandId?: string }): AppliedDiscount | null {
     const applicable = getApplicableRules(product);
     if (applicable.length === 0) return null;
 
