@@ -41,6 +41,7 @@ export default function Auth() {
     const { error } = await signUp(registerForm.email, registerForm.password, registerForm.fullName);
     if (error) { toast.error(error.message); setLoading(false); return; }
     toast.success("Cont creat! Verifică emailul pentru confirmare.");
+    if (pushSupported) subscribePush();
     setLoading(false);
   };
 
