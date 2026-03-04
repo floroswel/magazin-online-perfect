@@ -215,7 +215,7 @@ export default function Account() {
                               <p className="truncate font-medium">{item.products?.name || "Produs"}</p>
                               <p className="text-xs text-muted-foreground">x{item.quantity}</p>
                             </div>
-                            <p className="font-semibold">{(Number(item.price) * item.quantity).toLocaleString("ro-RO")} lei</p>
+                            <p className="font-semibold">{format(Number(item.price) * item.quantity)}</p>
                           </div>
                         ))}
                       </div>
