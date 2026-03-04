@@ -206,14 +206,23 @@ export default function ProductDetail() {
             </div>
 
             <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-bold text-primary">{format(activePrice)}</span>
-              {product.old_price && (
+              <span className={`text-3xl font-bold ${promoDiscount ? "text-destructive" : "text-primary"}`}>{format(finalPrice)}</span>
+              {showOriginal && showOriginal > finalPrice && (
                 <>
-                  <span className="text-lg text-muted-foreground line-through">{format(product.old_price)}</span>
+                  <span className="text-lg text-muted-foreground line-through">{format(showOriginal)}</span>
                   {discount > 0 && <span className="bg-primary text-primary-foreground text-sm font-bold px-2 py-1 rounded">-{discount}%</span>}
                 </>
               )}
             </div>
+            {promoDiscount && (
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge className="bg-destructive text-destructive-foreground">{promoDiscount.badgeText}</Badge>
+                <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                  Economisești {format(promoDiscount.savings)}
+                </span>
+                {promoDiscount.endsAt && <CountdownTimer endsAt={promoDiscount.endsAt} />}
+              </div>
+            )
 
             <MokkaOrangePrice price={activePrice} months={3} />
             <VariantSelector productId={product.id} basePrice={product.price} lowStockThreshold={product.low_stock_threshold || 5} onVariantSelect={setSelectedVariant} onHasVariants={setHasVariants} />
