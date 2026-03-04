@@ -1,4 +1,5 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useCurrency } from "@/hooks/useCurrency";
 
 interface MokkaOrangePriceProps {
   price: number;
