@@ -71,7 +71,7 @@ export default function AdminDynamicCategories() {
         .select("*")
         .order("display_order");
       if (error) throw error;
-      return (data || []) as DynamicCategory[];
+      return (data || []) as unknown as DynamicCategory[];
     },
   });
 
