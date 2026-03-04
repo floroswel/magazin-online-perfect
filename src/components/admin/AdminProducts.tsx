@@ -876,7 +876,103 @@ export default function AdminProducts() {
           </div>
         );
 
-      case 3: // Stock & Logistics
+      case 3: // Bundle
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Tip produs</Label>
+              <Select value={form.product_type} onValueChange={(v) => setForm({ ...form, product_type: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="simple">Simplu</SelectItem>
+                  <SelectItem value="variable">Cu variante</SelectItem>
+                  <SelectItem value="bundle">Pachet (Bundle)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {form.product_type !== "bundle" ? (
+              <p className="text-sm text-muted-foreground">Selectează tipul „Pachet (Bundle)" pentru a configura componentele pachetului.</p>
+            ) : (
+              <>
+                <div className="space-y-2">
+                  <Label>Mod de preț</Label>
+                  <Select value={form.bundle_pricing_mode} onValueChange={(v) => setForm({ ...form, bundle_pricing_mode: v })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="fixed">Preț fix (setat manual la pasul Prețuri)</SelectItem>
+                      <SelectItem value="dynamic">Preț dinamic (suma componentelor - discount %)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {form.bundle_pricing_mode === "dynamic" && (
+                  <div className="space-y-2">
+                    <Label>Discount pachet (%)</Label>
+                    <Input type="number" min="0" max="100" step="1" value={form.bundle_discount_percent || ""} onChange={(e) => setForm({ ...form, bundle_discount_percent: Number(e.target.value) })} placeholder="10" />
+                  </div>
+                )}
+
+                {/* Dynamic price preview */}
+                {form.bundle_pricing_mode === "dynamic" && form.bundle_components.length >= 2 && (
+                  (() => {
+                    const sumPrices = form.bundle_components.reduce((sum, bc) => {
+                      const p = allProductsForRelation.find((pr: any) => pr.id === bc.product_id);
+                      return sum + (p ? Number(p.price) * bc.quantity : 0);
+                    }, 0);
+                    const discounted = sumPrices * (1 - form.bundle_discount_percent / 100);
+                    return (
+                      <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 text-sm">
+                        <span className="text-green-600 dark:text-green-400 font-medium">
+                          Preț dinamic: {discounted.toFixed(2)} RON (economie {(sumPrices - discounted).toFixed(2)} RON / {form.bundle_discount_percent}%)
+                        </span>
+                      </div>
+                    );
+                  })()
+                )}
+
+                <div className="space-y-2 pt-2 border-t border-border">
+                  <Label className="text-base font-semibold">Componente pachet ({form.bundle_components.length})</Label>
+                  {form.bundle_components.length < 2 && (
+                    <p className="text-xs text-orange-600 dark:text-orange-400">Minim 2 componente necesare.</p>
+                  )}
+                  {form.bundle_components.map((bc, idx) => {
+                    const comp = allProductsForRelation.find((p: any) => p.id === bc.product_id);
+                    return (
+                      <div key={idx} className="flex items-center gap-3 bg-muted/30 rounded-lg p-2">
+                        {comp?.image_url ? <img src={comp.image_url} className="w-10 h-10 object-cover rounded border border-border" /> : <div className="w-10 h-10 bg-muted rounded" />}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">{comp?.name || "?"}</p>
+                          <p className="text-xs text-muted-foreground">{Number(comp?.price || 0).toFixed(2)} RON</p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Label className="text-xs">×</Label>
+                          <Input type="number" min="1" value={bc.quantity} onChange={(e) => setForm((f) => ({ ...f, bundle_components: f.bundle_components.map((b, i) => i === idx ? { ...b, quantity: Math.max(1, Number(e.target.value)) } : b) }))} className="w-16 h-8 text-xs" />
+                        </div>
+                        <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => setForm((f) => ({ ...f, bundle_components: f.bundle_components.filter((_, i) => i !== idx) }))}>
+                          <X className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="border border-input rounded-md max-h-48 overflow-y-auto">
+                  {allProductsForRelation
+                    .filter((p: any) => p.id !== editingId && !form.bundle_components.some(bc => bc.product_id === p.id))
+                    .map((p: any) => (
+                      <button key={p.id} type="button" onClick={() => setForm((f) => ({ ...f, bundle_components: [...f.bundle_components, { product_id: p.id, variant_id: null, quantity: 1 }] }))} className="flex items-center gap-3 w-full text-left px-3 py-2 hover:bg-muted/50 transition-colors border-b border-border last:border-0">
+                        {p.image_url ? <img src={p.image_url} className="w-8 h-8 object-cover rounded" /> : <div className="w-8 h-8 bg-muted rounded" />}
+                        <span className="text-sm flex-1 truncate">{p.name}</span>
+                        <span className="text-xs text-muted-foreground">{Number(p.price).toFixed(2)} RON</span>
+                        <Plus className="w-4 h-4 text-muted-foreground" />
+                      </button>
+                    ))}
+                </div>
+              </>
+            )}
+          </div>
+        );
+
+      case 4: // Stock & Logistics
         return (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
