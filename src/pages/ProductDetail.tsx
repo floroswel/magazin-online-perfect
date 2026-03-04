@@ -208,8 +208,8 @@ export default function ProductDetail() {
                 <span className="w-12 text-center font-medium">{qty}</span>
                 <Button variant="ghost" size="icon" onClick={() => setQty(qty + 1)}><Plus className="h-4 w-4" /></Button>
               </div>
-              <Button onClick={handleAddToCart} size="lg" className="flex-1 font-semibold">
-                <ShoppingCart className="h-5 w-5 mr-2" /> Adaugă în coș
+              <Button onClick={handleAddToCart} size="lg" className="flex-1 font-semibold" disabled={activeStock <= 0 || (hasVariants && !selectedVariant)}>
+                <ShoppingCart className="h-5 w-5 mr-2" /> {hasVariants && !selectedVariant ? "Selectează varianta" : activeStock <= 0 ? "Stoc epuizat" : "Adaugă în coș"}
               </Button>
               <Button variant="outline" size="lg" onClick={toggleFav}>
                 <Heart className={`h-5 w-5 ${isFav ? "fill-primary text-primary" : ""}`} />
