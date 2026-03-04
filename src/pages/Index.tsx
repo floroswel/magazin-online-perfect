@@ -29,6 +29,7 @@ const IconMap: Record<string, any> = {
 };
 
 export default function Index() {
+  const branding = useStoreBranding();
   const [featured, setFeatured] = useState<Tables<"products">[]>([]);
   const [loading, setLoading] = useState(true);
   const [benefits, setBenefits] = useState<BenefitItem[]>([
