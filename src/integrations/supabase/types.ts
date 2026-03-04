@@ -564,28 +564,55 @@ export type Database = {
       }
       categories: {
         Row: {
+          banner_image: string | null
+          banner_link: string | null
           created_at: string
+          description: string | null
+          display_order: number
           icon: string | null
           id: string
+          image_url: string | null
+          meta_description: string | null
+          meta_title: string | null
           name: string
           parent_id: string | null
+          show_in_nav: boolean
           slug: string
+          visible: boolean
         }
         Insert: {
+          banner_image?: string | null
+          banner_link?: string | null
           created_at?: string
+          description?: string | null
+          display_order?: number
           icon?: string | null
           id?: string
+          image_url?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
           name: string
           parent_id?: string | null
+          show_in_nav?: boolean
           slug: string
+          visible?: boolean
         }
         Update: {
+          banner_image?: string | null
+          banner_link?: string | null
           created_at?: string
+          description?: string | null
+          display_order?: number
           icon?: string | null
           id?: string
+          image_url?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
           name?: string
           parent_id?: string | null
+          show_in_nav?: boolean
           slug?: string
+          visible?: boolean
         }
         Relationships: [
           {
