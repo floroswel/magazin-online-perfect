@@ -43,7 +43,7 @@ export default function VariantSelector({ productId, basePrice, onVariantSelect 
         parsed.forEach((v) => {
           Object.entries(v.attributes).forEach(([key, val]) => {
             if (!map[key]) map[key] = new Set();
-            map[key].add(val);
+            map[key].add(String(val));
           });
         });
         const result: Record<string, string[]> = {};
