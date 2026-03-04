@@ -138,7 +138,7 @@ export default function SearchAutocomplete({ className }: { className?: string }
                       dangerouslySetInnerHTML={{ __html: highlightMatch(s.name, query) }}
                     />
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-primary font-semibold">{s.price.toLocaleString("ro-RO")} lei</span>
+                      <span className="text-xs text-primary font-semibold">{format(s.price)}</span>
                       {s.brand && (
                         <span
                           className="text-xs text-muted-foreground"

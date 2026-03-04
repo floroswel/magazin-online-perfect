@@ -409,7 +409,7 @@ export default function Account() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2"><RotateCcw className="w-5 h-5 text-primary" /> Solicită retur</DialogTitle>
-            <DialogDescription>Comanda #{returnOrder?.id.slice(0, 8)} — {Number(returnOrder?.total).toLocaleString("ro-RO")} lei</DialogDescription>
+            <DialogDescription>Comanda #{returnOrder?.id.slice(0, 8)} — {format(Number(returnOrder?.total))}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
