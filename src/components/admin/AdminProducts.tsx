@@ -1239,7 +1239,7 @@ export default function AdminProducts() {
           </div>
         );
 
-      case 6: // Relations
+      case 7: // Relations
         return (
           <div className="space-y-4">
             <div>
