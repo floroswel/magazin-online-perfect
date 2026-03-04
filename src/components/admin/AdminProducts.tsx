@@ -492,6 +492,13 @@ export default function AdminProducts() {
       }));
     }
 
+    // Load bundle components
+    let bundleComponents: BundleComponent[] = [];
+    const { data: bundleData } = await supabase.from("product_bundle_items").select("*").eq("bundle_product_id", product.id).order("sort_order");
+    if (bundleData) {
+      bundleComponents = bundleData.map((b: any) => ({ product_id: b.component_product_id, variant_id: b.component_variant_id, quantity: b.quantity }));
+    }
+
     setEditingId(product.id);
     setForm({
       name: product.name,
@@ -523,6 +530,10 @@ export default function AdminProducts() {
       meta_title: product.meta_title || "",
       meta_description: product.meta_description || "",
       related_product_ids: relatedIds,
+      product_type: product.product_type || "simple",
+      bundle_pricing_mode: product.bundle_pricing_mode || "fixed",
+      bundle_discount_percent: product.bundle_discount_percent || 0,
+      bundle_components: bundleComponents,
     });
     setVariantAttrs(loadedAttrs);
     setVariantCombos(loadedCombos);
