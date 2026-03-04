@@ -159,7 +159,7 @@ export default function AdminRoutes() {
         <Route path="content/media" element={<AdminMediaLibrary />} />
         <Route path="content/menus" element={<AdminPlaceholder title="Meniu & Navigație" description="Configurare meniuri de navigație principale și footer." />} />
         <Route path="content/scripts" element={<AdminCustomScripts />} />
-        <Route path="content/translations" element={<AdminPlaceholder title="Traduceri" description="Multi-language: limbi disponibile, traducere automată, URL-uri localizate." />} />
+        <Route path="content/translations" element={<AdminTranslations />} />
         <Route path="content/email-templates" element={<AdminPlaceholder title="Șabloane Email" description="Editare template-uri email tranzacționale și marketing." />} />
         <Route path="content/seo" element={<AdminPlaceholder title="SEO & Redirecționări" description="Meta tags, robots.txt, sitemap.xml, redirecționări 301/302, pagină 404." />} />
         <Route path="content/legal" element={<AdminCmsPages filterLegal />} />
