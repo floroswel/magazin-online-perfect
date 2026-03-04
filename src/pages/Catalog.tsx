@@ -36,6 +36,13 @@ export default function Catalog() {
   useEffect(() => {
     supabase.from("categories").select("*").then(({ data }) => setCategories(data || []));
     supabase.from("brands").select("*").order("name").then(({ data }) => setBrands(data || []));
+    supabase.from("products").select("price").order("price", { ascending: false }).limit(1).then(({ data }) => {
+      if (data && data.length > 0 && data[0].price) {
+        const rounded = Math.ceil(Number(data[0].price) / 100) * 100;
+        setMaxPrice(rounded);
+        setPriceRange([0, rounded]);
+      }
+    });
   }, []);
 
   useEffect(() => {
