@@ -53,14 +53,32 @@ export default function AdminOrders() {
   });
 
   const updateStatus = useMutation({
-    mutationFn: async ({ id, status, userEmail }: { id: string; status: string; userEmail?: string }) => {
+    mutationFn: async ({ id, status, userEmail, order }: { id: string; status: string; userEmail?: string; order?: any }) => {
       const { error } = await supabase.from("orders").update({ status }).eq("id", id);
       if (error) throw error;
 
       if (userEmail) {
-        supabase.functions.invoke("send-email", {
-          body: { type: "order_status", to: userEmail, data: { orderId: id, status } },
-        }).catch(console.error);
+        if (status === "shipped" && order) {
+          // Send dedicated shipping update email with tracking info
+          supabase.functions.invoke("send-email", {
+            body: {
+              type: "shipping_update",
+              to: userEmail,
+              data: {
+                orderId: id,
+                trackingNumber: order.tracking_number || "",
+                courierName: order.courier_name || "",
+                trackingUrl: order.tracking_url || "",
+                shippingAddress: order.shipping_address || null,
+                estimatedDelivery: order.estimated_delivery || "",
+              },
+            },
+          }).catch(console.error);
+        } else {
+          supabase.functions.invoke("send-email", {
+            body: { type: "order_status", to: userEmail, data: { orderId: id, status } },
+          }).catch(console.error);
+        }
       }
     },
     onSuccess: () => {
@@ -113,7 +131,7 @@ export default function AdminOrders() {
     if (["cancel", "refund"].includes(action)) {
       setConfirmAction({ order, action, label: labels[action] });
     } else {
-      updateStatus.mutate({ id: order.id, status: statusMap[action], userEmail: order.user_email });
+      updateStatus.mutate({ id: order.id, status: statusMap[action], userEmail: order.user_email, order });
     }
   };
 
@@ -124,6 +142,7 @@ export default function AdminOrders() {
       id: confirmAction.order.id,
       status: statusMap[confirmAction.action],
       userEmail: confirmAction.order.user_email,
+      order: confirmAction.order,
     });
   };
 

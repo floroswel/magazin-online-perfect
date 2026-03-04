@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,7 +8,7 @@ const corsHeaders = {
 };
 
 interface EmailRequest {
-  type: "order_placed" | "order_status" | "welcome" | "return_status";
+  type: "order_placed" | "order_status" | "welcome" | "return_status" | "shipping_update" | "test";
   to: string;
   data: Record<string, any>;
 }
@@ -19,6 +20,17 @@ function orderPlacedHTML(data: Record<string, any>) {
         `<tr><td style="padding:8px;border-bottom:1px solid #eee">${i.name}</td><td style="padding:8px;border-bottom:1px solid #eee;text-align:center">${i.quantity}</td><td style="padding:8px;border-bottom:1px solid #eee;text-align:right">${Number(i.price).toFixed(2)} RON</td></tr>`
     )
     .join("");
+
+  const address = data.shippingAddress;
+  const addressHTML = address
+    ? `<div style="background:#f9f9f9;padding:16px;border-radius:6px;margin-top:16px">
+        <p style="margin:0 0 8px;font-weight:bold">📍 Adresă livrare:</p>
+        <p style="margin:2px 0">${address.full_name || ""}</p>
+        <p style="margin:2px 0">${address.address || ""}</p>
+        <p style="margin:2px 0">${address.city || ""}, ${address.county || ""} ${address.postal_code || ""}</p>
+        <p style="margin:2px 0">Tel: ${address.phone || ""}</p>
+      </div>`
+    : "";
 
   return `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">
@@ -37,6 +49,7 @@ function orderPlacedHTML(data: Record<string, any>) {
           <p style="margin:4px 0"><strong>Metodă plată:</strong> ${data.paymentMethod || "Ramburs"}</p>
           ${data.pointsEarned ? `<p style="margin:4px 0;color:#cc8800"><strong>+${data.pointsEarned} puncte fidelitate</strong> câștigate!</p>` : ""}
         </div>
+        ${addressHTML}
         <p style="margin-top:16px;color:#666;font-size:14px">Vei primi un email când comanda va fi expediată.</p>
       </div>
     </div>`;
@@ -116,6 +129,55 @@ function returnStatusHTML(data: Record<string, any>) {
     </div>`;
 }
 
+function shippingUpdateHTML(data: Record<string, any>) {
+  const address = data.shippingAddress;
+  const addressHTML = address
+    ? `<div style="background:#f9f9f9;padding:16px;border-radius:6px;margin-top:16px">
+        <p style="margin:0 0 8px;font-weight:bold">📍 Adresă livrare:</p>
+        <p style="margin:2px 0">${address.full_name || ""}</p>
+        <p style="margin:2px 0">${address.address || ""}</p>
+        <p style="margin:2px 0">${address.city || ""}, ${address.county || ""} ${address.postal_code || ""}</p>
+      </div>`
+    : "";
+
+  const trackingHTML = data.trackingNumber
+    ? `<div style="background:#f0f7ff;padding:16px;border-radius:6px;margin-top:16px;text-align:center">
+        <p style="margin:0 0 8px;font-weight:bold">📦 AWB / Tracking:</p>
+        <p style="margin:4px 0;font-size:20px;font-family:monospace;letter-spacing:2px;font-weight:bold">${data.trackingNumber}</p>
+        ${data.courierName ? `<p style="margin:4px 0;color:#666">Curier: <strong>${data.courierName}</strong></p>` : ""}
+        ${data.trackingUrl ? `<a href="${data.trackingUrl}" style="display:inline-block;margin-top:12px;background:#7c3aed;color:#fff;padding:10px 24px;border-radius:6px;text-decoration:none;font-weight:bold">Urmărește coletul →</a>` : ""}
+      </div>`
+    : "";
+
+  return `
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">
+      <div style="background:#7c3aed;padding:24px;text-align:center">
+        <h1 style="color:#fff;margin:0;font-size:22px">🚚 Comanda ta a fost expediată!</h1>
+      </div>
+      <div style="padding:24px">
+        <p>Bună!</p>
+        <p>Comanda <strong>#${(data.orderId || "").slice(0, 8)}</strong> a fost expediată și este pe drum către tine.</p>
+        ${trackingHTML}
+        ${addressHTML}
+        ${data.estimatedDelivery ? `<p style="margin-top:16px;color:#666;font-size:14px">📅 Livrare estimată: <strong>${data.estimatedDelivery}</strong></p>` : ""}
+        <p style="margin-top:16px;color:#666;font-size:14px">Te vom notifica când coletul va fi livrat.</p>
+      </div>
+    </div>`;
+}
+
+function testHTML(data: Record<string, any>) {
+  return `
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">
+      <div style="background:#16a34a;padding:24px;text-align:center">
+        <h1 style="color:#fff;margin:0;font-size:22px">✅ Email de test</h1>
+      </div>
+      <div style="padding:24px;text-align:center">
+        <p style="font-size:16px">${data.message || "Configurarea email funcționează corect!"}</p>
+        <p style="color:#666;font-size:14px">Trimis la: ${new Date().toLocaleString("ro-RO")}</p>
+      </div>
+    </div>`;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -125,6 +187,30 @@ serve(async (req) => {
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     if (!RESEND_API_KEY) {
       throw new Error("RESEND_API_KEY is not configured");
+    }
+
+    // Create service-role client for DB operations
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    // Fetch dynamic sender settings
+    let fromEmail = "onboarding@resend.dev";
+    let fromName = "Magazin";
+    try {
+      const { data: settingsRow } = await supabaseAdmin
+        .from("app_settings")
+        .select("value_json")
+        .eq("key", "email_settings")
+        .maybeSingle();
+      if (settingsRow?.value_json) {
+        const s = settingsRow.value_json as any;
+        if (s.from_email) fromEmail = s.from_email;
+        if (s.from_name) fromName = s.from_name;
+      }
+    } catch (_) {
+      // fallback to defaults
     }
 
     const { type, to, data } = (await req.json()) as EmailRequest;
@@ -149,9 +235,19 @@ serve(async (req) => {
         subject = `Actualizare retur #${(data.returnId || "").slice(0, 8)}`;
         html = returnStatusHTML(data);
         break;
+      case "shipping_update":
+        subject = `Comanda #${(data.orderId || "").slice(0, 8)} a fost expediată 🚚`;
+        html = shippingUpdateHTML(data);
+        break;
+      case "test":
+        subject = "✅ Email de test";
+        html = testHTML(data);
+        break;
       default:
         throw new Error(`Unknown email type: ${type}`);
     }
+
+    const fromField = `${fromName} <${fromEmail}>`;
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -160,7 +256,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Magazin <onboarding@resend.dev>",
+        from: fromField,
         to: [to],
         subject,
         html,
@@ -168,6 +264,25 @@ serve(async (req) => {
     });
 
     const resData = await res.json();
+
+    // Log the email
+    const logEntry = {
+      to_email: to,
+      from_email: fromField,
+      subject,
+      type,
+      status: res.ok ? "sent" : "failed",
+      resend_id: resData.id || null,
+      error_message: res.ok ? null : JSON.stringify(resData),
+      metadata: { data_keys: Object.keys(data) },
+    };
+
+    try {
+      await supabaseAdmin.from("email_logs").insert(logEntry);
+    } catch (_) {
+      console.error("Failed to log email:", _);
+    }
+
     if (!res.ok) {
       throw new Error(`Resend API error [${res.status}]: ${JSON.stringify(resData)}`);
     }

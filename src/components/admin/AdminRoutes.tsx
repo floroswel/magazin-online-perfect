@@ -79,6 +79,7 @@ const AdminCartSettings = lazy(() => import("./settings/AdminCartSettings"));
 const AdminSessions = lazy(() => import("./users/AdminSessions"));
 const AdminIpWhitelist = lazy(() => import("./users/AdminIpWhitelist"));
 const AdminLogs = lazy(() => import("./modules/AdminLogs"));
+const AdminEmailLogs = lazy(() => import("./settings/AdminEmailLogs"));
 const AdminWarehouses = lazy(() => import("./stock/AdminWarehouses"));
 const AdminAWB = lazy(() => import("./shipping/AdminAWB"));
 const AdminGdprData = lazy(() => import("./customers/AdminGdprData"));
@@ -314,6 +315,7 @@ export default function AdminRoutes() {
         <Route path="settings/taxes" element={<AdminTaxSettings />} />
         <Route path="settings/store" element={<AdminStoreSettings />} />
         <Route path="settings/email" element={<AdminEmailSettings />} />
+        <Route path="settings/email-logs" element={<AdminEmailLogs />} />
         <Route path="settings/seo" element={<AdminSeoSettings />} />
         <Route path="settings/notifications" element={<AdminNotificationSettings />} />
         <Route path="settings/security" element={<AdminSecuritySettings />} />
