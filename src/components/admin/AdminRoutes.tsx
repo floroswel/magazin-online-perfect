@@ -205,6 +205,7 @@ export default function AdminRoutes() {
         {/* ═══════════ MARKETING ═══════════ */}
         <Route path="coupons" element={<AdminCoupons />} />
         <Route path="marketing/promotions" element={<AdminPromotions />} />
+        <Route path="marketing/pricing-rules" element={<AdminPricingRules />} />
         <Route path="newsletter" element={<AdminNewsletter />} />
         <Route path="marketing/sms" element={<AdminSMS />} />
         {/* abandoned-cart route removed — canonical route is customers/abandoned */}

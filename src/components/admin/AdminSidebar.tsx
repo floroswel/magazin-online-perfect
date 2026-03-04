@@ -121,6 +121,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         children: [
           { label: "Cupoane & reduceri", path: "/admin/coupons" },
           { label: "Promoții", path: "/admin/marketing/promotions" },
+          { label: "Reguli de preț", path: "/admin/marketing/pricing-rules" },
           { label: "Campanii email", path: "/admin/newsletter" },
           { label: "Campanii SMS", path: "/admin/marketing/sms" },
           { label: "Coș abandonat", path: "/admin/customers/abandoned" },
