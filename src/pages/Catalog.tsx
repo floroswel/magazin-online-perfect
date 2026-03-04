@@ -312,7 +312,7 @@ export default function Catalog() {
           <div className="flex-1">
             {loading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {Array.from({ length: 6 }).map((_, i) => (
+                {Array.from({ length: perPage > 12 ? 6 : 6 }).map((_, i) => (
                   <div key={i} className="h-80 bg-muted rounded-lg animate-pulse" />
                 ))}
               </div>
@@ -322,9 +322,55 @@ export default function Catalog() {
                 <p className="text-sm">Încearcă să modifici filtrele.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {filteredBySpecs.map(p => <ProductCard key={p.id} product={p} />)}
-              </div>
+              <>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {filteredBySpecs.map(p => <ProductCard key={p.id} product={p} />)}
+                </div>
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-8">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={currentPage <= 1}
+                      onClick={() => { setCurrentPage(p => p - 1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                    >
+                      ← Anterior
+                    </Button>
+                    {Array.from({ length: Math.min(totalPages, 7) }).map((_, i) => {
+                      let page: number;
+                      if (totalPages <= 7) {
+                        page = i + 1;
+                      } else if (currentPage <= 4) {
+                        page = i + 1;
+                      } else if (currentPage >= totalPages - 3) {
+                        page = totalPages - 6 + i;
+                      } else {
+                        page = currentPage - 3 + i;
+                      }
+                      return (
+                        <Button
+                          key={page}
+                          variant={page === currentPage ? "default" : "outline"}
+                          size="sm"
+                          className="w-9"
+                          onClick={() => { setCurrentPage(page); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                        >
+                          {page}
+                        </Button>
+                      );
+                    })}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={currentPage >= totalPages}
+                      onClick={() => { setCurrentPage(p => p + 1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                    >
+                      Următor →
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
