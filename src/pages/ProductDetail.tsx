@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShoppingCart, Heart, Star, Minus, Plus, ArrowLeft, GitCompare, MessageSquare, Truck } from "lucide-react";
+import { ShoppingCart, Heart, Star, Minus, Plus, ArrowLeft, GitCompare, MessageSquare, Truck, Package, Ruler } from "lucide-react";
 import ProductImageGallery from "@/components/products/ProductImageGallery";
 import VariantSelector from "@/components/products/VariantSelector";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
@@ -27,8 +28,9 @@ export default function ProductDetail() {
   const { addToCart } = useCart();
   const { addToComparison, isInComparison } = useComparison();
   const { format, currency, convert } = useCurrency();
-  const [product, setProduct] = useState<Tables<"products"> | null>(null);
+  const [product, setProduct] = useState<any>(null);
   const [similar, setSimilar] = useState<Tables<"products">[]>([]);
+  const [relatedProducts, setRelatedProducts] = useState<Tables<"products">[]>([]);
   const [reviews, setReviews] = useState<Tables<"reviews">[]>([]);
   const [questions, setQuestions] = useState<any[]>([]);
   const [recentlyViewed, setRecentlyViewed] = useState<Tables<"products">[]>([]);
@@ -47,16 +49,15 @@ export default function ProductDetail() {
       if (!prod) { setLoading(false); return; }
       setProduct(prod);
 
-      // Track in localStorage for homepage RecentlyViewed
+      // Track in localStorage
       try {
         const ids: string[] = JSON.parse(localStorage.getItem("recently_viewed") || "[]");
         const updated = [prod.id, ...ids.filter(id => id !== prod.id)].slice(0, 20);
         localStorage.setItem("recently_viewed", JSON.stringify(updated));
       } catch {}
 
-
       const [simRes, revRes, qRes] = await Promise.all([
-        supabase.from("products").select("*").eq("category_id", prod.category_id!).neq("id", prod.id).limit(4),
+        supabase.from("products").select("*").eq("category_id", prod.category_id!).neq("id", prod.id).eq("visible", true).limit(4),
         supabase.from("reviews").select("*").eq("product_id", prod.id).order("created_at", { ascending: false }),
         supabase.from("product_questions").select("*").eq("product_id", prod.id).order("created_at", { ascending: false }),
       ]);
@@ -64,17 +65,25 @@ export default function ProductDetail() {
       setReviews(revRes.data || []);
       setQuestions(qRes.data || []);
 
+      // Load related products
+      const { data: relData } = await supabase
+        .from("product_relations")
+        .select("related_product_id")
+        .eq("product_id", prod.id)
+        .order("sort_order");
+      if (relData && relData.length > 0) {
+        const relIds = relData.map((r: any) => r.related_product_id);
+        const { data: relProds } = await supabase.from("products").select("*").in("id", relIds).eq("visible", true);
+        setRelatedProducts(relProds || []);
+      }
+
       if (user) {
         const { data: fav } = await supabase.from("favorites").select("id").eq("user_id", user.id).eq("product_id", prod.id).maybeSingle();
         setIsFav(!!fav);
-
-        // Track recently viewed
         await supabase.from("recently_viewed").upsert(
           { user_id: user.id, product_id: prod.id, viewed_at: new Date().toISOString() },
           { onConflict: "user_id,product_id" }
         );
-
-        // Get recently viewed
         const { data: rv } = await supabase
           .from("recently_viewed")
           .select("*, product:products(*)")
@@ -97,35 +106,27 @@ export default function ProductDetail() {
     if (!user || !product) { toast.error("Autentifică-te mai întâi"); return; }
     if (isFav) {
       await supabase.from("favorites").delete().eq("user_id", user.id).eq("product_id", product.id);
-      setIsFav(false);
-      toast.success("Eliminat din favorite");
+      setIsFav(false); toast.success("Eliminat din favorite");
     } else {
       await supabase.from("favorites").insert({ user_id: user.id, product_id: product.id });
-      setIsFav(true);
-      toast.success("Adăugat la favorite!");
+      setIsFav(true); toast.success("Adăugat la favorite!");
     }
   };
 
   const submitReview = async () => {
     if (!user || !product) return;
-    const { error } = await supabase.from("reviews").insert({
-      user_id: user.id, product_id: product.id, rating: reviewRating, comment: reviewText,
-    });
+    const { error } = await supabase.from("reviews").insert({ user_id: user.id, product_id: product.id, rating: reviewRating, comment: reviewText });
     if (error) { toast.error("Eroare la adăugarea recenziei"); return; }
-    toast.success("Recenzie adăugată!");
-    setReviewText("");
+    toast.success("Recenzie adăugată!"); setReviewText("");
     const { data } = await supabase.from("reviews").select("*").eq("product_id", product.id).order("created_at", { ascending: false });
     setReviews(data || []);
   };
 
   const submitQuestion = async () => {
     if (!user || !product || !questionText.trim()) return;
-    const { error } = await supabase.from("product_questions").insert({
-      user_id: user.id, product_id: product.id, question: questionText,
-    });
+    const { error } = await supabase.from("product_questions").insert({ user_id: user.id, product_id: product.id, question: questionText });
     if (error) { toast.error("Eroare"); return; }
-    toast.success("Întrebarea a fost trimisă!");
-    setQuestionText("");
+    toast.success("Întrebarea a fost trimisă!"); setQuestionText("");
     const { data } = await supabase.from("product_questions").select("*").eq("product_id", product.id).order("created_at", { ascending: false });
     setQuestions(data || []);
   };
@@ -138,6 +139,7 @@ export default function ProductDetail() {
   const activeImage = selectedVariant?.image_url || product.image_url;
   const specs = product.specs && typeof product.specs === "object" ? Object.entries(product.specs as Record<string, string>).filter(([k]) => !k.startsWith("_")) : [];
   const discount = product.old_price ? Math.round(((product.old_price - activePrice) / product.old_price) * 100) : 0;
+  const imageAlts = product.image_alts || {};
 
   return (
     <Layout>
@@ -147,15 +149,14 @@ export default function ProductDetail() {
         </Link>
 
         <div className="grid md:grid-cols-2 gap-8">
-          {/* Image Gallery */}
           <ProductImageGallery
             mainImage={activeImage || "/placeholder.svg"}
             images={product.images}
-            alt={product.name}
+            alt={imageAlts[activeImage] || product.name}
           />
 
-          {/* Details */}
           <div className="space-y-4">
+            {product.status === "draft" && <Badge variant="secondary">Ciornă</Badge>}
             <h1 className="text-2xl font-bold text-foreground">{product.name}</h1>
             <div className="flex items-center gap-2">
               <div className="flex">
@@ -164,7 +165,7 @@ export default function ProductDetail() {
                 ))}
               </div>
               <span className="text-sm text-muted-foreground">({product.review_count} recenzii)</span>
-              {(product as any).brands?.name && <span className="text-sm text-muted-foreground">• {(product as any).brands.name}</span>}
+              {product.brands?.name && <span className="text-sm text-muted-foreground">• {product.brands.name}</span>}
             </div>
 
             <div className="flex items-baseline gap-3">
@@ -177,13 +178,22 @@ export default function ProductDetail() {
               )}
             </div>
 
-            {/* Mokka installment preview */}
             <MokkaOrangePrice price={activePrice} months={3} />
-
-            {/* Variant Selector */}
             <VariantSelector productId={product.id} basePrice={product.price} onVariantSelect={setSelectedVariant} />
 
-            <p className="text-muted-foreground">{product.description}</p>
+            {/* Short description */}
+            {product.short_description && (
+              <p className="text-muted-foreground">{product.short_description}</p>
+            )}
+
+            {/* Tags */}
+            {product.tags && product.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {product.tags.map((tag: string) => (
+                  <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                ))}
+              </div>
+            )}
 
             <div className="flex items-center gap-3 pt-2">
               <div className="flex items-center border rounded-md">
@@ -215,19 +225,40 @@ export default function ProductDetail() {
                 <span>Livrare estimată: <strong className="text-foreground">1-3 zile lucrătoare</strong></span>
               </div>
             )}
-            {product.sku && (
-              <p className="text-xs text-muted-foreground">Cod produs: {product.sku}</p>
-            )}
+            <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+              {product.sku && <span className="flex items-center gap-1"><Package className="w-3 h-3" /> SKU: {product.sku}</span>}
+              {product.ean && <span className="flex items-center gap-1">EAN: {product.ean}</span>}
+              {product.weight_kg && <span className="flex items-center gap-1">Greutate: {product.weight_kg} kg</span>}
+              {product.length_cm && product.width_cm && product.height_cm && (
+                <span className="flex items-center gap-1"><Ruler className="w-3 h-3" /> {product.length_cm}×{product.width_cm}×{product.height_cm} cm</span>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Tabs: Specs, Reviews, Q&A */}
-        <Tabs defaultValue="specs" className="mt-8">
+        {/* Tabs */}
+        <Tabs defaultValue="description" className="mt-8">
           <TabsList>
+            <TabsTrigger value="description">Descriere</TabsTrigger>
             <TabsTrigger value="specs">Specificații</TabsTrigger>
             <TabsTrigger value="reviews">Recenzii ({reviews.length})</TabsTrigger>
             <TabsTrigger value="qa">Întrebări ({questions.length})</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="description">
+            <Card>
+              <CardContent className="pt-6">
+                {product.description ? (
+                  <div
+                    className="prose prose-sm max-w-none text-foreground [&_h2]:text-lg [&_h2]:font-bold [&_h3]:text-base [&_h3]:font-semibold [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_blockquote]:border-l-4 [&_blockquote]:border-muted-foreground/30 [&_blockquote]:pl-4 [&_blockquote]:italic [&_img]:rounded-lg [&_img]:max-w-full [&_table]:border-collapse [&_td]:border [&_td]:border-border [&_td]:p-2 [&_th]:border [&_th]:border-border [&_th]:p-2 [&_th]:bg-muted/50 [&_th]:font-semibold"
+                    dangerouslySetInnerHTML={{ __html: product.description }}
+                  />
+                ) : (
+                  <p className="text-muted-foreground">Nu există descriere disponibilă.</p>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="specs">
             {specs.length > 0 ? (
@@ -321,6 +352,16 @@ export default function ProductDetail() {
           </TabsContent>
         </Tabs>
 
+        {/* Related products (manual selection) */}
+        {relatedProducts.length > 0 && (
+          <section className="mt-8">
+            <h2 className="text-xl font-bold mb-4">Produse recomandate</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {relatedProducts.map(p => <ProductCard key={p.id} product={p} />)}
+            </div>
+          </section>
+        )}
+
         {/* Recently viewed */}
         {recentlyViewed.length > 0 && (
           <section className="mt-8">
@@ -331,7 +372,7 @@ export default function ProductDetail() {
           </section>
         )}
 
-        {/* Similar products */}
+        {/* Similar products (category-based) */}
         {similar.length > 0 && (
           <section className="mt-8">
             <h2 className="text-xl font-bold mb-4">Produse similare</h2>
@@ -347,10 +388,12 @@ export default function ProductDetail() {
         "@context": "https://schema.org",
         "@type": "Product",
         name: sanitizeForJsonLd(product.name),
-        description: sanitizeForJsonLd(product.description),
+        description: sanitizeForJsonLd(product.short_description || product.description?.replace(/<[^>]*>/g, "")),
         image: product.image_url || "",
-        brand: (product as any).brands?.name ? { "@type": "Brand", name: sanitizeForJsonLd((product as any).brands.name) } : undefined,
+        brand: product.brands?.name ? { "@type": "Brand", name: sanitizeForJsonLd(product.brands.name) } : undefined,
         sku: product.sku || product.id,
+        gtin13: product.ean || undefined,
+        weight: product.weight_kg ? { "@type": "QuantitativeValue", value: product.weight_kg, unitCode: "KGM" } : undefined,
         offers: {
           "@type": "Offer",
           url: window.location.href,
@@ -372,7 +415,7 @@ export default function ProductDetail() {
           <p className="text-lg font-bold text-primary">{format(product.price)}</p>
         </div>
         <Button onClick={handleAddToCart} className="shrink-0 font-semibold">
-          <ShoppingCart className="h-4 w-4 mr-1" /> Adaugă
+          <ShoppingCart className="h-4 w-4 mr-1" /> Cumpără
         </Button>
       </div>
     </Layout>
