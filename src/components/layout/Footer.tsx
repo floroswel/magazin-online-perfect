@@ -73,9 +73,6 @@ export default function Footer() {
             case "footer_company_info":
               if (val && typeof val === "object" && !Array.isArray(val)) setCompanyInfo(val as unknown as CompanyInfo);
               break;
-            case "store_branding":
-              if (val && typeof val === "object" && !Array.isArray(val)) setBranding(val as unknown as any);
-              break;
           }
         });
       });
