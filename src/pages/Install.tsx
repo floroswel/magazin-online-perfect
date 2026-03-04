@@ -6,6 +6,7 @@ import { Download, Smartphone, Check, Share } from "lucide-react";
 import { useStoreBranding } from "@/hooks/useStoreBranding";
 
 export default function Install() {
+  const branding = useStoreBranding();
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [installed, setInstalled] = useState(false);
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
