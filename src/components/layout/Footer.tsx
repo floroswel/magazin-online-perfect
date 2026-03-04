@@ -39,6 +39,8 @@ export default function Footer() {
   const [deliveryPartners, setDeliveryPartners] = useState<DeliveryPartner[]>([]);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
 
+  const [branding, setBranding] = useState<{ name: string; emoji: string; tagline: string; phone: string; email: string; copyright: string } | null>(null);
+
   useEffect(() => {
     supabase
       .from("cms_pages")
@@ -51,7 +53,7 @@ export default function Footer() {
     supabase
       .from("app_settings")
       .select("key, value_json")
-      .in("key", ["footer_legal_badges", "footer_social_links", "footer_payment_methods", "footer_delivery_partners", "footer_company_info"])
+      .in("key", ["footer_legal_badges", "footer_social_links", "footer_payment_methods", "footer_delivery_partners", "footer_company_info", "store_branding"])
       .then(({ data }) => {
         data?.forEach(row => {
           const val = row.value_json;
@@ -70,6 +72,9 @@ export default function Footer() {
               break;
             case "footer_company_info":
               if (val && typeof val === "object" && !Array.isArray(val)) setCompanyInfo(val as unknown as CompanyInfo);
+              break;
+            case "store_branding":
+              if (val && typeof val === "object" && !Array.isArray(val)) setBranding(val as unknown as any);
               break;
           }
         });
@@ -111,8 +116,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand + Social */}
           <div>
-            <h3 className="text-lg font-bold mb-4 text-emag-yellow">🛒 MegaShop</h3>
-            <p className="text-sm text-white/70 mb-4">Cel mai mare magazin online din România cu mii de produse la prețuri imbatabile.</p>
+            <h3 className="text-lg font-bold mb-4 text-emag-yellow">{branding?.emoji || "🛒"} {branding?.name || "MegaShop"}</h3>
+            <p className="text-sm text-white/70 mb-4">{branding?.tagline || "Cel mai mare magazin online din România cu mii de produse la prețuri imbatabile."}</p>
             {socialLinks.length > 0 && (
               <div className="flex gap-3">
                 {socialLinks.map((link, i) => (
@@ -183,8 +188,8 @@ export default function Footer() {
               </Button>
             </form>
             <div className="mt-4 space-y-2 text-sm text-white/70">
-              <p className="flex items-center gap-2"><Phone className="w-3.5 h-3.5" /> 0800 123 456</p>
-              <p className="flex items-center gap-2"><Mail className="w-3.5 h-3.5" /> contact@megashop.ro</p>
+              <p className="flex items-center gap-2"><Phone className="w-3.5 h-3.5" /> {branding?.phone || "0800 123 456"}</p>
+              <p className="flex items-center gap-2"><Mail className="w-3.5 h-3.5" /> {branding?.email || "contact@megashop.ro"}</p>
               {companyInfo?.working_hours && (
                 <p className="flex items-center gap-2"><Clock className="w-3.5 h-3.5" /> {companyInfo.working_hours}</p>
               )}
@@ -285,7 +290,7 @@ export default function Footer() {
             </div>
           )}
 
-          <p className="text-center text-[11px] text-white/40">© 2026 MegaShop. Toate drepturile rezervate.</p>
+          <p className="text-center text-[11px] text-white/40">{branding?.copyright || "© 2026 MegaShop. Toate drepturile rezervate."}</p>
         </div>
       </div>
     </footer>
