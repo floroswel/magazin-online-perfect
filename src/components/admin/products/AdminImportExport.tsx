@@ -356,7 +356,7 @@ export default function AdminImportExport() {
     try {
       const { data, error } = await supabase
         .from("products")
-        .select("name, slug, sku, price, old_price, stock, description, short_description, image_url, brand, featured, category_id, meta_title, meta_description, tags, warranty_months, status, created_at")
+        .select("name, slug, sku, price, old_price, stock, description, short_description, image_url, brand_id, brands(name), featured, category_id, meta_title, meta_description, tags, warranty_months, status, created_at")
         .order("name");
 
       if (error) throw error;
@@ -364,7 +364,7 @@ export default function AdminImportExport() {
       const header = "name,slug,sku,price,old_price,stock,description,short_description,image_url,brand,featured,category_id,meta_title,meta_description,tags,warranty_months,status\n";
       const esc = (v: any) => `"${String(v || "").replace(/"/g, '""').replace(/\n/g, " ")}"`;
       const rows = (data || []).map((p: any) =>
-        `${esc(p.name)},${esc(p.slug)},${esc(p.sku)},${p.price},${p.old_price || ""},${p.stock},${esc(p.description)},${esc(p.short_description)},${esc(p.image_url)},${esc(p.brand)},${p.featured},${p.category_id || ""},${esc(p.meta_title)},${esc(p.meta_description)},${esc((p.tags || []).join("|"))},${p.warranty_months || ""},${p.status || "active"}`
+        `${esc(p.name)},${esc(p.slug)},${esc(p.sku)},${p.price},${p.old_price || ""},${p.stock},${esc(p.description)},${esc(p.short_description)},${esc(p.image_url)},${esc(p.brands?.name || "")},${p.featured},${p.category_id || ""},${esc(p.meta_title)},${esc(p.meta_description)},${esc((p.tags || []).join("|"))},${p.warranty_months || ""},${p.status || "active"}`
       ).join("\n");
 
       const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8;" });

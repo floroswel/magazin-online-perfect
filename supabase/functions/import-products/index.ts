@@ -16,7 +16,8 @@ interface ProductRow {
   short_description?: string | null;
   image_url?: string | null;
   images?: string[] | null;
-  brand?: string | null;
+  brand_name?: string | null;
+  brand_id?: string | null;
   category_id?: string | null;
   specs?: Record<string, unknown> | null;
   featured?: boolean;
@@ -53,7 +54,7 @@ function cleanProduct(item: Record<string, any>): ProductRow | null {
     short_description: item.short_description || null,
     image_url: item.image_url || item.image || item.imagine || null,
     images: Array.isArray(item.images) ? item.images : null,
-    brand: item.brand || item.marca || item.producator || null,
+    brand_name: item.brand || item.marca || item.producator || null,
     category_id: item.category_id || null,
     specs: item.specs || item.specificatii || null,
     featured: item.featured === true || item.featured === "true" || item.featured === "1",
@@ -142,7 +143,7 @@ function parseXMLFeed(text: string): ProductRow[] {
       stock: getVal(["stock", "stoc"]),
       description: getVal(["description", "descriere"]),
       image_url: getVal(["image_url", "image", "imagine", "image_link"]),
-      brand: getVal(["brand", "marca"]),
+      brand_name: getVal(["brand", "marca"]),
       slug: getVal(["slug"]),
       category_id: getVal(["category_id"]),
       sku: getVal(["sku", "cod"]),
@@ -256,6 +257,24 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Resolve brand names to brand IDs
+    const brandNames = [...new Set(products.map(p => p.brand_name).filter(Boolean))] as string[];
+    const brandIdMap: Record<string, string> = {};
+
+    if (brandNames.length > 0) {
+      // Insert missing brands
+      for (const name of brandNames) {
+        const brandSlug = slugify(name);
+        const { data: existing } = await supabase.from("brands").select("id").eq("slug", brandSlug).maybeSingle();
+        if (existing) {
+          brandIdMap[name.toLowerCase()] = existing.id;
+        } else {
+          const { data: inserted } = await supabase.from("brands").insert({ name, slug: brandSlug }).select("id").single();
+          if (inserted) brandIdMap[name.toLowerCase()] = inserted.id;
+        }
+      }
+    }
+
     // Clean nulls from each product before upsert
     const toUpsert = products.map((p) => {
       const clean: Record<string, any> = { name: p.name, slug: p.slug || slugify(p.name), price: p.price };
@@ -265,7 +284,13 @@ Deno.serve(async (req) => {
       if (p.short_description != null) clean.short_description = p.short_description;
       if (p.image_url != null) clean.image_url = p.image_url;
       if (p.images != null) clean.images = p.images;
-      if (p.brand != null) clean.brand = p.brand;
+      // Resolve brand_name to brand_id
+      if (p.brand_name) {
+        const resolvedId = brandIdMap[p.brand_name.toLowerCase()];
+        if (resolvedId) clean.brand_id = resolvedId;
+      } else if (p.brand_id) {
+        clean.brand_id = p.brand_id;
+      }
       if (p.category_id != null) clean.category_id = p.category_id;
       if (p.specs != null) clean.specs = p.specs;
       if (p.featured) clean.featured = true;

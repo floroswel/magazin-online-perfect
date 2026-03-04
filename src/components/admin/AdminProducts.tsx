@@ -28,7 +28,7 @@ interface ProductForm {
   old_price: number | null;
   stock: number;
   description: string;
-  brand: string;
+  brand_id: string | null;
   image_url: string;
   images: string[];
   featured: boolean;
@@ -54,7 +54,7 @@ const STEPS = [
 
 const emptyForm: ProductForm = {
   name: "", slug: "", price: 0, old_price: null, stock: 0,
-  description: "", brand: "", image_url: "", images: [], featured: false,
+  description: "", brand_id: null, image_url: "", images: [], featured: false,
   category_id: null, specs: {}, meta_title: "", meta_description: "",
 };
 
@@ -107,7 +107,7 @@ export default function AdminProducts() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
-        .select("*, categories(name)")
+        .select("*, categories(name), brands(name)")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
@@ -175,7 +175,7 @@ export default function AdminProducts() {
         old_price: product.old_price,
         stock: product.stock,
         description: product.description,
-        brand: product.brand,
+        brand_id: product.brand_id || null,
         image_url: product.image_url,
         images: product.images,
         featured: product.featured,
@@ -265,7 +265,7 @@ export default function AdminProducts() {
       old_price: product.old_price,
       stock: product.stock,
       description: product.description || "",
-      brand: product.brand || "",
+      brand_id: product.brand_id || null,
       image_url: product.image_url || "",
       images: product.images || [],
       featured: product.featured || false,
@@ -313,9 +313,18 @@ export default function AdminProducts() {
     });
   };
 
+  const { data: brandsList = [] } = useQuery({
+    queryKey: ["admin-brands-list"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("brands").select("id, name").order("name");
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const filtered = products.filter((p: any) =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.brand?.toLowerCase().includes(search.toLowerCase()) ||
+    p.brands?.name?.toLowerCase().includes(search.toLowerCase()) ||
     p.slug?.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -357,7 +366,13 @@ export default function AdminProducts() {
               </div>
               <div className="space-y-2">
                 <Label>Brand</Label>
-                <Input value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} placeholder="Samsung" />
+                <Select value={form.brand_id || "none"} onValueChange={(v) => setForm({ ...form, brand_id: v === "none" ? null : v })}>
+                  <SelectTrigger><SelectValue placeholder="Selectează brand" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Fără brand</SelectItem>
+                    {brandsList.map((b: any) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <div className="space-y-2">
@@ -381,9 +396,10 @@ export default function AdminProducts() {
                   onClick={async () => {
                     setGeneratingDesc(true);
                     try {
-                      const categoryName = categories.find((c: any) => c.id === form.category_id)?.name;
+                       const categoryName = categories.find((c: any) => c.id === form.category_id)?.name;
+                      const brandName = brandsList.find((b: any) => b.id === form.brand_id)?.name;
                       const { data, error } = await supabase.functions.invoke("generate-description", {
-                        body: { name: form.name, brand: form.brand, category: categoryName, specs: form.specs },
+                        body: { name: form.name, brand: brandName, category: categoryName, specs: form.specs },
                       });
                       if (error) throw error;
                       if (data?.error) throw new Error(data.error);
@@ -763,7 +779,7 @@ export default function AdminProducts() {
                         {p.stock}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{p.brand || "—"}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{p.brands?.name || "—"}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
                         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setPreviewOpen(p)} title="Preview">
@@ -773,7 +789,7 @@ export default function AdminProducts() {
                           <Pencil className="w-4 h-4" />
                         </Button>
                         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
-                          const dup = { ...emptyForm, name: p.name + " (copie)", slug: generateSlug(p.name + " copie"), price: p.price, old_price: p.old_price, stock: p.stock, description: p.description || "", brand: p.brand || "", image_url: p.image_url || "", images: p.images || [], category_id: p.category_id };
+                          const dup = { ...emptyForm, name: p.name + " (copie)", slug: generateSlug(p.name + " copie"), price: p.price, old_price: p.old_price, stock: p.stock, description: p.description || "", brand_id: p.brand_id || null, image_url: p.image_url || "", images: p.images || [], category_id: p.category_id };
                           setForm(dup);
                           setEditingId(null);
                           setStep(0);
@@ -909,7 +925,7 @@ export default function AdminProducts() {
             <>
               <DialogHeader>
                 <DialogTitle>{previewOpen.name}</DialogTitle>
-                <DialogDescription>{previewOpen.brand || "Fără brand"} • {previewOpen.categories?.name || "Fără categorie"}</DialogDescription>
+                <DialogDescription>{previewOpen.brands?.name || "Fără brand"} • {previewOpen.categories?.name || "Fără categorie"}</DialogDescription>
               </DialogHeader>
               {previewOpen.image_url && (
                 <img src={previewOpen.image_url} alt={previewOpen.name} className="w-full h-48 object-cover rounded-lg border border-border" />

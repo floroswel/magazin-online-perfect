@@ -43,7 +43,7 @@ export default function ProductDetail() {
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const { data: prod } = await supabase.from("products").select("*").eq("slug", slug).single();
+      const { data: prod } = await supabase.from("products").select("*, brands(name)").eq("slug", slug).single();
       if (!prod) { setLoading(false); return; }
       setProduct(prod);
 
@@ -164,7 +164,7 @@ export default function ProductDetail() {
                 ))}
               </div>
               <span className="text-sm text-muted-foreground">({product.review_count} recenzii)</span>
-              {product.brand && <span className="text-sm text-muted-foreground">• {product.brand}</span>}
+              {(product as any).brands?.name && <span className="text-sm text-muted-foreground">• {(product as any).brands.name}</span>}
             </div>
 
             <div className="flex items-baseline gap-3">
@@ -349,7 +349,7 @@ export default function ProductDetail() {
         name: sanitizeForJsonLd(product.name),
         description: sanitizeForJsonLd(product.description),
         image: product.image_url || "",
-        brand: product.brand ? { "@type": "Brand", name: sanitizeForJsonLd(product.brand) } : undefined,
+        brand: (product as any).brands?.name ? { "@type": "Brand", name: sanitizeForJsonLd((product as any).brands.name) } : undefined,
         sku: product.sku || product.id,
         offers: {
           "@type": "Offer",

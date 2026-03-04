@@ -13,7 +13,8 @@ import { Progress } from "@/components/ui/progress";
 interface Product {
   id: string;
   name: string;
-  brand: string | null;
+  brand_id: string | null;
+  brands: { name: string } | null;
   description: string | null;
   image_url: string | null;
   price: number;
@@ -33,7 +34,7 @@ export default function AdminAIGenerator() {
 
   const fetchProducts = async () => {
     setLoading(true);
-    let query = supabase.from("products").select("id, name, brand, description, image_url, price, category_id").order("name");
+    let query = supabase.from("products").select("id, name, brand_id, brands(name), description, image_url, price, category_id").order("name");
     
     if (filter === "no-description") {
       query = query.or("description.is.null,description.eq.");
@@ -42,12 +43,12 @@ export default function AdminAIGenerator() {
     }
 
     const { data, error } = await query.limit(500);
-    if (!error) setProducts(data || []);
+    if (!error) setProducts((data as any) || []);
     setLoading(false);
   };
 
   const filtered = products.filter(p => 
-    !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.brand?.toLowerCase().includes(search.toLowerCase())
+    !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.brands?.name?.toLowerCase().includes(search.toLowerCase())
   );
 
   const toggleAll = () => {
@@ -92,7 +93,7 @@ export default function AdminAIGenerator() {
           {
             method: "POST",
             headers: { ...headers, "Content-Type": "application/json" },
-            body: JSON.stringify({ name: product.name, brand: product.brand }),
+            body: JSON.stringify({ name: product.name, brand: product.brands?.name }),
           }
         );
 
@@ -229,7 +230,7 @@ export default function AdminAIGenerator() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{p.name}</p>
-                    <p className="text-xs text-muted-foreground">{p.brand || "—"} · {p.price} RON</p>
+                    <p className="text-xs text-muted-foreground">{p.brands?.name || "—"} · {p.price} RON</p>
                   </div>
                   <div className="flex gap-1">
                     {!p.description?.trim() && <Badge variant="outline" className="text-yellow-500 border-yellow-500/30 text-xs">Fără descriere</Badge>}

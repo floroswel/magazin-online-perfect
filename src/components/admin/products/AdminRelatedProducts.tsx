@@ -14,7 +14,7 @@ export default function AdminRelatedProducts() {
   const { data: products = [] } = useQuery({
     queryKey: ["products-for-relations"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("products").select("id, name, category_id, brand, price, images").order("name").limit(50);
+      const { data, error } = await supabase.from("products").select("id, name, category_id, brand_id, brands(name), price, images").order("name").limit(50);
       if (error) throw error;
       return data;
     },
@@ -60,7 +60,7 @@ export default function AdminRelatedProducts() {
               ) : products.slice(0, 15).map((p: any) => (
                 <TableRow key={p.id}>
                   <TableCell className="font-medium text-sm">{p.name}</TableCell>
-                  <TableCell><Badge variant="outline" className="text-[10px]">{p.brand || "—"}</Badge></TableCell>
+                  <TableCell><Badge variant="outline" className="text-[10px]">{p.brands?.name || "—"}</Badge></TableCell>
                   <TableCell className="text-muted-foreground text-xs">0 relații</TableCell>
                   <TableCell><Button variant="ghost" size="sm">Configurează</Button></TableCell>
                 </TableRow>

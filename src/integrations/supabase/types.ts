@@ -2459,7 +2459,6 @@ export type Database = {
       }
       products: {
         Row: {
-          brand: string | null
           canonical_url: string | null
           category_id: string | null
           created_at: string
@@ -2488,7 +2487,6 @@ export type Database = {
           warranty_months: number | null
         }
         Insert: {
-          brand?: string | null
           canonical_url?: string | null
           category_id?: string | null
           created_at?: string
@@ -2517,7 +2515,6 @@ export type Database = {
           warranty_months?: number | null
         }
         Update: {
-          brand?: string | null
           canonical_url?: string | null
           category_id?: string | null
           created_at?: string
