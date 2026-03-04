@@ -54,7 +54,7 @@ const STEPS = [
 
 const emptyForm: ProductForm = {
   name: "", slug: "", price: 0, old_price: null, stock: 0,
-  description: "", brand: "", image_url: "", images: [], featured: false,
+  description: "", brand_id: null, image_url: "", images: [], featured: false,
   category_id: null, specs: {}, meta_title: "", meta_description: "",
 };
 
