@@ -43,7 +43,7 @@ export default function AdminAIGenerator() {
     }
 
     const { data, error } = await query.limit(500);
-    if (!error) setProducts(data || []);
+    if (!error) setProducts((data as any) || []);
     setLoading(false);
   };
 
