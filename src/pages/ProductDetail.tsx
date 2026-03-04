@@ -154,12 +154,20 @@ export default function ProductDetail() {
   if (loading) return <Layout><div className="container py-16 text-center">Se încarcă...</div></Layout>;
   if (!product) return <Layout><div className="container py-16 text-center">Produsul nu a fost găsit.</div></Layout>;
 
+  const isBundle = product.product_type === "bundle";
+  const bundleComponentsTotal = bundleComponents.reduce((sum: number, bc: any) => sum + (bc.product?.price || 0) * bc.quantity, 0);
+  const bundleStock = isBundle && bundleComponents.length > 0
+    ? Math.min(...bundleComponents.map((bc: any) => Math.floor((bc.product?.stock || 0) / bc.quantity)))
+    : null;
+
   const activePrice = selectedVariant ? selectedVariant.price : product.price;
-  const activeStock = selectedVariant ? selectedVariant.stock : product.stock;
+  const activeStock = isBundle ? (bundleStock ?? 0) : (selectedVariant ? selectedVariant.stock : product.stock);
   const activeImage = selectedVariant?.image_url || product.image_url;
   const specs = product.specs && typeof product.specs === "object" ? Object.entries(product.specs as Record<string, string>).filter(([k]) => !k.startsWith("_")) : [];
   const discount = product.old_price ? Math.round(((product.old_price - activePrice) / product.old_price) * 100) : 0;
   const imageAlts = product.image_alts || {};
+  const bundleSavings = isBundle && bundleComponentsTotal > activePrice ? bundleComponentsTotal - activePrice : 0;
+  const bundleSavingsPercent = bundleSavings > 0 ? Math.round((bundleSavings / bundleComponentsTotal) * 100) : 0;
 
   return (
     <Layout>
