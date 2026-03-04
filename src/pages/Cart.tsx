@@ -40,7 +40,7 @@ export default function Cart() {
                   <Link to={`/product/${item.product.slug}`} className="font-medium text-sm hover:text-primary line-clamp-2">
                     {item.product.name}
                   </Link>
-                  <p className="text-primary font-bold mt-1">{item.product.price.toLocaleString("ro-RO")} lei</p>
+                  <p className="text-primary font-bold mt-1">{format(item.product.price)}</p>
                   <div className="flex items-center gap-2 mt-2">
                     <div className="flex items-center border rounded">
                       <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.product_id, item.quantity - 1)}>
