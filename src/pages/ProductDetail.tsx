@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { ShoppingCart, Heart, Star, Minus, Plus, ArrowLeft, GitCompare, MessageSquare, Truck, Package, Ruler } from "lucide-react";
 import ProductImageGallery from "@/components/products/ProductImageGallery";
 import VariantSelector from "@/components/products/VariantSelector";
+import CountdownTimer from "@/components/products/CountdownTimer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
@@ -17,6 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useComparison } from "@/hooks/useComparison";
+import { usePricingRules } from "@/hooks/usePricingRules";
 import { toast } from "sonner";
 import { safeJsonLd, sanitizeForJsonLd } from "@/lib/sanitize-json-ld";
 import { useCurrency } from "@/hooks/useCurrency";
@@ -27,6 +29,7 @@ export default function ProductDetail() {
   const { user } = useAuth();
   const { addToCart } = useCart();
   const { addToComparison, isInComparison } = useComparison();
+  const { getProductDiscount } = usePricingRules();
   const { format, currency, convert } = useCurrency();
   const [product, setProduct] = useState<any>(null);
   const [similar, setSimilar] = useState<Tables<"products">[]>([]);
@@ -164,9 +167,15 @@ export default function ProductDetail() {
   const activeStock = isBundle ? (bundleStock ?? 0) : (selectedVariant ? selectedVariant.stock : product.stock);
   const activeImage = selectedVariant?.image_url || product.image_url;
   const specs = product.specs && typeof product.specs === "object" ? Object.entries(product.specs as Record<string, string>).filter(([k]) => !k.startsWith("_")) : [];
-  const discount = product.old_price ? Math.round(((product.old_price - activePrice) / product.old_price) * 100) : 0;
+  
+  // Dynamic pricing rules
+  const promoDiscount = getProductDiscount(product);
+  const finalPrice = promoDiscount ? promoDiscount.discountedPrice : activePrice;
+  const showOriginal = promoDiscount ? activePrice : product.old_price;
+  const discount = showOriginal && showOriginal > finalPrice ? Math.round(((showOriginal - finalPrice) / showOriginal) * 100) : 0;
+  
   const imageAlts = product.image_alts || {};
-  const bundleSavings = isBundle && bundleComponentsTotal > activePrice ? bundleComponentsTotal - activePrice : 0;
+  const bundleSavings = isBundle && bundleComponentsTotal > finalPrice ? bundleComponentsTotal - finalPrice : 0;
   const bundleSavingsPercent = bundleSavings > 0 ? Math.round((bundleSavings / bundleComponentsTotal) * 100) : 0;
 
   return (
@@ -197,16 +206,25 @@ export default function ProductDetail() {
             </div>
 
             <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-bold text-primary">{format(activePrice)}</span>
-              {product.old_price && (
+              <span className={`text-3xl font-bold ${promoDiscount ? "text-destructive" : "text-primary"}`}>{format(finalPrice)}</span>
+              {showOriginal && showOriginal > finalPrice && (
                 <>
-                  <span className="text-lg text-muted-foreground line-through">{format(product.old_price)}</span>
+                  <span className="text-lg text-muted-foreground line-through">{format(showOriginal)}</span>
                   {discount > 0 && <span className="bg-primary text-primary-foreground text-sm font-bold px-2 py-1 rounded">-{discount}%</span>}
                 </>
               )}
             </div>
+            {promoDiscount && (
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge className="bg-destructive text-destructive-foreground">{promoDiscount.badgeText}</Badge>
+                <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                  Economisești {format(promoDiscount.savings)}
+                </span>
+                {promoDiscount.endsAt && <CountdownTimer endsAt={promoDiscount.endsAt} />}
+              </div>
+            )}
 
-            <MokkaOrangePrice price={activePrice} months={3} />
+            <MokkaOrangePrice price={finalPrice} months={3} />
             <VariantSelector productId={product.id} basePrice={product.price} lowStockThreshold={product.low_stock_threshold || 5} onVariantSelect={setSelectedVariant} onHasVariants={setHasVariants} />
 
             {/* Bundle savings badge */}

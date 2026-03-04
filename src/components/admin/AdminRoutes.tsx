@@ -47,6 +47,7 @@ const AdminBrands = lazy(() => import("./products/AdminBrands"));
 const AdminReviews = lazy(() => import("./products/AdminReviews"));
 const AdminCmsPages = lazy(() => import("./content/AdminCmsPages"));
 const AdminPromotions = lazy(() => import("./marketing/AdminPromotions"));
+const AdminPricingRules = lazy(() => import("./marketing/AdminPricingRules"));
 const AdminFooterBadges = lazy(() => import("./settings/AdminFooterBadges"));
 const AdminFooterSettings = lazy(() => import("./settings/AdminFooterSettings"));
 const AdminHomepageSettings = lazy(() => import("./content/AdminHomepageSettings"));
@@ -204,6 +205,7 @@ export default function AdminRoutes() {
         {/* ═══════════ MARKETING ═══════════ */}
         <Route path="coupons" element={<AdminCoupons />} />
         <Route path="marketing/promotions" element={<AdminPromotions />} />
+        <Route path="marketing/pricing-rules" element={<AdminPricingRules />} />
         <Route path="newsletter" element={<AdminNewsletter />} />
         <Route path="marketing/sms" element={<AdminSMS />} />
         {/* abandoned-cart route removed — canonical route is customers/abandoned */}
