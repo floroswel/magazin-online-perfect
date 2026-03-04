@@ -1156,7 +1156,7 @@ export default function AdminProducts() {
           </div>
         );
 
-      case 5: // SEO & Organization
+      case 6: // SEO & Organization
         return (
           <div className="space-y-4">
             <div className="space-y-2">
