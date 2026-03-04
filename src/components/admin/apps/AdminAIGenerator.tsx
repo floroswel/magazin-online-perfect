@@ -93,7 +93,7 @@ export default function AdminAIGenerator() {
           {
             method: "POST",
             headers: { ...headers, "Content-Type": "application/json" },
-            body: JSON.stringify({ name: product.name, brand: product.brand }),
+            body: JSON.stringify({ name: product.name, brand: product.brands?.name }),
           }
         );
 
