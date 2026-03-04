@@ -31,6 +31,7 @@ const SocialIcon = ({ icon, className }: { icon: string; className?: string }) =
 };
 
 export default function Footer() {
+  const branding = useStoreBranding();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [pages, setPages] = useState<FooterPage[]>([]);
@@ -39,8 +40,6 @@ export default function Footer() {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [deliveryPartners, setDeliveryPartners] = useState<DeliveryPartner[]>([]);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
-
-  const [branding, setBranding] = useState<{ name: string; emoji: string; tagline: string; phone: string; email: string; copyright: string } | null>(null);
 
   useEffect(() => {
     supabase
