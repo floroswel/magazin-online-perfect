@@ -116,8 +116,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand + Social */}
           <div>
-            <h3 className="text-lg font-bold mb-4 text-emag-yellow">🛒 MegaShop</h3>
-            <p className="text-sm text-white/70 mb-4">Cel mai mare magazin online din România cu mii de produse la prețuri imbatabile.</p>
+            <h3 className="text-lg font-bold mb-4 text-emag-yellow">{branding?.emoji || "🛒"} {branding?.name || "MegaShop"}</h3>
+            <p className="text-sm text-white/70 mb-4">{branding?.tagline || "Cel mai mare magazin online din România cu mii de produse la prețuri imbatabile."}</p>
             {socialLinks.length > 0 && (
               <div className="flex gap-3">
                 {socialLinks.map((link, i) => (
