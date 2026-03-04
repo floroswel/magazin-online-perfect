@@ -3,6 +3,7 @@ import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Download, Smartphone, Check, Share } from "lucide-react";
+import { useStoreBranding } from "@/hooks/useStoreBranding";
 
 export default function Install() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
