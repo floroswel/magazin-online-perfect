@@ -366,7 +366,13 @@ export default function AdminProducts() {
               </div>
               <div className="space-y-2">
                 <Label>Brand</Label>
-                <Input value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} placeholder="Samsung" />
+                <Select value={form.brand_id || "none"} onValueChange={(v) => setForm({ ...form, brand_id: v === "none" ? null : v })}>
+                  <SelectTrigger><SelectValue placeholder="Selectează brand" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Fără brand</SelectItem>
+                    {brandsList.map((b: any) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <div className="space-y-2">
