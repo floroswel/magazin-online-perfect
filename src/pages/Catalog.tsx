@@ -36,9 +36,13 @@ export default function Catalog() {
   }, []);
 
   useEffect(() => {
+    setCurrentPage(1);
+  }, [categorySlug, searchQuery, sort, priceRange, selectedBrands, inStockOnly, selectedRatings]);
+
+  useEffect(() => {
     async function load() {
       setLoading(true);
-      let query = supabase.from("products").select("*");
+      let query = supabase.from("products").select("*", { count: "exact" });
 
       if (categorySlug) {
         const cat = categories.find(c => c.slug === categorySlug);
@@ -63,7 +67,10 @@ export default function Catalog() {
         default: query = query.order("review_count", { ascending: false }); break;
       }
 
-      const { data } = await query;
+      const from = (currentPage - 1) * perPage;
+      query = query.range(from, from + perPage - 1);
+
+      const { data, count } = await query;
       let filtered = data || [];
       if (selectedBrands.length > 0) {
         filtered = filtered.filter(p => p.brand && selectedBrands.includes(p.brand));
@@ -75,10 +82,11 @@ export default function Catalog() {
         });
       }
       setProducts(filtered);
+      setTotalCount(count || 0);
       setLoading(false);
     }
     load();
-  }, [categorySlug, searchQuery, sort, priceRange, selectedBrands, inStockOnly, selectedRatings, categories]);
+  }, [categorySlug, searchQuery, sort, priceRange, selectedBrands, inStockOnly, selectedRatings, categories, currentPage, perPage]);
 
   const currentCategory = categories.find(c => c.slug === categorySlug);
 
