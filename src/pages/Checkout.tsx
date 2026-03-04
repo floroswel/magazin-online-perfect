@@ -110,7 +110,7 @@ export default function Checkout() {
     const discount = coupon.discount_type === "percentage" ? totalPrice * (coupon.discount_value / 100) : coupon.discount_value;
     setCouponDiscount(Math.min(discount, totalPrice));
     setAppliedCoupon(coupon);
-    toast.success(`Cupon aplicat! Economisești ${discount.toLocaleString("ro-RO")} lei`);
+    toast.success(`Cupon aplicat! Economisești ${format(discount)}`);
     setCouponLoading(false);
   };
 
