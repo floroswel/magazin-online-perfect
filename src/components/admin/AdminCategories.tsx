@@ -259,6 +259,9 @@ export default function AdminCategories() {
         <h2 className="text-lg font-semibold">Categorii ({categories.length})</h2>
         <div className="flex items-center gap-2">
           <Input placeholder="Caută categorii..." value={search} onChange={e => setSearch(e.target.value)} className="w-48" />
+          <Link to="/admin/categories/smart">
+            <Button variant="outline" className="gap-2"><Zap className="w-4 h-4" /> Smart</Button>
+          </Link>
           <Button onClick={() => openNew()} className="gap-2"><Plus className="w-4 h-4" /> Adaugă</Button>
         </div>
       </div>
