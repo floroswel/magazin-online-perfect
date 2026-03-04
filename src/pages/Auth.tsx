@@ -17,6 +17,7 @@ export default function Auth() {
   const { signIn, signUp } = useAuth();
   const branding = useStoreBranding();
   const navigate = useNavigate();
+  const { subscribe: subscribePush, isSupported: pushSupported } = usePushNotifications();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
