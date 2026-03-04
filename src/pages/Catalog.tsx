@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
 export default function Catalog() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const categorySlug = searchParams.get("category");
   const searchQuery = searchParams.get("search");
 
@@ -25,6 +25,9 @@ export default function Catalog() {
   const [inStockOnly, setInStockOnly] = useState(false);
   const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(24);
+  const [totalCount, setTotalCount] = useState(0);
 
   const brands = useMemo(() => [...new Set(products.map(p => p.brand).filter(Boolean))] as string[], [products]);
 
@@ -33,9 +36,13 @@ export default function Catalog() {
   }, []);
 
   useEffect(() => {
+    setCurrentPage(1);
+  }, [categorySlug, searchQuery, sort, priceRange, selectedBrands, inStockOnly, selectedRatings]);
+
+  useEffect(() => {
     async function load() {
       setLoading(true);
-      let query = supabase.from("products").select("*");
+      let query = supabase.from("products").select("*", { count: "exact" });
 
       if (categorySlug) {
         const cat = categories.find(c => c.slug === categorySlug);
@@ -60,7 +67,10 @@ export default function Catalog() {
         default: query = query.order("review_count", { ascending: false }); break;
       }
 
-      const { data } = await query;
+      const from = (currentPage - 1) * perPage;
+      query = query.range(from, from + perPage - 1);
+
+      const { data, count } = await query;
       let filtered = data || [];
       if (selectedBrands.length > 0) {
         filtered = filtered.filter(p => p.brand && selectedBrands.includes(p.brand));
@@ -72,11 +82,13 @@ export default function Catalog() {
         });
       }
       setProducts(filtered);
+      setTotalCount(count || 0);
       setLoading(false);
     }
     load();
-  }, [categorySlug, searchQuery, sort, priceRange, selectedBrands, inStockOnly, selectedRatings, categories]);
+  }, [categorySlug, searchQuery, sort, priceRange, selectedBrands, inStockOnly, selectedRatings, categories, currentPage, perPage]);
 
+  const totalPages = Math.ceil(totalCount / perPage);
   const currentCategory = categories.find(c => c.slug === categorySlug);
 
   const activeFiltersCount = [
@@ -155,7 +167,7 @@ export default function Catalog() {
             <h1 className="text-2xl font-bold text-foreground">
               {searchQuery ? `Rezultate pentru "${searchQuery}"` : currentCategory?.name || "Toate produsele"}
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">{filteredBySpecs.length} produse găsite</p>
+            <p className="text-sm text-muted-foreground mt-1">{totalCount} produse găsite</p>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" className="md:hidden relative" onClick={() => setShowFilters(!showFilters)}>
@@ -166,6 +178,16 @@ export default function Catalog() {
                 </Badge>
               )}
             </Button>
+            <Select value={String(perPage)} onValueChange={(v) => { setPerPage(Number(v)); setCurrentPage(1); }}>
+              <SelectTrigger className="w-[80px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="12">12</SelectItem>
+                <SelectItem value="24">24</SelectItem>
+                <SelectItem value="48">48</SelectItem>
+              </SelectContent>
+            </Select>
             <Select value={sort} onValueChange={setSort}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue />
@@ -291,7 +313,7 @@ export default function Catalog() {
           <div className="flex-1">
             {loading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {Array.from({ length: 6 }).map((_, i) => (
+                {Array.from({ length: perPage > 12 ? 6 : 6 }).map((_, i) => (
                   <div key={i} className="h-80 bg-muted rounded-lg animate-pulse" />
                 ))}
               </div>
@@ -301,9 +323,55 @@ export default function Catalog() {
                 <p className="text-sm">Încearcă să modifici filtrele.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {filteredBySpecs.map(p => <ProductCard key={p.id} product={p} />)}
-              </div>
+              <>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {filteredBySpecs.map(p => <ProductCard key={p.id} product={p} />)}
+                </div>
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-8">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={currentPage <= 1}
+                      onClick={() => { setCurrentPage(p => p - 1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                    >
+                      ← Anterior
+                    </Button>
+                    {Array.from({ length: Math.min(totalPages, 7) }).map((_, i) => {
+                      let page: number;
+                      if (totalPages <= 7) {
+                        page = i + 1;
+                      } else if (currentPage <= 4) {
+                        page = i + 1;
+                      } else if (currentPage >= totalPages - 3) {
+                        page = totalPages - 6 + i;
+                      } else {
+                        page = currentPage - 3 + i;
+                      }
+                      return (
+                        <Button
+                          key={page}
+                          variant={page === currentPage ? "default" : "outline"}
+                          size="sm"
+                          className="w-9"
+                          onClick={() => { setCurrentPage(page); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                        >
+                          {page}
+                        </Button>
+                      );
+                    })}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={currentPage >= totalPages}
+                      onClick={() => { setCurrentPage(p => p + 1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                    >
+                      Următor →
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

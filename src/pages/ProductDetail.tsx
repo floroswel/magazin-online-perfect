@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShoppingCart, Heart, Star, Minus, Plus, ArrowLeft, GitCompare, MessageSquare } from "lucide-react";
+import { ShoppingCart, Heart, Star, Minus, Plus, ArrowLeft, GitCompare, MessageSquare, Truck } from "lucide-react";
 import ProductImageGallery from "@/components/products/ProductImageGallery";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -199,6 +199,15 @@ export default function ProductDetail() {
             <p className={`text-sm font-medium ${product.stock > 0 ? "text-green-600" : "text-destructive"}`}>
               {product.stock > 0 ? `✓ În stoc (${product.stock} buc.)` : "✗ Stoc epuizat"}
             </p>
+            {product.stock > 0 && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
+                <Truck className="h-4 w-4 text-primary flex-shrink-0" />
+                <span>Livrare estimată: <strong className="text-foreground">1-3 zile lucrătoare</strong></span>
+              </div>
+            )}
+            {product.sku && (
+              <p className="text-xs text-muted-foreground">Cod produs: {product.sku}</p>
+            )}
           </div>
         </div>
 

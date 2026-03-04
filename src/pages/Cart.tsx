@@ -40,7 +40,8 @@ export default function Cart() {
   return (
     <Layout>
       <div className="container py-6">
-        <h1 className="text-2xl font-bold mb-6">Coșul de cumpărături</h1>
+        <h1 className="text-2xl font-bold mb-2">Coșul de cumpărături</h1>
+        <Link to="/catalog" className="text-sm text-primary hover:underline mb-4 inline-block">← Continuă cumpărăturile</Link>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-4">
             {items.map(item => (
