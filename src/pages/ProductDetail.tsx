@@ -34,6 +34,7 @@ export default function ProductDetail() {
   const [reviews, setReviews] = useState<Tables<"reviews">[]>([]);
   const [questions, setQuestions] = useState<any[]>([]);
   const [recentlyViewed, setRecentlyViewed] = useState<Tables<"products">[]>([]);
+  const [bundleComponents, setBundleComponents] = useState<any[]>([]);
   const [qty, setQty] = useState(1);
   const [loading, setLoading] = useState(true);
   const [reviewText, setReviewText] = useState("");
@@ -76,6 +77,18 @@ export default function ProductDetail() {
         const relIds = relData.map((r: any) => r.related_product_id);
         const { data: relProds } = await supabase.from("products").select("*").in("id", relIds).eq("visible", true);
         setRelatedProducts(relProds || []);
+      }
+
+      // Load bundle components
+      if (prod.product_type === "bundle") {
+        const { data: bundleItems } = await supabase
+          .from("product_bundle_items")
+          .select("*, component:products(*)")
+          .eq("bundle_product_id", prod.id)
+          .order("sort_order");
+        setBundleComponents((bundleItems || []).map((bi: any) => ({ ...bi, product: bi.component })));
+      } else {
+        setBundleComponents([]);
       }
 
       if (user) {
@@ -141,12 +154,20 @@ export default function ProductDetail() {
   if (loading) return <Layout><div className="container py-16 text-center">Se încarcă...</div></Layout>;
   if (!product) return <Layout><div className="container py-16 text-center">Produsul nu a fost găsit.</div></Layout>;
 
+  const isBundle = product.product_type === "bundle";
+  const bundleComponentsTotal = bundleComponents.reduce((sum: number, bc: any) => sum + (bc.product?.price || 0) * bc.quantity, 0);
+  const bundleStock = isBundle && bundleComponents.length > 0
+    ? Math.min(...bundleComponents.map((bc: any) => Math.floor((bc.product?.stock || 0) / bc.quantity)))
+    : null;
+
   const activePrice = selectedVariant ? selectedVariant.price : product.price;
-  const activeStock = selectedVariant ? selectedVariant.stock : product.stock;
+  const activeStock = isBundle ? (bundleStock ?? 0) : (selectedVariant ? selectedVariant.stock : product.stock);
   const activeImage = selectedVariant?.image_url || product.image_url;
   const specs = product.specs && typeof product.specs === "object" ? Object.entries(product.specs as Record<string, string>).filter(([k]) => !k.startsWith("_")) : [];
   const discount = product.old_price ? Math.round(((product.old_price - activePrice) / product.old_price) * 100) : 0;
   const imageAlts = product.image_alts || {};
+  const bundleSavings = isBundle && bundleComponentsTotal > activePrice ? bundleComponentsTotal - activePrice : 0;
+  const bundleSavingsPercent = bundleSavings > 0 ? Math.round((bundleSavings / bundleComponentsTotal) * 100) : 0;
 
   return (
     <Layout>
@@ -188,7 +209,39 @@ export default function ProductDetail() {
             <MokkaOrangePrice price={activePrice} months={3} />
             <VariantSelector productId={product.id} basePrice={product.price} lowStockThreshold={product.low_stock_threshold || 5} onVariantSelect={setSelectedVariant} onHasVariants={setHasVariants} />
 
-            {/* Short description */}
+            {/* Bundle savings badge */}
+            {isBundle && bundleSavings > 0 && (
+              <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 flex items-center gap-2">
+                <Badge className="bg-green-600 text-white">-{bundleSavingsPercent}%</Badge>
+                <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                  Economisești {format(bundleSavings)} cumpărând pachetul!
+                </span>
+              </div>
+            )}
+
+            {/* Bundle components list */}
+            {isBundle && bundleComponents.length > 0 && (
+              <div className="space-y-2 border border-border rounded-lg p-3">
+                <p className="text-sm font-semibold text-foreground">📦 Conținut pachet:</p>
+                {bundleComponents.map((bc: any) => (
+                  <div key={bc.id} className="flex items-center gap-3">
+                    {bc.product?.image_url ? (
+                      <img src={bc.product.image_url} alt={bc.product.name} className="w-10 h-10 object-cover rounded border border-border" />
+                    ) : (
+                      <div className="w-10 h-10 bg-muted rounded" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{bc.product?.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {bc.quantity > 1 ? `${bc.quantity}× ` : ""}
+                        <span className="line-through">{format(bc.product?.price * bc.quantity)}</span>
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {product.short_description && (
               <p className="text-muted-foreground">{product.short_description}</p>
             )}

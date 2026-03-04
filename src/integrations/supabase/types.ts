@@ -2358,6 +2358,58 @@ export type Database = {
         }
         Relationships: []
       }
+      product_bundle_items: {
+        Row: {
+          bundle_product_id: string
+          component_product_id: string
+          component_variant_id: string | null
+          created_at: string
+          id: string
+          quantity: number
+          sort_order: number
+        }
+        Insert: {
+          bundle_product_id: string
+          component_product_id: string
+          component_variant_id?: string | null
+          created_at?: string
+          id?: string
+          quantity?: number
+          sort_order?: number
+        }
+        Update: {
+          bundle_product_id?: string
+          component_product_id?: string
+          component_variant_id?: string | null
+          created_at?: string
+          id?: string
+          quantity?: number
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_bundle_items_bundle_product_id_fkey"
+            columns: ["bundle_product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_bundle_items_component_product_id_fkey"
+            columns: ["component_product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_bundle_items_component_variant_id_fkey"
+            columns: ["component_variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_categories: {
         Row: {
           category_id: string
@@ -2609,6 +2661,8 @@ export type Database = {
       }
       products: {
         Row: {
+          bundle_discount_percent: number | null
+          bundle_pricing_mode: string | null
           canonical_url: string | null
           category_id: string | null
           cost_price: number | null
@@ -2628,6 +2682,7 @@ export type Database = {
           name: string
           old_price: number | null
           price: number
+          product_type: string
           published_at: string | null
           rating: number | null
           review_count: number | null
@@ -2646,6 +2701,8 @@ export type Database = {
           width_cm: number | null
         }
         Insert: {
+          bundle_discount_percent?: number | null
+          bundle_pricing_mode?: string | null
           canonical_url?: string | null
           category_id?: string | null
           cost_price?: number | null
@@ -2665,6 +2722,7 @@ export type Database = {
           name: string
           old_price?: number | null
           price?: number
+          product_type?: string
           published_at?: string | null
           rating?: number | null
           review_count?: number | null
@@ -2683,6 +2741,8 @@ export type Database = {
           width_cm?: number | null
         }
         Update: {
+          bundle_discount_percent?: number | null
+          bundle_pricing_mode?: string | null
           canonical_url?: string | null
           category_id?: string | null
           cost_price?: number | null
@@ -2702,6 +2762,7 @@ export type Database = {
           name?: string
           old_price?: number | null
           price?: number
+          product_type?: string
           published_at?: string | null
           rating?: number | null
           review_count?: number | null
