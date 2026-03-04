@@ -2525,6 +2525,7 @@ export type Database = {
           price: number
           product_id: string
           sku: string | null
+          stock: number
           updated_at: string | null
           warranty_months: number | null
           weight: number | null
@@ -2544,6 +2545,7 @@ export type Database = {
           price?: number
           product_id: string
           sku?: string | null
+          stock?: number
           updated_at?: string | null
           warranty_months?: number | null
           weight?: number | null
@@ -2563,6 +2565,7 @@ export type Database = {
           price?: number
           product_id?: string
           sku?: string | null
+          stock?: number
           updated_at?: string | null
           warranty_months?: number | null
           weight?: number | null

@@ -1,0 +1,1 @@
+ALTER TABLE product_variants ADD COLUMN IF NOT EXISTS stock integer NOT NULL DEFAULT 0;
