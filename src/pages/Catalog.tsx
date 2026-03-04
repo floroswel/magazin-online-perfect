@@ -107,7 +107,7 @@ export default function Catalog() {
     selectedBrands.length > 0,
     inStockOnly,
     selectedRatings.length > 0,
-    priceRange[0] > 0 || priceRange[1] < 10000,
+    priceRange[0] > 0 || priceRange[1] < maxPrice,
   ].filter(Boolean).length;
 
   const clearFilters = () => {
