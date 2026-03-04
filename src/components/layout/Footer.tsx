@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useStoreBranding } from "@/hooks/useStoreBranding";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mail, Facebook, Instagram, Youtube, Clock, MapPin, Phone, Building2 } from "lucide-react";
