@@ -232,10 +232,10 @@ export default function Catalog() {
             {/* Price filter */}
             <div>
               <h3 className="font-semibold mb-3 text-foreground text-sm">Preț</h3>
-              <Slider value={priceRange} onValueChange={setPriceRange} min={0} max={10000} step={100} className="mb-2" />
+              <Slider value={priceRange} onValueChange={setPriceRange} min={0} max={maxPrice} step={100} className="mb-2" />
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>{priceRange[0]} lei</span>
-                <span>{priceRange[1]} lei</span>
+                <span>{priceRange[0]} {currencySymbol}</span>
+                <span>{priceRange[1]} {currencySymbol}</span>
               </div>
             </div>
 
