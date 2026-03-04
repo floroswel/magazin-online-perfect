@@ -1038,6 +1038,48 @@ export type Database = {
         }
         Relationships: []
       }
+      dynamic_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          icon: string | null
+          id: string
+          image_url: string | null
+          name: string
+          rules: Json
+          slug: string
+          updated_at: string
+          visible: boolean
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          rules?: Json
+          slug: string
+          updated_at?: string
+          visible?: boolean
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          rules?: Json
+          slug?: string
+          updated_at?: string
+          visible?: boolean
+        }
+        Relationships: []
+      }
       email_logs: {
         Row: {
           created_at: string
@@ -3515,6 +3557,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_dynamic_category_products: {
+        Args: {
+          category_id: string
+          result_limit?: number
+          result_offset?: number
+        }
+        Returns: {
+          product_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

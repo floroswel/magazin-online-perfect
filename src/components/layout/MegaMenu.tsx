@@ -3,15 +3,24 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import {
-  Smartphone, Laptop, Tv, Refrigerator, Home, Shirt, Dumbbell, Gamepad2, Package, ChevronRight
+  Smartphone, Laptop, Tv, Refrigerator, Home, Shirt, Dumbbell, Gamepad2, Package, ChevronRight, Zap
 } from "lucide-react";
 
 const iconMap: Record<string, React.ElementType> = {
   Smartphone, Laptop, Tv, Refrigerator, Home, Shirt, Dumbbell, Gamepad2
 };
 
+interface DynCat {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string | null;
+  display_order: number;
+}
+
 export default function MegaMenu() {
   const [categories, setCategories] = useState<Tables<"categories">[]>([]);
+  const [dynCategories, setDynCategories] = useState<DynCat[]>([]);
   const [hoveredCat, setHoveredCat] = useState<string | null>(null);
 
   useEffect(() => {
@@ -20,6 +29,13 @@ export default function MegaMenu() {
       .select("*")
       .order("name")
       .then(({ data }) => setCategories(data || []));
+
+    supabase
+      .from("dynamic_categories")
+      .select("id, name, slug, icon, display_order")
+      .eq("visible", true)
+      .order("display_order")
+      .then(({ data }) => setDynCategories((data || []) as unknown as DynCat[]));
   }, []);
 
   const parents = categories.filter(c => !c.parent_id);
@@ -63,6 +79,18 @@ export default function MegaMenu() {
               </li>
             );
           })}
+          {/* Dynamic categories */}
+          {dynCategories.map(dcat => (
+            <li key={`dyn-${dcat.slug}`}>
+              <Link
+                to={`/catalog?smart=${dcat.slug}`}
+                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-foreground hover:text-primary rounded-md hover:bg-muted transition-colors whitespace-nowrap"
+              >
+                {dcat.icon ? <span className="text-base">{dcat.icon}</span> : <Zap className="h-4 w-4 text-primary" />}
+                {dcat.name}
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
     </nav>
