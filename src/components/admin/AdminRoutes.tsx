@@ -237,9 +237,9 @@ export default function AdminRoutes() {
       <Route path="settings/general" element={<AdminGeneralSettings />} />
       <Route path="settings/footer-badges" element={<AdminFooterBadges />} />
       <Route path="settings/footer" element={<AdminFooterSettings />} />
-      <Route path="settings/taxes" element={<AdminPlaceholder title="Taxe (TVA)" description="TVA standard 19%, TVA redus 5%/9%, scutiri, reverse charge B2B." />} />
-      <Route path="settings/store" element={<AdminPlaceholder title="Setări Magazin" description="Produse pe pagină, afișare stoc, ordine produse, review-uri, wishlist, comparare." />} />
-      <Route path="settings/email" element={<AdminPlaceholder title="Email / SMTP" description="Configurare SMTP, template-uri email, test email, logo în email-uri." />} />
+      <Route path="settings/taxes" element={<AdminTaxSettings />} />
+      <Route path="settings/store" element={<AdminStoreSettings />} />
+      <Route path="settings/email" element={<AdminEmailSettings />} />
       <Route path="settings/seo" element={<AdminPlaceholder title="SEO Global" description="Meta defaults, URL structure, Open Graph, Schema.org markup." />} />
       <Route path="settings/notifications" element={<AdminPlaceholder title="Notificări" description="Configurare notificări email, SMS și push — admin și client." />} />
       <Route path="settings/security" element={<AdminPlaceholder title="Securitate" description="Parolă minimă, blocare după încercări eșuate, reCAPTCHA." />} />
