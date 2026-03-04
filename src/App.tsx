@@ -22,6 +22,8 @@ import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import CmsPage from "./pages/CmsPage";
 import Install from "./pages/Install";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import CustomScriptInjector from "./components/CustomScriptInjector";
 
 const queryClient = new QueryClient();
