@@ -214,7 +214,7 @@ export default function Catalog() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-2xl font-bold text-foreground">
-              {searchQuery ? `Rezultate pentru "${searchQuery}"` : currentCategory?.name || "Toate produsele"}
+              {searchQuery ? `Rezultate pentru "${searchQuery}"` : smartCategory?.name || currentCategory?.name || "Toate produsele"}
             </h1>
             <p className="text-sm text-muted-foreground mt-1">{totalCount} produse găsite</p>
           </div>
