@@ -10,6 +10,27 @@ export interface CartItem {
   product: Tables<"products">;
 }
 
+interface LocalCartItem {
+  product_id: string;
+  quantity: number;
+}
+
+const GUEST_CART_KEY = "guest_cart";
+
+function getGuestCart(): LocalCartItem[] {
+  try {
+    return JSON.parse(localStorage.getItem(GUEST_CART_KEY) || "[]");
+  } catch { return []; }
+}
+
+function setGuestCart(items: LocalCartItem[]) {
+  localStorage.setItem(GUEST_CART_KEY, JSON.stringify(items));
+}
+
+function clearGuestCartStorage() {
+  localStorage.removeItem(GUEST_CART_KEY);
+}
+
 interface CartContextType {
   items: CartItem[];
   loading: boolean;
@@ -28,9 +49,43 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchCart = useCallback(async () => {
-    if (!user) { setItems([]); return; }
+  // Fetch products for guest cart items
+  const hydrateGuestCart = useCallback(async () => {
+    const local = getGuestCart();
+    if (local.length === 0) { setItems([]); return; }
+    const ids = local.map(i => i.product_id);
+    const { data: products } = await supabase.from("products").select("*").in("id", ids);
+    if (!products) { setItems([]); return; }
+    const hydrated: CartItem[] = local.map(li => {
+      const product = products.find(p => p.id === li.product_id);
+      if (!product) return null;
+      return { id: `guest-${li.product_id}`, product_id: li.product_id, quantity: li.quantity, product };
+    }).filter(Boolean) as CartItem[];
+    setItems(hydrated);
+  }, []);
+
+  // Sync guest cart to DB on login
+  const syncGuestCartToDb = useCallback(async (userId: string) => {
+    const local = getGuestCart();
+    if (local.length === 0) return;
+    for (const li of local) {
+      const { data: existing } = await supabase.from("cart_items")
+        .select("quantity").eq("user_id", userId).eq("product_id", li.product_id).maybeSingle();
+      if (existing) {
+        await supabase.from("cart_items").update({ quantity: existing.quantity + li.quantity })
+          .eq("user_id", userId).eq("product_id", li.product_id);
+      } else {
+        await supabase.from("cart_items").insert({ user_id: userId, product_id: li.product_id, quantity: li.quantity });
+      }
+    }
+    clearGuestCartStorage();
+  }, []);
+
+  const fetchDbCart = useCallback(async () => {
+    if (!user) return;
     setLoading(true);
+    // First sync any guest cart items
+    await syncGuestCartToDb(user.id);
     const { data } = await supabase
       .from("cart_items")
       .select("*, product:products(*)")
@@ -39,37 +94,70 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setItems(data.map((d: any) => ({ id: d.id, product_id: d.product_id, quantity: d.quantity, product: d.product })));
     }
     setLoading(false);
-  }, [user]);
+  }, [user, syncGuestCartToDb]);
 
-  useEffect(() => { fetchCart(); }, [fetchCart]);
+  useEffect(() => {
+    if (user) {
+      fetchDbCart();
+    } else {
+      hydrateGuestCart();
+    }
+  }, [user, fetchDbCart, hydrateGuestCart]);
 
   const addToCart = async (productId: string, qty = 1) => {
-    if (!user) return;
-    const existing = items.find(i => i.product_id === productId);
-    if (existing) {
-      await supabase.from("cart_items").update({ quantity: existing.quantity + qty }).eq("user_id", user.id).eq("product_id", productId);
+    if (user) {
+      // Authenticated: use DB
+      const existing = items.find(i => i.product_id === productId);
+      if (existing) {
+        await supabase.from("cart_items").update({ quantity: existing.quantity + qty }).eq("user_id", user.id).eq("product_id", productId);
+      } else {
+        await supabase.from("cart_items").insert({ user_id: user.id, product_id: productId, quantity: qty });
+      }
+      await fetchDbCart();
     } else {
-      await supabase.from("cart_items").insert({ user_id: user.id, product_id: productId, quantity: qty });
+      // Guest: use localStorage
+      const local = getGuestCart();
+      const existing = local.find(i => i.product_id === productId);
+      if (existing) {
+        existing.quantity += qty;
+      } else {
+        local.push({ product_id: productId, quantity: qty });
+      }
+      setGuestCart(local);
+      await hydrateGuestCart();
     }
-    await fetchCart();
   };
 
   const removeFromCart = async (productId: string) => {
-    if (!user) return;
-    await supabase.from("cart_items").delete().eq("user_id", user.id).eq("product_id", productId);
-    await fetchCart();
+    if (user) {
+      await supabase.from("cart_items").delete().eq("user_id", user.id).eq("product_id", productId);
+      await fetchDbCart();
+    } else {
+      const local = getGuestCart().filter(i => i.product_id !== productId);
+      setGuestCart(local);
+      await hydrateGuestCart();
+    }
   };
 
   const updateQuantity = async (productId: string, qty: number) => {
-    if (!user) return;
     if (qty <= 0) { await removeFromCart(productId); return; }
-    await supabase.from("cart_items").update({ quantity: qty }).eq("user_id", user.id).eq("product_id", productId);
-    await fetchCart();
+    if (user) {
+      await supabase.from("cart_items").update({ quantity: qty }).eq("user_id", user.id).eq("product_id", productId);
+      await fetchDbCart();
+    } else {
+      const local = getGuestCart();
+      const item = local.find(i => i.product_id === productId);
+      if (item) item.quantity = qty;
+      setGuestCart(local);
+      await hydrateGuestCart();
+    }
   };
 
   const clearCart = async () => {
-    if (!user) return;
-    await supabase.from("cart_items").delete().eq("user_id", user.id);
+    if (user) {
+      await supabase.from("cart_items").delete().eq("user_id", user.id);
+    }
+    clearGuestCartStorage();
     setItems([]);
   };
 

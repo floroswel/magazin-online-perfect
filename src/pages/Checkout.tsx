@@ -58,18 +58,6 @@ export default function Checkout() {
     }
   }, [user]);
 
-  // Allow guest checkout if cart has items from localStorage
-  if (!user && items.length === 0) {
-    return (
-      <Layout>
-        <div className="container py-16 text-center">
-          <p>Coșul este gol.</p>
-          <Link to="/catalog"><Button className="mt-4">Vezi produse</Button></Link>
-        </div>
-      </Layout>
-    );
-  }
-
   if (items.length === 0) {
     return (
       <Layout>
@@ -134,11 +122,19 @@ export default function Checkout() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.fullName || !form.phone || !form.address || !form.city || !form.county) {
-      toast.error("Completează toate câmpurile obligatorii"); return;
+    if (!form.fullName.trim() || form.fullName.trim().length < 3) {
+      toast.error("Numele trebuie să conțină minim 3 caractere"); return;
     }
-    if (!user && !form.email) {
-      toast.error("Completează adresa de email"); return;
+    if (!form.phone.trim() || !/^(\+?4)?0[0-9]{9}$/.test(form.phone.replace(/\s/g, ""))) {
+      toast.error("Numărul de telefon nu este valid (ex: 07xx xxx xxx)"); return;
+    }
+    if (!form.address.trim() || form.address.trim().length < 5) {
+      toast.error("Adresa trebuie să conțină minim 5 caractere"); return;
+    }
+    if (!form.city.trim()) { toast.error("Completează orașul"); return; }
+    if (!form.county.trim()) { toast.error("Completează județul"); return; }
+    if (!user && (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))) {
+      toast.error("Adresa de email nu este validă"); return;
     }
     setSubmitting(true);
 

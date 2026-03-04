@@ -9,19 +9,6 @@ export default function Cart() {
   const { user } = useAuth();
   const { items, totalPrice, updateQuantity, removeFromCart } = useCart();
 
-  if (!user) {
-    return (
-      <Layout>
-        <div className="container py-16 text-center">
-          <ShoppingBag className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-          <h1 className="text-2xl font-bold mb-2">Coșul tău de cumpărături</h1>
-          <p className="text-muted-foreground mb-4">Autentifică-te pentru a vedea coșul.</p>
-          <Link to="/auth"><Button>Autentifică-te</Button></Link>
-        </div>
-      </Layout>
-    );
-  }
-
   if (items.length === 0) {
     return (
       <Layout>
