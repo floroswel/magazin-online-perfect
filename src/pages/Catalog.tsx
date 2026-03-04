@@ -30,6 +30,7 @@ export default function Catalog() {
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(24);
+  const { symbol: currencySymbol } = useCurrency();
   const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
