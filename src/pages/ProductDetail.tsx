@@ -147,7 +147,7 @@ export default function ProductDetail() {
         <div className="grid md:grid-cols-2 gap-8">
           {/* Image Gallery */}
           <ProductImageGallery
-            mainImage={product.image_url || "/placeholder.svg"}
+            mainImage={activeImage || "/placeholder.svg"}
             images={product.images}
             alt={product.name}
           />
