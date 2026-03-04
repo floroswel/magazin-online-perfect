@@ -367,7 +367,7 @@ export default function Checkout() {
               {couponDiscount > 0 && (
                 <div className="flex justify-between text-sm text-green-600">
                   <span>Cupon ({appliedCoupon?.code})</span>
-                  <span>-{couponDiscount.toLocaleString("ro-RO")} lei</span>
+                  <span>-{format(couponDiscount)}</span>
                 </div>
               )}
               {loyaltyDiscount > 0 && (
