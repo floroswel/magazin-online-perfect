@@ -276,14 +276,14 @@ export default function Catalog() {
                 <h3 className="font-semibold mb-2 text-foreground text-sm">Brand</h3>
                 <div className="space-y-1.5 max-h-48 overflow-y-auto">
                   {brands.map(brand => (
-                    <label key={brand} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <label key={brand.id} className="flex items-center gap-2 text-sm cursor-pointer">
                       <Checkbox
-                        checked={selectedBrands.includes(brand)}
+                        checked={selectedBrands.includes(brand.name)}
                         onCheckedChange={(checked) => {
-                          setSelectedBrands(prev => checked ? [...prev, brand] : prev.filter(b => b !== brand));
+                          setSelectedBrands(prev => checked ? [...prev, brand.name] : prev.filter(b => b !== brand.name));
                         }}
                       />
-                      {brand}
+                      {brand.name}
                     </label>
                   ))}
                 </div>
