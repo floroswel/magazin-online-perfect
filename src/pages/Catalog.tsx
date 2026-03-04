@@ -47,6 +47,21 @@ export default function Catalog() {
     });
   }, []);
 
+  // Load smart category metadata
+  useEffect(() => {
+    if (smartSlug) {
+      supabase
+        .from("dynamic_categories")
+        .select("id, name, description")
+        .eq("slug", smartSlug)
+        .eq("visible", true)
+        .maybeSingle()
+        .then(({ data }) => setSmartCategory(data as any));
+    } else {
+      setSmartCategory(null);
+    }
+  }, [smartSlug]);
+
   useEffect(() => {
     setCurrentPage(1);
   }, [categorySlug, searchQuery, sort, priceRange, selectedBrands, inStockOnly, selectedRatings]);
