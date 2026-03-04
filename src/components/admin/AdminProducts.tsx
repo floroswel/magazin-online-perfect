@@ -23,6 +23,12 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 // ─── Types ───
+interface BundleComponent {
+  product_id: string;
+  variant_id: string | null;
+  quantity: number;
+}
+
 interface ProductForm {
   name: string;
   slug: string;
@@ -53,6 +59,10 @@ interface ProductForm {
   meta_title: string;
   meta_description: string;
   related_product_ids: string[];
+  product_type: string;
+  bundle_pricing_mode: string;
+  bundle_discount_percent: number;
+  bundle_components: BundleComponent[];
 }
 
 interface VariantAttr {
