@@ -290,7 +290,7 @@ export default function Footer() {
             </div>
           )}
 
-          <p className="text-center text-[11px] text-white/40">© 2026 MegaShop. Toate drepturile rezervate.</p>
+          <p className="text-center text-[11px] text-white/40">{branding?.copyright || "© 2026 MegaShop. Toate drepturile rezervate."}</p>
         </div>
       </div>
     </footer>
