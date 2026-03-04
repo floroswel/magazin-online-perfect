@@ -12,7 +12,6 @@ export default function AdminStockAdjustments() {
     queryKey: ["stock-adjustments"],
     queryFn: async () => {
       const { data, error } = await supabase.from("stock_movements").select("*")
-        .in("type", ["adjustment_in", "adjustment_out", "correction"])
         .order("created_at", { ascending: false }).limit(50);
       if (error) throw error;
       return data;

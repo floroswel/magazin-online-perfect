@@ -1,6 +1,5 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import AdminPlaceholder from "./AdminPlaceholder";
 
 const Fallback = () => <div className="p-8 text-center"><div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin mx-auto" /></div>;
 
@@ -63,7 +62,7 @@ const AdminPageBuilder = lazy(() => import("./content/AdminPageBuilder"));
 const AdminTranslations = lazy(() => import("./content/AdminTranslations"));
 const AdminCurrencySettings = lazy(() => import("./settings/AdminCurrencySettings"));
 
-// NEW smart components
+// Smart components (batch 1)
 const AdminFilteredOrders = lazy(() => import("./orders/AdminFilteredOrders"));
 const AdminFilteredCustomers = lazy(() => import("./customers/AdminFilteredCustomers"));
 const AdminFilteredProducts = lazy(() => import("./products/AdminFilteredProducts"));
@@ -86,6 +85,47 @@ const AdminGdprData = lazy(() => import("./customers/AdminGdprData"));
 const AdminCustomerImportExport = lazy(() => import("./customers/AdminCustomerImportExport"));
 const AdminIntegrationConfig = lazy(() => import("./integrations/AdminIntegrationConfig"));
 
+// Smart components (batch 2 — all remaining)
+const AdminMarketplaceOrders = lazy(() => import("./orders/AdminMarketplaceOrders"));
+const AdminB2BOrders = lazy(() => import("./orders/AdminB2BOrders"));
+const AdminRecurringOrders = lazy(() => import("./orders/AdminRecurringOrders"));
+const AdminIssueOrders = lazy(() => import("./orders/AdminIssueOrders"));
+const AdminAttributeSets = lazy(() => import("./products/AdminAttributeSets"));
+const AdminSpecs = lazy(() => import("./products/AdminSpecs"));
+const AdminRelatedProducts = lazy(() => import("./products/AdminRelatedProducts"));
+const AdminCompatibility = lazy(() => import("./products/AdminCompatibility"));
+const AdminStockTransfers = lazy(() => import("./stock/AdminStockTransfers"));
+const AdminStockAdjustments = lazy(() => import("./stock/AdminStockAdjustments"));
+const AdminNIR = lazy(() => import("./stock/AdminNIR"));
+const AdminSerials = lazy(() => import("./stock/AdminSerials"));
+const AdminBatches = lazy(() => import("./stock/AdminBatches"));
+const AdminExpiry = lazy(() => import("./stock/AdminExpiry"));
+const AdminPicking = lazy(() => import("./stock/AdminPicking"));
+const AdminSuppliers = lazy(() => import("./stock/AdminSuppliers"));
+const AdminReorder = lazy(() => import("./stock/AdminReorder"));
+const AdminCustomerTags = lazy(() => import("./customers/AdminCustomerTags"));
+const AdminSMS = lazy(() => import("./marketing/AdminSMS"));
+const AdminUpsell = lazy(() => import("./marketing/AdminUpsell"));
+const AdminFeeds = lazy(() => import("./marketing/AdminFeeds"));
+const AdminPixels = lazy(() => import("./marketing/AdminPixels"));
+const AdminRecommendations = lazy(() => import("./marketing/AdminRecommendations"));
+const AdminABTests = lazy(() => import("./marketing/AdminABTests"));
+const AdminLandingPages = lazy(() => import("./content/AdminLandingPages"));
+const AdminMenus = lazy(() => import("./content/AdminMenus"));
+const AdminEmailTemplates = lazy(() => import("./content/AdminEmailTemplates"));
+const AdminSettlements = lazy(() => import("./payments/AdminSettlements"));
+const AdminReconciliation = lazy(() => import("./payments/AdminReconciliation"));
+const AdminLabels = lazy(() => import("./shipping/AdminLabels"));
+const AdminLockers = lazy(() => import("./shipping/AdminLockers"));
+const AdminInternational = lazy(() => import("./shipping/AdminInternational"));
+const AdminPickupPoints = lazy(() => import("./shipping/AdminPickupPoints"));
+const AdminScheduling = lazy(() => import("./shipping/AdminScheduling"));
+const AdminAPI = lazy(() => import("./channels/AdminAPI"));
+const AdminConnectors = lazy(() => import("./channels/AdminConnectors"));
+const AdminCustomReport = lazy(() => import("./reports/AdminCustomReport"));
+const AdminExportReports = lazy(() => import("./reports/AdminExportReports"));
+const AdminSSL = lazy(() => import("./integrations/AdminSSL"));
+
 export default function AdminRoutes() {
   return (
     <Suspense fallback={<Fallback />}>
@@ -99,10 +139,10 @@ export default function AdminRoutes() {
         <Route path="orders/shipping" element={<AdminFilteredOrders status="shipping" title="În Livrare" description="Comenzi cu AWB generat, predate curierului." />} />
         <Route path="orders/delivered" element={<AdminFilteredOrders status="delivered" title="Livrate" description="Comenzi finalizate cu succes." />} />
         <Route path="orders/cancelled" element={<AdminFilteredOrders status="cancelled" title="Anulate" description="Comenzi anulate." />} />
-        <Route path="orders/marketplace" element={<AdminPlaceholder title="Comenzi Marketplace" description="Comenzi importate din eMAG, Allegro și alte marketplace-uri." />} />
-        <Route path="orders/b2b" element={<AdminPlaceholder title="Comenzi B2B" description="Comenzi de la persoane juridice, cu facturare separată." />} />
-        <Route path="orders/recurring" element={<AdminPlaceholder title="Comenzi Recurente" description="Abonamente și comenzi programate." />} />
-        <Route path="orders/issues" element={<AdminPlaceholder title="Comenzi cu Probleme" description="Plată eșuată, stoc insuficient sau alte probleme." />} />
+        <Route path="orders/marketplace" element={<AdminMarketplaceOrders />} />
+        <Route path="orders/b2b" element={<AdminB2BOrders />} />
+        <Route path="orders/recurring" element={<AdminRecurringOrders />} />
+        <Route path="orders/issues" element={<AdminIssueOrders />} />
         <Route path="orders/invoices" element={<AdminInvoices />} />
         <Route path="orders/returns" element={<AdminReturns />} />
 
@@ -111,15 +151,15 @@ export default function AdminRoutes() {
         <Route path="categories" element={<AdminCategories />} />
         <Route path="products/brands" element={<AdminBrands />} />
         <Route path="products/attributes" element={<AdminProductAttributes />} />
-        <Route path="products/attribute-sets" element={<AdminPlaceholder title="Seturi de Atribute" description="Grupuri de atribute pe categorii de produse." />} />
-        <Route path="products/specs" element={<AdminPlaceholder title="Specificații Tehnice" description="Șabloane de specificații tehnice pe tipuri de produse." />} />
+        <Route path="products/attribute-sets" element={<AdminAttributeSets />} />
+        <Route path="products/specs" element={<AdminSpecs />} />
         <Route path="products/promo" element={<AdminFilteredProducts filter="promo" title="Produse în Promoție" description="Toate produsele cu discount activ." />} />
         <Route path="products/no-image" element={<AdminFilteredProducts filter="no-image" title="Produse Fără Imagine" description="Control calitate: produse fără imagine." />} />
         <Route path="products/no-description" element={<AdminFilteredProducts filter="no-description" title="Produse Fără Descriere" description="Control calitate: produse fără descriere." />} />
         <Route path="products/reviews" element={<AdminReviews />} />
         <Route path="products/questions" element={<AdminProductQuestions />} />
-        <Route path="products/related" element={<AdminPlaceholder title="Produse Similare" description="Configurare manuală/automată produse similare și asociate." />} />
-        <Route path="products/compatibility" element={<AdminPlaceholder title="Compatibilități" description="Produse compatibile (ex: toner pentru imprimantă X)." />} />
+        <Route path="products/related" element={<AdminRelatedProducts />} />
+        <Route path="products/compatibility" element={<AdminCompatibility />} />
         <Route path="products/import-export" element={<AdminImportExport />} />
         <Route path="products/bulk-update" element={<AdminBulkUpdate />} />
         <Route path="products/seo" element={<AdminProductSEO />} />
@@ -127,18 +167,18 @@ export default function AdminRoutes() {
         {/* ═══════════ STOC & DEPOZIT ═══════════ */}
         <Route path="stock" element={<AdminStockOverview />} />
         <Route path="stock/warehouses" element={<AdminWarehouses />} />
-        <Route path="stock/transfers" element={<AdminPlaceholder title="Transferuri Stoc" description="Transfer produse între depozite." />} />
+        <Route path="stock/transfers" element={<AdminStockTransfers />} />
         <Route path="stock/movements" element={<AdminStockMovements />} />
-        <Route path="stock/adjustments" element={<AdminPlaceholder title="Ajustări Stoc" description="Intrări și ieșiri manuale de stoc cu motiv." />} />
+        <Route path="stock/adjustments" element={<AdminStockAdjustments />} />
         <Route path="stock/inventory" element={<AdminInventory />} />
-        <Route path="stock/nir" element={<AdminPlaceholder title="NIR (Recepție Marfă)" description="Recepție marfă cu generare Notă de Intrare Recepție." />} />
-        <Route path="stock/serials" element={<AdminPlaceholder title="Seriale / IMEI" description="Gestionare numere de serie și IMEI individuale pe produs." />} />
-        <Route path="stock/batches" element={<AdminPlaceholder title="Loturi" description="Gestionare pe loturi de producție și trasabilitate." />} />
-        <Route path="stock/expiry" element={<AdminPlaceholder title="Expirări" description="Produse cu dată de expirare — alerte și rapoarte." />} />
-        <Route path="stock/picking" element={<AdminPlaceholder title="Picking List" description="Generare liste de picking pentru comenzi în procesare." />} />
+        <Route path="stock/nir" element={<AdminNIR />} />
+        <Route path="stock/serials" element={<AdminSerials />} />
+        <Route path="stock/batches" element={<AdminBatches />} />
+        <Route path="stock/expiry" element={<AdminExpiry />} />
+        <Route path="stock/picking" element={<AdminPicking />} />
         <Route path="stock/alerts" element={<AdminStockAlerts />} />
-        <Route path="stock/suppliers" element={<AdminPlaceholder title="Furnizori" description="Gestionare furnizori, prețuri de achiziție, comenzi de aprovizionare." />} />
-        <Route path="stock/reorder" element={<AdminPlaceholder title="Aprovizionare" description="Sugestii automate de reaprovizionare." />} />
+        <Route path="stock/suppliers" element={<AdminSuppliers />} />
+        <Route path="stock/reorder" element={<AdminReorder />} />
 
         {/* ═══════════ CLIENȚI / CRM ═══════════ */}
         <Route path="customers" element={<AdminCustomers />} />
@@ -149,7 +189,7 @@ export default function AdminRoutes() {
         <Route path="customers/b2b" element={<AdminFilteredCustomers filter="b2b" title="Clienți B2B" description="Persoane juridice." />} />
         <Route path="customers/groups" element={<AdminCustomerGroups />} />
         <Route path="customers/segments" element={<AdminCustomerSegments />} />
-        <Route path="customers/tags" element={<AdminPlaceholder title="Etichete (Tag-uri)" description="Adăugare tag-uri pe clienți." />} />
+        <Route path="customers/tags" element={<AdminCustomerTags />} />
         <Route path="customers/loyalty" element={<AdminLoyalty />} />
         <Route path="customers/blacklist" element={<AdminBlacklist />} />
         <Route path="customers/abandoned" element={<AdminAbandonedCarts />} />
@@ -162,29 +202,29 @@ export default function AdminRoutes() {
         <Route path="coupons" element={<AdminCoupons />} />
         <Route path="marketing/promotions" element={<AdminPromotions />} />
         <Route path="newsletter" element={<AdminNewsletter />} />
-        <Route path="marketing/sms" element={<AdminPlaceholder title="Campanii SMS" description="Notificări și promoții prin SMS." />} />
+        <Route path="marketing/sms" element={<AdminSMS />} />
         <Route path="marketing/abandoned-cart" element={<AdminAbandonedCarts />} />
         <Route path="marketing/automations" element={<AdminAutomations />} />
         <Route path="marketing/banners" element={<AdminBanners />} />
-        <Route path="marketing/upsell" element={<AdminPlaceholder title="Upsell / Cross-sell" description="Configurare recomandări." />} />
-        <Route path="marketing/feeds" element={<AdminPlaceholder title="Feed-uri Marketing" description="Google Shopping, Facebook Catalog, comparatoare." />} />
-        <Route path="marketing/pixels" element={<AdminPlaceholder title="Pixel Tracking" description="Meta Pixel, Google Ads, TikTok Pixel." />} />
+        <Route path="marketing/upsell" element={<AdminUpsell />} />
+        <Route path="marketing/feeds" element={<AdminFeeds />} />
+        <Route path="marketing/pixels" element={<AdminPixels />} />
         <Route path="marketing/affiliates" element={<AdminAffiliates />} />
-        <Route path="marketing/recommendations" element={<AdminPlaceholder title="Recomandări Personalizate" description="Algoritm de recomandări." />} />
-        <Route path="marketing/ab-tests" element={<AdminPlaceholder title="Teste A/B" description="Teste A/B pentru pagini, prețuri și promoții." />} />
+        <Route path="marketing/recommendations" element={<AdminRecommendations />} />
+        <Route path="marketing/ab-tests" element={<AdminABTests />} />
         <Route path="marketing/reports" element={<AdminReportPage type="marketing" title="Rapoarte Marketing" description="Conversie campanii, utilizare vouchere, ROI per canal." />} />
 
         {/* ═══════════ CONȚINUT ═══════════ */}
         <Route path="content/pages" element={<AdminCmsPages />} />
         <Route path="content/page-builder" element={<AdminPageBuilder />} />
         <Route path="content/homepage" element={<AdminHomepageSettings />} />
-        <Route path="content/landing" element={<AdminPlaceholder title="Landing Pages" description="Pagini de campanie cu tracking." />} />
+        <Route path="content/landing" element={<AdminLandingPages />} />
         <Route path="content/blog" element={<AdminBlog />} />
         <Route path="content/media" element={<AdminMediaLibrary />} />
-        <Route path="content/menus" element={<AdminPlaceholder title="Meniu & Navigație" description="Configurare meniuri de navigație." />} />
+        <Route path="content/menus" element={<AdminMenus />} />
         <Route path="content/scripts" element={<AdminCustomScripts />} />
         <Route path="content/translations" element={<AdminTranslations />} />
-        <Route path="content/email-templates" element={<AdminPlaceholder title="Șabloane Email" description="Editare template-uri email tranzacționale." />} />
+        <Route path="content/email-templates" element={<AdminEmailTemplates />} />
         <Route path="content/seo" element={<AdminSeoSettings />} />
         <Route path="content/legal" element={<AdminCmsPages filterLegal />} />
 
@@ -194,19 +234,19 @@ export default function AdminRoutes() {
         <Route path="payments/refunds" element={<AdminRefunds />} />
         <Route path="payments/installments" element={<AdminMokkaSettings />} />
         <Route path="payments/mokka" element={<AdminMokkaSettings />} />
-        <Route path="payments/settlements" element={<AdminPlaceholder title="Decontări" description="Perioade de decontare și reconciliere." />} />
-        <Route path="payments/reconciliation" element={<AdminPlaceholder title="Reconciliere" description="Verificare plăți și status tranzacții." />} />
+        <Route path="payments/settlements" element={<AdminSettlements />} />
+        <Route path="payments/reconciliation" element={<AdminReconciliation />} />
 
         {/* ═══════════ LIVRARE ═══════════ */}
         <Route path="shipping/carriers" element={<AdminCarriers />} />
         <Route path="shipping/rates" element={<AdminShippingRates />} />
         <Route path="shipping/awb" element={<AdminAWB />} />
-        <Route path="shipping/labels" element={<AdminPlaceholder title="Etichete" description="Generare și printare etichete de expediere." />} />
+        <Route path="shipping/labels" element={<AdminLabels />} />
         <Route path="shipping/tracking" element={<AdminTracking />} />
-        <Route path="shipping/lockers" element={<AdminPlaceholder title="Lockere / Easybox" description="Hartă lockere, selecție la checkout." />} />
-        <Route path="shipping/international" element={<AdminPlaceholder title="Livrări Internaționale" description="Curieri și tarife internaționale." />} />
-        <Route path="shipping/pickup" element={<AdminPlaceholder title="Puncte Ridicare" description="Easybox, PUDO." />} />
-        <Route path="shipping/scheduling" element={<AdminPlaceholder title="Programări Livrare" description="Interval orar preferată pentru livrare." />} />
+        <Route path="shipping/lockers" element={<AdminLockers />} />
+        <Route path="shipping/international" element={<AdminInternational />} />
+        <Route path="shipping/pickup" element={<AdminPickupPoints />} />
+        <Route path="shipping/scheduling" element={<AdminScheduling />} />
         <Route path="shipping/webhooks" element={<AdminWebhooks />} />
 
         {/* ═══════════ INTEGRĂRI ═══════════ */}
@@ -245,13 +285,13 @@ export default function AdminRoutes() {
         <Route path="integrations/facebook-login" element={<AdminIntegrationConfig integrationKey="facebook-login" title="Facebook Login" description="Configurare Facebook Login." fields={[{ key: "app_id", label: "App ID" }, { key: "app_secret", label: "App Secret", type: "password" }]} />} />
         <Route path="integrations/google-login" element={<AdminIntegrationConfig integrationKey="google-login" title="Google Login" description="Configurare Google Login." fields={[{ key: "client_id", label: "Client ID" }, { key: "client_secret", label: "Client Secret", type: "password" }]} />} />
         <Route path="integrations/nod" element={<AdminIntegrationConfig integrationKey="nod" title="NOD" description="Integrare NOD catalog și stoc." fields={[{ key: "username", label: "Utilizator API" }, { key: "api_key", label: "API Key", type: "password" }]} />} />
-        <Route path="integrations/ssl" element={<AdminPlaceholder title="Certificat SSL" description="Configurare certificat SSL." />} />
+        <Route path="integrations/ssl" element={<AdminSSL />} />
 
         {/* ═══════════ MULTI-CANAL ═══════════ */}
         <Route path="channels/allegro" element={<AdminIntegrationConfig integrationKey="allegro" title="Allegro" description="Sincronizare produse și comenzi Allegro." fields={[{ key: "client_id", label: "Client ID" }, { key: "client_secret", label: "Client Secret", type: "password" }]} />} />
         <Route path="channels/olx" element={<AdminIntegrationConfig integrationKey="olx" title="OLX" description="Publicare anunțuri pe OLX." fields={[{ key: "api_key", label: "API Key", type: "password" }]} />} />
-        <Route path="channels/api" element={<AdminPlaceholder title="API Extern" description="Documentație API, chei de acces și playground." />} />
-        <Route path="channels/connectors" element={<AdminPlaceholder title="Conectori Externi" description="Gestionare webhooks și integrări terțe." />} />
+        <Route path="channels/api" element={<AdminAPI />} />
+        <Route path="channels/connectors" element={<AdminConnectors />} />
 
         {/* ═══════════ RAPOARTE ═══════════ */}
         <Route path="reports" element={<AdminReports />} />
@@ -263,8 +303,8 @@ export default function AdminRoutes() {
         <Route path="reports/conversion" element={<AdminReportPage type="conversion" title="Conversie / Funnel" description="Vizualizare funnel: vizite → coș → comandă." />} />
         <Route path="reports/marketing" element={<AdminReportPage type="marketing" title="Marketing ROI" description="Analiză eficiență campanii per canal." />} />
         <Route path="reports/financial" element={<AdminReportPage type="financial" title="Rapoarte Financiare" description="Cifră de afaceri, TVA, costuri, decontări." />} />
-        <Route path="reports/custom" element={<AdminPlaceholder title="Rapoarte Personalizate" description="Query builder: selectează metrici, dimensiuni, filtre." />} />
-        <Route path="reports/export" element={<AdminPlaceholder title="Export Rapoarte" description="Export rapoarte în CSV/PDF." />} />
+        <Route path="reports/custom" element={<AdminCustomReport />} />
+        <Route path="reports/export" element={<AdminExportReports />} />
 
         {/* ═══════════ SETĂRI ═══════════ */}
         <Route path="settings/general" element={<AdminGeneralSettings />} />
