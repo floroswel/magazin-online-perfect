@@ -164,7 +164,7 @@ export default function ProductDetail() {
                 ))}
               </div>
               <span className="text-sm text-muted-foreground">({product.review_count} recenzii)</span>
-              {product.brand && <span className="text-sm text-muted-foreground">• {product.brand}</span>}
+              {(product as any).brands?.name && <span className="text-sm text-muted-foreground">• {(product as any).brands.name}</span>}
             </div>
 
             <div className="flex items-baseline gap-3">
