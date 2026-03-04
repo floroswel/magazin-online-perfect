@@ -244,7 +244,7 @@ export default function AdminRoutes() {
       <Route path="settings/notifications" element={<AdminPlaceholder title="Notificări" description="Configurare notificări email, SMS și push — admin și client." />} />
       <Route path="settings/security" element={<AdminPlaceholder title="Securitate" description="Parolă minimă, blocare după încercări eșuate, reCAPTCHA." />} />
       <Route path="settings/gdpr" element={<AdminPlaceholder title="GDPR & Politici" description="Texte consimțământ, perioadă retenție date, export/ștergere automată." />} />
-      <Route path="settings/checkout" element={<AdminPlaceholder title="Setări Checkout" description="Tip checkout (standard/one-page), guest checkout, câmpuri obligatorii." />} />
+      <Route path="settings/checkout" element={<AdminCheckoutSettings />} />
       <Route path="settings/cart" element={<AdminPlaceholder title="Setări Coș" description="Mod afișare, recomandări, comportament adăugare, ordine produse." />} />
 
       {/* ═══════════ UTILIZATORI ═══════════ */}
