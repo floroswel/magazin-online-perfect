@@ -63,6 +63,7 @@ const App = () => (
           </CartProvider>
           </CurrencyProvider>
           </I18nProvider>
+          </StoreBrandingProvider>
           </ThemeProvider>
         </AuthProvider>
       </BrowserRouter>
