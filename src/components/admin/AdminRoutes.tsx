@@ -79,6 +79,7 @@ const AdminCartSettings = lazy(() => import("./settings/AdminCartSettings"));
 const AdminSessions = lazy(() => import("./users/AdminSessions"));
 const AdminIpWhitelist = lazy(() => import("./users/AdminIpWhitelist"));
 const AdminLogs = lazy(() => import("./modules/AdminLogs"));
+const AdminEmailLogs = lazy(() => import("./settings/AdminEmailLogs"));
 const AdminWarehouses = lazy(() => import("./stock/AdminWarehouses"));
 const AdminAWB = lazy(() => import("./shipping/AdminAWB"));
 const AdminGdprData = lazy(() => import("./customers/AdminGdprData"));
