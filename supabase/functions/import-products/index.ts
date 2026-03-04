@@ -143,7 +143,7 @@ function parseXMLFeed(text: string): ProductRow[] {
       stock: getVal(["stock", "stoc"]),
       description: getVal(["description", "descriere"]),
       image_url: getVal(["image_url", "image", "imagine", "image_link"]),
-      brand: getVal(["brand", "marca"]),
+      brand_name: getVal(["brand", "marca"]),
       slug: getVal(["slug"]),
       category_id: getVal(["category_id"]),
       sku: getVal(["sku", "cod"]),
