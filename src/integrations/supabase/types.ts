@@ -1038,6 +1038,45 @@ export type Database = {
         }
         Relationships: []
       }
+      email_logs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          from_email: string | null
+          id: string
+          metadata: Json | null
+          resend_id: string | null
+          status: string
+          subject: string
+          to_email: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          from_email?: string | null
+          id?: string
+          metadata?: Json | null
+          resend_id?: string | null
+          status?: string
+          subject: string
+          to_email: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          from_email?: string | null
+          id?: string
+          metadata?: Json | null
+          resend_id?: string | null
+          status?: string
+          subject?: string
+          to_email?: string
+          type?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
