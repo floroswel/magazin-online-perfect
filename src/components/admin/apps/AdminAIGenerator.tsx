@@ -13,7 +13,8 @@ import { Progress } from "@/components/ui/progress";
 interface Product {
   id: string;
   name: string;
-  brand: string | null;
+  brand_id: string | null;
+  brands: { name: string } | null;
   description: string | null;
   image_url: string | null;
   price: number;
