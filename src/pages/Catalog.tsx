@@ -60,8 +60,8 @@ export default function Catalog() {
       }
 
       if (searchQuery) {
-        // Use full-text search + ilike fallback across name, description, brand
-        query = query.or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%,brand.ilike.%${searchQuery}%`);
+        // Use full-text search + ilike fallback across name, description
+        query = query.or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`);
       }
 
       query = query.gte("price", priceRange[0]).lte("price", priceRange[1]);
