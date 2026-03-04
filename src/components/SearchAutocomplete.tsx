@@ -11,6 +11,22 @@ interface Suggestion {
   slug: string;
   price: number;
   image_url: string | null;
+  brand: string | null;
+  category_name: string | null;
+  rank: number;
+}
+
+function highlightMatch(text: string, query: string) {
+  if (!query || !text) return text;
+  const words = query.trim().split(/\s+/).filter(w => w.length >= 2);
+  if (words.length === 0) return text;
+  const pattern = new RegExp(`(${words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
+  const parts = text.split(pattern);
+  return parts.map((part, i) =>
+    pattern.test(part)
+      ? `<mark class="bg-primary/20 text-foreground rounded-sm px-0.5">${part}</mark>`
+      : part
+  ).join('');
 }
 
 export default function SearchAutocomplete({ className }: { className?: string }) {
@@ -40,12 +56,15 @@ export default function SearchAutocomplete({ className }: { className?: string }
     }
     debounceRef.current = setTimeout(async () => {
       setLoading(true);
-      const { data } = await supabase
-        .from("products")
-        .select("id, name, slug, price, image_url")
-        .ilike("name", `%${q.trim()}%`)
-        .limit(6);
-      setSuggestions(data || []);
+      const { data, error } = await supabase.rpc("search_products", {
+        search_term: q.trim(),
+        result_limit: 6,
+      });
+      if (!error && data) {
+        setSuggestions(data as Suggestion[]);
+      } else {
+        setSuggestions([]);
+      }
       setOpen(true);
       setLoading(false);
     }, 250);
@@ -113,8 +132,22 @@ export default function SearchAutocomplete({ className }: { className?: string }
                     className="w-10 h-10 object-contain rounded bg-white flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">{s.name}</p>
-                    <p className="text-xs text-primary font-semibold">{s.price.toLocaleString("ro-RO")} lei</p>
+                    <p
+                      className="text-sm font-medium text-foreground truncate"
+                      dangerouslySetInnerHTML={{ __html: highlightMatch(s.name, query) }}
+                    />
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-primary font-semibold">{s.price.toLocaleString("ro-RO")} lei</span>
+                      {s.brand && (
+                        <span
+                          className="text-xs text-muted-foreground"
+                          dangerouslySetInnerHTML={{ __html: highlightMatch(s.brand, query) }}
+                        />
+                      )}
+                      {s.category_name && (
+                        <span className="text-xs text-muted-foreground">· {s.category_name}</span>
+                      )}
+                    </div>
                   </div>
                 </button>
               ))}
