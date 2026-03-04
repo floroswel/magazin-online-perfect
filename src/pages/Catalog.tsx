@@ -166,7 +166,7 @@ export default function Catalog() {
             <h1 className="text-2xl font-bold text-foreground">
               {searchQuery ? `Rezultate pentru "${searchQuery}"` : currentCategory?.name || "Toate produsele"}
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">{filteredBySpecs.length} produse găsite</p>
+            <p className="text-sm text-muted-foreground mt-1">{totalCount} produse găsite</p>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" className="md:hidden relative" onClick={() => setShowFilters(!showFilters)}>
