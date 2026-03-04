@@ -326,7 +326,7 @@ export default function Checkout() {
                     </div>
                     <div className="bg-muted rounded-lg p-3 text-center">
                       <p className="text-sm text-muted-foreground">Rată lunară</p>
-                      <p className="text-2xl font-bold text-primary">{getInstallmentAmount()} lei/lună</p>
+                      <p className="text-2xl font-bold text-primary">{format(parseFloat(getInstallmentAmount()))}/lună</p>
                       <p className="text-xs text-muted-foreground">× {installmentMonths} luni</p>
                     </div>
                   </CardContent>
