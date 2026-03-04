@@ -12,6 +12,7 @@ import { toast } from "sonner";
 
 export default function Auth() {
   const { signIn, signUp } = useAuth();
+  const branding = useStoreBranding();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
