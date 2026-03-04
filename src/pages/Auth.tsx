@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import Layout from "@/components/layout/Layout";
 import { useAuth } from "@/hooks/useAuth";
 import { useStoreBranding } from "@/hooks/useStoreBranding";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
 
@@ -16,6 +17,7 @@ export default function Auth() {
   const { signIn, signUp } = useAuth();
   const branding = useStoreBranding();
   const navigate = useNavigate();
+  const { subscribe: subscribePush, isSupported: pushSupported } = usePushNotifications();
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
@@ -28,6 +30,7 @@ export default function Auth() {
     const { error } = await signIn(loginForm.email, loginForm.password);
     if (error) { toast.error(error.message); setLoading(false); return; }
     toast.success("Autentificare reușită!");
+    if (pushSupported) subscribePush();
     navigate("/");
     setLoading(false);
   };
@@ -38,6 +41,7 @@ export default function Auth() {
     const { error } = await signUp(registerForm.email, registerForm.password, registerForm.fullName);
     if (error) { toast.error(error.message); setLoading(false); return; }
     toast.success("Cont creat! Verifică emailul pentru confirmare.");
+    if (pushSupported) subscribePush();
     setLoading(false);
   };
 
