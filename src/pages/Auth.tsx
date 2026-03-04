@@ -7,10 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Layout from "@/components/layout/Layout";
 import { useAuth } from "@/hooks/useAuth";
+import { useStoreBranding } from "@/hooks/useStoreBranding";
 import { toast } from "sonner";
 
 export default function Auth() {
   const { signIn, signUp } = useAuth();
+  const branding = useStoreBranding();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -41,7 +43,7 @@ export default function Auth() {
       <div className="container py-16 flex justify-center">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">🛒 MegaShop</CardTitle>
+            <CardTitle className="text-2xl">{branding.emoji} {branding.name}</CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="login">

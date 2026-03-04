@@ -13,6 +13,7 @@ import RecentlyViewed from "@/components/home/RecentlyViewed";
 import BlogPreview from "@/components/home/BlogPreview";
 import { supabase } from "@/integrations/supabase/client";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
+import { useStoreBranding } from "@/hooks/useStoreBranding";
 import type { Tables } from "@/integrations/supabase/types";
 
 interface BenefitItem { icon: string; text: string }
@@ -28,6 +29,7 @@ const IconMap: Record<string, any> = {
 };
 
 export default function Index() {
+  const branding = useStoreBranding();
   const [featured, setFeatured] = useState<Tables<"products">[]>([]);
   const [loading, setLoading] = useState(true);
   const [benefits, setBenefits] = useState<BenefitItem[]>([
@@ -123,7 +125,7 @@ export default function Index() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({
         "@context": "https://schema.org",
         "@type": "WebSite",
-        name: "MegaShop",
+        name: branding.name,
         url: window.location.origin,
         potentialAction: {
           "@type": "SearchAction",

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useStoreBranding } from "@/hooks/useStoreBranding";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mail, Facebook, Instagram, Youtube, Clock, MapPin, Phone, Building2 } from "lucide-react";
@@ -30,6 +31,7 @@ const SocialIcon = ({ icon, className }: { icon: string; className?: string }) =
 };
 
 export default function Footer() {
+  const branding = useStoreBranding();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [pages, setPages] = useState<FooterPage[]>([]);
@@ -38,8 +40,6 @@ export default function Footer() {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [deliveryPartners, setDeliveryPartners] = useState<DeliveryPartner[]>([]);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
-
-  const [branding, setBranding] = useState<{ name: string; emoji: string; tagline: string; phone: string; email: string; copyright: string } | null>(null);
 
   useEffect(() => {
     supabase
@@ -53,7 +53,7 @@ export default function Footer() {
     supabase
       .from("app_settings")
       .select("key, value_json")
-      .in("key", ["footer_legal_badges", "footer_social_links", "footer_payment_methods", "footer_delivery_partners", "footer_company_info", "store_branding"])
+      .in("key", ["footer_legal_badges", "footer_social_links", "footer_payment_methods", "footer_delivery_partners", "footer_company_info"])
       .then(({ data }) => {
         data?.forEach(row => {
           const val = row.value_json;
@@ -72,9 +72,6 @@ export default function Footer() {
               break;
             case "footer_company_info":
               if (val && typeof val === "object" && !Array.isArray(val)) setCompanyInfo(val as unknown as CompanyInfo);
-              break;
-            case "store_branding":
-              if (val && typeof val === "object" && !Array.isArray(val)) setBranding(val as unknown as any);
               break;
           }
         });
@@ -116,8 +113,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand + Social */}
           <div>
-            <h3 className="text-lg font-bold mb-4 text-emag-yellow">{branding?.emoji || "🛒"} {branding?.name || "MegaShop"}</h3>
-            <p className="text-sm text-white/70 mb-4">{branding?.tagline || "Cel mai mare magazin online din România cu mii de produse la prețuri imbatabile."}</p>
+            <h3 className="text-lg font-bold mb-4 text-emag-yellow">{branding.emoji} {branding.name}</h3>
+            <p className="text-sm text-white/70 mb-4">{branding.tagline}</p>
             {socialLinks.length > 0 && (
               <div className="flex gap-3">
                 {socialLinks.map((link, i) => (
@@ -188,8 +185,8 @@ export default function Footer() {
               </Button>
             </form>
             <div className="mt-4 space-y-2 text-sm text-white/70">
-              <p className="flex items-center gap-2"><Phone className="w-3.5 h-3.5" /> {branding?.phone || "0800 123 456"}</p>
-              <p className="flex items-center gap-2"><Mail className="w-3.5 h-3.5" /> {branding?.email || "contact@megashop.ro"}</p>
+              <p className="flex items-center gap-2"><Phone className="w-3.5 h-3.5" /> {branding.phone}</p>
+              <p className="flex items-center gap-2"><Mail className="w-3.5 h-3.5" /> {branding.email}</p>
               {companyInfo?.working_hours && (
                 <p className="flex items-center gap-2"><Clock className="w-3.5 h-3.5" /> {companyInfo.working_hours}</p>
               )}
@@ -290,7 +287,7 @@ export default function Footer() {
             </div>
           )}
 
-          <p className="text-center text-[11px] text-white/40">{branding?.copyright || "© 2026 MegaShop. Toate drepturile rezervate."}</p>
+          <p className="text-center text-[11px] text-white/40">{branding.copyright}</p>
         </div>
       </div>
     </footer>

@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
+import { useStoreBranding } from "@/hooks/useStoreBranding";
 import { Loader2 } from "lucide-react";
 import DOMPurify from "dompurify";
 
 export default function CmsPage() {
   const { slug } = useParams<{ slug: string }>();
+  const branding = useStoreBranding();
   const [page, setPage] = useState<{ title: string; body_html: string | null; meta_title: string | null; meta_description: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -23,7 +25,7 @@ export default function CmsPage() {
       .then(({ data }) => {
         if (data) {
           setPage(data);
-          document.title = data.meta_title || data.title || "MegaShop";
+          document.title = data.meta_title || data.title || branding.name;
           const metaDesc = document.querySelector('meta[name="description"]');
           if (metaDesc && data.meta_description) metaDesc.setAttribute("content", data.meta_description);
         } else {

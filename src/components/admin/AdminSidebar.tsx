@@ -7,6 +7,7 @@ import {
   Puzzle, PanelLeftClose, PanelLeftOpen, Plug,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useStoreBranding } from "@/hooks/useStoreBranding";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Tooltip,
@@ -324,6 +325,7 @@ interface AdminSidebarProps {
 
 export default function AdminSidebar({ open, onClose, collapsed = false, onToggleCollapse }: AdminSidebarProps) {
   const location = useLocation();
+  const { name: storeName } = useStoreBranding();
   const [expandedMenus, setExpandedMenus] = useState<string[]>(() => {
     const expanded: string[] = [];
     menuSections.forEach((section) => {
@@ -376,12 +378,12 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
             </div>
             {!collapsed && (
               <div className="hidden lg:block">
-                <h2 className="font-bold text-xs leading-tight text-white">MegaShop</h2>
+                <h2 className="font-bold text-xs leading-tight text-white">{storeName}</h2>
                 <p className="text-[9px] text-[hsl(210,15%,60%)] font-medium leading-none">ADMIN</p>
               </div>
             )}
             <div className="lg:hidden">
-              <h2 className="font-bold text-xs leading-tight text-white">MegaShop</h2>
+              <h2 className="font-bold text-xs leading-tight text-white">{storeName}</h2>
               <p className="text-[9px] text-[hsl(210,15%,60%)] font-medium leading-none">ADMIN</p>
             </div>
           </Link>

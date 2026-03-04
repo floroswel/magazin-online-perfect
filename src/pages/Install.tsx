@@ -3,8 +3,10 @@ import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Download, Smartphone, Check, Share } from "lucide-react";
+import { useStoreBranding } from "@/hooks/useStoreBranding";
 
 export default function Install() {
+  const branding = useStoreBranding();
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [installed, setInstalled] = useState(false);
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -45,7 +47,7 @@ export default function Install() {
       <div className="container py-12 max-w-lg mx-auto">
         <div className="text-center mb-8">
           <Smartphone className="w-16 h-16 mx-auto text-primary mb-4" />
-          <h1 className="text-3xl font-bold mb-2">Instalează MegaShop</h1>
+          <h1 className="text-3xl font-bold mb-2">Instalează {branding.name}</h1>
           <p className="text-muted-foreground">
             Accesează magazinul direct de pe telefonul tău, fără a descărca din App Store.
           </p>

@@ -12,9 +12,9 @@ import SearchAutocomplete from "@/components/SearchAutocomplete";
 import MegaMenu from "./MegaMenu";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { supabase } from "@/integrations/supabase/client";
+import { useStoreBranding } from "@/hooks/useStoreBranding";
 
 interface TrustBarItem { icon: string; text: string; link: string }
-interface StoreBranding { name: string; emoji: string; tagline: string; phone: string; email: string; copyright: string }
 
 const IconMap: Record<string, any> = {
   phone: Phone, shield: Shield, truck: Truck, zap: Zap,
@@ -28,6 +28,7 @@ export default function Header() {
   const { totalItems } = useCart();
   const { comparisonItems } = useComparison();
   const navigate = useNavigate();
+  const branding = useStoreBranding();
   const [search, setSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
   const [mobileCategories, setMobileCategories] = useState<{ name: string; slug: string }[]>([]);
@@ -36,21 +37,16 @@ export default function Header() {
     { icon: "shield", text: "Produse Garantate", link: "" },
     { icon: "truck", text: "Livrare Gratuită peste 200 lei", link: "" },
   ]);
-  const [branding, setBranding] = useState<StoreBranding>({
-    name: "MegaShop", emoji: "🛒", tagline: "", phone: "0800 123 456", email: "", copyright: "",
-  });
 
   useEffect(() => {
     supabase.from("categories").select("name, slug").is("parent_id", null).order("name").then(({ data }) => {
       setMobileCategories(data || []);
     });
     supabase.from("app_settings").select("key, value_json")
-      .in("key", ["header_trust_bar", "store_branding"])
+      .in("key", ["header_trust_bar"])
       .then(({ data }) => {
         data?.forEach((row) => {
           if (row.key === "header_trust_bar" && Array.isArray(row.value_json)) setTrustBar(row.value_json as unknown as TrustBarItem[]);
-          if (row.key === "store_branding" && row.value_json && typeof row.value_json === "object" && !Array.isArray(row.value_json))
-            setBranding(row.value_json as unknown as StoreBranding);
         });
       });
   }, []);

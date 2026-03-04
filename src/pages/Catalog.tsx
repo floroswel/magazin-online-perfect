@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
+import { useCurrency } from "@/hooks/useCurrency";
 import type { Tables } from "@/integrations/supabase/types";
 
 export default function Catalog() {
@@ -22,17 +23,26 @@ export default function Catalog() {
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState("popular");
   const [priceRange, setPriceRange] = useState([0, 10000]);
+  const [maxPrice, setMaxPrice] = useState(10000);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(24);
+  const { symbol: currencySymbol } = useCurrency();
   const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
     supabase.from("categories").select("*").then(({ data }) => setCategories(data || []));
     supabase.from("brands").select("*").order("name").then(({ data }) => setBrands(data || []));
+    supabase.from("products").select("price").order("price", { ascending: false }).limit(1).then(({ data }) => {
+      if (data && data.length > 0 && data[0].price) {
+        const rounded = Math.ceil(Number(data[0].price) / 100) * 100;
+        setMaxPrice(rounded);
+        setPriceRange([0, rounded]);
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -97,14 +107,14 @@ export default function Catalog() {
     selectedBrands.length > 0,
     inStockOnly,
     selectedRatings.length > 0,
-    priceRange[0] > 0 || priceRange[1] < 10000,
+    priceRange[0] > 0 || priceRange[1] < maxPrice,
   ].filter(Boolean).length;
 
   const clearFilters = () => {
     setSelectedBrands([]);
     setInStockOnly(false);
     setSelectedRatings([]);
-    setPriceRange([0, 10000]);
+    setPriceRange([0, maxPrice]);
   };
 
   // Extract specs keys for dynamic attribute filters
@@ -222,10 +232,10 @@ export default function Catalog() {
             {/* Price filter */}
             <div>
               <h3 className="font-semibold mb-3 text-foreground text-sm">Preț</h3>
-              <Slider value={priceRange} onValueChange={setPriceRange} min={0} max={10000} step={100} className="mb-2" />
+              <Slider value={priceRange} onValueChange={setPriceRange} min={0} max={maxPrice} step={100} className="mb-2" />
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>{priceRange[0]} lei</span>
-                <span>{priceRange[1]} lei</span>
+                <span>{priceRange[0]} {currencySymbol}</span>
+                <span>{priceRange[1]} {currencySymbol}</span>
               </div>
             </div>
 
