@@ -222,9 +222,9 @@ export default function ProductDetail() {
                 </span>
                 {promoDiscount.endsAt && <CountdownTimer endsAt={promoDiscount.endsAt} />}
               </div>
-            )
+            )}
 
-            <MokkaOrangePrice price={activePrice} months={3} />
+            <MokkaOrangePrice price={finalPrice} months={3} />
             <VariantSelector productId={product.id} basePrice={product.price} lowStockThreshold={product.low_stock_threshold || 5} onVariantSelect={setSelectedVariant} onHasVariants={setHasVariants} />
 
             {/* Bundle savings badge */}
