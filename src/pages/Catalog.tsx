@@ -88,6 +88,7 @@ export default function Catalog() {
     load();
   }, [categorySlug, searchQuery, sort, priceRange, selectedBrands, inStockOnly, selectedRatings, categories, currentPage, perPage]);
 
+  const totalPages = Math.ceil(totalCount / perPage);
   const currentCategory = categories.find(c => c.slug === categorySlug);
 
   const activeFiltersCount = [
