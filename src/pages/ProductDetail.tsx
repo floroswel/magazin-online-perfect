@@ -167,9 +167,15 @@ export default function ProductDetail() {
   const activeStock = isBundle ? (bundleStock ?? 0) : (selectedVariant ? selectedVariant.stock : product.stock);
   const activeImage = selectedVariant?.image_url || product.image_url;
   const specs = product.specs && typeof product.specs === "object" ? Object.entries(product.specs as Record<string, string>).filter(([k]) => !k.startsWith("_")) : [];
-  const discount = product.old_price ? Math.round(((product.old_price - activePrice) / product.old_price) * 100) : 0;
+  
+  // Dynamic pricing rules
+  const promoDiscount = getProductDiscount(product);
+  const finalPrice = promoDiscount ? promoDiscount.discountedPrice : activePrice;
+  const showOriginal = promoDiscount ? activePrice : product.old_price;
+  const discount = showOriginal && showOriginal > finalPrice ? Math.round(((showOriginal - finalPrice) / showOriginal) * 100) : 0;
+  
   const imageAlts = product.image_alts || {};
-  const bundleSavings = isBundle && bundleComponentsTotal > activePrice ? bundleComponentsTotal - activePrice : 0;
+  const bundleSavings = isBundle && bundleComponentsTotal > finalPrice ? bundleComponentsTotal - finalPrice : 0;
   const bundleSavingsPercent = bundleSavings > 0 ? Math.round((bundleSavings / bundleComponentsTotal) * 100) : 0;
 
   return (
