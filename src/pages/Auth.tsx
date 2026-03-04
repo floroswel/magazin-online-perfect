@@ -30,6 +30,7 @@ export default function Auth() {
     const { error } = await signIn(loginForm.email, loginForm.password);
     if (error) { toast.error(error.message); setLoading(false); return; }
     toast.success("Autentificare reușită!");
+    if (pushSupported) subscribePush();
     navigate("/");
     setLoading(false);
   };
