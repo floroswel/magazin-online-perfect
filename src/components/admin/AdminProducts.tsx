@@ -17,7 +17,7 @@ import {
   Plus, Pencil, Trash2, Search, Upload, X, Image as ImageIcon,
   ChevronRight, ChevronLeft, Package, DollarSign, Warehouse, Camera, Globe,
   Copy, Eye, Check, Layers, Sparkles, Loader2, Link2, GripVertical,
-  Barcode, Ruler, Weight, Tag, EyeOff
+  Barcode, Ruler, Weight, Tag, EyeOff, RefreshCw
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -55,15 +55,28 @@ interface ProductForm {
   related_product_ids: string[];
 }
 
-interface Variant {
+interface VariantAttr {
   id: string;
   attribute: string;
   values: string[];
 }
 
+interface VariantCombination {
+  id?: string;
+  attributes: Record<string, string>;
+  price: number;
+  old_price: number | null;
+  stock: number;
+  sku: string;
+  ean: string;
+  image_url: string;
+  is_active: boolean;
+}
+
 const STEPS = [
   { key: "basic", label: "Informații", icon: <Package className="w-4 h-4" /> },
   { key: "pricing", label: "Prețuri", icon: <DollarSign className="w-4 h-4" /> },
+  { key: "variants", label: "Variante", icon: <Layers className="w-4 h-4" /> },
   { key: "inventory", label: "Stoc & Logistică", icon: <Warehouse className="w-4 h-4" /> },
   { key: "media", label: "Media", icon: <Camera className="w-4 h-4" /> },
   { key: "seo", label: "SEO & Organizare", icon: <Globe className="w-4 h-4" /> },
@@ -89,7 +102,10 @@ export default function AdminProducts() {
   const [form, setForm] = useState<ProductForm>(emptyForm);
   const [step, setStep] = useState(0);
   const [uploading, setUploading] = useState(false);
-  const [variants, setVariants] = useState<Variant[]>([]);
+  const [variantAttrs, setVariantAttrs] = useState<VariantAttr[]>([]);
+  const [variantCombos, setVariantCombos] = useState<VariantCombination[]>([]);
+  const [bulkPrice, setBulkPrice] = useState("");
+  const [bulkStock, setBulkStock] = useState("");
   const [specKey, setSpecKey] = useState("");
   const [specVal, setSpecVal] = useState("");
   const [tagInput, setTagInput] = useState("");
@@ -103,6 +119,8 @@ export default function AdminProducts() {
   const [dragIdx, setDragIdx] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+  const variantImageRef = useRef<HTMLInputElement>(null);
+  const [uploadingVariantIdx, setUploadingVariantIdx] = useState<number | null>(null);
 
   // ─── Queries ───
   const { data: products = [], isLoading } = useQuery({
@@ -114,6 +132,20 @@ export default function AdminProducts() {
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
+    },
+  });
+
+  const { data: variantStats = {} as Record<string, { count: number; totalStock: number }> } = useQuery({
+    queryKey: ["admin-variant-stats"],
+    queryFn: async () => {
+      const { data } = await supabase.from("product_variants").select("product_id, stock, is_active");
+      const stats: Record<string, { count: number; totalStock: number }> = {};
+      (data || []).forEach((v: any) => {
+        if (!stats[v.product_id]) stats[v.product_id] = { count: 0, totalStock: 0 };
+        stats[v.product_id].count++;
+        stats[v.product_id].totalStock += v.stock || 0;
+      });
+      return stats;
     },
   });
 
@@ -202,6 +234,18 @@ export default function AdminProducts() {
     if (galleryInputRef.current) galleryInputRef.current.value = "";
   };
 
+  const handleVariantImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || uploadingVariantIdx === null) return;
+    try {
+      const url = await uploadImage(file);
+      setVariantCombos((prev) => prev.map((vc, i) => i === uploadingVariantIdx ? { ...vc, image_url: url } : vc));
+      toast.success("Imagine variantă încărcată!");
+    } catch (err: any) { toast.error("Eroare: " + err.message); }
+    setUploadingVariantIdx(null);
+    if (variantImageRef.current) variantImageRef.current.value = "";
+  };
+
   // ─── Drag & Drop image reorder ───
   const handleDragStart = (idx: number) => setDragIdx(idx);
   const handleDragOver = (e: React.DragEvent, idx: number) => {
@@ -216,6 +260,51 @@ export default function AdminProducts() {
     setDragIdx(idx);
   };
   const handleDragEnd = () => setDragIdx(null);
+
+  // ─── Variant helpers ───
+  const generateVariantCombos = () => {
+    const valid = variantAttrs.filter((v) => v.attribute && v.values.some(Boolean));
+    if (!valid.length) { setVariantCombos([]); return; }
+    const combos = valid.reduce<Record<string, string>[]>((acc, v) => {
+      const filtered = v.values.filter(Boolean);
+      if (!filtered.length) return acc;
+      if (!acc.length) return filtered.map((val) => ({ [v.attribute]: val }));
+      return acc.flatMap((combo) => filtered.map((val) => ({ ...combo, [v.attribute]: val })));
+    }, []);
+    setVariantCombos((prev) =>
+      combos.map((attrs, idx) => {
+        const key = JSON.stringify(attrs);
+        const existing = prev.find((vc) => JSON.stringify(vc.attributes) === key);
+        if (existing) return existing;
+        return {
+          attributes: attrs,
+          price: form.price,
+          old_price: form.old_price,
+          stock: 0,
+          sku: `${form.slug || "var"}-v${idx + 1}`,
+          ean: "",
+          image_url: "",
+          is_active: true,
+        };
+      })
+    );
+  };
+
+  const applyBulkPrice = () => {
+    const p = Number(bulkPrice);
+    if (!p || p <= 0) return;
+    setVariantCombos((prev) => prev.map((vc) => ({ ...vc, price: p })));
+    toast.success(`Preț ${p} aplicat la toate variantele`);
+    setBulkPrice("");
+  };
+
+  const applyBulkStock = () => {
+    const s = Number(bulkStock);
+    if (isNaN(s) || s < 0) return;
+    setVariantCombos((prev) => prev.map((vc) => ({ ...vc, stock: s })));
+    toast.success(`Stoc ${s} aplicat la toate variantele`);
+    setBulkStock("");
+  };
 
   // ─── Save ───
   const saveMutation = useMutation({
@@ -247,13 +336,9 @@ export default function AdminProducts() {
         height_cm: product.height_cm,
         meta_title: product.meta_title || null,
         meta_description: product.meta_description || null,
-        specs: {
-          ...product.specs,
-          ...(variants.length > 0 ? { _variants: variants } : {}),
-        },
+        specs: product.specs,
       };
 
-      // Auto-generate SEO if not set
       if (!payload.meta_title && product.name) {
         payload.meta_title = product.name.slice(0, 60);
       }
@@ -296,25 +381,20 @@ export default function AdminProducts() {
         }
       }
 
-      // Sync variants to product_variants table
-      if (productId && variants.length > 0) {
+      // Sync variant combinations to product_variants table
+      if (productId) {
         await supabase.from("product_variants").delete().eq("product_id", productId);
-        const combos = variants.reduce<Record<string, string>[]>(
-          (acc, v) => {
-            const filtered = v.values.filter(Boolean);
-            if (!filtered.length) return acc;
-            if (!acc.length) return filtered.map((val) => ({ [v.attribute]: val }));
-            return acc.flatMap((combo) => filtered.map((val) => ({ ...combo, [v.attribute]: val })));
-          }, []
-        );
-        if (combos.length > 0) {
-          const variantRows = combos.map((attrs, idx) => ({
+        if (variantCombos.length > 0) {
+          const variantRows = variantCombos.map((vc) => ({
             product_id: productId!,
-            sku: `${product.slug}-v${idx + 1}`,
-            price: product.price,
-            stock: Math.floor(product.stock / combos.length) || 0,
-            attributes: attrs,
-            is_active: true,
+            attributes: vc.attributes,
+            price: vc.price,
+            old_price: vc.old_price,
+            stock: vc.stock,
+            sku: vc.sku || null,
+            ean: vc.ean || null,
+            image_url: vc.image_url || null,
+            is_active: vc.is_active,
           }));
           await supabase.from("product_variants").insert(variantRows);
         }
@@ -322,11 +402,13 @@ export default function AdminProducts() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-variant-stats"] });
       setDialogOpen(false);
       setEditingId(null);
       setForm(emptyForm);
       setStep(0);
-      setVariants([]);
+      setVariantAttrs([]);
+      setVariantCombos([]);
       toast.success(editingId ? "Produs actualizat!" : "Produs adăugat!");
     },
     onError: (e: Error) => toast.error(e.message),
@@ -334,11 +416,13 @@ export default function AdminProducts() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
+      await supabase.from("product_variants").delete().eq("product_id", id);
       const { error } = await supabase.from("products").delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-variant-stats"] });
       setDeleteConfirm(null);
       toast.success("Produs șters!");
     },
@@ -347,8 +431,6 @@ export default function AdminProducts() {
 
   const openEdit = async (product: any) => {
     const specs = product.specs || {};
-    const savedVariants = specs._variants || [];
-    const { _variants, ...cleanSpecs } = specs;
 
     // Load additional categories
     let additionalCats: string[] = [];
@@ -359,6 +441,44 @@ export default function AdminProducts() {
     let relatedIds: string[] = [];
     const { data: relData } = await supabase.from("product_relations").select("related_product_id").eq("product_id", product.id).order("sort_order");
     if (relData) relatedIds = relData.map((r: any) => r.related_product_id);
+
+    // Load existing variant combinations
+    const { data: existingVariants } = await supabase
+      .from("product_variants")
+      .select("*")
+      .eq("product_id", product.id);
+
+    let loadedAttrs: VariantAttr[] = [];
+    let loadedCombos: VariantCombination[] = [];
+
+    if (existingVariants?.length) {
+      // Reconstruct attribute definitions from combinations
+      const attrMap: Record<string, Set<string>> = {};
+      existingVariants.forEach((v: any) => {
+        const attrs = (typeof v.attributes === "object" && v.attributes) ? v.attributes as Record<string, string> : {};
+        Object.entries(attrs).forEach(([k, val]) => {
+          if (!attrMap[k]) attrMap[k] = new Set();
+          attrMap[k].add(String(val));
+        });
+      });
+      loadedAttrs = Object.entries(attrMap).map(([attr, vals]) => ({
+        id: crypto.randomUUID(),
+        attribute: attr,
+        values: Array.from(vals),
+      }));
+
+      loadedCombos = existingVariants.map((v: any) => ({
+        id: v.id,
+        attributes: (typeof v.attributes === "object" && v.attributes) ? v.attributes as Record<string, string> : {},
+        price: v.price,
+        old_price: v.old_price,
+        stock: v.stock || 0,
+        sku: v.sku || "",
+        ean: v.ean || "",
+        image_url: v.image_url || "",
+        is_active: v.is_active ?? true,
+      }));
+    }
 
     setEditingId(product.id);
     setForm({
@@ -387,12 +507,13 @@ export default function AdminProducts() {
       category_id: product.category_id || null,
       additional_category_ids: additionalCats,
       tags: product.tags || [],
-      specs: cleanSpecs,
+      specs: specs,
       meta_title: product.meta_title || "",
       meta_description: product.meta_description || "",
       related_product_ids: relatedIds,
     });
-    setVariants(savedVariants);
+    setVariantAttrs(loadedAttrs);
+    setVariantCombos(loadedCombos);
     setStep(0);
     setDialogOpen(true);
   };
@@ -400,14 +521,15 @@ export default function AdminProducts() {
   const openCreate = () => {
     setEditingId(null);
     setForm(emptyForm);
-    setVariants([]);
+    setVariantAttrs([]);
+    setVariantCombos([]);
     setStep(0);
     setDialogOpen(true);
   };
 
-  const addVariant = () => setVariants((v) => [...v, { id: crypto.randomUUID(), attribute: "", values: [""] }]);
-  const updateVariant = (id: string, field: string, value: any) => setVariants((vs) => vs.map((v) => v.id === id ? { ...v, [field]: value } : v));
-  const removeVariant = (id: string) => setVariants((vs) => vs.filter((v) => v.id !== id));
+  const addVariantAttr = () => setVariantAttrs((v) => [...v, { id: crypto.randomUUID(), attribute: "", values: [""] }]);
+  const updateVariantAttr = (id: string, field: string, value: any) => setVariantAttrs((vs) => vs.map((v) => v.id === id ? { ...v, [field]: value } : v));
+  const removeVariantAttr = (id: string) => { setVariantAttrs((vs) => vs.filter((v) => v.id !== id)); };
   const addSpec = () => { if (!specKey.trim()) return; setForm((f) => ({ ...f, specs: { ...f.specs, [specKey.trim()]: specVal.trim() } })); setSpecKey(""); setSpecVal(""); };
   const removeSpec = (key: string) => setForm((f) => { const { [key]: _, ...rest } = f.specs; return { ...f, specs: rest }; });
   const addTag = () => { if (!tagInput.trim()) return; setForm((f) => ({ ...f, tags: [...f.tags.filter(t => t !== tagInput.trim()), tagInput.trim()] })); setTagInput(""); };
@@ -433,6 +555,9 @@ export default function AdminProducts() {
     }
     saveMutation.mutate({ ...form, slug: form.slug || generateSlug(form.name), id: editingId || undefined });
   };
+
+  // ─── Variant combo label ───
+  const comboLabel = (attrs: Record<string, string>) => Object.values(attrs).join(" / ");
 
   // ─── Wizard Steps ───
   const renderStep = () => {
@@ -586,64 +711,131 @@ export default function AdminProducts() {
                 <span className="text-muted-foreground ml-2">(profit {(form.price - form.cost_price).toFixed(2)} RON / buc.)</span>
               </div>
             )}
-
-            {/* Variants Builder */}
-            <div className="space-y-3 pt-2 border-t border-border">
-              <div className="flex items-center justify-between">
-                <Label className="text-base font-semibold flex items-center gap-2">
-                  <Layers className="w-4 h-4" /> Variante produs
-                </Label>
-                <Button type="button" variant="outline" size="sm" onClick={addVariant} className="gap-1">
-                  <Plus className="w-4 h-4" /> Adaugă atribut
-                </Button>
-              </div>
-              {variants.length === 0 && (
-                <p className="text-sm text-muted-foreground">Nicio variantă. Adaugă atribute precum Culoare, Mărime, Capacitate etc.</p>
-              )}
-              {variants.map((variant) => (
-                <Card key={variant.id} className="bg-muted/30 border-border">
-                  <CardContent className="p-4 space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Input placeholder="Nume atribut (ex: Culoare)" value={variant.attribute} onChange={(e) => updateVariant(variant.id, "attribute", e.target.value)} className="flex-1" />
-                      <Button type="button" variant="ghost" size="icon" className="text-destructive h-8 w-8" onClick={() => removeVariant(variant.id)}>
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {variant.values.map((val, vi) => (
-                        <div key={vi} className="flex items-center gap-1">
-                          <Input value={val} onChange={(e) => { const nv = [...variant.values]; nv[vi] = e.target.value; updateVariant(variant.id, "values", nv); }} placeholder={`Valoare ${vi + 1}`} className="w-32 h-8 text-sm" />
-                          {variant.values.length > 1 && <button type="button" onClick={() => updateVariant(variant.id, "values", variant.values.filter((_, i) => i !== vi))} className="text-destructive"><X className="w-3 h-3" /></button>}
-                        </div>
-                      ))}
-                      <Button type="button" variant="ghost" size="sm" className="h-8 text-xs" onClick={() => updateVariant(variant.id, "values", [...variant.values, ""])}>
-                        <Plus className="w-3 h-3 mr-1" /> Valoare
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-              {variants.length > 0 && variants.every((v) => v.attribute && v.values.some(Boolean)) && (
-                <div className="bg-muted/30 rounded-lg p-3">
-                  <p className="text-xs text-muted-foreground mb-2">Combinații generate:</p>
-                  <div className="flex flex-wrap gap-1">
-                    {(() => {
-                      const combos = variants.reduce<string[][]>((acc, v) => {
-                        const f = v.values.filter(Boolean);
-                        if (!f.length) return acc;
-                        if (!acc.length) return f.map((val) => [`${v.attribute}: ${val}`]);
-                        return acc.flatMap((combo) => f.map((val) => [...combo, `${v.attribute}: ${val}`]));
-                      }, []);
-                      return combos.slice(0, 20).map((combo, i) => <Badge key={i} variant="outline" className="text-xs">{combo.join(" / ")}</Badge>);
-                    })()}
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
         );
 
-      case 2: // Stock & Logistics
+      case 2: // Variants
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label className="text-base font-semibold flex items-center gap-2">
+                <Layers className="w-4 h-4" /> Atribute Variante
+              </Label>
+              <Button type="button" variant="outline" size="sm" onClick={addVariantAttr} className="gap-1">
+                <Plus className="w-4 h-4" /> Adaugă atribut
+              </Button>
+            </div>
+            {variantAttrs.length === 0 && (
+              <p className="text-sm text-muted-foreground">Nicio variantă. Adaugă atribute precum Culoare, Mărime, Capacitate etc.</p>
+            )}
+            {variantAttrs.map((variant) => (
+              <Card key={variant.id} className="bg-muted/30 border-border">
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Input placeholder="Nume atribut (ex: Culoare)" value={variant.attribute} onChange={(e) => updateVariantAttr(variant.id, "attribute", e.target.value)} className="flex-1" />
+                    <Button type="button" variant="ghost" size="icon" className="text-destructive h-8 w-8" onClick={() => removeVariantAttr(variant.id)}>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {variant.values.map((val, vi) => (
+                      <div key={vi} className="flex items-center gap-1">
+                        <Input value={val} onChange={(e) => { const nv = [...variant.values]; nv[vi] = e.target.value; updateVariantAttr(variant.id, "values", nv); }} placeholder={`Valoare ${vi + 1}`} className="w-32 h-8 text-sm" />
+                        {variant.values.length > 1 && <button type="button" onClick={() => updateVariantAttr(variant.id, "values", variant.values.filter((_, i) => i !== vi))} className="text-destructive"><X className="w-3 h-3" /></button>}
+                      </div>
+                    ))}
+                    <Button type="button" variant="ghost" size="sm" className="h-8 text-xs" onClick={() => updateVariantAttr(variant.id, "values", [...variant.values, ""])}>
+                      <Plus className="w-3 h-3 mr-1" /> Valoare
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+
+            {variantAttrs.length > 0 && variantAttrs.some((v) => v.attribute && v.values.some(Boolean)) && (
+              <Button type="button" onClick={generateVariantCombos} className="gap-2 w-full" variant="secondary">
+                <RefreshCw className="w-4 h-4" /> Generează / Actualizează combinații ({
+                  variantAttrs.reduce((acc, v) => {
+                    const f = v.values.filter(Boolean).length;
+                    return acc ? acc * (f || 1) : f;
+                  }, 0)
+                } variante)
+              </Button>
+            )}
+
+            {/* Variant Combinations Table */}
+            {variantCombos.length > 0 && (
+              <div className="space-y-3 border-t border-border pt-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-semibold">{variantCombos.length} Combinații</Label>
+                  <div className="flex gap-2">
+                    <div className="flex gap-1">
+                      <Input placeholder="Preț" value={bulkPrice} onChange={(e) => setBulkPrice(e.target.value)} className="w-24 h-8 text-xs" type="number" />
+                      <Button size="sm" variant="outline" className="h-8 text-xs" onClick={applyBulkPrice}>Aplică preț</Button>
+                    </div>
+                    <div className="flex gap-1">
+                      <Input placeholder="Stoc" value={bulkStock} onChange={(e) => setBulkStock(e.target.value)} className="w-20 h-8 text-xs" type="number" />
+                      <Button size="sm" variant="outline" className="h-8 text-xs" onClick={applyBulkStock}>Aplică stoc</Button>
+                    </div>
+                  </div>
+                </div>
+                <input ref={variantImageRef} type="file" accept="image/*" onChange={handleVariantImageUpload} className="hidden" />
+                <div className="max-h-[400px] overflow-y-auto space-y-2">
+                  {variantCombos.map((vc, idx) => (
+                    <Card key={idx} className={cn("border", !vc.is_active && "opacity-50")}>
+                      <CardContent className="p-3 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            {vc.image_url ? (
+                              <img src={vc.image_url} className="w-10 h-10 rounded object-cover border border-border cursor-pointer" onClick={() => { setUploadingVariantIdx(idx); variantImageRef.current?.click(); }} />
+                            ) : (
+                              <button type="button" onClick={() => { setUploadingVariantIdx(idx); variantImageRef.current?.click(); }} className="w-10 h-10 rounded border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
+                                <Camera className="w-4 h-4 text-muted-foreground/50" />
+                              </button>
+                            )}
+                            <div>
+                              <p className="text-sm font-medium">{comboLabel(vc.attributes)}</p>
+                              <div className="flex gap-1">
+                                {Object.entries(vc.attributes).map(([k, v]) => (
+                                  <Badge key={k} variant="outline" className="text-[10px]">{k}: {v}</Badge>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                          <Switch checked={vc.is_active} onCheckedChange={(c) => setVariantCombos((prev) => prev.map((v, i) => i === idx ? { ...v, is_active: c } : v))} />
+                        </div>
+                        <div className="grid grid-cols-5 gap-2">
+                          <div className="space-y-1">
+                            <Label className="text-[10px]">Preț</Label>
+                            <Input type="number" step="0.01" value={vc.price || ""} onChange={(e) => setVariantCombos((prev) => prev.map((v, i) => i === idx ? { ...v, price: Number(e.target.value) } : v))} className="h-8 text-xs" />
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-[10px]">Preț comparat</Label>
+                            <Input type="number" step="0.01" value={vc.old_price ?? ""} onChange={(e) => setVariantCombos((prev) => prev.map((v, i) => i === idx ? { ...v, old_price: e.target.value ? Number(e.target.value) : null } : v))} className="h-8 text-xs" />
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-[10px]">Stoc</Label>
+                            <Input type="number" min="0" value={vc.stock} onChange={(e) => setVariantCombos((prev) => prev.map((v, i) => i === idx ? { ...v, stock: Number(e.target.value) } : v))} className="h-8 text-xs" />
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-[10px]">SKU</Label>
+                            <Input value={vc.sku} onChange={(e) => setVariantCombos((prev) => prev.map((v, i) => i === idx ? { ...v, sku: e.target.value } : v))} className="h-8 text-xs" />
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-[10px]">EAN</Label>
+                            <Input value={vc.ean} onChange={(e) => setVariantCombos((prev) => prev.map((v, i) => i === idx ? { ...v, ean: e.target.value } : v))} className="h-8 text-xs" />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+      case 3: // Stock & Logistics
         return (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -658,7 +850,7 @@ export default function AdminProducts() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Stoc disponibil *</Label>
+                <Label>Stoc disponibil * {variantCombos.length > 0 && <span className="text-muted-foreground font-normal">(bază — variantele au stoc individual)</span>}</Label>
                 <Input type="number" min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })} />
               </div>
               <div className="space-y-2">
@@ -708,7 +900,7 @@ export default function AdminProducts() {
           </div>
         );
 
-      case 3: // Media
+      case 4: // Media
         return (
           <div className="space-y-4">
             <div className="space-y-2">
@@ -806,7 +998,6 @@ export default function AdminProducts() {
               </div>
             </div>
 
-            {/* Alt texts for gallery */}
             {form.images.length > 0 && (
               <div className="space-y-2 pt-2 border-t border-border">
                 <Label className="text-sm">Alt text per imagine</Label>
@@ -828,10 +1019,9 @@ export default function AdminProducts() {
           </div>
         );
 
-      case 4: // SEO & Organization
+      case 5: // SEO & Organization
         return (
           <div className="space-y-4">
-            {/* Categories */}
             <div className="space-y-2">
               <Label>Categorie principală</Label>
               <Select value={form.category_id || "none"} onValueChange={(v) => setForm({ ...form, category_id: v === "none" ? null : v })}>
@@ -868,7 +1058,6 @@ export default function AdminProducts() {
               </div>
             </div>
 
-            {/* Tags */}
             <div className="space-y-2">
               <Label className="flex items-center gap-1"><Tag className="w-3.5 h-3.5" /> Etichete</Label>
               {form.tags.length > 0 && (
@@ -889,7 +1078,6 @@ export default function AdminProducts() {
               </div>
             </div>
 
-            {/* SEO */}
             <div className="pt-2 border-t border-border space-y-3">
               <Label className="text-base font-semibold">SEO</Label>
               <div className="space-y-2">
@@ -914,7 +1102,7 @@ export default function AdminProducts() {
           </div>
         );
 
-      case 5: // Relations
+      case 6: // Relations
         return (
           <div className="space-y-4">
             <div>
@@ -1006,65 +1194,81 @@ export default function AdminProducts() {
                   <TableHead>Status</TableHead>
                   <TableHead>Preț</TableHead>
                   <TableHead>Stoc</TableHead>
+                  <TableHead>Variante</TableHead>
                   <TableHead>Brand</TableHead>
                   <TableHead className="text-right">Acțiuni</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((p: any) => (
-                  <TableRow key={p.id} className={cn("group", selectedIds.has(p.id) && "bg-primary/5")}>
-                    <TableCell>
-                      <Checkbox checked={selectedIds.has(p.id)} onCheckedChange={(checked) => {
-                        setSelectedIds((prev) => { const next = new Set(prev); if (checked) next.add(p.id); else next.delete(p.id); return next; });
-                      }} />
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        {p.image_url ? (
-                          <img src={p.image_url} alt={p.name} className="w-10 h-10 object-cover rounded border border-border" />
-                        ) : (
-                          <div className="w-10 h-10 bg-muted rounded flex items-center justify-center"><ImageIcon className="w-5 h-5 text-muted-foreground" /></div>
-                        )}
-                        <div>
-                          <p className="font-medium text-sm text-foreground">{p.name}</p>
-                          <div className="flex gap-1 mt-0.5">
-                            {p.featured && <Badge variant="secondary" className="text-xs">★</Badge>}
-                            {p.visible === false && <Badge variant="outline" className="text-xs text-muted-foreground"><EyeOff className="w-3 h-3 mr-0.5" />Ascuns</Badge>}
-                            {p.sku && <Badge variant="outline" className="text-xs">{p.sku}</Badge>}
+                {filtered.map((p: any) => {
+                  const vs = (variantStats as Record<string, { count: number; totalStock: number }>)[p.id];
+                  return (
+                    <TableRow key={p.id} className={cn("group", selectedIds.has(p.id) && "bg-primary/5")}>
+                      <TableCell>
+                        <Checkbox checked={selectedIds.has(p.id)} onCheckedChange={(checked) => {
+                          setSelectedIds((prev) => { const next = new Set(prev); if (checked) next.add(p.id); else next.delete(p.id); return next; });
+                        }} />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          {p.image_url ? (
+                            <img src={p.image_url} alt={p.name} className="w-10 h-10 object-cover rounded border border-border" />
+                          ) : (
+                            <div className="w-10 h-10 bg-muted rounded flex items-center justify-center"><ImageIcon className="w-5 h-5 text-muted-foreground" /></div>
+                          )}
+                          <div>
+                            <p className="font-medium text-sm text-foreground">{p.name}</p>
+                            <div className="flex gap-1 mt-0.5">
+                              {p.featured && <Badge variant="secondary" className="text-xs">★</Badge>}
+                              {p.visible === false && <Badge variant="outline" className="text-xs text-muted-foreground"><EyeOff className="w-3 h-3 mr-0.5" />Ascuns</Badge>}
+                              {p.sku && <Badge variant="outline" className="text-xs">{p.sku}</Badge>}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={p.status === "active" ? "default" : p.status === "draft" ? "secondary" : "outline"} className="text-xs capitalize">
-                        {p.status || "active"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <span className="font-semibold text-sm">{Number(p.price).toFixed(2)} RON</span>
-                      {p.old_price && <span className="text-xs text-muted-foreground line-through ml-2">{Number(p.old_price).toFixed(2)}</span>}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={p.stock > (p.low_stock_threshold || 5) ? "default" : p.stock > 0 ? "secondary" : "destructive"}>
-                        {p.stock}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{p.brands?.name || "—"}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
-                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setPreviewOpen(p)} title="Preview"><Eye className="w-4 h-4" /></Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(p)} title="Editează"><Pencil className="w-4 h-4" /></Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
-                          const dup = { ...emptyForm, name: p.name + " (copie)", slug: generateSlug(p.name + " copie"), price: p.price, old_price: p.old_price, stock: p.stock, description: p.description || "", brand_id: p.brand_id || null, image_url: p.image_url || "", images: p.images || [], category_id: p.category_id };
-                          setForm(dup); setEditingId(null); setStep(0); setDialogOpen(true); toast.info("Produs duplicat — editează și salvează");
-                        }} title="Duplică"><Copy className="w-4 h-4" /></Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setDeleteConfirm(p.id)} title="Șterge"><Trash2 className="w-4 h-4" /></Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={p.status === "active" ? "default" : p.status === "draft" ? "secondary" : "outline"} className="text-xs capitalize">
+                          {p.status || "active"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <span className="font-semibold text-sm">{Number(p.price).toFixed(2)} RON</span>
+                        {p.old_price && <span className="text-xs text-muted-foreground line-through ml-2">{Number(p.old_price).toFixed(2)}</span>}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={p.stock > (p.low_stock_threshold || 5) ? "default" : p.stock > 0 ? "secondary" : "destructive"}>
+                          {p.stock}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {vs ? (
+                          <div className="text-xs">
+                            <span className="font-medium">{vs.count}</span>
+                            <span className="text-muted-foreground ml-1">var.</span>
+                            <br />
+                            <span className="text-muted-foreground">stoc: {vs.totalStock}</span>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">—</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{p.brands?.name || "—"}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setPreviewOpen(p)} title="Preview"><Eye className="w-4 h-4" /></Button>
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(p)} title="Editează"><Pencil className="w-4 h-4" /></Button>
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => {
+                            const dup = { ...emptyForm, name: p.name + " (copie)", slug: generateSlug(p.name + " copie"), price: p.price, old_price: p.old_price, stock: p.stock, description: p.description || "", brand_id: p.brand_id || null, image_url: p.image_url || "", images: p.images || [], category_id: p.category_id };
+                            setForm(dup); setEditingId(null); setStep(0); setDialogOpen(true); toast.info("Produs duplicat — editează și salvează");
+                          }} title="Duplică"><Copy className="w-4 h-4" /></Button>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setDeleteConfirm(p.id)} title="Șterge"><Trash2 className="w-4 h-4" /></Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
                 {filtered.length === 0 && (
-                  <TableRow><TableCell colSpan={7} className="text-center py-12 text-muted-foreground">Niciun produs găsit.</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={8} className="text-center py-12 text-muted-foreground">Niciun produs găsit.</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>
@@ -1073,7 +1277,7 @@ export default function AdminProducts() {
       </Card>
 
       {/* Product Wizard Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open) { setDialogOpen(false); setEditingId(null); setForm(emptyForm); setStep(0); setVariants([]); } }}>
+      <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open) { setDialogOpen(false); setEditingId(null); setForm(emptyForm); setStep(0); setVariantAttrs([]); setVariantCombos([]); } }}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingId ? "Editează Produs" : "Produs Nou"}</DialogTitle>
@@ -1149,6 +1353,7 @@ export default function AdminProducts() {
                   if (error) throw error;
                 }
                 queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+                queryClient.invalidateQueries({ queryKey: ["admin-variant-stats"] });
                 toast.success(`${ids.length} produse șterse!`);
                 setSelectedIds(new Set());
                 setBulkDeleteConfirm(false);
@@ -1184,8 +1389,8 @@ export default function AdminProducts() {
                   <p className="font-bold text-foreground capitalize">{previewOpen.status || "active"}</p>
                 </div>
                 <div className="bg-muted/30 rounded-lg p-3 text-center">
-                  <p className="text-muted-foreground text-xs">Galerie</p>
-                  <p className="font-bold text-foreground">{previewOpen.images?.length || 0}</p>
+                  <p className="text-muted-foreground text-xs">Variante</p>
+                  <p className="font-bold text-foreground">{(variantStats as any)[previewOpen.id]?.count || 0}</p>
                 </div>
               </div>
               <div className="flex gap-2">

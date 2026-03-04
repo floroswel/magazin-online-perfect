@@ -41,6 +41,7 @@ export default function ProductDetail() {
   const [questionText, setQuestionText] = useState("");
   const [isFav, setIsFav] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
+  const [hasVariants, setHasVariants] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -99,6 +100,12 @@ export default function ProductDetail() {
   }, [slug, user]);
 
   const handleAddToCart = async () => {
+    if (hasVariants && !selectedVariant) {
+      toast.error("Selectează toate opțiunile de variantă!");
+      return;
+    }
+    const stock = selectedVariant ? selectedVariant.stock : product?.stock;
+    if (!stock || stock <= 0) return;
     if (product) { await addToCart(product.id, qty); toast.success("Adăugat în coș!"); }
   };
 
@@ -179,7 +186,7 @@ export default function ProductDetail() {
             </div>
 
             <MokkaOrangePrice price={activePrice} months={3} />
-            <VariantSelector productId={product.id} basePrice={product.price} onVariantSelect={setSelectedVariant} />
+            <VariantSelector productId={product.id} basePrice={product.price} lowStockThreshold={product.low_stock_threshold || 5} onVariantSelect={setSelectedVariant} onHasVariants={setHasVariants} />
 
             {/* Short description */}
             {product.short_description && (
@@ -201,8 +208,8 @@ export default function ProductDetail() {
                 <span className="w-12 text-center font-medium">{qty}</span>
                 <Button variant="ghost" size="icon" onClick={() => setQty(qty + 1)}><Plus className="h-4 w-4" /></Button>
               </div>
-              <Button onClick={handleAddToCart} size="lg" className="flex-1 font-semibold">
-                <ShoppingCart className="h-5 w-5 mr-2" /> Adaugă în coș
+              <Button onClick={handleAddToCart} size="lg" className="flex-1 font-semibold" disabled={activeStock <= 0 || (hasVariants && !selectedVariant)}>
+                <ShoppingCart className="h-5 w-5 mr-2" /> {hasVariants && !selectedVariant ? "Selectează varianta" : activeStock <= 0 ? "Stoc epuizat" : "Adaugă în coș"}
               </Button>
               <Button variant="outline" size="lg" onClick={toggleFav}>
                 <Heart className={`h-5 w-5 ${isFav ? "fill-primary text-primary" : ""}`} />
@@ -219,6 +226,11 @@ export default function ProductDetail() {
             <p className={`text-sm font-medium ${activeStock > 0 ? "text-green-600" : "text-destructive"}`}>
               {activeStock > 0 ? `✓ În stoc (${activeStock} buc.)` : "✗ Stoc epuizat"}
             </p>
+            {activeStock > 0 && activeStock <= (product.low_stock_threshold || 5) && !hasVariants && (
+              <p className="text-sm font-medium text-orange-600 dark:text-orange-400 animate-pulse">
+                ⚡ Doar {activeStock} {activeStock === 1 ? "bucată" : "bucăți"} rămase în stoc!
+              </p>
+            )}
             {activeStock > 0 && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
                 <Truck className="h-4 w-4 text-primary flex-shrink-0" />
