@@ -165,7 +165,7 @@ export default function Account() {
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="text-right">
-                        <p className="font-bold text-primary">{Number(o.total).toLocaleString("ro-RO")} lei</p>
+                        <p className="font-bold text-primary">{format(Number(o.total))}</p>
                         <Badge variant={o.status === "delivered" ? "default" : "secondary"} className="text-xs">
                           {statusLabels[o.status] || o.status}
                         </Badge>
