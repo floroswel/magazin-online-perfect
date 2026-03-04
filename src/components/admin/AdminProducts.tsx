@@ -28,7 +28,7 @@ interface ProductForm {
   old_price: number | null;
   stock: number;
   description: string;
-  brand: string;
+  brand_id: string | null;
   image_url: string;
   images: string[];
   featured: boolean;
