@@ -132,7 +132,7 @@ export default function AdminRoutes() {
       <Route path="marketing/sms" element={<AdminPlaceholder title="Campanii SMS" description="Notificări și promoții prin SMS." />} />
       <Route path="marketing/abandoned-cart" element={<AdminAbandonedCarts />} />
       <Route path="marketing/automations" element={<AdminAutomations />} />
-      <Route path="marketing/banners" element={<AdminPlaceholder title="Bannere & Popups" description="Gestionare bannere promovionale, popup-uri exit-intent și notificări." />} />
+      <Route path="marketing/banners" element={<AdminBanners />} />
       <Route path="marketing/upsell" element={<AdminPlaceholder title="Upsell / Cross-sell" description="Configurare recomandări de upsell și cross-sell pe pagini de produs și coș." />} />
       <Route path="marketing/feeds" element={<AdminPlaceholder title="Feed-uri Marketing" description="Configurare feed-uri: Google Shopping, Facebook Catalog, comparatoare." />} />
       <Route path="marketing/pixels" element={<AdminPlaceholder title="Pixel Tracking" description="Meta Pixel, Google Ads, TikTok Pixel — configurare și verificare." />} />
