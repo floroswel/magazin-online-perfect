@@ -36,6 +36,7 @@ export default function ProductDetail() {
   const [reviewRating, setReviewRating] = useState(5);
   const [questionText, setQuestionText] = useState("");
   const [isFav, setIsFav] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState<any>(null);
 
   useEffect(() => {
     async function load() {
