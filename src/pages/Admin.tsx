@@ -16,6 +16,12 @@ export default function Admin() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
+  useEffect(() => {
+    if (!authLoading && !adminLoading && !user) {
+      navigate("/auth");
+    }
+  }, [user, authLoading, adminLoading, navigate]);
+
   if (authLoading || adminLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
@@ -28,12 +34,6 @@ export default function Admin() {
       </div>
     );
   }
-
-  useEffect(() => {
-    if (!authLoading && !adminLoading && !user) {
-      navigate("/auth");
-    }
-  }, [user, authLoading, adminLoading, navigate]);
 
   if (!user) {
     return null;
