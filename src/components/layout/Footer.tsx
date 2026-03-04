@@ -185,8 +185,8 @@ export default function Footer() {
               </Button>
             </form>
             <div className="mt-4 space-y-2 text-sm text-white/70">
-              <p className="flex items-center gap-2"><Phone className="w-3.5 h-3.5" /> {branding?.phone || "0800 123 456"}</p>
-              <p className="flex items-center gap-2"><Mail className="w-3.5 h-3.5" /> {branding?.email || "contact@megashop.ro"}</p>
+              <p className="flex items-center gap-2"><Phone className="w-3.5 h-3.5" /> {branding.phone}</p>
+              <p className="flex items-center gap-2"><Mail className="w-3.5 h-3.5" /> {branding.email}</p>
               {companyInfo?.working_hours && (
                 <p className="flex items-center gap-2"><Clock className="w-3.5 h-3.5" /> {companyInfo.working_hours}</p>
               )}
