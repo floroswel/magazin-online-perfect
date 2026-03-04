@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,6 +53,9 @@ export default function Auth() {
                 <form onSubmit={handleLogin} className="space-y-4 pt-4">
                   <div><Label>Email</Label><Input type="email" value={loginForm.email} onChange={e => setLoginForm(p => ({ ...p, email: e.target.value }))} required /></div>
                   <div><Label>Parolă</Label><Input type="password" value={loginForm.password} onChange={e => setLoginForm(p => ({ ...p, password: e.target.value }))} required /></div>
+                  <div className="text-right">
+                    <Link to="/forgot-password" className="text-xs text-primary hover:underline">Ai uitat parola?</Link>
+                  </div>
                   <Button type="submit" className="w-full" disabled={loading}>{loading ? "Se procesează..." : "Intră în cont"}</Button>
                 </form>
               </TabsContent>

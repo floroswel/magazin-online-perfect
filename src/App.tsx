@@ -22,6 +22,8 @@ import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import CmsPage from "./pages/CmsPage";
 import Install from "./pages/Install";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import CustomScriptInjector from "./components/CustomScriptInjector";
 
 const queryClient = new QueryClient();
@@ -46,6 +48,8 @@ const App = () => (
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/account" element={<Account />} />
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/compare" element={<Compare />} />
