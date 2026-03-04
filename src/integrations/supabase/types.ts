@@ -2331,6 +2331,42 @@ export type Database = {
         }
         Relationships: []
       }
+      product_categories: {
+        Row: {
+          category_id: string
+          created_at: string | null
+          id: string
+          product_id: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string | null
+          id?: string
+          product_id: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string | null
+          id?: string
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_categories_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_questions: {
         Row: {
           answer: string | null
@@ -2363,6 +2399,48 @@ export type Database = {
           {
             foreignKeyName: "product_questions_product_id_fkey"
             columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_relations: {
+        Row: {
+          created_at: string | null
+          id: string
+          product_id: string
+          related_product_id: string
+          relation_type: string
+          sort_order: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          product_id: string
+          related_product_id: string
+          relation_type?: string
+          sort_order?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          product_id?: string
+          related_product_id?: string
+          relation_type?: string
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_relations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_relations_related_product_id_fkey"
+            columns: ["related_product_id"]
             isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
@@ -2503,12 +2581,18 @@ export type Database = {
         Row: {
           canonical_url: string | null
           category_id: string | null
+          cost_price: number | null
           created_at: string
           description: string | null
+          ean: string | null
           featured: boolean | null
+          height_cm: number | null
           id: string
+          image_alts: Json | null
           image_url: string | null
           images: string[] | null
+          length_cm: number | null
+          low_stock_threshold: number | null
           meta_description: string | null
           meta_title: string | null
           name: string
@@ -2526,17 +2610,26 @@ export type Database = {
           stock: number
           tags: string[] | null
           videos: string[] | null
+          visible: boolean | null
           warranty_months: number | null
+          weight_kg: number | null
+          width_cm: number | null
         }
         Insert: {
           canonical_url?: string | null
           category_id?: string | null
+          cost_price?: number | null
           created_at?: string
           description?: string | null
+          ean?: string | null
           featured?: boolean | null
+          height_cm?: number | null
           id?: string
+          image_alts?: Json | null
           image_url?: string | null
           images?: string[] | null
+          length_cm?: number | null
+          low_stock_threshold?: number | null
           meta_description?: string | null
           meta_title?: string | null
           name: string
@@ -2554,17 +2647,26 @@ export type Database = {
           stock?: number
           tags?: string[] | null
           videos?: string[] | null
+          visible?: boolean | null
           warranty_months?: number | null
+          weight_kg?: number | null
+          width_cm?: number | null
         }
         Update: {
           canonical_url?: string | null
           category_id?: string | null
+          cost_price?: number | null
           created_at?: string
           description?: string | null
+          ean?: string | null
           featured?: boolean | null
+          height_cm?: number | null
           id?: string
+          image_alts?: Json | null
           image_url?: string | null
           images?: string[] | null
+          length_cm?: number | null
+          low_stock_threshold?: number | null
           meta_description?: string | null
           meta_title?: string | null
           name?: string
@@ -2582,7 +2684,10 @@ export type Database = {
           stock?: number
           tags?: string[] | null
           videos?: string[] | null
+          visible?: boolean | null
           warranty_months?: number | null
+          weight_kg?: number | null
+          width_cm?: number | null
         }
         Relationships: [
           {
