@@ -79,6 +79,18 @@ export default function ProductDetail() {
         setRelatedProducts(relProds || []);
       }
 
+      // Load bundle components
+      if (prod.product_type === "bundle") {
+        const { data: bundleItems } = await supabase
+          .from("product_bundle_items")
+          .select("*, component:products(*)")
+          .eq("bundle_product_id", prod.id)
+          .order("sort_order");
+        setBundleComponents((bundleItems || []).map((bi: any) => ({ ...bi, product: bi.component })));
+      } else {
+        setBundleComponents([]);
+      }
+
       if (user) {
         const { data: fav } = await supabase.from("favorites").select("id").eq("user_id", user.id).eq("product_id", prod.id).maybeSingle();
         setIsFav(!!fav);
