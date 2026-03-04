@@ -14,6 +14,7 @@ export default function Compare() {
   const { user } = useAuth();
   const { comparisonItems, removeFromComparison, clearComparison, loading } = useComparison();
   const { addToCart } = useCart();
+  const { format } = useCurrency();
 
   if (!user) return <Layout><div className="container py-16 text-center"><p>Autentifică-te pentru a compara produse.</p><Link to="/auth"><Button className="mt-4">Autentifică-te</Button></Link></div></Layout>;
 
