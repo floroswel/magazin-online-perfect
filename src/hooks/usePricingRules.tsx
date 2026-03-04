@@ -57,17 +57,14 @@ export function usePricingRules() {
     return true;
   });
 
-  function getApplicableRules(product: Tables<"products">): PricingRule[] {
+  function getApplicableRules(product: Tables<"products"> & { brandId?: string }): PricingRule[] {
     return activeRules.filter((r) => {
       // Product scope
       if (r.applies_to_products === "categories" && r.category_ids?.length > 0) {
         if (!product.category_id || !r.category_ids.includes(product.category_id)) return false;
       }
       if (r.applies_to_products === "brands" && r.brand_ids?.length > 0) {
-        // brand_ids references brands table; product has `brand` (text name)
-        // We skip brand matching at hook level if no brand relation data is available
-        // For now, this requires the product to have been fetched with brand info
-        return false; // Will be enhanced with brand lookup
+        if (!product.brandId || !r.brand_ids.includes(product.brandId)) return false;
       }
       if (r.applies_to_products === "products" && r.product_ids?.length > 0) {
         if (!r.product_ids.includes(product.id)) return false;
