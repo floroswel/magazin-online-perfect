@@ -236,6 +236,7 @@ export default function AdminRoutes() {
 
       {/* ═══════════ SETĂRI ═══════════ */}
       <Route path="settings/general" element={<AdminGeneralSettings />} />
+      <Route path="settings/theme" element={<AdminThemeEditor />} />
       <Route path="settings/footer-badges" element={<AdminFooterBadges />} />
       <Route path="settings/footer" element={<AdminFooterSettings />} />
       <Route path="settings/taxes" element={<AdminTaxSettings />} />
