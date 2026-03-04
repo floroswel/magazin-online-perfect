@@ -325,6 +325,7 @@ interface AdminSidebarProps {
 
 export default function AdminSidebar({ open, onClose, collapsed = false, onToggleCollapse }: AdminSidebarProps) {
   const location = useLocation();
+  const { name: storeName } = useStoreBranding();
   const [expandedMenus, setExpandedMenus] = useState<string[]>(() => {
     const expanded: string[] = [];
     menuSections.forEach((section) => {
