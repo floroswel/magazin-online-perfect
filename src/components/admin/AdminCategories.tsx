@@ -1,13 +1,15 @@
 import { useState, useRef, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, Pencil, Trash2, ChevronRight, ChevronDown, Eye, EyeOff, Upload, Image as ImageIcon, GripVertical } from "lucide-react";
+import { Plus, Pencil, Trash2, ChevronRight, ChevronDown, Eye, EyeOff, Upload, Image as ImageIcon, GripVertical, Zap } from "lucide-react";
 import { toast } from "sonner";
 import RichTextEditor from "@/components/ui/RichTextEditor";
 
