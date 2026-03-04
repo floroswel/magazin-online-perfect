@@ -356,7 +356,7 @@ export default function AdminImportExport() {
     try {
       const { data, error } = await supabase
         .from("products")
-        .select("name, slug, sku, price, old_price, stock, description, short_description, image_url, brand, featured, category_id, meta_title, meta_description, tags, warranty_months, status, created_at")
+        .select("name, slug, sku, price, old_price, stock, description, short_description, image_url, brand_id, brands(name), featured, category_id, meta_title, meta_description, tags, warranty_months, status, created_at")
         .order("name");
 
       if (error) throw error;
