@@ -27,7 +27,7 @@ export default function AdminTaxSettings() {
 
   useEffect(() => {
     supabase.from("app_settings").select("*").eq("key", "tax_settings").maybeSingle().then(({ data }) => {
-      if (data?.value_json) setSettings({ ...DEFAULTS, ...(data.value_json as typeof DEFAULTS) });
+      if (data?.value_json) setSettings({ ...DEFAULTS, ...(data.value_json as unknown as typeof DEFAULTS) });
     });
   }, []);
 

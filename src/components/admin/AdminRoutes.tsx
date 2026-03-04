@@ -46,6 +46,13 @@ import AdminPromotions from "./marketing/AdminPromotions";
 import AdminFooterBadges from "./settings/AdminFooterBadges";
 import AdminFooterSettings from "./settings/AdminFooterSettings";
 import AdminHomepageSettings from "./content/AdminHomepageSettings";
+import AdminBanners from "./marketing/AdminBanners";
+import AdminBlog from "./content/AdminBlog";
+import AdminMediaLibrary from "./content/AdminMediaLibrary";
+import AdminStoreSettings from "./settings/AdminStoreSettings";
+import AdminCheckoutSettings from "./settings/AdminCheckoutSettings";
+import AdminEmailSettings from "./settings/AdminEmailSettings";
+import AdminTaxSettings from "./settings/AdminTaxSettings";
 
 export default function AdminRoutes() {
   return (
