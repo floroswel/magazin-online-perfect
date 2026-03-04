@@ -107,7 +107,7 @@ export default function AdminProducts() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
-        .select("*, categories(name)")
+        .select("*, categories(name), brands(name)")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
