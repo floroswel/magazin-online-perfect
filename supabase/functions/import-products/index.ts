@@ -54,7 +54,7 @@ function cleanProduct(item: Record<string, any>): ProductRow | null {
     short_description: item.short_description || null,
     image_url: item.image_url || item.image || item.imagine || null,
     images: Array.isArray(item.images) ? item.images : null,
-    brand: item.brand || item.marca || item.producator || null,
+    brand_name: item.brand || item.marca || item.producator || null,
     category_id: item.category_id || null,
     specs: item.specs || item.specificatii || null,
     featured: item.featured === true || item.featured === "true" || item.featured === "1",
