@@ -69,6 +69,28 @@ export default function Catalog() {
   useEffect(() => {
     async function load() {
       setLoading(true);
+
+      // Smart (dynamic) category: fetch product IDs via RPC, then load products
+      if (smartSlug && smartCategory) {
+        const { data: matchedIds } = await supabase.rpc("get_dynamic_category_products", {
+          category_id: smartCategory.id,
+          result_limit: perPage,
+          result_offset: (currentPage - 1) * perPage,
+        });
+        const ids = (matchedIds || []).map((r: any) => r.product_id);
+        if (ids.length === 0) {
+          setProducts([]);
+          setTotalCount(0);
+          setLoading(false);
+          return;
+        }
+        const { data: prods } = await supabase.from("products").select("*").in("id", ids);
+        setProducts(prods || []);
+        setTotalCount(ids.length < perPage ? (currentPage - 1) * perPage + ids.length : (currentPage + 1) * perPage);
+        setLoading(false);
+        return;
+      }
+
       let query = supabase.from("products").select("*", { count: "exact" });
 
       if (categorySlug) {
@@ -77,7 +99,6 @@ export default function Catalog() {
       }
 
       if (searchQuery) {
-        // Use full-text search + ilike fallback across name, description
         query = query.or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`);
       }
 
@@ -98,13 +119,11 @@ export default function Catalog() {
       const from = (currentPage - 1) * perPage;
       query = query.range(from, from + perPage - 1);
 
-      // Server-side brand filter (use brand IDs)
       if (selectedBrands.length > 0) {
         const brandIds = brands.filter(b => selectedBrands.includes(b.name)).map(b => b.id);
         if (brandIds.length > 0) (query as any) = (query as any).in("brand_id", brandIds);
       }
 
-      // Server-side rating filter (use minimum of selected ratings)
       if (selectedRatings.length > 0) {
         const minRating = Math.min(...selectedRatings);
         query = query.gte("rating", minRating);
@@ -116,7 +135,7 @@ export default function Catalog() {
       setLoading(false);
     }
     load();
-  }, [categorySlug, searchQuery, sort, priceRange, selectedBrands, inStockOnly, selectedRatings, categories, currentPage, perPage]);
+  }, [categorySlug, searchQuery, smartSlug, smartCategory, sort, priceRange, selectedBrands, inStockOnly, selectedRatings, categories, currentPage, perPage]);
 
   const totalPages = Math.ceil(totalCount / perPage);
   const currentCategory = categories.find(c => c.slug === categorySlug);
