@@ -23,6 +23,7 @@ export default function Catalog() {
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState("popular");
   const [priceRange, setPriceRange] = useState([0, 10000]);
+  const [maxPrice, setMaxPrice] = useState(10000);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
