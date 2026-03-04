@@ -48,7 +48,7 @@ export default function AdminAIGenerator() {
   };
 
   const filtered = products.filter(p => 
-    !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.brand?.toLowerCase().includes(search.toLowerCase())
+    !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.brands?.name?.toLowerCase().includes(search.toLowerCase())
   );
 
   const toggleAll = () => {
