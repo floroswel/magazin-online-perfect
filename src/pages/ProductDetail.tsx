@@ -208,7 +208,6 @@ export default function ProductDetail() {
             {product.sku && (
               <p className="text-xs text-muted-foreground">Cod produs: {product.sku}</p>
             )}
-            </p>
           </div>
         </div>
 
