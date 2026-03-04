@@ -30,6 +30,7 @@ export default function Header() {
   const { comparisonItems } = useComparison();
   const navigate = useNavigate();
   const branding = useStoreBranding();
+  const { isDark, toggle: toggleDarkMode } = useDarkMode();
   const [search, setSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
   const [mobileCategories, setMobileCategories] = useState<{ name: string; slug: string }[]>([]);
