@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { ShoppingCart, Heart, Star, Minus, Plus, ArrowLeft, GitCompare, MessageSquare, Truck, Package, Ruler } from "lucide-react";
 import ProductImageGallery from "@/components/products/ProductImageGallery";
 import VariantSelector from "@/components/products/VariantSelector";
+import CountdownTimer from "@/components/products/CountdownTimer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
