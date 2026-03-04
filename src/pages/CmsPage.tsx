@@ -8,6 +8,7 @@ import DOMPurify from "dompurify";
 
 export default function CmsPage() {
   const { slug } = useParams<{ slug: string }>();
+  const branding = useStoreBranding();
   const [page, setPage] = useState<{ title: string; body_html: string | null; meta_title: string | null; meta_description: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
