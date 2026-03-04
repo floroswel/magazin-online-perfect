@@ -349,6 +349,9 @@ export default function AdminProducts() {
         meta_title: product.meta_title || null,
         meta_description: product.meta_description || null,
         specs: product.specs,
+        product_type: product.product_type,
+        bundle_pricing_mode: product.bundle_pricing_mode,
+        bundle_discount_percent: product.bundle_discount_percent,
       };
 
       if (!payload.meta_title && product.name) {
