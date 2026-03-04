@@ -14,6 +14,7 @@ interface Props {
 
 function ProductCardInner({ product }: Props) {
   const { addToCart } = useCart();
+  const { format } = useCurrency();
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
