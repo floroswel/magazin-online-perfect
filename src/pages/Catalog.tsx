@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
 export default function Catalog() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const categorySlug = searchParams.get("category");
   const searchQuery = searchParams.get("search");
 
@@ -25,6 +25,9 @@ export default function Catalog() {
   const [inStockOnly, setInStockOnly] = useState(false);
   const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(24);
+  const [totalCount, setTotalCount] = useState(0);
 
   const brands = useMemo(() => [...new Set(products.map(p => p.brand).filter(Boolean))] as string[], [products]);
 
