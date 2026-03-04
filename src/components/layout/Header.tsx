@@ -169,17 +169,43 @@ export default function Header() {
               </div>
             </form>
             <ul className="space-y-1">
-              {mobileCategories.map(cat => (
-                <li key={cat.slug}>
-                  <Link
-                    to={`/catalog?category=${cat.slug}`}
-                    onClick={() => setMobileMenu(false)}
-                    className="block px-3 py-2 text-sm font-medium hover:bg-muted rounded-md"
-                  >
-                    {cat.name}
-                  </Link>
-                </li>
-              ))}
+              {mobileCategories.filter(c => !c.parent_id).map(cat => {
+                const children = mobileCategories.filter(c => c.parent_id === cat.id);
+                const isExpanded = expandedMobileCat === cat.id;
+                return (
+                  <li key={cat.slug}>
+                    <div className="flex items-center">
+                      <Link
+                        to={`/catalog?category=${cat.slug}`}
+                        onClick={() => setMobileMenu(false)}
+                        className="flex-1 px-3 py-2 text-sm font-medium hover:bg-muted rounded-md"
+                      >
+                        {cat.name}
+                      </Link>
+                      {children.length > 0 && (
+                        <button onClick={() => setExpandedMobileCat(isExpanded ? null : cat.id)} className="px-2 py-2">
+                          <ChevronDown className={`h-4 w-4 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                        </button>
+                      )}
+                    </div>
+                    {children.length > 0 && isExpanded && (
+                      <ul className="ml-4 space-y-0.5">
+                        {children.map(child => (
+                          <li key={child.slug}>
+                            <Link
+                              to={`/catalog?category=${child.slug}`}
+                              onClick={() => setMobileMenu(false)}
+                              className="block px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-md"
+                            >
+                              {child.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
