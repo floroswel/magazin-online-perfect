@@ -187,12 +187,45 @@ export default function AdminProducts() {
           ...(variants.length > 0 ? { _variants: variants } : {}),
         },
       };
+
+      let productId = product.id;
+
       if (product.id) {
         const { error } = await supabase.from("products").update(payload).eq("id", product.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("products").insert(payload);
+        const { data: inserted, error } = await supabase.from("products").insert(payload).select("id").single();
         if (error) throw error;
+        productId = inserted.id;
+      }
+
+      // Sync variants to product_variants table
+      if (productId && variants.length > 0) {
+        // Delete existing variants for this product
+        await supabase.from("product_variants").delete().eq("product_id", productId);
+
+        // Generate all variant combinations
+        const combos = variants.reduce<Record<string, string>[]>(
+          (acc, v) => {
+            const filtered = v.values.filter(Boolean);
+            if (!filtered.length) return acc;
+            if (!acc.length) return filtered.map((val) => ({ [v.attribute]: val }));
+            return acc.flatMap((combo) => filtered.map((val) => ({ ...combo, [v.attribute]: val })));
+          }, []
+        );
+
+        if (combos.length > 0) {
+          const variantRows = combos.map((attrs, idx) => ({
+            product_id: productId!,
+            sku: `${product.slug}-v${idx + 1}`,
+            price: product.price,
+            stock: Math.floor(product.stock / combos.length) || 0,
+            attributes: attrs,
+            is_active: true,
+          }));
+          const { error: varErr } = await supabase.from("product_variants").insert(variantRows);
+          if (varErr) console.error("Variant sync error:", varErr);
+        }
       }
     },
     onSuccess: () => {

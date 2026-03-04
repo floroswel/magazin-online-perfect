@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ShoppingCart, Heart, Star, Minus, Plus, ArrowLeft, GitCompare, MessageSquare, Truck } from "lucide-react";
 import ProductImageGallery from "@/components/products/ProductImageGallery";
+import VariantSelector from "@/components/products/VariantSelector";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
@@ -35,6 +36,7 @@ export default function ProductDetail() {
   const [reviewRating, setReviewRating] = useState(5);
   const [questionText, setQuestionText] = useState("");
   const [isFav, setIsFav] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState<any>(null);
 
   useEffect(() => {
     async function load() {
@@ -129,8 +131,11 @@ export default function ProductDetail() {
   if (loading) return <Layout><div className="container py-16 text-center">Se încarcă...</div></Layout>;
   if (!product) return <Layout><div className="container py-16 text-center">Produsul nu a fost găsit.</div></Layout>;
 
-  const specs = product.specs && typeof product.specs === "object" ? Object.entries(product.specs as Record<string, string>) : [];
-  const discount = product.old_price ? Math.round(((product.old_price - product.price) / product.old_price) * 100) : 0;
+  const activePrice = selectedVariant ? selectedVariant.price : product.price;
+  const activeStock = selectedVariant ? selectedVariant.stock : product.stock;
+  const activeImage = selectedVariant?.image_url || product.image_url;
+  const specs = product.specs && typeof product.specs === "object" ? Object.entries(product.specs as Record<string, string>).filter(([k]) => !k.startsWith("_")) : [];
+  const discount = product.old_price ? Math.round(((product.old_price - activePrice) / product.old_price) * 100) : 0;
 
   return (
     <Layout>
@@ -142,7 +147,7 @@ export default function ProductDetail() {
         <div className="grid md:grid-cols-2 gap-8">
           {/* Image Gallery */}
           <ProductImageGallery
-            mainImage={product.image_url || "/placeholder.svg"}
+            mainImage={activeImage || "/placeholder.svg"}
             images={product.images}
             alt={product.name}
           />
@@ -161,17 +166,20 @@ export default function ProductDetail() {
             </div>
 
             <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-bold text-primary">{product.price.toLocaleString("ro-RO")} lei</span>
+              <span className="text-3xl font-bold text-primary">{activePrice.toLocaleString("ro-RO")} lei</span>
               {product.old_price && (
                 <>
                   <span className="text-lg text-muted-foreground line-through">{product.old_price.toLocaleString("ro-RO")} lei</span>
-                  <span className="bg-primary text-primary-foreground text-sm font-bold px-2 py-1 rounded">-{discount}%</span>
+                  {discount > 0 && <span className="bg-primary text-primary-foreground text-sm font-bold px-2 py-1 rounded">-{discount}%</span>}
                 </>
               )}
             </div>
 
             {/* Mokka installment preview */}
-            <MokkaOrangePrice price={product.price} months={3} />
+            <MokkaOrangePrice price={activePrice} months={3} />
+
+            {/* Variant Selector */}
+            <VariantSelector productId={product.id} basePrice={product.price} onVariantSelect={setSelectedVariant} />
 
             <p className="text-muted-foreground">{product.description}</p>
 
@@ -196,10 +204,10 @@ export default function ProductDetail() {
               </Button>
             </div>
 
-            <p className={`text-sm font-medium ${product.stock > 0 ? "text-green-600" : "text-destructive"}`}>
-              {product.stock > 0 ? `✓ În stoc (${product.stock} buc.)` : "✗ Stoc epuizat"}
+            <p className={`text-sm font-medium ${activeStock > 0 ? "text-green-600" : "text-destructive"}`}>
+              {activeStock > 0 ? `✓ În stoc (${activeStock} buc.)` : "✗ Stoc epuizat"}
             </p>
-            {product.stock > 0 && (
+            {activeStock > 0 && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
                 <Truck className="h-4 w-4 text-primary flex-shrink-0" />
                 <span>Livrare estimată: <strong className="text-foreground">1-3 zile lucrătoare</strong></span>
