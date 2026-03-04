@@ -153,6 +153,7 @@ export default function Checkout() {
       loyalty_points_earned: pointsEarned,
       payment_installments: installmentData,
       user_email: user?.email || form.email,
+      currency,
     };
 
     if (user) {
