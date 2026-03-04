@@ -18,6 +18,7 @@ export default function Catalog() {
 
   const [products, setProducts] = useState<Tables<"products">[]>([]);
   const [categories, setCategories] = useState<Tables<"categories">[]>([]);
+  const [brands, setBrands] = useState<Tables<"brands">[]>([]);
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState("popular");
   const [priceRange, setPriceRange] = useState([0, 10000]);
@@ -28,8 +29,6 @@ export default function Catalog() {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(24);
   const [totalCount, setTotalCount] = useState(0);
-
-  const brands = useMemo(() => [...new Set(products.map(p => p.brand).filter(Boolean))] as string[], [products]);
 
   useEffect(() => {
     supabase.from("categories").select("*").then(({ data }) => setCategories(data || []));
