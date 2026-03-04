@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import Layout from "@/components/layout/Layout";
 import { useAuth } from "@/hooks/useAuth";
 import { useLoyalty } from "@/hooks/useLoyalty";
+import { useCurrency } from "@/hooks/useCurrency";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
@@ -29,6 +30,7 @@ const STATUS_TIMELINE = ["pending", "processing", "shipped", "delivered"];
 export default function Account() {
   const { user } = useAuth();
   const { totalPoints, currentLevel, nextLevel, levels, loading: loyaltyLoading } = useLoyalty();
+  const { format } = useCurrency();
   const [profile, setProfile] = useState<Tables<"profiles"> | null>(null);
   const [orders, setOrders] = useState<any[]>([]);
   const [existingReturns, setExistingReturns] = useState<Tables<"returns">[]>([]);
@@ -164,7 +166,7 @@ export default function Account() {
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="text-right">
-                        <p className="font-bold text-primary">{Number(o.total).toLocaleString("ro-RO")} lei</p>
+                        <p className="font-bold text-primary">{format(Number(o.total))}</p>
                         <Badge variant={o.status === "delivered" ? "default" : "secondary"} className="text-xs">
                           {statusLabels[o.status] || o.status}
                         </Badge>
@@ -214,7 +216,7 @@ export default function Account() {
                               <p className="truncate font-medium">{item.products?.name || "Produs"}</p>
                               <p className="text-xs text-muted-foreground">x{item.quantity}</p>
                             </div>
-                            <p className="font-semibold">{(Number(item.price) * item.quantity).toLocaleString("ro-RO")} lei</p>
+                            <p className="font-semibold">{format(Number(item.price) * item.quantity)}</p>
                           </div>
                         ))}
                       </div>
@@ -408,7 +410,7 @@ export default function Account() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2"><RotateCcw className="w-5 h-5 text-primary" /> Solicită retur</DialogTitle>
-            <DialogDescription>Comanda #{returnOrder?.id.slice(0, 8)} — {Number(returnOrder?.total).toLocaleString("ro-RO")} lei</DialogDescription>
+            <DialogDescription>Comanda #{returnOrder?.id.slice(0, 8)} — {format(Number(returnOrder?.total))}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>

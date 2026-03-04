@@ -13,6 +13,7 @@ import Layout from "@/components/layout/Layout";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useLoyalty } from "@/hooks/useLoyalty";
+import { useCurrency } from "@/hooks/useCurrency";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
@@ -21,6 +22,7 @@ export default function Checkout() {
   const { user } = useAuth();
   const { items, totalPrice, clearCart } = useCart();
   const { totalPoints, currentLevel, addPoints } = useLoyalty();
+  const { format, currency } = useCurrency();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({ fullName: "", phone: "", email: "", address: "", city: "", county: "", postalCode: "" });
@@ -96,7 +98,7 @@ export default function Checkout() {
       .from("coupons").select("*").eq("code", couponCode.trim().toUpperCase()).eq("is_active", true).maybeSingle();
     if (!coupon) { toast.error("Codul de reducere nu este valid"); setCouponLoading(false); return; }
     if (coupon.min_order_value && totalPrice < coupon.min_order_value) {
-      toast.error(`Comanda minimă pentru acest cupon este ${coupon.min_order_value} lei`); setCouponLoading(false); return;
+      toast.error(`Comanda minimă pentru acest cupon este ${format(coupon.min_order_value)}`); setCouponLoading(false); return;
     }
     if (coupon.valid_until && new Date(coupon.valid_until) < new Date()) {
       toast.error("Acest cupon a expirat"); setCouponLoading(false); return;
@@ -108,7 +110,7 @@ export default function Checkout() {
     const discount = coupon.discount_type === "percentage" ? totalPrice * (coupon.discount_value / 100) : coupon.discount_value;
     setCouponDiscount(Math.min(discount, totalPrice));
     setAppliedCoupon(coupon);
-    toast.success(`Cupon aplicat! Economisești ${discount.toLocaleString("ro-RO")} lei`);
+    toast.success(`Cupon aplicat! Economisești ${format(discount)}`);
     setCouponLoading(false);
   };
 
@@ -151,6 +153,7 @@ export default function Checkout() {
       loyalty_points_earned: pointsEarned,
       payment_installments: installmentData,
       user_email: user?.email || form.email,
+      currency,
     };
 
     if (user) {
@@ -323,7 +326,7 @@ export default function Checkout() {
                     </div>
                     <div className="bg-muted rounded-lg p-3 text-center">
                       <p className="text-sm text-muted-foreground">Rată lunară</p>
-                      <p className="text-2xl font-bold text-primary">{getInstallmentAmount()} lei/lună</p>
+                      <p className="text-2xl font-bold text-primary">{format(parseFloat(getInstallmentAmount()))}/lună</p>
                       <p className="text-xs text-muted-foreground">× {installmentMonths} luni</p>
                     </div>
                   </CardContent>
@@ -358,32 +361,32 @@ export default function Checkout() {
               {items.map(item => (
                 <div key={item.id} className="flex justify-between text-sm">
                   <span className="text-muted-foreground truncate mr-2">{item.product.name} x{item.quantity}</span>
-                  <span>{(item.product.price * item.quantity).toLocaleString("ro-RO")} lei</span>
+                  <span>{format(item.product.price * item.quantity)}</span>
                 </div>
               ))}
               {couponDiscount > 0 && (
                 <div className="flex justify-between text-sm text-green-600">
                   <span>Cupon ({appliedCoupon?.code})</span>
-                  <span>-{couponDiscount.toLocaleString("ro-RO")} lei</span>
+                  <span>-{format(couponDiscount)}</span>
                 </div>
               )}
               {loyaltyDiscount > 0 && (
                 <div className="flex justify-between text-sm text-green-600">
                   <span>Reducere fidelitate ({currentLevel?.name})</span>
-                  <span>-{loyaltyDiscount.toLocaleString("ro-RO")} lei</span>
+                  <span>-{format(loyaltyDiscount)}</span>
                 </div>
               )}
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Livrare</span>
-                <span>{shipping === 0 ? "GRATUITĂ" : `${shipping} lei`}</span>
+                <span>{shipping === 0 ? "GRATUITĂ" : format(shipping)}</span>
               </div>
               <div className="border-t pt-3 flex justify-between font-bold text-lg">
                 <span>Total</span>
-                <span className="text-primary">{total.toLocaleString("ro-RO")} lei</span>
+                <span className="text-primary">{format(total)}</span>
               </div>
               {(paymentMethod === "mokka" || paymentMethod === "paypo") && (
                 <div className="text-center text-sm text-emag-blue font-medium">
-                  sau {installmentMonths} × {getInstallmentAmount()} lei/lună
+                  sau {installmentMonths} × {format(parseFloat(getInstallmentAmount()))}/lună
                 </div>
               )}
               {pointsEarned > 0 && (

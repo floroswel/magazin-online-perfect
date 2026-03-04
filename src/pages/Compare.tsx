@@ -7,12 +7,14 @@ import Layout from "@/components/layout/Layout";
 import { useComparison } from "@/hooks/useComparison";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
+import { useCurrency } from "@/hooks/useCurrency";
 import { toast } from "sonner";
 
 export default function Compare() {
   const { user } = useAuth();
   const { comparisonItems, removeFromComparison, clearComparison, loading } = useComparison();
   const { addToCart } = useCart();
+  const { format } = useCurrency();
 
   if (!user) return <Layout><div className="container py-16 text-center"><p>Autentifică-te pentru a compara produse.</p><Link to="/auth"><Button className="mt-4">Autentifică-te</Button></Link></div></Layout>;
 
@@ -77,8 +79,8 @@ export default function Compare() {
                 <TableCell className="font-medium text-muted-foreground">Preț</TableCell>
                 {comparisonItems.map(p => (
                   <TableCell key={p.id}>
-                    <span className="text-lg font-bold text-primary">{p.price.toLocaleString("ro-RO")} lei</span>
-                    {p.old_price && <span className="block text-xs text-muted-foreground line-through">{p.old_price.toLocaleString("ro-RO")} lei</span>}
+                    <span className="text-lg font-bold text-primary">{format(p.price)}</span>
+                    {p.old_price && <span className="block text-xs text-muted-foreground line-through">{format(p.old_price)}</span>}
                   </TableCell>
                 ))}
               </TableRow>

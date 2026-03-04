@@ -4,6 +4,7 @@ import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useCurrency } from "@/hooks/useCurrency";
 
 interface Suggestion {
   id: string;
@@ -31,6 +32,7 @@ function highlightMatch(text: string, query: string) {
 
 export default function SearchAutocomplete({ className }: { className?: string }) {
   const navigate = useNavigate();
+  const { format } = useCurrency();
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [open, setOpen] = useState(false);
@@ -137,7 +139,7 @@ export default function SearchAutocomplete({ className }: { className?: string }
                       dangerouslySetInnerHTML={{ __html: highlightMatch(s.name, query) }}
                     />
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-primary font-semibold">{s.price.toLocaleString("ro-RO")} lei</span>
+                      <span className="text-xs text-primary font-semibold">{format(s.price)}</span>
                       {s.brand && (
                         <span
                           className="text-xs text-muted-foreground"

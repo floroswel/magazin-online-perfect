@@ -4,6 +4,7 @@ import { ShoppingCart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCart } from "@/hooks/useCart";
+import { useCurrency } from "@/hooks/useCurrency";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -13,6 +14,7 @@ interface Props {
 
 function ProductCardInner({ product }: Props) {
   const { addToCart } = useCart();
+  const { format } = useCurrency();
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -56,11 +58,11 @@ function ProductCardInner({ product }: Props) {
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-lg font-bold text-foreground">
-              {product.price.toLocaleString("ro-RO")} lei
+              {format(product.price)}
             </span>
             {product.old_price && (
               <span className="text-xs text-muted-foreground line-through">
-                {product.old_price.toLocaleString("ro-RO")} lei
+                {format(product.old_price)}
               </span>
             )}
           </div>

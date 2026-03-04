@@ -18,6 +18,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useComparison } from "@/hooks/useComparison";
 import { toast } from "sonner";
 import { safeJsonLd, sanitizeForJsonLd } from "@/lib/sanitize-json-ld";
+import { useCurrency } from "@/hooks/useCurrency";
 import type { Tables } from "@/integrations/supabase/types";
 
 export default function ProductDetail() {
@@ -25,6 +26,7 @@ export default function ProductDetail() {
   const { user } = useAuth();
   const { addToCart } = useCart();
   const { addToComparison, isInComparison } = useComparison();
+  const { format, currency, convert } = useCurrency();
   const [product, setProduct] = useState<Tables<"products"> | null>(null);
   const [similar, setSimilar] = useState<Tables<"products">[]>([]);
   const [reviews, setReviews] = useState<Tables<"reviews">[]>([]);
@@ -166,10 +168,10 @@ export default function ProductDetail() {
             </div>
 
             <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-bold text-primary">{activePrice.toLocaleString("ro-RO")} lei</span>
+              <span className="text-3xl font-bold text-primary">{format(activePrice)}</span>
               {product.old_price && (
                 <>
-                  <span className="text-lg text-muted-foreground line-through">{product.old_price.toLocaleString("ro-RO")} lei</span>
+                  <span className="text-lg text-muted-foreground line-through">{format(product.old_price)}</span>
                   {discount > 0 && <span className="bg-primary text-primary-foreground text-sm font-bold px-2 py-1 rounded">-{discount}%</span>}
                 </>
               )}
@@ -352,8 +354,8 @@ export default function ProductDetail() {
         offers: {
           "@type": "Offer",
           url: window.location.href,
-          priceCurrency: "RON",
-          price: product.price,
+          priceCurrency: currency,
+          price: convert(product.price),
           availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
         },
         aggregateRating: product.review_count && product.review_count > 0 ? {
@@ -367,7 +369,7 @@ export default function ProductDetail() {
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border shadow-lg px-4 py-3 flex items-center gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-xs text-muted-foreground truncate">{product.name}</p>
-          <p className="text-lg font-bold text-primary">{product.price.toLocaleString("ro-RO")} lei</p>
+          <p className="text-lg font-bold text-primary">{format(product.price)}</p>
         </div>
         <Button onClick={handleAddToCart} className="shrink-0 font-semibold">
           <ShoppingCart className="h-4 w-4 mr-1" /> Adaugă

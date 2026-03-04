@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import Layout from "@/components/layout/Layout";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
+import { useCurrency } from "@/hooks/useCurrency";
 
 export default function Cart() {
   const { user } = useAuth();
   const { items, totalPrice, updateQuantity, removeFromCart } = useCart();
+  const { format } = useCurrency();
 
   if (items.length === 0) {
     return (
@@ -38,7 +40,7 @@ export default function Cart() {
                   <Link to={`/product/${item.product.slug}`} className="font-medium text-sm hover:text-primary line-clamp-2">
                     {item.product.name}
                   </Link>
-                  <p className="text-primary font-bold mt-1">{item.product.price.toLocaleString("ro-RO")} lei</p>
+                  <p className="text-primary font-bold mt-1">{format(item.product.price)}</p>
                   <div className="flex items-center gap-2 mt-2">
                     <div className="flex items-center border rounded">
                       <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.product_id, item.quantity - 1)}>
@@ -55,7 +57,7 @@ export default function Cart() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold">{(item.product.price * item.quantity).toLocaleString("ro-RO")} lei</p>
+                  <p className="font-bold">{format(item.product.price * item.quantity)}</p>
                 </div>
               </div>
             ))}
@@ -65,15 +67,15 @@ export default function Cart() {
             <h2 className="font-bold text-lg">Sumar comandă</h2>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Subtotal</span>
-              <span>{totalPrice.toLocaleString("ro-RO")} lei</span>
+              <span>{format(totalPrice)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Livrare</span>
-              <span className={shipping === 0 ? "text-green-600 font-medium" : ""}>{shipping === 0 ? "GRATUITĂ" : `${shipping} lei`}</span>
+              <span className={shipping === 0 ? "text-green-600 font-medium" : ""}>{shipping === 0 ? "GRATUITĂ" : format(shipping)}</span>
             </div>
             <div className="border-t pt-3 flex justify-between font-bold text-lg">
               <span>Total</span>
-              <span className="text-primary">{(totalPrice + shipping).toLocaleString("ro-RO")} lei</span>
+              <span className="text-primary">{format(totalPrice + shipping)}</span>
             </div>
             <Link to="/checkout" className="block">
               <Button className="w-full font-semibold" size="lg">Finalizează comanda</Button>
