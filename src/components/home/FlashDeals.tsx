@@ -28,7 +28,7 @@ function useCountdown() {
   return time;
 }
 
-export default function FlashDeals() {
+export default function FlashDeals({ title = "Oferte Flash" }: { title?: string }) {
   const [deals, setDeals] = useState<Tables<"products">[]>([]);
   const countdown = useCountdown();
 
