@@ -114,7 +114,7 @@ export default function Catalog() {
     setSelectedBrands([]);
     setInStockOnly(false);
     setSelectedRatings([]);
-    setPriceRange([0, 10000]);
+    setPriceRange([0, maxPrice]);
   };
 
   // Extract specs keys for dynamic attribute filters
