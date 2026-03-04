@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, GitCompare, Award, Shield, Phone } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, GitCompare, Award, Shield, Phone, Truck, Zap, Star, Clock, Gift, RotateCcw, Percent } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -12,6 +12,15 @@ import SearchAutocomplete from "@/components/SearchAutocomplete";
 import MegaMenu from "./MegaMenu";
 import { supabase } from "@/integrations/supabase/client";
 
+interface TrustBarItem { icon: string; text: string; link: string }
+interface StoreBranding { name: string; emoji: string; tagline: string; phone: string; email: string; copyright: string }
+
+const IconMap: Record<string, any> = {
+  phone: Phone, shield: Shield, truck: Truck, zap: Zap,
+  rotate: RotateCcw, star: Star, heart: Heart, gift: Gift,
+  clock: Clock, percent: Percent,
+};
+
 export default function Header() {
   const { user, signOut } = useAuth();
   const { isAdmin } = useAdmin();
@@ -21,11 +30,28 @@ export default function Header() {
   const [search, setSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
   const [mobileCategories, setMobileCategories] = useState<{ name: string; slug: string }[]>([]);
+  const [trustBar, setTrustBar] = useState<TrustBarItem[]>([
+    { icon: "phone", text: "0800 123 456", link: "tel:0800123456" },
+    { icon: "shield", text: "Produse Garantate", link: "" },
+    { icon: "truck", text: "Livrare Gratuită peste 200 lei", link: "" },
+  ]);
+  const [branding, setBranding] = useState<StoreBranding>({
+    name: "MegaShop", emoji: "🛒", tagline: "", phone: "0800 123 456", email: "", copyright: "",
+  });
 
   useEffect(() => {
     supabase.from("categories").select("name, slug").is("parent_id", null).order("name").then(({ data }) => {
       setMobileCategories(data || []);
     });
+    supabase.from("app_settings").select("key, value_json")
+      .in("key", ["header_trust_bar", "store_branding"])
+      .then(({ data }) => {
+        data?.forEach((row) => {
+          if (row.key === "header_trust_bar" && Array.isArray(row.value_json)) setTrustBar(row.value_json as unknown as TrustBarItem[]);
+          if (row.key === "store_branding" && row.value_json && typeof row.value_json === "object" && !Array.isArray(row.value_json))
+            setBranding(row.value_json as unknown as StoreBranding);
+        });
+      });
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -35,11 +61,11 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Top bar — dark blue */}
+      {/* Top bar */}
       <div className="emag-header-gradient">
         <div className="container flex items-center gap-4 py-3">
           <Link to="/" className="flex-shrink-0 text-2xl font-bold text-white">
-            🛒 MegaShop
+            {branding.emoji} {branding.name}
           </Link>
 
           <SearchAutocomplete className="hidden md:block flex-1 max-w-2xl" />
@@ -102,25 +128,28 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Trust badges bar */}
+      {/* Trust badges bar — dynamic */}
       <div className="emag-trust-bar">
         <div className="container py-2 flex items-center justify-center gap-8 text-white text-sm">
-          <a href="tel:0800123456" className="flex items-center gap-2 hover:text-emag-yellow transition-colors">
-            <Phone className="h-4 w-4 text-emag-yellow" />
-            <span className="font-medium">0800 123 456</span>
-          </a>
-          <div className="flex items-center gap-2">
-            <Shield className="h-4 w-4 text-emag-yellow" />
-            <span className="font-medium">Produse Garantate</span>
-          </div>
-          <div className="hidden sm:flex items-center gap-2">
-            <ShoppingCart className="h-4 w-4 text-emag-yellow" />
-            <span className="font-medium">Livrare Gratuită peste 200 lei</span>
-          </div>
+          {trustBar.map((item, i) => {
+            const Ico = IconMap[item.icon] || Shield;
+            const content = (
+              <div className="flex items-center gap-2">
+                <Ico className="h-4 w-4 text-emag-yellow" />
+                <span className="font-medium">{item.text}</span>
+              </div>
+            );
+            return item.link ? (
+              <a key={i} href={item.link} className="hover:text-emag-yellow transition-colors hidden sm:flex items-center gap-2 first:flex">
+                {content}
+              </a>
+            ) : (
+              <div key={i} className="hidden sm:flex items-center gap-2 first:flex">{content}</div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Mega Menu */}
       <MegaMenu />
 
       {/* Mobile menu */}
