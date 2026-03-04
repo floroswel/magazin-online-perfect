@@ -57,7 +57,7 @@ export default function Cart() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold">{(item.product.price * item.quantity).toLocaleString("ro-RO")} lei</p>
+                  <p className="font-bold">{format(item.product.price * item.quantity)}</p>
                 </div>
               </div>
             ))}
