@@ -313,9 +313,18 @@ export default function AdminProducts() {
     });
   };
 
+  const { data: brandsList = [] } = useQuery({
+    queryKey: ["admin-brands-list"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("brands").select("id, name").order("name");
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const filtered = products.filter((p: any) =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.brand?.toLowerCase().includes(search.toLowerCase()) ||
+    p.brands?.name?.toLowerCase().includes(search.toLowerCase()) ||
     p.slug?.toLowerCase().includes(search.toLowerCase())
   );
 
