@@ -18,6 +18,7 @@ export default function Catalog() {
 
   const [products, setProducts] = useState<Tables<"products">[]>([]);
   const [categories, setCategories] = useState<Tables<"categories">[]>([]);
+  const [brands, setBrands] = useState<Tables<"brands">[]>([]);
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState("popular");
   const [priceRange, setPriceRange] = useState([0, 10000]);
@@ -29,10 +30,9 @@ export default function Catalog() {
   const [perPage, setPerPage] = useState(24);
   const [totalCount, setTotalCount] = useState(0);
 
-  const brands = useMemo(() => [...new Set(products.map(p => p.brand).filter(Boolean))] as string[], [products]);
-
   useEffect(() => {
     supabase.from("categories").select("*").then(({ data }) => setCategories(data || []));
+    supabase.from("brands").select("*").order("name").then(({ data }) => setBrands(data || []));
   }, []);
 
   useEffect(() => {
@@ -276,14 +276,14 @@ export default function Catalog() {
                 <h3 className="font-semibold mb-2 text-foreground text-sm">Brand</h3>
                 <div className="space-y-1.5 max-h-48 overflow-y-auto">
                   {brands.map(brand => (
-                    <label key={brand} className="flex items-center gap-2 text-sm cursor-pointer">
+                    <label key={brand.id} className="flex items-center gap-2 text-sm cursor-pointer">
                       <Checkbox
-                        checked={selectedBrands.includes(brand)}
+                        checked={selectedBrands.includes(brand.name)}
                         onCheckedChange={(checked) => {
-                          setSelectedBrands(prev => checked ? [...prev, brand] : prev.filter(b => b !== brand));
+                          setSelectedBrands(prev => checked ? [...prev, brand.name] : prev.filter(b => b !== brand.name));
                         }}
                       />
-                      {brand}
+                      {brand.name}
                     </label>
                   ))}
                 </div>

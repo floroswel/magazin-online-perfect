@@ -46,6 +46,13 @@ import AdminPromotions from "./marketing/AdminPromotions";
 import AdminFooterBadges from "./settings/AdminFooterBadges";
 import AdminFooterSettings from "./settings/AdminFooterSettings";
 import AdminHomepageSettings from "./content/AdminHomepageSettings";
+import AdminBanners from "./marketing/AdminBanners";
+import AdminBlog from "./content/AdminBlog";
+import AdminMediaLibrary from "./content/AdminMediaLibrary";
+import AdminStoreSettings from "./settings/AdminStoreSettings";
+import AdminCheckoutSettings from "./settings/AdminCheckoutSettings";
+import AdminEmailSettings from "./settings/AdminEmailSettings";
+import AdminTaxSettings from "./settings/AdminTaxSettings";
 
 export default function AdminRoutes() {
   return (
@@ -125,7 +132,7 @@ export default function AdminRoutes() {
       <Route path="marketing/sms" element={<AdminPlaceholder title="Campanii SMS" description="Notificări și promoții prin SMS." />} />
       <Route path="marketing/abandoned-cart" element={<AdminAbandonedCarts />} />
       <Route path="marketing/automations" element={<AdminAutomations />} />
-      <Route path="marketing/banners" element={<AdminPlaceholder title="Bannere & Popups" description="Gestionare bannere promovionale, popup-uri exit-intent și notificări." />} />
+      <Route path="marketing/banners" element={<AdminBanners />} />
       <Route path="marketing/upsell" element={<AdminPlaceholder title="Upsell / Cross-sell" description="Configurare recomandări de upsell și cross-sell pe pagini de produs și coș." />} />
       <Route path="marketing/feeds" element={<AdminPlaceholder title="Feed-uri Marketing" description="Configurare feed-uri: Google Shopping, Facebook Catalog, comparatoare." />} />
       <Route path="marketing/pixels" element={<AdminPlaceholder title="Pixel Tracking" description="Meta Pixel, Google Ads, TikTok Pixel — configurare și verificare." />} />
@@ -139,8 +146,8 @@ export default function AdminRoutes() {
       <Route path="content/page-builder" element={<AdminPlaceholder title="Page Builder" description="Drag & drop page builder pentru pagini personalizate." />} />
       <Route path="content/homepage" element={<AdminHomepageSettings />} />
       <Route path="content/landing" element={<AdminPlaceholder title="Landing Pages" description="Pagini de campanie cu tracking și A/B testing." />} />
-      <Route path="content/blog" element={<AdminPlaceholder title="Blog" description="Publicare și gestionare articole de blog." />} />
-      <Route path="content/media" element={<AdminPlaceholder title="Media Library" description="Bibliotecă centralizată de imagini și fișiere media." />} />
+      <Route path="content/blog" element={<AdminBlog />} />
+      <Route path="content/media" element={<AdminMediaLibrary />} />
       <Route path="content/menus" element={<AdminPlaceholder title="Meniu & Navigație" description="Configurare meniuri de navigație principale și footer." />} />
       <Route path="content/scripts" element={<AdminCustomScripts />} />
       <Route path="content/translations" element={<AdminPlaceholder title="Traduceri" description="Multi-language: limbi disponibile, traducere automată, URL-uri localizate." />} />
@@ -230,14 +237,14 @@ export default function AdminRoutes() {
       <Route path="settings/general" element={<AdminGeneralSettings />} />
       <Route path="settings/footer-badges" element={<AdminFooterBadges />} />
       <Route path="settings/footer" element={<AdminFooterSettings />} />
-      <Route path="settings/taxes" element={<AdminPlaceholder title="Taxe (TVA)" description="TVA standard 19%, TVA redus 5%/9%, scutiri, reverse charge B2B." />} />
-      <Route path="settings/store" element={<AdminPlaceholder title="Setări Magazin" description="Produse pe pagină, afișare stoc, ordine produse, review-uri, wishlist, comparare." />} />
-      <Route path="settings/email" element={<AdminPlaceholder title="Email / SMTP" description="Configurare SMTP, template-uri email, test email, logo în email-uri." />} />
+      <Route path="settings/taxes" element={<AdminTaxSettings />} />
+      <Route path="settings/store" element={<AdminStoreSettings />} />
+      <Route path="settings/email" element={<AdminEmailSettings />} />
       <Route path="settings/seo" element={<AdminPlaceholder title="SEO Global" description="Meta defaults, URL structure, Open Graph, Schema.org markup." />} />
       <Route path="settings/notifications" element={<AdminPlaceholder title="Notificări" description="Configurare notificări email, SMS și push — admin și client." />} />
       <Route path="settings/security" element={<AdminPlaceholder title="Securitate" description="Parolă minimă, blocare după încercări eșuate, reCAPTCHA." />} />
       <Route path="settings/gdpr" element={<AdminPlaceholder title="GDPR & Politici" description="Texte consimțământ, perioadă retenție date, export/ștergere automată." />} />
-      <Route path="settings/checkout" element={<AdminPlaceholder title="Setări Checkout" description="Tip checkout (standard/one-page), guest checkout, câmpuri obligatorii." />} />
+      <Route path="settings/checkout" element={<AdminCheckoutSettings />} />
       <Route path="settings/cart" element={<AdminPlaceholder title="Setări Coș" description="Mod afișare, recomandări, comportament adăugare, ordine produse." />} />
 
       {/* ═══════════ UTILIZATORI ═══════════ */}
