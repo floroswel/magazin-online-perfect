@@ -39,6 +39,8 @@ export default function Footer() {
   const [deliveryPartners, setDeliveryPartners] = useState<DeliveryPartner[]>([]);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
 
+  const [branding, setBranding] = useState<{ name: string; emoji: string; tagline: string; phone: string; email: string; copyright: string } | null>(null);
+
   useEffect(() => {
     supabase
       .from("cms_pages")
@@ -51,7 +53,7 @@ export default function Footer() {
     supabase
       .from("app_settings")
       .select("key, value_json")
-      .in("key", ["footer_legal_badges", "footer_social_links", "footer_payment_methods", "footer_delivery_partners", "footer_company_info"])
+      .in("key", ["footer_legal_badges", "footer_social_links", "footer_payment_methods", "footer_delivery_partners", "footer_company_info", "store_branding"])
       .then(({ data }) => {
         data?.forEach(row => {
           const val = row.value_json;
@@ -70,6 +72,9 @@ export default function Footer() {
               break;
             case "footer_company_info":
               if (val && typeof val === "object" && !Array.isArray(val)) setCompanyInfo(val as unknown as CompanyInfo);
+              break;
+            case "store_branding":
+              if (val && typeof val === "object" && !Array.isArray(val)) setBranding(val as unknown as any);
               break;
           }
         });
