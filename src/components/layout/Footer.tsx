@@ -53,7 +53,7 @@ export default function Footer() {
     supabase
       .from("app_settings")
       .select("key, value_json")
-      .in("key", ["footer_legal_badges", "footer_social_links", "footer_payment_methods", "footer_delivery_partners", "footer_company_info", "store_branding"])
+      .in("key", ["footer_legal_badges", "footer_social_links", "footer_payment_methods", "footer_delivery_partners", "footer_company_info"])
       .then(({ data }) => {
         data?.forEach(row => {
           const val = row.value_json;
