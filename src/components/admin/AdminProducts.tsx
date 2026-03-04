@@ -265,7 +265,7 @@ export default function AdminProducts() {
       old_price: product.old_price,
       stock: product.stock,
       description: product.description || "",
-      brand: product.brand || "",
+      brand_id: product.brand_id || null,
       image_url: product.image_url || "",
       images: product.images || [],
       featured: product.featured || false,
