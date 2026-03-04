@@ -99,7 +99,14 @@ export default function ProductDetail() {
     load();
   }, [slug, user]);
 
+  const variantRequired = hasVariants && !selectedVariant;
+  const canAddToCart = activeStock > 0 && !variantRequired;
+
   const handleAddToCart = async () => {
+    if (!canAddToCart) {
+      if (variantRequired) toast.error("Selectează toate opțiunile de variantă!");
+      return;
+    }
     if (product) { await addToCart(product.id, qty); toast.success("Adăugat în coș!"); }
   };
 
