@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { CartProvider } from "@/hooks/useCart";
+import { CurrencyProvider } from "@/hooks/useCurrency";
+import { I18nProvider } from "@/hooks/useI18n";
 import Index from "./pages/Index";
 import Catalog from "./pages/Catalog";
 import ProductDetail from "./pages/ProductDetail";
@@ -19,6 +21,7 @@ import Compare from "./pages/Compare";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import CmsPage from "./pages/CmsPage";
+import Install from "./pages/Install";
 import CustomScriptInjector from "./components/CustomScriptInjector";
 
 const queryClient = new QueryClient();
@@ -31,6 +34,8 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <ThemeProvider>
+          <I18nProvider>
+          <CurrencyProvider>
           <CartProvider>
             <CustomScriptInjector />
             <Routes>
@@ -45,10 +50,13 @@ const App = () => (
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/compare" element={<Compare />} />
               <Route path="/page/:slug" element={<CmsPage />} />
+              <Route path="/install" element={<Install />} />
               <Route path="/admin/*" element={<Admin />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </CartProvider>
+          </CurrencyProvider>
+          </I18nProvider>
           </ThemeProvider>
         </AuthProvider>
       </BrowserRouter>

@@ -59,6 +59,9 @@ const AdminEmailSettings = lazy(() => import("./settings/AdminEmailSettings"));
 const AdminTaxSettings = lazy(() => import("./settings/AdminTaxSettings"));
 const AdminThemeEditor = lazy(() => import("./settings/AdminThemeEditor"));
 const Admin2FA = lazy(() => import("./settings/Admin2FA"));
+const AdminPageBuilder = lazy(() => import("./content/AdminPageBuilder"));
+const AdminTranslations = lazy(() => import("./content/AdminTranslations"));
+const AdminCurrencySettings = lazy(() => import("./settings/AdminCurrencySettings"));
 export default function AdminRoutes() {
   return (
     <Suspense fallback={<Fallback />}>
@@ -149,14 +152,14 @@ export default function AdminRoutes() {
 
         {/* ═══════════ CONȚINUT ═══════════ */}
         <Route path="content/pages" element={<AdminCmsPages />} />
-        <Route path="content/page-builder" element={<AdminPlaceholder title="Page Builder" description="Drag & drop page builder pentru pagini personalizate." />} />
+        <Route path="content/page-builder" element={<AdminPageBuilder />} />
         <Route path="content/homepage" element={<AdminHomepageSettings />} />
         <Route path="content/landing" element={<AdminPlaceholder title="Landing Pages" description="Pagini de campanie cu tracking și A/B testing." />} />
         <Route path="content/blog" element={<AdminBlog />} />
         <Route path="content/media" element={<AdminMediaLibrary />} />
         <Route path="content/menus" element={<AdminPlaceholder title="Meniu & Navigație" description="Configurare meniuri de navigație principale și footer." />} />
         <Route path="content/scripts" element={<AdminCustomScripts />} />
-        <Route path="content/translations" element={<AdminPlaceholder title="Traduceri" description="Multi-language: limbi disponibile, traducere automată, URL-uri localizate." />} />
+        <Route path="content/translations" element={<AdminTranslations />} />
         <Route path="content/email-templates" element={<AdminPlaceholder title="Șabloane Email" description="Editare template-uri email tranzacționale și marketing." />} />
         <Route path="content/seo" element={<AdminPlaceholder title="SEO & Redirecționări" description="Meta tags, robots.txt, sitemap.xml, redirecționări 301/302, pagină 404." />} />
         <Route path="content/legal" element={<AdminCmsPages filterLegal />} />
@@ -251,6 +254,7 @@ export default function AdminRoutes() {
         <Route path="settings/notifications" element={<AdminPlaceholder title="Notificări" description="Configurare notificări email, SMS și push — admin și client." />} />
         <Route path="settings/security" element={<AdminPlaceholder title="Securitate" description="Parolă minimă, blocare după încercări eșuate, reCAPTCHA." />} />
         <Route path="settings/gdpr" element={<AdminPlaceholder title="GDPR & Politici" description="Texte consimțământ, perioadă retenție date, export/ștergere automată." />} />
+        <Route path="settings/currency" element={<AdminCurrencySettings />} />
         <Route path="settings/checkout" element={<AdminCheckoutSettings />} />
         <Route path="settings/cart" element={<AdminPlaceholder title="Setări Coș" description="Mod afișare, recomandări, comportament adăugare, ordine produse." />} />
 
