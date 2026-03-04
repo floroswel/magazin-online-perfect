@@ -1356,6 +1356,7 @@ export default function AdminProducts() {
                           <div>
                             <p className="font-medium text-sm text-foreground">{p.name}</p>
                             <div className="flex gap-1 mt-0.5">
+                              {p.product_type === "bundle" && <Badge variant="default" className="text-xs">📦 Pachet</Badge>}
                               {p.featured && <Badge variant="secondary" className="text-xs">★</Badge>}
                               {p.visible === false && <Badge variant="outline" className="text-xs text-muted-foreground"><EyeOff className="w-3 h-3 mr-0.5" />Ascuns</Badge>}
                               {p.sku && <Badge variant="outline" className="text-xs">{p.sku}</Badge>}
