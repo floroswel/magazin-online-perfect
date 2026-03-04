@@ -22,6 +22,7 @@ export default function Checkout() {
   const { user } = useAuth();
   const { items, totalPrice, clearCart } = useCart();
   const { totalPoints, currentLevel, addPoints } = useLoyalty();
+  const { format, currency } = useCurrency();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({ fullName: "", phone: "", email: "", address: "", city: "", county: "", postalCode: "" });
