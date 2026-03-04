@@ -98,7 +98,7 @@ export default function Checkout() {
       .from("coupons").select("*").eq("code", couponCode.trim().toUpperCase()).eq("is_active", true).maybeSingle();
     if (!coupon) { toast.error("Codul de reducere nu este valid"); setCouponLoading(false); return; }
     if (coupon.min_order_value && totalPrice < coupon.min_order_value) {
-      toast.error(`Comanda minimă pentru acest cupon este ${coupon.min_order_value} lei`); setCouponLoading(false); return;
+      toast.error(`Comanda minimă pentru acest cupon este ${format(coupon.min_order_value)}`); setCouponLoading(false); return;
     }
     if (coupon.valid_until && new Date(coupon.valid_until) < new Date()) {
       toast.error("Acest cupon a expirat"); setCouponLoading(false); return;
