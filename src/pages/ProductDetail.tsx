@@ -354,8 +354,8 @@ export default function ProductDetail() {
         offers: {
           "@type": "Offer",
           url: window.location.href,
-          priceCurrency: "RON",
-          price: product.price,
+          priceCurrency: currency,
+          price: convert(product.price),
           availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
         },
         aggregateRating: product.review_count && product.review_count > 0 ? {
