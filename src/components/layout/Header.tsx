@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, GitCompare, Award, Shield, Phone, Truck, Zap, Star, Clock, Gift, RotateCcw, Percent } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, GitCompare, Award, Shield, Phone, Truck, Zap, Star, Clock, Gift, RotateCcw, Percent, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -13,6 +13,7 @@ import MegaMenu from "./MegaMenu";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { supabase } from "@/integrations/supabase/client";
 import { useStoreBranding } from "@/hooks/useStoreBranding";
+import { useDarkMode } from "@/hooks/useDarkMode";
 
 interface TrustBarItem { icon: string; text: string; link: string }
 
@@ -29,6 +30,7 @@ export default function Header() {
   const { comparisonItems } = useComparison();
   const navigate = useNavigate();
   const branding = useStoreBranding();
+  const { isDark, toggle: toggleDarkMode } = useDarkMode();
   const [search, setSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
   const [mobileCategories, setMobileCategories] = useState<{ name: string; slug: string }[]>([]);
@@ -68,6 +70,9 @@ export default function Header() {
            <SearchAutocomplete className="hidden md:block flex-1 max-w-2xl" />
 
            <div className="flex items-center gap-1 ml-auto">
+             <Button variant="ghost" size="icon" className="text-white/90 hover:text-white hover:bg-white/10" onClick={toggleDarkMode} aria-label={isDark ? "Mod luminos" : "Mod întunecat"}>
+               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+             </Button>
              <LocaleSwitcher />
             {user ? (
               <>

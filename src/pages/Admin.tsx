@@ -16,6 +16,17 @@ export default function Admin() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
+  // Remove dark class from root when in admin to prevent interference
+  useEffect(() => {
+    const root = document.documentElement;
+    const wasDark = root.classList.contains("dark");
+    if (wasDark) root.classList.remove("dark");
+    return () => {
+      // Restore dark class if it was active when leaving admin
+      if (wasDark) root.classList.add("dark");
+    };
+  }, []);
+
   useEffect(() => {
     if (!authLoading && !adminLoading && !user) {
       navigate("/auth");
