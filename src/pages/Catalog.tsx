@@ -64,7 +64,7 @@ export default function Catalog() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [categorySlug, searchQuery, sort, priceRange, selectedBrands, inStockOnly, selectedRatings]);
+  }, [categorySlug, searchQuery, smartSlug, sort, priceRange, selectedBrands, inStockOnly, selectedRatings]);
 
   useEffect(() => {
     async function load() {
