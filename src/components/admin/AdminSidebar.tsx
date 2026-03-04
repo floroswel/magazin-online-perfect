@@ -272,6 +272,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         label: "Setări", icon: Settings,
         children: [
           { label: "General", path: "/admin/settings/general" },
+          { label: "🎨 Personalizare Temă", path: "/admin/settings/theme" },
           { label: "Taxe (TVA)", path: "/admin/settings/taxes" },
           { label: "Magazin", path: "/admin/settings/store" },
           { label: "Coș de cumpărături", path: "/admin/settings/cart" },
