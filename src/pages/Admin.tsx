@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -16,6 +16,12 @@ export default function Admin() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
+  useEffect(() => {
+    if (!authLoading && !adminLoading && !user) {
+      navigate("/auth");
+    }
+  }, [user, authLoading, adminLoading, navigate]);
+
   if (authLoading || adminLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
@@ -30,7 +36,6 @@ export default function Admin() {
   }
 
   if (!user) {
-    navigate("/auth");
     return null;
   }
 
