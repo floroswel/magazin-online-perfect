@@ -151,6 +151,7 @@ export default function AdminRoutes() {
         {/* ═══════════ PRODUSE ═══════════ */}
         <Route path="products" element={<AdminProducts />} />
         <Route path="categories" element={<AdminCategories />} />
+        <Route path="categories/smart" element={<AdminDynamicCategories />} />
         <Route path="products/brands" element={<AdminBrands />} />
         <Route path="products/attributes" element={<AdminProductAttributes />} />
         <Route path="products/attribute-sets" element={<AdminAttributeSets />} />

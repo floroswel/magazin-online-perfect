@@ -54,6 +54,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         children: [
           { label: "Toate produsele", path: "/admin/products" },
           { label: "Categorii", path: "/admin/categories" },
+          { label: "Categorii smart", path: "/admin/categories/smart" },
           { label: "Mărci", path: "/admin/products/brands" },
           { label: "Atribute & variante", path: "/admin/products/attributes" },
           { label: "Seturi de atribute", path: "/admin/products/attribute-sets" },
