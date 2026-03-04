@@ -373,7 +373,7 @@ export default function Checkout() {
               {loyaltyDiscount > 0 && (
                 <div className="flex justify-between text-sm text-green-600">
                   <span>Reducere fidelitate ({currentLevel?.name})</span>
-                  <span>-{loyaltyDiscount.toLocaleString("ro-RO")} lei</span>
+                  <span>-{format(loyaltyDiscount)}</span>
                 </div>
               )}
               <div className="flex justify-between text-sm">
