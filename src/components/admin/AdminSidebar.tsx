@@ -115,7 +115,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Promoții", path: "/admin/marketing/promotions" },
           { label: "Campanii email", path: "/admin/newsletter" },
           { label: "Campanii SMS", path: "/admin/marketing/sms" },
-          { label: "Coș abandonat", path: "/admin/marketing/abandoned-cart" },
+          { label: "Coș abandonat", path: "/admin/customers/abandoned" },
           { label: "Automatizări", path: "/admin/marketing/automations" },
           { label: "Bannere & popups", path: "/admin/marketing/banners" },
           { label: "Upsell / Cross-sell", path: "/admin/marketing/upsell" },

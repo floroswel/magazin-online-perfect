@@ -204,7 +204,7 @@ export default function AdminRoutes() {
         <Route path="marketing/promotions" element={<AdminPromotions />} />
         <Route path="newsletter" element={<AdminNewsletter />} />
         <Route path="marketing/sms" element={<AdminSMS />} />
-        <Route path="marketing/abandoned-cart" element={<AdminAbandonedCarts />} />
+        {/* abandoned-cart route removed — canonical route is customers/abandoned */}
         <Route path="marketing/automations" element={<AdminAutomations />} />
         <Route path="marketing/banners" element={<AdminBanners />} />
         <Route path="marketing/upsell" element={<AdminUpsell />} />
