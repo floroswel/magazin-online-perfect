@@ -361,7 +361,7 @@ export default function Checkout() {
               {items.map(item => (
                 <div key={item.id} className="flex justify-between text-sm">
                   <span className="text-muted-foreground truncate mr-2">{item.product.name} x{item.quantity}</span>
-                  <span>{(item.product.price * item.quantity).toLocaleString("ro-RO")} lei</span>
+                  <span>{format(item.product.price * item.quantity)}</span>
                 </div>
               ))}
               {couponDiscount > 0 && (
