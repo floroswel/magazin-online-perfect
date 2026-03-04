@@ -7,7 +7,8 @@ interface MokkaOrangePriceProps {
 }
 
 export default function MokkaOrangePrice({ price, months = 3 }: MokkaOrangePriceProps) {
-  const monthly = (price / months).toFixed(2);
+  const { format } = useCurrency();
+  const monthly = price / months;
 
   return (
     <TooltipProvider>
