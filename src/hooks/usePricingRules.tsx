@@ -136,7 +136,7 @@ export function usePricingRules() {
     };
   }
 
-  function hasActivePromo(product: Tables<"products">): boolean {
+  function hasActivePromo(product: Tables<"products"> & { brandId?: string }): boolean {
     return getApplicableRules(product).length > 0;
   }
 
