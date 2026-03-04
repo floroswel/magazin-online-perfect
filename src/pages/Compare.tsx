@@ -7,6 +7,7 @@ import Layout from "@/components/layout/Layout";
 import { useComparison } from "@/hooks/useComparison";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
+import { useCurrency } from "@/hooks/useCurrency";
 import { toast } from "sonner";
 
 export default function Compare() {
