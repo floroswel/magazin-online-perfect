@@ -57,6 +57,41 @@
     --mokka-foreground: 0 0% 100%;
   }
 
+  /* STOREFRONT DARK MODE */
+  .dark:not(.admin-panel) {
+    --background: 220 25% 10%;
+    --foreground: 210 20% 90%;
+
+    --card: 220 25% 13%;
+    --card-foreground: 210 20% 90%;
+
+    --popover: 220 25% 13%;
+    --popover-foreground: 210 20% 90%;
+
+    --primary: 27 92% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 216 60% 35%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 220 20% 18%;
+    --muted-foreground: 220 10% 60%;
+
+    --accent: 27 92% 53%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 22%;
+    --input: 220 15% 22%;
+    --ring: 27 92% 53%;
+
+    --emag-blue: 216 60% 35%;
+    --emag-blue-light: 216 50% 40%;
+    --emag-dark: 220 30% 8%;
+  }
+
   /* ADMIN PANEL — navy sidebar + white content */
   .admin-panel {
     --background: 210 20% 96%;
