@@ -37,6 +37,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <ThemeProvider>
+          <StoreBrandingProvider>
           <I18nProvider>
           <CurrencyProvider>
           <CartProvider>
