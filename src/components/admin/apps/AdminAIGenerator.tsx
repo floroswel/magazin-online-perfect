@@ -34,7 +34,7 @@ export default function AdminAIGenerator() {
 
   const fetchProducts = async () => {
     setLoading(true);
-    let query = supabase.from("products").select("id, name, brand, description, image_url, price, category_id").order("name");
+    let query = supabase.from("products").select("id, name, brand_id, brands(name), description, image_url, price, category_id").order("name");
     
     if (filter === "no-description") {
       query = query.or("description.is.null,description.eq.");
