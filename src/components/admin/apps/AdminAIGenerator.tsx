@@ -230,7 +230,7 @@ export default function AdminAIGenerator() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{p.name}</p>
-                    <p className="text-xs text-muted-foreground">{p.brand || "—"} · {p.price} RON</p>
+                    <p className="text-xs text-muted-foreground">{p.brands?.name || "—"} · {p.price} RON</p>
                   </div>
                   <div className="flex gap-1">
                     {!p.description?.trim() && <Badge variant="outline" className="text-yellow-500 border-yellow-500/30 text-xs">Fără descriere</Badge>}

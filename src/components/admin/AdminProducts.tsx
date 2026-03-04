@@ -925,7 +925,7 @@ export default function AdminProducts() {
             <>
               <DialogHeader>
                 <DialogTitle>{previewOpen.name}</DialogTitle>
-                <DialogDescription>{previewOpen.brand || "Fără brand"} • {previewOpen.categories?.name || "Fără categorie"}</DialogDescription>
+                <DialogDescription>{previewOpen.brands?.name || "Fără brand"} • {previewOpen.categories?.name || "Fără categorie"}</DialogDescription>
               </DialogHeader>
               {previewOpen.image_url && (
                 <img src={previewOpen.image_url} alt={previewOpen.name} className="w-full h-48 object-cover rounded-lg border border-border" />

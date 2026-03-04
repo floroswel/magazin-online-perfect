@@ -349,7 +349,7 @@ export default function ProductDetail() {
         name: sanitizeForJsonLd(product.name),
         description: sanitizeForJsonLd(product.description),
         image: product.image_url || "",
-        brand: product.brand ? { "@type": "Brand", name: sanitizeForJsonLd(product.brand) } : undefined,
+        brand: (product as any).brands?.name ? { "@type": "Brand", name: sanitizeForJsonLd((product as any).brands.name) } : undefined,
         sku: product.sku || product.id,
         offers: {
           "@type": "Offer",

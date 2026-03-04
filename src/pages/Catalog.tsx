@@ -81,9 +81,10 @@ export default function Catalog() {
       const from = (currentPage - 1) * perPage;
       query = query.range(from, from + perPage - 1);
 
-      // Server-side brand filter
+      // Server-side brand filter (use brand IDs)
       if (selectedBrands.length > 0) {
-        query = query.in("brand", selectedBrands);
+        const brandIds = brands.filter(b => selectedBrands.includes(b.name)).map(b => b.id);
+        if (brandIds.length > 0) query = query.in("brand_id", brandIds);
       }
 
       // Server-side rating filter (use minimum of selected ratings)

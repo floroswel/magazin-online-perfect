@@ -86,7 +86,7 @@ export default function Compare() {
               </TableRow>
               <TableRow>
                 <TableCell className="font-medium text-muted-foreground">Brand</TableCell>
-                {comparisonItems.map(p => <TableCell key={p.id}>{p.brand || "-"}</TableCell>)}
+                {comparisonItems.map(p => <TableCell key={p.id}>{(p as any).brands?.name || "-"}</TableCell>)}
               </TableRow>
               <TableRow>
                 <TableCell className="font-medium text-muted-foreground">Rating</TableCell>
