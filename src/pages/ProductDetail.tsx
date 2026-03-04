@@ -131,8 +131,11 @@ export default function ProductDetail() {
   if (loading) return <Layout><div className="container py-16 text-center">Se încarcă...</div></Layout>;
   if (!product) return <Layout><div className="container py-16 text-center">Produsul nu a fost găsit.</div></Layout>;
 
-  const specs = product.specs && typeof product.specs === "object" ? Object.entries(product.specs as Record<string, string>) : [];
-  const discount = product.old_price ? Math.round(((product.old_price - product.price) / product.old_price) * 100) : 0;
+  const activePrice = selectedVariant ? selectedVariant.price : product.price;
+  const activeStock = selectedVariant ? selectedVariant.stock : product.stock;
+  const activeImage = selectedVariant?.image_url || product.image_url;
+  const specs = product.specs && typeof product.specs === "object" ? Object.entries(product.specs as Record<string, string>).filter(([k]) => !k.startsWith("_")) : [];
+  const discount = product.old_price ? Math.round(((product.old_price - activePrice) / product.old_price) * 100) : 0;
 
   return (
     <Layout>
