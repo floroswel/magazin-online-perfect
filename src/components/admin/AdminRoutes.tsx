@@ -53,6 +53,7 @@ import AdminStoreSettings from "./settings/AdminStoreSettings";
 import AdminCheckoutSettings from "./settings/AdminCheckoutSettings";
 import AdminEmailSettings from "./settings/AdminEmailSettings";
 import AdminTaxSettings from "./settings/AdminTaxSettings";
+import AdminThemeEditor from "./settings/AdminThemeEditor";
 
 export default function AdminRoutes() {
   return (
