@@ -414,6 +414,21 @@ export default function AdminProducts() {
           await supabase.from("product_variants").insert(variantRows);
         }
       }
+
+      // Sync bundle components
+      if (productId) {
+        await supabase.from("product_bundle_items").delete().eq("bundle_product_id", productId);
+        if (product.product_type === "bundle" && product.bundle_components.length > 0) {
+          const bundleRows = product.bundle_components.map((bc, idx) => ({
+            bundle_product_id: productId!,
+            component_product_id: bc.product_id,
+            component_variant_id: bc.variant_id || null,
+            quantity: bc.quantity,
+            sort_order: idx,
+          }));
+          await supabase.from("product_bundle_items").insert(bundleRows);
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
