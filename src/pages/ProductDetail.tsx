@@ -226,6 +226,11 @@ export default function ProductDetail() {
             <p className={`text-sm font-medium ${activeStock > 0 ? "text-green-600" : "text-destructive"}`}>
               {activeStock > 0 ? `✓ În stoc (${activeStock} buc.)` : "✗ Stoc epuizat"}
             </p>
+            {activeStock > 0 && activeStock <= (product.low_stock_threshold || 5) && !hasVariants && (
+              <p className="text-sm font-medium text-orange-600 dark:text-orange-400 animate-pulse">
+                ⚡ Doar {activeStock} {activeStock === 1 ? "bucată" : "bucăți"} rămase în stoc!
+              </p>
+            )}
             {activeStock > 0 && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
                 <Truck className="h-4 w-4 text-primary flex-shrink-0" />
