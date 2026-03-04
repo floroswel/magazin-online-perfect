@@ -16,7 +16,8 @@ interface ProductRow {
   short_description?: string | null;
   image_url?: string | null;
   images?: string[] | null;
-  brand?: string | null;
+  brand_name?: string | null;
+  brand_id?: string | null;
   category_id?: string | null;
   specs?: Record<string, unknown> | null;
   featured?: boolean;
