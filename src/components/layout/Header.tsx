@@ -43,12 +43,10 @@ export default function Header() {
       setMobileCategories(data || []);
     });
     supabase.from("app_settings").select("key, value_json")
-      .in("key", ["header_trust_bar", "store_branding"])
+      .in("key", ["header_trust_bar"])
       .then(({ data }) => {
         data?.forEach((row) => {
           if (row.key === "header_trust_bar" && Array.isArray(row.value_json)) setTrustBar(row.value_json as unknown as TrustBarItem[]);
-          if (row.key === "store_branding" && row.value_json && typeof row.value_json === "object" && !Array.isArray(row.value_json))
-            setBranding(row.value_json as unknown as StoreBranding);
         });
       });
   }, []);

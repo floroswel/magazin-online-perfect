@@ -43,7 +43,7 @@ export default function Auth() {
       <div className="container py-16 flex justify-center">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">🛒 MegaShop</CardTitle>
+            <CardTitle className="text-2xl">{branding.emoji} {branding.name}</CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="login">

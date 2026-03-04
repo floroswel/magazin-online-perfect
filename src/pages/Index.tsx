@@ -125,7 +125,7 @@ export default function Index() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({
         "@context": "https://schema.org",
         "@type": "WebSite",
-        name: "MegaShop",
+        name: branding.name,
         url: window.location.origin,
         potentialAction: {
           "@type": "SearchAction",

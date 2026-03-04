@@ -381,7 +381,7 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
               </div>
             )}
             <div className="lg:hidden">
-              <h2 className="font-bold text-xs leading-tight text-white">MegaShop</h2>
+              <h2 className="font-bold text-xs leading-tight text-white">{storeName}</h2>
               <p className="text-[9px] text-[hsl(210,15%,60%)] font-medium leading-none">ADMIN</p>
             </div>
           </Link>

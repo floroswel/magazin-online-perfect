@@ -25,7 +25,7 @@ export default function CmsPage() {
       .then(({ data }) => {
         if (data) {
           setPage(data);
-          document.title = data.meta_title || data.title || "MegaShop";
+          document.title = data.meta_title || data.title || branding.name;
           const metaDesc = document.querySelector('meta[name="description"]');
           if (metaDesc && data.meta_description) metaDesc.setAttribute("content", data.meta_description);
         } else {
