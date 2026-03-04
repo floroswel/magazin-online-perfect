@@ -32,6 +32,7 @@ export default function Catalog() {
 
   useEffect(() => {
     supabase.from("categories").select("*").then(({ data }) => setCategories(data || []));
+    supabase.from("brands").select("*").order("name").then(({ data }) => setBrands(data || []));
   }, []);
 
   useEffect(() => {
