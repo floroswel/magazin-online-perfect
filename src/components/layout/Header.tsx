@@ -69,9 +69,10 @@ export default function Header() {
             {branding.emoji} {branding.name}
           </Link>
 
-          <SearchAutocomplete className="hidden md:block flex-1 max-w-2xl" />
+           <SearchAutocomplete className="hidden md:block flex-1 max-w-2xl" />
 
-          <div className="flex items-center gap-1 ml-auto">
+           <div className="flex items-center gap-1 ml-auto">
+             <LocaleSwitcher />
             {user ? (
               <>
                 <Link to="/compare" className="relative">
