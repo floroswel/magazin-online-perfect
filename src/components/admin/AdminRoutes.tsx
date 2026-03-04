@@ -7,6 +7,7 @@ const Fallback = () => <div className="p-8 text-center"><div className="w-8 h-8 
 const AdminDashboard = lazy(() => import("./AdminDashboard"));
 const AdminProducts = lazy(() => import("./AdminProducts"));
 const AdminCategories = lazy(() => import("./AdminCategories"));
+const AdminDynamicCategories = lazy(() => import("./products/AdminDynamicCategories"));
 const AdminOrders = lazy(() => import("./AdminOrders"));
 const AdminCoupons = lazy(() => import("./AdminCoupons"));
 const AdminNewsletter = lazy(() => import("./AdminNewsletter"));
