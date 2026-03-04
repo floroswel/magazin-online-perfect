@@ -2325,6 +2325,75 @@ export type Database = {
           },
         ]
       }
+      pricing_rules: {
+        Row: {
+          allow_stacking: boolean
+          applies_to_customers: string
+          applies_to_products: string
+          badge_text: string | null
+          brand_ids: string[] | null
+          category_ids: string[] | null
+          created_at: string
+          customer_group_ids: string[] | null
+          discount_type: string
+          discount_value: number
+          ends_at: string | null
+          id: string
+          is_active: boolean
+          min_order_value: number | null
+          min_quantity: number | null
+          name: string
+          priority: number
+          product_ids: string[] | null
+          starts_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          allow_stacking?: boolean
+          applies_to_customers?: string
+          applies_to_products?: string
+          badge_text?: string | null
+          brand_ids?: string[] | null
+          category_ids?: string[] | null
+          created_at?: string
+          customer_group_ids?: string[] | null
+          discount_type?: string
+          discount_value?: number
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          min_order_value?: number | null
+          min_quantity?: number | null
+          name: string
+          priority?: number
+          product_ids?: string[] | null
+          starts_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          allow_stacking?: boolean
+          applies_to_customers?: string
+          applies_to_products?: string
+          badge_text?: string | null
+          brand_ids?: string[] | null
+          category_ids?: string[] | null
+          created_at?: string
+          customer_group_ids?: string[] | null
+          discount_type?: string
+          discount_value?: number
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          min_order_value?: number | null
+          min_quantity?: number | null
+          name?: string
+          priority?: number
+          product_ids?: string[] | null
+          starts_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       product_attributes: {
         Row: {
           created_at: string | null
