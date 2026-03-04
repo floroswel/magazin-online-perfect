@@ -396,9 +396,10 @@ export default function AdminProducts() {
                   onClick={async () => {
                     setGeneratingDesc(true);
                     try {
-                      const categoryName = categories.find((c: any) => c.id === form.category_id)?.name;
+                       const categoryName = categories.find((c: any) => c.id === form.category_id)?.name;
+                      const brandName = brandsList.find((b: any) => b.id === form.brand_id)?.name;
                       const { data, error } = await supabase.functions.invoke("generate-description", {
-                        body: { name: form.name, brand: form.brand, category: categoryName, specs: form.specs },
+                        body: { name: form.name, brand: brandName, category: categoryName, specs: form.specs },
                       });
                       if (error) throw error;
                       if (data?.error) throw new Error(data.error);
