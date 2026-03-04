@@ -41,6 +41,7 @@ export default function ProductDetail() {
   const [questionText, setQuestionText] = useState("");
   const [isFav, setIsFav] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
+  const [hasVariants, setHasVariants] = useState(false);
 
   useEffect(() => {
     async function load() {
