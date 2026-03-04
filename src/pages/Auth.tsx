@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import Layout from "@/components/layout/Layout";
 import { useAuth } from "@/hooks/useAuth";
 import { useStoreBranding } from "@/hooks/useStoreBranding";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
 
