@@ -70,6 +70,9 @@ export default function Header() {
            <SearchAutocomplete className="hidden md:block flex-1 max-w-2xl" />
 
            <div className="flex items-center gap-1 ml-auto">
+             <Button variant="ghost" size="icon" className="text-white/90 hover:text-white hover:bg-white/10" onClick={toggleDarkMode} aria-label={isDark ? "Mod luminos" : "Mod întunecat"}>
+               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+             </Button>
              <LocaleSwitcher />
             {user ? (
               <>
