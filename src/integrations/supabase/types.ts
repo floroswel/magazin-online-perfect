@@ -3692,6 +3692,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      count_dynamic_category_products: {
+        Args: { p_rules: Json }
+        Returns: number
+      }
       get_dynamic_category_products: {
         Args: {
           category_id: string
