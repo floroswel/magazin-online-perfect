@@ -177,6 +177,16 @@ export default function Catalog() {
                 </Badge>
               )}
             </Button>
+            <Select value={String(perPage)} onValueChange={(v) => { setPerPage(Number(v)); setCurrentPage(1); }}>
+              <SelectTrigger className="w-[80px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="12">12</SelectItem>
+                <SelectItem value="24">24</SelectItem>
+                <SelectItem value="48">48</SelectItem>
+              </SelectContent>
+            </Select>
             <Select value={sort} onValueChange={setSort}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue />
