@@ -13,6 +13,7 @@ import MegaMenu from "./MegaMenu";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { supabase } from "@/integrations/supabase/client";
 import { useStoreBranding } from "@/hooks/useStoreBranding";
+import { useDarkMode } from "@/hooks/useDarkMode";
 
 interface TrustBarItem { icon: string; text: string; link: string }
 
