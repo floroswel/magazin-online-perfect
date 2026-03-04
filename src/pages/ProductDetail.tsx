@@ -207,7 +207,7 @@ export default function ProductDetail() {
             <p className={`text-sm font-medium ${activeStock > 0 ? "text-green-600" : "text-destructive"}`}>
               {activeStock > 0 ? `✓ În stoc (${activeStock} buc.)` : "✗ Stoc epuizat"}
             </p>
-            {product.stock > 0 && (
+            {activeStock > 0 && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
                 <Truck className="h-4 w-4 text-primary flex-shrink-0" />
                 <span>Livrare estimată: <strong className="text-foreground">1-3 zile lucrătoare</strong></span>

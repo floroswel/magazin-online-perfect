@@ -258,7 +258,7 @@ export default function AdminRoutes() {
         <Route path="users" element={<AdminUsers />} />
         <Route path="users/roles" element={<AdminRolesPermissions />} />
         <Route path="users/sessions" element={<AdminPlaceholder title="Sesiuni Active" description="Vizualizare și terminare sesiuni active ale utilizatorilor." />} />
-        <Route path="users/2fa" element={<AdminPlaceholder title="Autentificare 2FA" description="Activare/dezactivare autentificare în doi pași per utilizator." />} />
+        <Route path="users/2fa" element={<Admin2FA />} />
         <Route path="users/ip-whitelist" element={<AdminPlaceholder title="IP Whitelist" description="Restricționare acces admin doar de pe IP-uri specifice." />} />
         <Route path="users/audit" element={<AdminAuditLog />} />
 
