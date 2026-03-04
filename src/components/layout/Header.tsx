@@ -12,9 +12,9 @@ import SearchAutocomplete from "@/components/SearchAutocomplete";
 import MegaMenu from "./MegaMenu";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { supabase } from "@/integrations/supabase/client";
+import { useStoreBranding } from "@/hooks/useStoreBranding";
 
 interface TrustBarItem { icon: string; text: string; link: string }
-interface StoreBranding { name: string; emoji: string; tagline: string; phone: string; email: string; copyright: string }
 
 const IconMap: Record<string, any> = {
   phone: Phone, shield: Shield, truck: Truck, zap: Zap,
