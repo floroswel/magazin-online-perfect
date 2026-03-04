@@ -382,7 +382,7 @@ export default function Checkout() {
               </div>
               <div className="border-t pt-3 flex justify-between font-bold text-lg">
                 <span>Total</span>
-                <span className="text-primary">{total.toLocaleString("ro-RO")} lei</span>
+                <span className="text-primary">{format(total)}</span>
               </div>
               {(paymentMethod === "mokka" || paymentMethod === "paypo") && (
                 <div className="text-center text-sm text-emag-blue font-medium">
