@@ -69,16 +69,6 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
     return statusConfig;
   }, [customStatuses]);
 
-  const allowedNextStatuses = useMemo(() => {
-    if (!order) return [];
-    const current = dynamicStatusConfig[order.status];
-    if (current && (current as any).allowed_transitions?.length > 0) {
-      return (current as any).allowed_transitions as string[];
-    }
-    // Fallback: show all
-    return Object.keys(dynamicStatusConfig).filter(k => k !== order.status);
-  }, [order, dynamicStatusConfig]);
-
   const { data: orderData, isLoading } = useQuery({
     queryKey: ["admin-order-detail", orderId],
     queryFn: async () => {
@@ -93,6 +83,15 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
   });
 
   const order = orderData;
+
+  const allowedNextStatuses = useMemo(() => {
+    if (!order) return [];
+    const current = dynamicStatusConfig[order.status];
+    if (current && (current as any).allowed_transitions?.length > 0) {
+      return (current as any).allowed_transitions as string[];
+    }
+    return Object.keys(dynamicStatusConfig).filter(k => k !== order.status);
+  }, [order, dynamicStatusConfig]);
 
   const { data: timeline = [] } = useQuery({
     queryKey: ["order-timeline", orderId],
