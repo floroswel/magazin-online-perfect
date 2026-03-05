@@ -73,9 +73,10 @@ export default function Checkout() {
     );
   }
 
-  const shipping = totalPrice >= 200 ? 0 : 19.99;
+  const shipping = hasFreeShipping ? 0 : (totalPrice >= 200 ? 0 : 19.99);
+  const groupDiscount = maxDiscount > 0 ? totalPrice * (maxDiscount / 100) : 0;
   const loyaltyDiscount = user && currentLevel ? (totalPrice * (currentLevel.discount_percentage / 100)) : 0;
-  const subtotalAfterDiscounts = totalPrice - couponDiscount - loyaltyDiscount;
+  const subtotalAfterDiscounts = totalPrice - couponDiscount - loyaltyDiscount - groupDiscount;
   const total = Math.max(0, subtotalAfterDiscounts + shipping);
   const pointsEarned = user ? Math.floor(total / 10) : 0;
 

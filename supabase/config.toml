@@ -50,3 +50,6 @@ verify_jwt = false
 
 [functions.generate-invoice-pdf]
 verify_jwt = false
+
+[functions.sync-customer-groups]
+verify_jwt = false
