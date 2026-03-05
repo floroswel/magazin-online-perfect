@@ -304,13 +304,15 @@ export default function Checkout() {
               )}
 
               {/* Bank transfer details */}
-              {selectedMethod?.type === "bank_transfer" && selectedMethod.bank_details && (
+              {selectedMethod?.type === "bank_transfer" && selectedMethod.bank_details && (() => {
+                const bd = selectedMethod.bank_details as Record<string, any>;
+                return (
                 <Card className="border-blue-200 bg-blue-50/50">
                   <CardContent className="p-4 space-y-1">
                     <div className="flex items-center gap-2 text-sm font-semibold text-blue-800 mb-2"><Info className="h-4 w-4" /> Detalii plată transfer bancar</div>
-                    {selectedMethod.bank_details.bank_name && <p className="text-xs"><span className="text-muted-foreground">Banca:</span> {selectedMethod.bank_details.bank_name}</p>}
-                    {selectedMethod.bank_details.iban && <p className="text-xs"><span className="text-muted-foreground">IBAN:</span> <span className="font-mono">{selectedMethod.bank_details.iban}</span></p>}
-                    {selectedMethod.bank_details.account_holder && <p className="text-xs"><span className="text-muted-foreground">Titular:</span> {selectedMethod.bank_details.account_holder}</p>}
+                    {bd.bank_name && <p className="text-xs"><span className="text-muted-foreground">Banca:</span> {bd.bank_name}</p>}
+                    {bd.iban && <p className="text-xs"><span className="text-muted-foreground">IBAN:</span> <span className="font-mono">{bd.iban}</span></p>}
+                    {bd.account_holder && <p className="text-xs"><span className="text-muted-foreground">Titular:</span> {bd.account_holder}</p>}
                     {selectedMethod.payment_deadline_days && <p className="text-xs text-amber-700 mt-1">⏳ Termen plată: {selectedMethod.payment_deadline_days} zile</p>}
                   </CardContent>
                 </Card>
