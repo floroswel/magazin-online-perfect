@@ -26,7 +26,7 @@ const RETURN_REASONS = [
   "Schimbare de opinie", "Dimensiune/Culoare greșită", "Ambalaj deteriorat", "Altul",
 ];
 const RETURNABLE_STATUSES = ["delivered", "shipped"];
-const STATUS_TIMELINE = ["pending", "processing", "shipped", "delivered"];
+const STATUS_TIMELINE_DEFAULT = ["pending", "processing", "shipped", "delivered"];
 
 export default function Account() {
   const { user } = useAuth();
