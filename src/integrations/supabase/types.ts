@@ -2633,6 +2633,9 @@ export type Database = {
           shipping_address: Json | null
           shipping_status: string | null
           shipping_total: number | null
+          smartbill_number: string | null
+          smartbill_status: string | null
+          smartbill_url: string | null
           source: string | null
           status: string
           subtotal: number | null
@@ -2669,6 +2672,9 @@ export type Database = {
           shipping_address?: Json | null
           shipping_status?: string | null
           shipping_total?: number | null
+          smartbill_number?: string | null
+          smartbill_status?: string | null
+          smartbill_url?: string | null
           source?: string | null
           status?: string
           subtotal?: number | null
@@ -2705,6 +2711,9 @@ export type Database = {
           shipping_address?: Json | null
           shipping_status?: string | null
           shipping_total?: number | null
+          smartbill_number?: string | null
+          smartbill_status?: string | null
+          smartbill_url?: string | null
           source?: string | null
           status?: string
           subtotal?: number | null
@@ -3475,6 +3484,9 @@ export type Database = {
           short_description: string | null
           sku: string | null
           slug: string
+          smartbill_code: string | null
+          smartbill_meas_unit: string | null
+          smartbill_vat_rate: number | null
           specs: Json | null
           status: string | null
           stock: number
@@ -3516,6 +3528,9 @@ export type Database = {
           short_description?: string | null
           sku?: string | null
           slug: string
+          smartbill_code?: string | null
+          smartbill_meas_unit?: string | null
+          smartbill_vat_rate?: number | null
           specs?: Json | null
           status?: string | null
           stock?: number
@@ -3557,6 +3572,9 @@ export type Database = {
           short_description?: string | null
           sku?: string | null
           slug?: string
+          smartbill_code?: string | null
+          smartbill_meas_unit?: string | null
+          smartbill_vat_rate?: number | null
           specs?: Json | null
           status?: string | null
           stock?: number
@@ -3601,6 +3619,7 @@ export type Database = {
           preferred_currency: string | null
           preferred_language: string | null
           segments: string[] | null
+          smartbill_client_id: string | null
           tags: string[] | null
           total_spent: number | null
           updated_at: string
@@ -3629,6 +3648,7 @@ export type Database = {
           preferred_currency?: string | null
           preferred_language?: string | null
           segments?: string[] | null
+          smartbill_client_id?: string | null
           tags?: string[] | null
           total_spent?: number | null
           updated_at?: string
@@ -3657,6 +3677,7 @@ export type Database = {
           preferred_currency?: string | null
           preferred_language?: string | null
           segments?: string[] | null
+          smartbill_client_id?: string | null
           tags?: string[] | null
           total_spent?: number | null
           updated_at?: string
@@ -4228,6 +4249,53 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "shipments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      smartbill_sync_log: {
+        Row: {
+          action: string
+          created_at: string
+          error_message: string | null
+          id: string
+          order_id: string | null
+          request_payload: Json | null
+          response_payload: Json | null
+          smartbill_number: string | null
+          smartbill_url: string | null
+          status: string
+        }
+        Insert: {
+          action?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          order_id?: string | null
+          request_payload?: Json | null
+          response_payload?: Json | null
+          smartbill_number?: string | null
+          smartbill_url?: string | null
+          status?: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          order_id?: string | null
+          request_payload?: Json | null
+          response_payload?: Json | null
+          smartbill_number?: string | null
+          smartbill_url?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "smartbill_sync_log_order_id_fkey"
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
