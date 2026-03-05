@@ -129,6 +129,7 @@ const AdminConnectors = lazy(() => import("./channels/AdminConnectors"));
 const AdminCustomReport = lazy(() => import("./reports/AdminCustomReport"));
 const AdminExportReports = lazy(() => import("./reports/AdminExportReports"));
 const AdminSSL = lazy(() => import("./integrations/AdminSSL"));
+const AdminERPIntegrations = lazy(() => import("./integrations/AdminERPIntegrations"));
 
 export default function AdminRoutes() {
   return (
@@ -293,6 +294,7 @@ export default function AdminRoutes() {
         <Route path="integrations/google-login" element={<AdminIntegrationConfig integrationKey="google-login" title="Google Login" description="Configurare Google Login." fields={[{ key: "client_id", label: "Client ID" }, { key: "client_secret", label: "Client Secret", type: "password" }]} />} />
         <Route path="integrations/nod" element={<AdminIntegrationConfig integrationKey="nod" title="NOD" description="Integrare NOD catalog și stoc." fields={[{ key: "username", label: "Utilizator API" }, { key: "api_key", label: "API Key", type: "password" }]} />} />
         <Route path="integrations/ssl" element={<AdminSSL />} />
+        <Route path="integrations/erp" element={<AdminERPIntegrations />} />
 
         {/* ═══════════ MULTI-CANAL ═══════════ */}
         <Route path="channels/allegro" element={<AdminIntegrationConfig integrationKey="allegro" title="Allegro" description="Sincronizare produse și comenzi Allegro." fields={[{ key: "client_id", label: "Client ID" }, { key: "client_secret", label: "Client Secret", type: "password" }]} />} />
