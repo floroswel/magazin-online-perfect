@@ -195,6 +195,22 @@ export default function Account() {
 
                   {isExpanded && (
                     <div className="border-t px-4 py-4 space-y-4">
+                      {/* Tracking info */}
+                      {o.tracking_number && (
+                        <div className="bg-primary/5 rounded-lg p-3 space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-semibold flex items-center gap-1"><Truck className="w-3 h-3" /> Tracking</span>
+                            <Badge variant="outline" className="font-mono text-[10px]">{o.tracking_number}</Badge>
+                          </div>
+                          {o.courier && <p className="text-xs text-muted-foreground capitalize">Curier: {o.courier.replace(/_/g, " ")}</p>}
+                          {o.tracking_url && (
+                            <a href={o.tracking_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
+                              Urmărește coletul →
+                            </a>
+                          )}
+                        </div>
+                      )}
+
                       {/* Tracking timeline */}
                       {o.status !== "cancelled" && (
                         <div className="flex items-center justify-between px-4">
