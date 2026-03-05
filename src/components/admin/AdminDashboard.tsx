@@ -14,6 +14,7 @@ import {
   RotateCcw,
   ArrowDownUp,
   Activity,
+  Warehouse,
 } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import { ro } from "date-fns/locale";
@@ -107,6 +108,24 @@ export default function AdminDashboard() {
         .limit(10);
       if (error) throw error;
       return data;
+    },
+  });
+
+  const { data: warehouseStockData = [] } = useQuery({
+    queryKey: ["admin-dashboard-warehouse-stock"],
+    queryFn: async () => {
+      const { data: warehouses } = await supabase.from("warehouses").select("id, name, is_active").eq("is_active", true).order("name");
+      if (!warehouses?.length) return [];
+      const { data: ws } = await supabase.from("warehouse_stock").select("warehouse_id, product_id, quantity");
+      const productIds = [...new Set((ws || []).map(r => r.product_id))];
+      const { data: prods } = await supabase.from("products").select("id, price").in("id", productIds.length ? productIds : ["none"]);
+      const priceMap = Object.fromEntries((prods || []).map(p => [p.id, Number(p.price)]));
+      return warehouses.map(w => {
+        const items = (ws || []).filter(r => r.warehouse_id === w.id);
+        const totalQty = items.reduce((s, r) => s + r.quantity, 0);
+        const totalValue = items.reduce((s, r) => s + r.quantity * (priceMap[r.product_id] || 0), 0);
+        return { id: w.id, name: w.name, totalQty, totalValue };
+      });
     },
   });
 
@@ -417,6 +436,36 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Warehouse Stock Value */}
+      {warehouseStockData.length > 0 && (
+        <Card className="shadow-sm">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Warehouse className="w-4 h-4 text-violet-600" />
+                Stoc per Depozit
+              </CardTitle>
+              <Link to="/admin/stock/warehouses">
+                <Button variant="ghost" size="sm" className="text-xs gap-1">Depozite <ArrowUpRight className="w-3 h-3" /></Button>
+              </Link>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {warehouseStockData.map((w: any) => (
+                <div key={w.id} className="p-3 rounded-lg border border-border bg-muted/30">
+                  <p className="text-sm font-medium truncate">{w.name}</p>
+                  <div className="flex items-baseline justify-between mt-1">
+                    <span className="text-lg font-bold">{w.totalValue.toLocaleString("ro-RO", { maximumFractionDigits: 0 })} RON</span>
+                    <span className="text-xs text-muted-foreground">{w.totalQty} buc</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Activity Feed */}
       <Card className="shadow-sm">

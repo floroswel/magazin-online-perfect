@@ -2028,6 +2028,7 @@ export type Database = {
           created_at: string
           discount_amount: number | null
           discount_total: number | null
+          fulfillment_warehouse_id: string | null
           id: string
           internal_notes: string | null
           loyalty_points_earned: number | null
@@ -2055,6 +2056,7 @@ export type Database = {
           created_at?: string
           discount_amount?: number | null
           discount_total?: number | null
+          fulfillment_warehouse_id?: string | null
           id?: string
           internal_notes?: string | null
           loyalty_points_earned?: number | null
@@ -2082,6 +2084,7 @@ export type Database = {
           created_at?: string
           discount_amount?: number | null
           discount_total?: number | null
+          fulfillment_warehouse_id?: string | null
           id?: string
           internal_notes?: string | null
           loyalty_points_earned?: number | null
@@ -2109,6 +2112,13 @@ export type Database = {
             columns: ["coupon_id"]
             isOneToOne: false
             referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_fulfillment_warehouse_id_fkey"
+            columns: ["fulfillment_warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
             referencedColumns: ["id"]
           },
         ]
@@ -3737,6 +3747,64 @@ export type Database = {
           },
         ]
       }
+      stock_transfers: {
+        Row: {
+          created_at: string
+          from_warehouse_id: string
+          id: string
+          notes: string | null
+          product_id: string
+          quantity: number
+          sku: string | null
+          to_warehouse_id: string
+          transferred_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          from_warehouse_id: string
+          id?: string
+          notes?: string | null
+          product_id: string
+          quantity: number
+          sku?: string | null
+          to_warehouse_id: string
+          transferred_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          from_warehouse_id?: string
+          id?: string
+          notes?: string | null
+          product_id?: string
+          quantity?: number
+          sku?: string | null
+          to_warehouse_id?: string
+          transferred_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_transfers_from_warehouse_id_fkey"
+            columns: ["from_warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_transfers_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_transfers_to_warehouse_id_fkey"
+            columns: ["to_warehouse_id"]
+            isOneToOne: false
+            referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       support_tickets: {
         Row: {
           assigned_to: string | null
@@ -3932,9 +4000,11 @@ export type Database = {
       warehouses: {
         Row: {
           address: string | null
+          city: string | null
           code: string | null
           created_at: string
           id: string
+          is_active: boolean
           is_default: boolean
           name: string
           type: string | null
@@ -3942,9 +4012,11 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          city?: string | null
           code?: string | null
           created_at?: string
           id?: string
+          is_active?: boolean
           is_default?: boolean
           name: string
           type?: string | null
@@ -3952,9 +4024,11 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          city?: string | null
           code?: string | null
           created_at?: string
           id?: string
+          is_active?: boolean
           is_default?: boolean
           name?: string
           type?: string | null
