@@ -200,7 +200,7 @@ export default function Account() {
                         <div className="flex items-center justify-between px-4">
                           {STATUS_TIMELINE.map((step, i) => {
                             const isActive = i <= currentStep;
-                            const labels: Record<string, string> = { pending: "Plasată", processing: "Procesare", shipped: "Expediată", delivered: "Livrată" };
+                            const labels: Record<string, string> = { pending: "Plasată", processing: "Procesare", shipped: "Expediată", delivered: "Livrată", ...statusLabelsFromDb };
                             return (
                               <div key={step} className="flex flex-col items-center flex-1">
                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${isActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
