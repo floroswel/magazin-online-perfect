@@ -61,6 +61,26 @@ export default function AdminOrders() {
   const [newTagColor, setNewTagColor] = useState("#6366f1");
   const [showFilters, setShowFilters] = useState(false);
 
+  const { data: customStatuses = [] } = useQuery({
+    queryKey: ["order-statuses"],
+    queryFn: async () => {
+      const { data } = await supabase.from("order_statuses").select("*").order("sort_order");
+      return (data as any[]) || [];
+    },
+  });
+
+  const statusConfig = useMemo(() => {
+    if (customStatuses.length > 0) {
+      const map: Record<string, { label: string; color: string; icon: React.ReactNode }> = {};
+      customStatuses.forEach((s: any) => {
+        map[s.key] = { label: s.name, color: `border`, icon: <span className="text-xs">{s.icon}</span> };
+        (map[s.key] as any)._color = s.color;
+      });
+      return map;
+    }
+    return DEFAULT_STATUS_CONFIG;
+  }, [customStatuses]);
+
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["admin-orders"],
     queryFn: async () => {
