@@ -220,7 +220,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Cargus", path: "/admin/integrations/cargus" },
           { label: "DPD", path: "/admin/integrations/dpd" },
           { label: "DHL", path: "/admin/integrations/dhl" },
-          { label: "SmartBill", path: "/admin/integrations/smartbill" },
+          { label: "SmartBill", path: "/admin/settings/smartbill" },
           { label: "Facebook Pixel", path: "/admin/integrations/facebook-pixel" },
           { label: "TikTok Pixel", path: "/admin/integrations/tiktok-pixel" },
           { label: "Google Ads", path: "/admin/integrations/google-ads" },
