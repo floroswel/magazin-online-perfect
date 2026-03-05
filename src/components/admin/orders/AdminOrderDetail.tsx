@@ -120,6 +120,14 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
     },
   });
 
+  const { data: orderInvoices = [] } = useQuery({
+    queryKey: ["order-invoices", orderId],
+    queryFn: async () => {
+      const { data } = await supabase.from("invoices").select("id, invoice_number, type, status, total, created_at").eq("order_id", orderId).order("created_at", { ascending: false });
+      return (data as any[]) || [];
+    },
+  });
+
   const { data: orderTags = [] } = useQuery({
     queryKey: ["order-detail-tags", orderId],
     queryFn: async () => {
