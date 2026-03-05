@@ -14,10 +14,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { Progress } from "@/components/ui/progress";
 import {
   ChevronDown, ChevronRight, MapPin, CreditCard, Gift, Download, CalendarIcon,
   CheckCircle2, Truck, XCircle, RotateCcw, Eye, Package, Search, Ban,
-  Tag, Plus, FileText, Copy, StickyNote, Clock, ArrowUpDown, Printer,
+  Tag, Plus, FileText, Copy, StickyNote, Clock, ArrowUpDown, Printer, Loader2,
 } from "lucide-react";
 import { format, startOfDay, endOfDay } from "date-fns";
 import { ro } from "date-fns/locale";
@@ -60,6 +61,9 @@ export default function AdminOrders() {
   const [newTagName, setNewTagName] = useState("");
   const [newTagColor, setNewTagColor] = useState("#6366f1");
   const [showFilters, setShowFilters] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState<{ running: boolean; current: number; total: number; succeeded: number; failed: number; details: string[] } | null>(null);
+  const [bulkCourierDialog, setBulkCourierDialog] = useState(false);
+  const [selectedCourier, setSelectedCourier] = useState("");
 
   const { data: customStatuses = [] } = useQuery({
     queryKey: ["order-statuses"],
@@ -97,6 +101,14 @@ export default function AdminOrders() {
     queryKey: ["order-tags"],
     queryFn: async () => {
       const { data } = await supabase.from("order_tags").select("*").order("name");
+      return (data as any[]) || [];
+    },
+  });
+
+  const { data: carriers = [] } = useQuery({
+    queryKey: ["courier-configs-active"],
+    queryFn: async () => {
+      const { data } = await supabase.from("courier_configs").select("*").eq("is_active", true).order("display_name");
       return (data as any[]) || [];
     },
   });
@@ -263,13 +275,61 @@ export default function AdminOrders() {
 
   const bulkChangeStatus = async (newStatus: string) => {
     const ids = [...selectedIds];
-    for (const id of ids) {
-      await supabase.from("orders").update({ status: newStatus }).eq("id", id);
-      await supabase.from("order_timeline").insert({ order_id: id, action: "status_change", new_status: newStatus, note: "Bulk update" });
+    setBulkProgress({ running: true, current: 0, total: ids.length, succeeded: 0, failed: 0, details: [] });
+    let succeeded = 0, failed = 0;
+    const details: string[] = [];
+    for (let i = 0; i < ids.length; i++) {
+      try {
+        await supabase.from("orders").update({ status: newStatus }).eq("id", ids[i]);
+        await supabase.from("order_timeline").insert({ order_id: ids[i], action: "status_change", new_status: newStatus, note: "Bulk update" });
+        succeeded++;
+      } catch { failed++; details.push(`#${ids[i].slice(0, 8)} eșuat`); }
+      setBulkProgress({ running: true, current: i + 1, total: ids.length, succeeded, failed, details });
     }
     queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
-    toast.success(`${ids.length} comenzi actualizate la ${statusConfig[newStatus]?.label || newStatus}`);
+    toast.success(`${succeeded} comenzi actualizate, ${failed} eșuate`);
     setSelectedIds(new Set());
+    setTimeout(() => setBulkProgress(null), 3000);
+  };
+
+  const bulkGenerateAWB = async (courier: string) => {
+    const ids = [...selectedIds];
+    setBulkProgress({ running: true, current: 0, total: ids.length, succeeded: 0, failed: 0, details: [] });
+    setBulkCourierDialog(false);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-awb", {
+        body: { order_ids: ids, courier },
+      });
+      if (error) throw error;
+      const summary = data?.summary || { succeeded: 0, failed: 0 };
+      const resultDetails = (data?.results || []).filter((r: any) => !r.success).map((r: any) => `#${r.order_id.slice(0, 8)}: ${r.error}`);
+      setBulkProgress({ running: false, current: ids.length, total: ids.length, succeeded: summary.succeeded, failed: summary.failed, details: resultDetails });
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      toast.success(`${summary.succeeded} AWB-uri generate, ${summary.failed} eșuate`);
+      setSelectedIds(new Set());
+    } catch (err: any) {
+      toast.error("Eroare generare AWB: " + err.message);
+      setBulkProgress(null);
+    }
+    setTimeout(() => setBulkProgress(null), 5000);
+  };
+
+  const bulkAssignCourier = async (courier: string) => {
+    const ids = [...selectedIds];
+    setBulkProgress({ running: true, current: 0, total: ids.length, succeeded: 0, failed: 0, details: [] });
+    setBulkCourierDialog(false);
+    let succeeded = 0, failed = 0;
+    for (let i = 0; i < ids.length; i++) {
+      try {
+        await supabase.from("orders").update({ courier }).eq("id", ids[i]);
+        succeeded++;
+      } catch { failed++; }
+      setBulkProgress({ running: true, current: i + 1, total: ids.length, succeeded, failed, details: [] });
+    }
+    queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+    toast.success(`${succeeded} comenzi alocate la ${carriers.find((c: any) => c.courier === courier)?.display_name || courier}`);
+    setSelectedIds(new Set());
+    setTimeout(() => setBulkProgress(null), 3000);
   };
 
   // ─── Tags ───
@@ -411,7 +471,7 @@ export default function AdminOrders() {
 
             {/* Bulk actions bar */}
             {someSelected && (
-              <div className="flex items-center gap-2 p-2 bg-primary/5 rounded-lg border border-primary/20">
+              <div className="flex flex-wrap items-center gap-2 p-2 bg-primary/5 rounded-lg border border-primary/20">
                 <span className="text-xs font-medium">{selectedIds.size} selectate</span>
                 <Select onValueChange={v => bulkChangeStatus(v)}>
                   <SelectTrigger className="w-[150px] h-7 text-xs"><SelectValue placeholder="Schimbă status" /></SelectTrigger>
@@ -419,8 +479,38 @@ export default function AdminOrders() {
                     {Object.entries(statusConfig).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
+                <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setBulkCourierDialog(true)}>
+                  <Truck className="w-3 h-3 mr-1" />Generează AWB
+                </Button>
+                <Select onValueChange={v => bulkAssignCourier(v)}>
+                  <SelectTrigger className="w-[140px] h-7 text-xs"><SelectValue placeholder="Alocă curier" /></SelectTrigger>
+                  <SelectContent>
+                    {carriers.map((c: any) => <SelectItem key={c.courier} value={c.courier}>{c.display_name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
                 <Button variant="outline" size="sm" className="h-7 text-xs" onClick={exportCSV}><Download className="w-3 h-3 mr-1" />Export CSV</Button>
                 <Button variant="ghost" size="sm" className="h-7 text-xs ml-auto" onClick={() => setSelectedIds(new Set())}>Deselectează</Button>
+              </div>
+            )}
+
+            {/* Bulk progress */}
+            {bulkProgress && (
+              <div className="p-3 bg-muted/30 rounded-lg border space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="flex items-center gap-1">
+                    {bulkProgress.running && <Loader2 className="w-3 h-3 animate-spin" />}
+                    Procesare: {bulkProgress.current}/{bulkProgress.total}
+                  </span>
+                  <span className="text-muted-foreground">
+                    ✅ {bulkProgress.succeeded} reușite · ❌ {bulkProgress.failed} eșuate
+                  </span>
+                </div>
+                <Progress value={(bulkProgress.current / bulkProgress.total) * 100} className="h-2" />
+                {bulkProgress.details.length > 0 && (
+                  <div className="text-[10px] text-destructive max-h-16 overflow-y-auto">
+                    {bulkProgress.details.map((d, i) => <p key={i}>{d}</p>)}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -439,6 +529,7 @@ export default function AdminOrders() {
                   <TableHead className="text-center">Produse</TableHead>
                   <TableHead className="text-right"><SortHeader label="Total" sk="total" /></TableHead>
                   <TableHead><SortHeader label="Status" sk="status" /></TableHead>
+                  <TableHead>Curier / AWB</TableHead>
                   <TableHead>Plată</TableHead>
                   <TableHead>Tag-uri</TableHead>
                   <TableHead className="text-right">Acțiuni</TableHead>
@@ -470,9 +561,21 @@ export default function AdminOrders() {
                           <p className="font-semibold text-sm">{Number(order.total).toLocaleString("ro-RO", { minimumFractionDigits: 2 })} RON</p>
                         </TableCell>
                         <TableCell><StatusChip status={order.status} /></TableCell>
+                        <TableCell>
+                          <div className="text-xs">
+                            {order.tracking_number ? (
+                              <>
+                                <span className="font-mono text-[10px]">{order.tracking_number}</span>
+                                {order.courier && <p className="text-muted-foreground capitalize">{carriers.find((c: any) => c.courier === order.courier)?.display_name || order.courier}</p>}
+                              </>
+                            ) : (
+                              <span className="text-muted-foreground">—</span>
+                            )}
+                          </div>
+                        </TableCell>
                         <TableCell className="text-xs capitalize text-muted-foreground">{order.payment_method || "ramburs"}</TableCell>
                         <TableCell>
-                          <div className="flex gap-0.5 flex-wrap">
+                          <div className="flex gap-0.5 flex-wrap items-center">
                             {oTags.map((t: any) => (
                               <Badge key={t.id} variant="outline" className="text-[9px] px-1.5 py-0 border" style={{ borderColor: t.color, color: t.color }}>{t.name}</Badge>
                             ))}
@@ -495,7 +598,7 @@ export default function AdminOrders() {
                       {/* Inline expand */}
                       {isExpanded && (
                         <TableRow key={`${order.id}-exp`}>
-                          <TableCell colSpan={10} className="bg-muted/20 p-4">
+                          <TableCell colSpan={11} className="bg-muted/20 p-4">
                             <div className="grid md:grid-cols-3 gap-4">
                               <div>
                                 <h4 className="text-xs font-semibold mb-1.5 text-muted-foreground">PRODUSE</h4>
@@ -535,7 +638,7 @@ export default function AdminOrders() {
                   );
                 })}
                 {filtered.length === 0 && (
-                  <TableRow><TableCell colSpan={10} className="text-center py-8 text-muted-foreground">Nicio comandă găsită.</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={11} className="text-center py-8 text-muted-foreground">Nicio comandă găsită.</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>
@@ -586,6 +689,28 @@ export default function AdminOrders() {
               {confirmAction?.action === "cancel" ? "Anulează comanda" : "Confirmă rambursarea"}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk courier/AWB dialog */}
+      <Dialog open={bulkCourierDialog} onOpenChange={setBulkCourierDialog}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Generare AWB în masă</DialogTitle>
+            <DialogDescription>Selectează curierul pentru {selectedIds.size} comenzi</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            {carriers.map((c: any) => (
+              <Button key={c.courier} variant="outline" className="w-full justify-start gap-3 h-12" onClick={() => bulkGenerateAWB(c.courier)}>
+                <span className="text-xl">{c.courier === "fan_courier" ? "🟠" : c.courier === "sameday" ? "🔵" : c.courier === "cargus" ? "🟡" : c.courier === "dpd" ? "🔴" : "🟢"}</span>
+                <div className="text-left">
+                  <p className="text-sm font-medium">{c.display_name}</p>
+                  <p className="text-[10px] text-muted-foreground">{c.courier}</p>
+                </div>
+              </Button>
+            ))}
+            {carriers.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">Niciun curier activ configurat.</p>}
+          </div>
         </DialogContent>
       </Dialog>
     </div>

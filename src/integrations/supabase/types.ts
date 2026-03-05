@@ -2436,8 +2436,10 @@ export type Database = {
       }
       orders: {
         Row: {
+          awb_generated_at: string | null
           billing_address: Json | null
           coupon_id: string | null
+          courier: string | null
           created_at: string
           discount_amount: number | null
           discount_total: number | null
@@ -2459,13 +2461,17 @@ export type Database = {
           subtotal: number | null
           tax_total: number | null
           total: number
+          tracking_number: string | null
+          tracking_url: string | null
           updated_at: string
           user_email: string | null
           user_id: string
         }
         Insert: {
+          awb_generated_at?: string | null
           billing_address?: Json | null
           coupon_id?: string | null
+          courier?: string | null
           created_at?: string
           discount_amount?: number | null
           discount_total?: number | null
@@ -2487,13 +2493,17 @@ export type Database = {
           subtotal?: number | null
           tax_total?: number | null
           total?: number
+          tracking_number?: string | null
+          tracking_url?: string | null
           updated_at?: string
           user_email?: string | null
           user_id: string
         }
         Update: {
+          awb_generated_at?: string | null
           billing_address?: Json | null
           coupon_id?: string | null
+          courier?: string | null
           created_at?: string
           discount_amount?: number | null
           discount_total?: number | null
@@ -2515,6 +2525,8 @@ export type Database = {
           subtotal?: number | null
           tax_total?: number | null
           total?: number
+          tracking_number?: string | null
+          tracking_url?: string | null
           updated_at?: string
           user_email?: string | null
           user_id?: string
@@ -4315,6 +4327,47 @@ export type Database = {
             columns: ["connector_instance_id"]
             isOneToOne: false
             referencedRelation: "connector_instances"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tracking_events: {
+        Row: {
+          courier: string | null
+          created_at: string | null
+          description: string | null
+          event_at: string | null
+          id: string
+          location: string | null
+          order_id: string
+          status: string
+        }
+        Insert: {
+          courier?: string | null
+          created_at?: string | null
+          description?: string | null
+          event_at?: string | null
+          id?: string
+          location?: string | null
+          order_id: string
+          status: string
+        }
+        Update: {
+          courier?: string | null
+          created_at?: string | null
+          description?: string | null
+          event_at?: string | null
+          id?: string
+          location?: string | null
+          order_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tracking_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
             referencedColumns: ["id"]
           },
         ]

@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   ArrowLeft, MapPin, CreditCard, Gift, CheckCircle2, Truck, XCircle,
   RotateCcw, Package, Ban, StickyNote, Clock, Copy, FileText, Plus, Minus,
-  Tag, Pencil, Save, Printer, Send,
+  Tag, Pencil, Save, Printer, Send, ExternalLink, Loader2,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ro } from "date-fns/locale";
@@ -49,6 +49,8 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
   const [showRefundDialog, setShowRefundDialog] = useState(false);
   const [refundAmount, setRefundAmount] = useState("");
   const [refundReason, setRefundReason] = useState("");
+  const [awbCourier, setAwbCourier] = useState("");
+  const [generatingAwb, setGeneratingAwb] = useState(false);
 
   const { data: customStatuses = [] } = useQuery({
     queryKey: ["order-statuses"],
@@ -97,6 +99,22 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
     queryKey: ["order-timeline", orderId],
     queryFn: async () => {
       const { data } = await supabase.from("order_timeline").select("*").eq("order_id", orderId).order("created_at", { ascending: false });
+      return (data as any[]) || [];
+    },
+  });
+
+  const { data: carriers = [] } = useQuery({
+    queryKey: ["courier-configs-active"],
+    queryFn: async () => {
+      const { data } = await supabase.from("courier_configs").select("*").eq("is_active", true).order("display_name");
+      return (data as any[]) || [];
+    },
+  });
+
+  const { data: trackingEvents = [] } = useQuery({
+    queryKey: ["tracking-events", orderId],
+    queryFn: async () => {
+      const { data } = await supabase.from("tracking_events").select("*").eq("order_id", orderId).order("event_at", { ascending: false });
       return (data as any[]) || [];
     },
   });
@@ -190,6 +208,30 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
     queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
     toast.success(`Rambursare de ${amount.toFixed(2)} RON procesată`);
     setShowRefundDialog(false);
+  };
+
+  const generateAWB = async () => {
+    if (!order || !awbCourier) return;
+    setGeneratingAwb(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-awb", {
+        body: { order_ids: [orderId], courier: awbCourier },
+      });
+      if (error) throw error;
+      const result = data?.results?.[0];
+      if (result?.success) {
+        toast.success(`AWB generat: ${result.awb}`);
+        queryClient.invalidateQueries({ queryKey: ["admin-order-detail", orderId] });
+        queryClient.invalidateQueries({ queryKey: ["order-timeline", orderId] });
+        queryClient.invalidateQueries({ queryKey: ["tracking-events", orderId] });
+        queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      } else {
+        toast.error(result?.error || "Eroare la generare AWB");
+      }
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+    setGeneratingAwb(false);
   };
 
   const updateItemQuantity = async (itemId: string, newQty: number) => {
@@ -443,13 +485,55 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
             </CardContent>
           </Card>
 
-          {/* Fulfillment */}
+          {/* Fulfillment & AWB */}
           <Card>
             <CardContent className="p-4">
-              <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><Truck className="w-3.5 h-3.5" /> Livrare</h4>
-              <div className="text-sm text-muted-foreground">
+              <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><Truck className="w-3.5 h-3.5" /> Livrare & AWB</h4>
+              <div className="text-sm text-muted-foreground space-y-2">
                 <p>Status: {order.shipping_status || "—"}</p>
-                {order.fulfillment_warehouse_id && <p className="text-xs">Depozit: {order.fulfillment_warehouse_id.slice(0, 8)}</p>}
+                {order.fulfillment_warehouse_id && <p className="text-xs">Depozit: {(order.fulfillment_warehouse_id as string).slice(0, 8)}</p>}
+
+                {(order as any).tracking_number ? (
+                  <div className="bg-muted/30 rounded-lg p-3 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-foreground">AWB</span>
+                      <Badge variant="outline" className="text-[10px] font-mono">{(order as any).tracking_number}</Badge>
+                    </div>
+                    {(order as any).courier && (
+                      <p className="text-xs">Curier: {carriers.find((c: any) => c.courier === (order as any).courier)?.display_name || (order as any).courier}</p>
+                    )}
+                    {(order as any).tracking_url && (
+                      <a href={(order as any).tracking_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary flex items-center gap-1 hover:underline">
+                        <ExternalLink className="w-3 h-3" /> Urmărire colet
+                      </a>
+                    )}
+                    {trackingEvents.length > 0 && (
+                      <div className="mt-2 border-t pt-2 space-y-1">
+                        <p className="text-[10px] font-semibold text-foreground">Istoric tracking</p>
+                        {trackingEvents.slice(0, 5).map((ev: any) => (
+                          <div key={ev.id} className="text-[10px] text-muted-foreground">
+                            <span className="font-medium">{ev.status}</span> — {ev.description || "—"}
+                            <span className="ml-1 opacity-60">{format(new Date(ev.event_at), "dd.MM HH:mm")}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-2 border-t pt-2">
+                    <p className="text-xs font-medium text-foreground">Generare AWB</p>
+                    <Select value={awbCourier} onValueChange={setAwbCourier}>
+                      <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Selectează curier" /></SelectTrigger>
+                      <SelectContent>
+                        {carriers.map((c: any) => <SelectItem key={c.courier} value={c.courier}>{c.display_name}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                    <Button size="sm" className="w-full" onClick={generateAWB} disabled={!awbCourier || generatingAwb}>
+                      {generatingAwb ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <Printer className="w-3.5 h-3.5 mr-1" />}
+                      {generatingAwb ? "Se generează..." : "Generează AWB"}
+                    </Button>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

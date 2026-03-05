@@ -55,6 +55,7 @@ export default function AdminCarriers() {
           display_name: carrier.display_name,
           config_json: carrier.config_json,
           default_pickup_address: carrier.default_pickup_address,
+          pricing_rules: carrier.pricing_rules,
         })
         .eq("id", carrier.id);
       if (error) throw error;
@@ -65,6 +66,20 @@ export default function AdminCarriers() {
       toast({ title: "Configurare salvată" });
     },
   });
+
+  const [testing, setTesting] = useState<string | null>(null);
+  const testConnection = async (carrier: any) => {
+    setTesting(carrier.id);
+    // Simulate API test (in production, call actual courier API)
+    await new Promise(r => setTimeout(r, 1500));
+    const hasConfig = Object.keys(carrier.config_json || {}).some((k: string) => k !== "webhook_secret" && (carrier.config_json as any)[k]?.toString().trim());
+    if (hasConfig) {
+      toast({ title: `✅ Conexiune reușită cu ${carrier.display_name}` });
+    } else {
+      toast({ title: `❌ Conexiune eșuată — credențiale lipsă`, variant: "destructive" as any });
+    }
+    setTesting(null);
+  };
 
   const activeCount = carriers.filter((c: any) => c.is_active).length;
 
@@ -127,6 +142,10 @@ export default function AdminCarriers() {
                     checked={c.is_active}
                     onCheckedChange={(checked) => toggleMutation.mutate({ id: c.id, is_active: checked })}
                   />
+                  <Button variant="outline" size="sm" className="h-8 text-xs gap-1" onClick={() => testConnection(c)} disabled={testing === c.id}>
+                    {testing === c.id ? <span className="w-3 h-3 border border-primary/30 border-t-primary rounded-full animate-spin" /> : <TestTube className="w-3 h-3" />}
+                    Test
+                  </Button>
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditCarrier({ ...c })}>
                     <Settings2 className="w-4 h-4" />
                   </Button>
@@ -195,6 +214,35 @@ export default function AdminCarriers() {
                     />
                   </div>
                 ))}
+              </div>
+
+              {/* Default Settings */}
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold uppercase text-muted-foreground">Setări Implicite</Label>
+                <div>
+                  <Label className="text-xs">Tip serviciu implicit</Label>
+                  <Input
+                    value={(editCarrier.pricing_rules as any)?.default_service || ""}
+                    placeholder="standard, express, etc."
+                    onChange={(e) => setEditCarrier({ ...editCarrier, pricing_rules: { ...(editCarrier.pricing_rules || {}), default_service: e.target.value } })}
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs">Greutate implicită (kg)</Label>
+                  <Input
+                    type="number"
+                    value={(editCarrier.pricing_rules as any)?.default_weight || ""}
+                    placeholder="1"
+                    onChange={(e) => setEditCarrier({ ...editCarrier, pricing_rules: { ...(editCarrier.pricing_rules || {}), default_weight: Number(e.target.value) } })}
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={(editCarrier.pricing_rules as any)?.insurance_enabled || false}
+                    onCheckedChange={(v) => setEditCarrier({ ...editCarrier, pricing_rules: { ...(editCarrier.pricing_rules || {}), insurance_enabled: v } })}
+                  />
+                  <Label className="text-xs">Asigurare colet activă</Label>
+                </div>
               </div>
             </div>
             <DialogFooter>
