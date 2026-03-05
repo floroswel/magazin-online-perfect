@@ -156,6 +156,7 @@ export default function Account() {
         <Tabs defaultValue="orders">
           <TabsList className="flex-wrap">
             <TabsTrigger value="orders"><Package className="h-4 w-4 mr-1" /> Comenzi</TabsTrigger>
+            <TabsTrigger value="subscriptions"><RefreshCw className="h-4 w-4 mr-1" /> Abonamente</TabsTrigger>
             <TabsTrigger value="addresses"><MapPin className="h-4 w-4 mr-1" /> Adrese</TabsTrigger>
             <TabsTrigger value="loyalty"><Award className="h-4 w-4 mr-1" /> Fidelitate</TabsTrigger>
             <TabsTrigger value="profile"><UserIcon className="h-4 w-4 mr-1" /> Profil</TabsTrigger>
