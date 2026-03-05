@@ -638,7 +638,12 @@ export default function AdminProducts() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Descriere scurtă</Label>
+              <div className="flex items-center justify-between">
+                <Label>Descriere scurtă</Label>
+                <Button type="button" variant="outline" size="sm" onClick={() => setAiModalOpen(true)} className="gap-1.5 text-xs" disabled={!form.name.trim()}>
+                  <Sparkles className="w-3 h-3" /> Generează cu AI ✨
+                </Button>
+              </div>
               <Textarea value={form.short_description} onChange={(e) => setForm({ ...form, short_description: e.target.value })} rows={2} placeholder="Rezumat scurt afișat pe card/listing..." />
             </div>
             <div className="space-y-2">
