@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,17 +9,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import {
   ChevronDown, ChevronRight, MapPin, CreditCard, Gift, Download, CalendarIcon,
-  CheckCircle2, Truck, XCircle, RotateCcw, Eye, Package, Search, Ban
+  CheckCircle2, Truck, XCircle, RotateCcw, Eye, Package, Search, Ban,
+  Tag, Plus, FileText, Copy, StickyNote, Clock, ArrowUpDown, Printer,
 } from "lucide-react";
 import { format, startOfDay, endOfDay } from "date-fns";
 import { ro } from "date-fns/locale";
 import { toast } from "sonner";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import AdminOrderDetail from "./orders/AdminOrderDetail";
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   pending: { label: "În așteptare", color: "bg-yellow-500/15 text-yellow-600 border-yellow-500/30", icon: <Package className="w-3 h-3" /> },
@@ -30,55 +34,91 @@ const statusConfig: Record<string, { label: string; color: string; icon: React.R
   refunded: { label: "Rambursat", color: "bg-orange-500/15 text-orange-600 border-orange-500/30", icon: <RotateCcw className="w-3 h-3" /> },
 };
 
+export { statusConfig };
+
+type SortKey = "date" | "total" | "status" | "customer";
+type SortDir = "asc" | "desc";
+
 export default function AdminOrders() {
   const queryClient = useQueryClient();
-  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterPayment, setFilterPayment] = useState("all");
+  const [filterTag, setFilterTag] = useState("all");
   const [search, setSearch] = useState("");
   const [dateFrom, setDateFrom] = useState<Date | undefined>();
   const [dateTo, setDateTo] = useState<Date | undefined>();
-  const [detailOrder, setDetailOrder] = useState<any | null>(null);
+  const [minValue, setMinValue] = useState("");
+  const [maxValue, setMaxValue] = useState("");
+  const [sortKey, setSortKey] = useState<SortKey>("date");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [expandedRow, setExpandedRow] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [detailOrderId, setDetailOrderId] = useState<string | null>(null);
   const [confirmAction, setConfirmAction] = useState<{ order: any; action: string; label: string } | null>(null);
   const [actionNote, setActionNote] = useState("");
+  const [showTagDialog, setShowTagDialog] = useState<string | null>(null);
+  const [newTagName, setNewTagName] = useState("");
+  const [newTagColor, setNewTagColor] = useState("#6366f1");
+  const [showFilters, setShowFilters] = useState(false);
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["admin-orders"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("*, order_items(*, products(name, image_url, slug))")
+        .select("*, order_items(*, products(name, image_url, slug, sku))")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
     },
   });
 
+  const { data: allTags = [] } = useQuery({
+    queryKey: ["order-tags"],
+    queryFn: async () => {
+      const { data } = await supabase.from("order_tags").select("*").order("name");
+      return (data as any[]) || [];
+    },
+  });
+
+  const { data: tagAssignments = [] } = useQuery({
+    queryKey: ["order-tag-assignments"],
+    queryFn: async () => {
+      const { data } = await supabase.from("order_tag_assignments").select("*");
+      return (data as any[]) || [];
+    },
+  });
+
+  const orderTagMap = useMemo(() => {
+    const m = new Map<string, string[]>();
+    tagAssignments.forEach((a: any) => {
+      const arr = m.get(a.order_id) || [];
+      arr.push(a.tag_id);
+      m.set(a.order_id, arr);
+    });
+    return m;
+  }, [tagAssignments]);
+
   const updateStatus = useMutation({
-    mutationFn: async ({ id, status, userEmail, order }: { id: string; status: string; userEmail?: string; order?: any }) => {
+    mutationFn: async ({ id, status, userEmail, order, sendEmail = true }: { id: string; status: string; userEmail?: string; order?: any; sendEmail?: boolean }) => {
+      const oldOrder = orders.find((o: any) => o.id === id);
       const { error } = await supabase.from("orders").update({ status }).eq("id", id);
       if (error) throw error;
 
-      if (userEmail) {
-        if (status === "shipped" && order) {
-          // Send dedicated shipping update email with tracking info
-          supabase.functions.invoke("send-email", {
-            body: {
-              type: "shipping_update",
-              to: userEmail,
-              data: {
-                orderId: id,
-                trackingNumber: order.tracking_number || "",
-                courierName: order.courier_name || "",
-                trackingUrl: order.tracking_url || "",
-                shippingAddress: order.shipping_address || null,
-                estimatedDelivery: order.estimated_delivery || "",
-              },
-            },
-          }).catch(console.error);
-        } else {
-          supabase.functions.invoke("send-email", {
-            body: { type: "order_status", to: userEmail, data: { orderId: id, status } },
-          }).catch(console.error);
-        }
+      // Log timeline
+      await supabase.from("order_timeline").insert({
+        order_id: id,
+        action: "status_change",
+        old_status: oldOrder?.status || null,
+        new_status: status,
+        note: actionNote || null,
+        is_internal: true,
+      });
+
+      if (sendEmail && userEmail) {
+        supabase.functions.invoke("send-email", {
+          body: { type: "order_status", to: userEmail, data: { orderId: id, status } },
+        }).catch(console.error);
       }
     },
     onSuccess: () => {
@@ -90,21 +130,52 @@ export default function AdminOrders() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const filtered = orders.filter((o: any) => {
-    if (filterStatus !== "all" && o.status !== filterStatus) return false;
-    const orderDate = new Date(o.created_at);
-    if (dateFrom && orderDate < startOfDay(dateFrom)) return false;
-    if (dateTo && orderDate > endOfDay(dateTo)) return false;
-    if (search) {
-      const q = search.toLowerCase();
-      if (
-        !o.id.toLowerCase().includes(q) &&
-        !(o.user_email || "").toLowerCase().includes(q) &&
-        !(o.shipping_address as any)?.full_name?.toLowerCase().includes(q)
-      ) return false;
-    }
-    return true;
-  });
+  // ─── Filtering ───
+  const filtered = useMemo(() => {
+    let result = orders.filter((o: any) => {
+      if (filterStatus !== "all" && o.status !== filterStatus) return false;
+      if (filterPayment !== "all" && (o.payment_method || "ramburs") !== filterPayment) return false;
+      const d = new Date(o.created_at);
+      if (dateFrom && d < startOfDay(dateFrom)) return false;
+      if (dateTo && d > endOfDay(dateTo)) return false;
+      if (minValue && Number(o.total) < Number(minValue)) return false;
+      if (maxValue && Number(o.total) > Number(maxValue)) return false;
+      if (filterTag !== "all") {
+        const tIds = orderTagMap.get(o.id) || [];
+        if (!tIds.includes(filterTag)) return false;
+      }
+      if (search) {
+        const q = search.toLowerCase();
+        const addr = o.shipping_address as any;
+        if (
+          !o.id.toLowerCase().includes(q) &&
+          !(o.order_number || "").toLowerCase().includes(q) &&
+          !(o.user_email || "").toLowerCase().includes(q) &&
+          !(addr?.full_name || "").toLowerCase().includes(q)
+        ) return false;
+      }
+      return true;
+    });
+
+    // Sorting
+    result.sort((a: any, b: any) => {
+      let cmp = 0;
+      switch (sortKey) {
+        case "date": cmp = new Date(a.created_at).getTime() - new Date(b.created_at).getTime(); break;
+        case "total": cmp = Number(a.total) - Number(b.total); break;
+        case "status": cmp = (a.status || "").localeCompare(b.status || ""); break;
+        case "customer": {
+          const na = (a.shipping_address as any)?.full_name || "";
+          const nb = (b.shipping_address as any)?.full_name || "";
+          cmp = na.localeCompare(nb);
+          break;
+        }
+      }
+      return sortDir === "desc" ? -cmp : cmp;
+    });
+
+    return result;
+  }, [orders, filterStatus, filterPayment, filterTag, dateFrom, dateTo, minValue, maxValue, search, sortKey, sortDir, orderTagMap]);
 
   const kpis = {
     total: orders.length,
@@ -113,21 +184,12 @@ export default function AdminOrders() {
     revenue: orders.filter((o: any) => !["cancelled", "refunded"].includes(o.status)).reduce((s: number, o: any) => s + Number(o.total), 0),
   };
 
+  const paymentMethods = useMemo(() => [...new Set(orders.map((o: any) => o.payment_method || "ramburs"))], [orders]);
+
+  // ─── Actions ───
   const executeAction = (order: any, action: string) => {
-    const statusMap: Record<string, string> = {
-      mark_paid: "processing",
-      fulfill: "shipped",
-      deliver: "delivered",
-      cancel: "cancelled",
-      refund: "refunded",
-    };
-    const labels: Record<string, string> = {
-      mark_paid: "Marchează ca plătită",
-      fulfill: "Marchează ca expediată",
-      deliver: "Marchează ca livrată",
-      cancel: "Anulează comanda",
-      refund: "Rambursează comanda",
-    };
+    const statusMap: Record<string, string> = { mark_paid: "processing", fulfill: "shipped", deliver: "delivered", cancel: "cancelled", refund: "refunded" };
+    const labels: Record<string, string> = { mark_paid: "Marchează ca plătită", fulfill: "Marchează ca expediată", deliver: "Marchează ca livrată", cancel: "Anulează comanda", refund: "Rambursează comanda" };
     if (["cancel", "refund"].includes(action)) {
       setConfirmAction({ order, action, label: labels[action] });
     } else {
@@ -138,211 +200,318 @@ export default function AdminOrders() {
   const confirmExecute = () => {
     if (!confirmAction) return;
     const statusMap: Record<string, string> = { cancel: "cancelled", refund: "refunded" };
-    updateStatus.mutate({
-      id: confirmAction.order.id,
-      status: statusMap[confirmAction.action],
-      userEmail: confirmAction.order.user_email,
-      order: confirmAction.order,
-    });
+    updateStatus.mutate({ id: confirmAction.order.id, status: statusMap[confirmAction.action], userEmail: confirmAction.order.user_email, order: confirmAction.order });
   };
 
   const getActions = (order: any) => {
     const actions: { key: string; label: string; icon: React.ReactNode; variant: "default" | "outline" | "destructive" }[] = [];
     switch (order.status) {
       case "pending":
-        actions.push({ key: "mark_paid", label: "Marchează plătit", icon: <CheckCircle2 className="w-4 h-4" />, variant: "default" });
-        actions.push({ key: "cancel", label: "Anulează", icon: <Ban className="w-4 h-4" />, variant: "destructive" });
+        actions.push({ key: "mark_paid", label: "Plătit", icon: <CheckCircle2 className="w-3.5 h-3.5" />, variant: "default" });
+        actions.push({ key: "cancel", label: "Anulează", icon: <Ban className="w-3.5 h-3.5" />, variant: "destructive" });
         break;
       case "processing":
-        actions.push({ key: "fulfill", label: "Expediază", icon: <Truck className="w-4 h-4" />, variant: "default" });
-        actions.push({ key: "cancel", label: "Anulează", icon: <Ban className="w-4 h-4" />, variant: "destructive" });
+        actions.push({ key: "fulfill", label: "Expediază", icon: <Truck className="w-3.5 h-3.5" />, variant: "default" });
+        actions.push({ key: "cancel", label: "Anulează", icon: <Ban className="w-3.5 h-3.5" />, variant: "destructive" });
         break;
       case "shipped":
-        actions.push({ key: "deliver", label: "Confirmă livrare", icon: <CheckCircle2 className="w-4 h-4" />, variant: "default" });
+        actions.push({ key: "deliver", label: "Livrat", icon: <CheckCircle2 className="w-3.5 h-3.5" />, variant: "default" });
         break;
       case "delivered":
-        actions.push({ key: "refund", label: "Rambursează", icon: <RotateCcw className="w-4 h-4" />, variant: "destructive" });
+        actions.push({ key: "refund", label: "Ramburs", icon: <RotateCcw className="w-3.5 h-3.5" />, variant: "destructive" });
         break;
     }
     return actions;
   };
 
-  const exportCSV = () => {
-    if (filtered.length === 0) { toast.error("Nu există comenzi de exportat."); return; }
-    const rows: string[][] = [
-      ["ID Comandă", "Data", "Client Email", "Status", "Total (RON)", "Discount (RON)", "Metoda Plată", "Puncte Fidelitate", "Produse", "Adresă Livrare"],
-    ];
-    filtered.forEach((order: any) => {
-      const address = order.shipping_address as any;
-      const items = (order.order_items || []).map((i: any) => `${i.products?.name || "Produs șters"} x${i.quantity}`).join("; ");
-      const addr = address ? `${address.full_name}, ${address.address}, ${address.city}, ${address.county} ${address.postal_code || ""}, Tel: ${address.phone}` : "";
-      rows.push([
-        order.id, format(new Date(order.created_at), "yyyy-MM-dd HH:mm"), order.user_email || "",
-        statusConfig[order.status]?.label || order.status, Number(order.total).toFixed(2),
-        Number(order.discount_amount || 0).toFixed(2), order.payment_method || "ramburs",
-        String(order.loyalty_points_earned || 0), items, addr,
-      ]);
-    });
-    const csvContent = rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
-    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `comenzi-${format(new Date(), "yyyy-MM-dd")}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success(`${filtered.length} comenzi exportate!`);
+  // ─── Bulk actions ───
+  const allSelected = filtered.length > 0 && filtered.every((o: any) => selectedIds.has(o.id));
+  const someSelected = selectedIds.size > 0;
+
+  const toggleSelectAll = () => {
+    if (allSelected) setSelectedIds(new Set());
+    else setSelectedIds(new Set(filtered.map((o: any) => o.id)));
   };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const bulkChangeStatus = async (newStatus: string) => {
+    const ids = [...selectedIds];
+    for (const id of ids) {
+      await supabase.from("orders").update({ status: newStatus }).eq("id", id);
+      await supabase.from("order_timeline").insert({ order_id: id, action: "status_change", new_status: newStatus, note: "Bulk update" });
+    }
+    queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+    toast.success(`${ids.length} comenzi actualizate la ${statusConfig[newStatus]?.label || newStatus}`);
+    setSelectedIds(new Set());
+  };
+
+  // ─── Tags ───
+  const assignTag = async (orderId: string, tagId: string) => {
+    await supabase.from("order_tag_assignments").insert({ order_id: orderId, tag_id: tagId });
+    queryClient.invalidateQueries({ queryKey: ["order-tag-assignments"] });
+  };
+
+  const removeTag = async (orderId: string, tagId: string) => {
+    await supabase.from("order_tag_assignments").delete().eq("order_id", orderId).eq("tag_id", tagId);
+    queryClient.invalidateQueries({ queryKey: ["order-tag-assignments"] });
+  };
+
+  const createTag = async () => {
+    if (!newTagName.trim()) return;
+    await supabase.from("order_tags").insert({ name: newTagName.trim(), color: newTagColor });
+    setNewTagName("");
+    queryClient.invalidateQueries({ queryKey: ["order-tags"] });
+    toast.success("Tag creat!");
+  };
+
+  // ─── Export ───
+  const exportCSV = () => {
+    const source = someSelected ? filtered.filter((o: any) => selectedIds.has(o.id)) : filtered;
+    if (source.length === 0) { toast.error("Nimic de exportat."); return; }
+    const rows: string[][] = [["ID", "Nr.", "Data", "Client", "Email", "Status", "Total", "Plată", "Produse", "Adresă"]];
+    source.forEach((o: any) => {
+      const addr = o.shipping_address as any;
+      const items = (o.order_items || []).map((i: any) => `${i.products?.name || "?"} x${i.quantity}`).join("; ");
+      rows.push([o.id.slice(0, 8), o.order_number || "", format(new Date(o.created_at), "yyyy-MM-dd HH:mm"), addr?.full_name || "", o.user_email || "", statusConfig[o.status]?.label || o.status, Number(o.total).toFixed(2), o.payment_method || "ramburs", items, addr ? `${addr.address}, ${addr.city}` : ""]);
+    });
+    const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `comenzi-${format(new Date(), "yyyy-MM-dd")}.csv`; a.click();
+    toast.success(`${source.length} comenzi exportate!`);
+  };
+
+  const toggleSort = (key: SortKey) => {
+    if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc");
+    else { setSortKey(key); setSortDir("desc"); }
+  };
+
+  const SortHeader = ({ label, sk }: { label: string; sk: SortKey }) => (
+    <button className="flex items-center gap-1 text-xs font-medium hover:text-foreground" onClick={() => toggleSort(sk)}>
+      {label} <ArrowUpDown className={cn("w-3 h-3", sortKey === sk ? "text-primary" : "text-muted-foreground/40")} />
+    </button>
+  );
 
   const StatusChip = ({ status }: { status: string }) => {
     const cfg = statusConfig[status] || { label: status, color: "bg-muted text-muted-foreground", icon: null };
-    return (
-      <Badge variant="outline" className={cn("gap-1 font-medium border", cfg.color)}>
-        {cfg.icon} {cfg.label}
-      </Badge>
-    );
+    return <Badge variant="outline" className={cn("gap-1 font-medium border text-[11px]", cfg.color)}>{cfg.icon} {cfg.label}</Badge>;
   };
 
+  // ─── Render detail page ───
+  if (detailOrderId) {
+    return <AdminOrderDetail orderId={detailOrderId} onBack={() => setDetailOrderId(null)} />;
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="bg-card border-border"><CardContent className="pt-6">
-          <p className="text-sm text-muted-foreground">Total comenzi</p>
-          <p className="text-2xl font-bold text-foreground">{kpis.total}</p>
-        </CardContent></Card>
-        <Card className="bg-card border-border"><CardContent className="pt-6">
-          <p className="text-sm text-muted-foreground">În așteptare</p>
-          <p className="text-2xl font-bold text-yellow-500">{kpis.pending}</p>
-        </CardContent></Card>
-        <Card className="bg-card border-border"><CardContent className="pt-6">
-          <p className="text-sm text-muted-foreground">În procesare</p>
-          <p className="text-2xl font-bold text-blue-500">{kpis.processing}</p>
-        </CardContent></Card>
-        <Card className="bg-card border-border"><CardContent className="pt-6">
-          <p className="text-sm text-muted-foreground">Venituri</p>
-          <p className="text-2xl font-bold text-green-500">{kpis.revenue.toLocaleString("ro-RO", { minimumFractionDigits: 2 })} RON</p>
-        </CardContent></Card>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <Card><CardContent className="pt-5 pb-4"><p className="text-xs text-muted-foreground">Total comenzi</p><p className="text-2xl font-bold">{kpis.total}</p></CardContent></Card>
+        <Card><CardContent className="pt-5 pb-4"><p className="text-xs text-muted-foreground">În așteptare</p><p className="text-2xl font-bold text-yellow-500">{kpis.pending}</p></CardContent></Card>
+        <Card><CardContent className="pt-5 pb-4"><p className="text-xs text-muted-foreground">În procesare</p><p className="text-2xl font-bold text-blue-500">{kpis.processing}</p></CardContent></Card>
+        <Card><CardContent className="pt-5 pb-4"><p className="text-xs text-muted-foreground">Venituri</p><p className="text-2xl font-bold text-green-500">{kpis.revenue.toLocaleString("ro-RO", { minimumFractionDigits: 2 })} RON</p></CardContent></Card>
       </div>
 
-      {/* Filters */}
-      <Card className="bg-card border-border">
-        <CardHeader>
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-            <CardTitle className="text-foreground">Comenzi ({filtered.length})</CardTitle>
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input placeholder="Caută ID, email, nume..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 w-56" />
+      <Card>
+        <CardHeader className="pb-2">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base">Comenzi ({filtered.length})</CardTitle>
+              <div className="flex gap-1.5">
+                <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)}>
+                  <Search className="w-3.5 h-3.5 mr-1" />Filtre {showFilters ? "▲" : "▼"}
+                </Button>
+                <Button variant="outline" size="sm" onClick={exportCSV}>
+                  <Download className="w-3.5 h-3.5 mr-1" />{someSelected ? `Export (${selectedIds.size})` : "Export"}
+                </Button>
               </div>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className={cn("gap-2 w-[140px] justify-start text-left font-normal", !dateFrom && "text-muted-foreground")}>
-                    <CalendarIcon className="w-4 h-4" />
-                    {dateFrom ? format(dateFrom, "dd MMM yyyy", { locale: ro }) : "De la"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={dateFrom} onSelect={setDateFrom} initialFocus className="p-3 pointer-events-auto" />
-                </PopoverContent>
-              </Popover>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className={cn("gap-2 w-[140px] justify-start text-left font-normal", !dateTo && "text-muted-foreground")}>
-                    <CalendarIcon className="w-4 h-4" />
-                    {dateTo ? format(dateTo, "dd MMM yyyy", { locale: ro }) : "Până la"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={dateTo} onSelect={setDateTo} initialFocus className="p-3 pointer-events-auto" />
-                </PopoverContent>
-              </Popover>
-              {(dateFrom || dateTo) && (
-                <Button variant="ghost" size="sm" onClick={() => { setDateFrom(undefined); setDateTo(undefined); }}>✕</Button>
-              )}
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger className="w-44">
-                  <SelectValue placeholder="Filtrează status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Toate statusurile</SelectItem>
-                  {Object.entries(statusConfig).map(([key, { label }]) => (
-                    <SelectItem key={key} value={key}>{label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button variant="outline" size="sm" onClick={exportCSV} className="gap-2">
-                <Download className="w-4 h-4" /> Export
-              </Button>
             </div>
+
+            {/* Filter bar */}
+            {showFilters && (
+              <div className="flex flex-wrap gap-2 p-3 bg-muted/30 rounded-lg border">
+                <div className="relative flex-1 min-w-[180px]">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                  <Input placeholder="ID, email, nume..." value={search} onChange={e => setSearch(e.target.value)} className="pl-8 h-8 text-xs" />
+                </div>
+                <Select value={filterStatus} onValueChange={setFilterStatus}>
+                  <SelectTrigger className="w-[140px] h-8 text-xs"><SelectValue placeholder="Status" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Toate statusurile</SelectItem>
+                    {Object.entries(statusConfig).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <Select value={filterPayment} onValueChange={setFilterPayment}>
+                  <SelectTrigger className="w-[130px] h-8 text-xs"><SelectValue placeholder="Plată" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Toate plățile</SelectItem>
+                    {paymentMethods.map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <Select value={filterTag} onValueChange={setFilterTag}>
+                  <SelectTrigger className="w-[130px] h-8 text-xs"><SelectValue placeholder="Tag" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Toate tag-urile</SelectItem>
+                    {allTags.map((t: any) => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className={cn("h-8 text-xs gap-1", !dateFrom && "text-muted-foreground")}>
+                      <CalendarIcon className="w-3 h-3" />{dateFrom ? format(dateFrom, "dd.MM.yy") : "De la"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={dateFrom} onSelect={setDateFrom} className="p-3 pointer-events-auto" /></PopoverContent>
+                </Popover>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className={cn("h-8 text-xs gap-1", !dateTo && "text-muted-foreground")}>
+                      <CalendarIcon className="w-3 h-3" />{dateTo ? format(dateTo, "dd.MM.yy") : "Până la"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={dateTo} onSelect={setDateTo} className="p-3 pointer-events-auto" /></PopoverContent>
+                </Popover>
+                <Input type="number" placeholder="Min RON" value={minValue} onChange={e => setMinValue(e.target.value)} className="w-[90px] h-8 text-xs" />
+                <Input type="number" placeholder="Max RON" value={maxValue} onChange={e => setMaxValue(e.target.value)} className="w-[90px] h-8 text-xs" />
+                {(dateFrom || dateTo || minValue || maxValue || filterStatus !== "all" || filterPayment !== "all" || filterTag !== "all" || search) && (
+                  <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={() => { setDateFrom(undefined); setDateTo(undefined); setMinValue(""); setMaxValue(""); setFilterStatus("all"); setFilterPayment("all"); setFilterTag("all"); setSearch(""); }}>✕ Reset</Button>
+                )}
+              </div>
+            )}
+
+            {/* Bulk actions bar */}
+            {someSelected && (
+              <div className="flex items-center gap-2 p-2 bg-primary/5 rounded-lg border border-primary/20">
+                <span className="text-xs font-medium">{selectedIds.size} selectate</span>
+                <Select onValueChange={v => bulkChangeStatus(v)}>
+                  <SelectTrigger className="w-[150px] h-7 text-xs"><SelectValue placeholder="Schimbă status" /></SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(statusConfig).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                <Button variant="outline" size="sm" className="h-7 text-xs" onClick={exportCSV}><Download className="w-3 h-3 mr-1" />Export CSV</Button>
+                <Button variant="ghost" size="sm" className="h-7 text-xs ml-auto" onClick={() => setSelectedIds(new Set())}>Deselectează</Button>
+              </div>
+            )}
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           {isLoading ? (
-            <div className="text-center py-8 text-muted-foreground">Se încarcă...</div>
+            <div className="text-center py-12 text-muted-foreground">Se încarcă...</div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Comandă</TableHead>
-                  <TableHead>Client</TableHead>
-                  <TableHead className="text-center">Articole</TableHead>
-                  <TableHead className="text-right">Total</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead className="w-10"><Checkbox checked={allSelected} onCheckedChange={toggleSelectAll} /></TableHead>
+                  <TableHead className="w-8"></TableHead>
+                  <TableHead><SortHeader label="Comandă" sk="date" /></TableHead>
+                  <TableHead><SortHeader label="Client" sk="customer" /></TableHead>
+                  <TableHead className="text-center">Produse</TableHead>
+                  <TableHead className="text-right"><SortHeader label="Total" sk="total" /></TableHead>
+                  <TableHead><SortHeader label="Status" sk="status" /></TableHead>
                   <TableHead>Plată</TableHead>
+                  <TableHead>Tag-uri</TableHead>
                   <TableHead className="text-right">Acțiuni</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filtered.map((order: any) => {
-                  const address = order.shipping_address as any;
+                  const addr = order.shipping_address as any;
+                  const isExpanded = expandedRow === order.id;
+                  const oTags = (orderTagMap.get(order.id) || []).map((tid: string) => allTags.find((t: any) => t.id === tid)).filter(Boolean);
+
                   return (
-                    <TableRow key={order.id} className="group">
-                      <TableCell>
-                        <p className="font-mono text-xs text-muted-foreground">#{order.id.slice(0, 8)}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {format(new Date(order.created_at), "dd MMM yyyy, HH:mm", { locale: ro })}
-                        </p>
-                      </TableCell>
-                      <TableCell>
-                        <p className="text-sm font-medium truncate max-w-[180px]">{address?.full_name || "—"}</p>
-                        <p className="text-xs text-muted-foreground truncate max-w-[180px]">{order.user_email || "—"}</p>
-                      </TableCell>
-                      <TableCell className="text-center text-sm">{order.order_items?.length || 0}</TableCell>
-                      <TableCell className="text-right">
-                        <p className="font-semibold text-sm">{Number(order.total).toLocaleString("ro-RO", { minimumFractionDigits: 2 })} RON</p>
-                        {order.discount_amount > 0 && (
-                          <p className="text-xs text-green-500">-{Number(order.discount_amount).toFixed(2)}</p>
-                        )}
-                      </TableCell>
-                      <TableCell><StatusChip status={order.status} /></TableCell>
-                      <TableCell className="text-xs capitalize text-muted-foreground">{order.payment_method || "ramburs"}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setDetailOrder(order)}>
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                          {getActions(order).slice(0, 2).map((act) => (
-                            <Button
-                              key={act.key}
-                              variant={act.variant === "destructive" ? "ghost" : "outline"}
-                              size="sm"
-                              className={cn("h-8 text-xs gap-1", act.variant === "destructive" && "text-destructive hover:text-destructive")}
-                              onClick={() => executeAction(order, act.key)}
-                            >
-                              {act.icon}
-                              <span className="hidden xl:inline">{act.label}</span>
-                            </Button>
-                          ))}
-                        </div>
-                      </TableCell>
-                    </TableRow>
+                    <>
+                      <TableRow key={order.id} className={cn("group cursor-pointer", isExpanded && "bg-muted/30")}>
+                        <TableCell onClick={e => e.stopPropagation()}><Checkbox checked={selectedIds.has(order.id)} onCheckedChange={() => toggleSelect(order.id)} /></TableCell>
+                        <TableCell onClick={() => setExpandedRow(isExpanded ? null : order.id)}>
+                          {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
+                        </TableCell>
+                        <TableCell onClick={() => setExpandedRow(isExpanded ? null : order.id)}>
+                          <p className="font-mono text-xs text-muted-foreground">#{order.order_number || order.id.slice(0, 8)}</p>
+                          <p className="text-[11px] text-muted-foreground">{format(new Date(order.created_at), "dd MMM yy, HH:mm", { locale: ro })}</p>
+                        </TableCell>
+                        <TableCell>
+                          <p className="text-sm font-medium truncate max-w-[160px]">{addr?.full_name || "—"}</p>
+                          <p className="text-[11px] text-muted-foreground truncate max-w-[160px]">{order.user_email || "—"}</p>
+                        </TableCell>
+                        <TableCell className="text-center text-sm">{order.order_items?.length || 0}</TableCell>
+                        <TableCell className="text-right">
+                          <p className="font-semibold text-sm">{Number(order.total).toLocaleString("ro-RO", { minimumFractionDigits: 2 })} RON</p>
+                        </TableCell>
+                        <TableCell><StatusChip status={order.status} /></TableCell>
+                        <TableCell className="text-xs capitalize text-muted-foreground">{order.payment_method || "ramburs"}</TableCell>
+                        <TableCell>
+                          <div className="flex gap-0.5 flex-wrap">
+                            {oTags.map((t: any) => (
+                              <Badge key={t.id} variant="outline" className="text-[9px] px-1.5 py-0 border" style={{ borderColor: t.color, color: t.color }}>{t.name}</Badge>
+                            ))}
+                            <button className="text-muted-foreground hover:text-foreground" onClick={(e) => { e.stopPropagation(); setShowTagDialog(order.id); }}>
+                              <Plus className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-0.5">
+                            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setDetailOrderId(order.id)}><Eye className="w-3.5 h-3.5" /></Button>
+                            {getActions(order).slice(0, 1).map(act => (
+                              <Button key={act.key} variant={act.variant === "destructive" ? "ghost" : "outline"} size="sm" className={cn("h-7 text-[11px] gap-1 px-2", act.variant === "destructive" && "text-destructive")} onClick={() => executeAction(order, act.key)}>
+                                {act.icon}<span className="hidden xl:inline">{act.label}</span>
+                              </Button>
+                            ))}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                      {/* Inline expand */}
+                      {isExpanded && (
+                        <TableRow key={`${order.id}-exp`}>
+                          <TableCell colSpan={10} className="bg-muted/20 p-4">
+                            <div className="grid md:grid-cols-3 gap-4">
+                              <div>
+                                <h4 className="text-xs font-semibold mb-1.5 text-muted-foreground">PRODUSE</h4>
+                                {order.order_items?.map((item: any) => (
+                                  <div key={item.id} className="flex items-center gap-2 mb-1">
+                                    {item.products?.image_url && <img src={item.products.image_url} alt="" className="w-7 h-7 rounded object-cover border" />}
+                                    <div className="min-w-0">
+                                      <p className="text-xs truncate">{item.products?.name || "—"}</p>
+                                      <p className="text-[10px] text-muted-foreground">{item.quantity}× {Number(item.price).toFixed(2)} RON</p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                              <div>
+                                <h4 className="text-xs font-semibold mb-1.5 text-muted-foreground">ADRESĂ LIVRARE</h4>
+                                {addr ? (
+                                  <div className="text-xs text-muted-foreground space-y-0.5">
+                                    <p>{addr.full_name}</p><p>{addr.address}</p>
+                                    <p>{addr.city}, {addr.county} {addr.postal_code || ""}</p>
+                                    <p>📞 {addr.phone}</p>
+                                  </div>
+                                ) : <p className="text-xs text-muted-foreground">—</p>}
+                              </div>
+                              <div>
+                                <h4 className="text-xs font-semibold mb-1.5 text-muted-foreground">NOTE</h4>
+                                <p className="text-xs text-muted-foreground">{order.notes || "Fără note de la client."}</p>
+                                {order.internal_notes && <p className="text-xs mt-1 text-primary/70 italic">📝 {order.internal_notes}</p>}
+                                <Button size="sm" variant="outline" className="mt-2 h-6 text-[10px]" onClick={() => setDetailOrderId(order.id)}>
+                                  Deschide detalii →
+                                </Button>
+                              </div>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </>
                   );
                 })}
                 {filtered.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">Nicio comandă găsită.</TableCell>
-                  </TableRow>
+                  <TableRow><TableCell colSpan={10} className="text-center py-8 text-muted-foreground">Nicio comandă găsită.</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>
@@ -350,148 +519,42 @@ export default function AdminOrders() {
         </CardContent>
       </Card>
 
-      {/* Detail Dialog */}
-      <Dialog open={!!detailOrder} onOpenChange={(open) => !open && setDetailOrder(null)}>
-        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
-          {detailOrder && (() => {
-            const address = detailOrder.shipping_address as any;
-            const installments = detailOrder.payment_installments as any;
-            const subtotal = (detailOrder.order_items || []).reduce((s: number, i: any) => s + Number(i.price) * i.quantity, 0);
-            return (
-              <>
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-3">
-                    <span>Comandă #{detailOrder.id.slice(0, 8)}</span>
-                    <StatusChip status={detailOrder.status} />
-                  </DialogTitle>
-                  <DialogDescription>
-                    {format(new Date(detailOrder.created_at), "dd MMMM yyyy, HH:mm", { locale: ro })}
-                  </DialogDescription>
-                </DialogHeader>
-
-                <div className="space-y-6">
-                  {/* Items Table */}
-                  <div>
-                    <h3 className="text-sm font-semibold mb-2 text-foreground">Produse comandate</h3>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Produs</TableHead>
-                          <TableHead className="text-center">Cant.</TableHead>
-                          <TableHead className="text-right">Preț</TableHead>
-                          <TableHead className="text-right">Subtotal</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {detailOrder.order_items?.map((item: any) => (
-                          <TableRow key={item.id}>
-                            <TableCell>
-                              <div className="flex items-center gap-3">
-                                {item.products?.image_url && (
-                                  <img src={item.products.image_url} alt="" className="w-10 h-10 rounded object-cover border border-border" />
-                                )}
-                                <span className="text-sm font-medium">{item.products?.name || "Produs șters"}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell className="text-center">{item.quantity}</TableCell>
-                            <TableCell className="text-right text-sm">{Number(item.price).toFixed(2)} RON</TableCell>
-                            <TableCell className="text-right font-medium">{(Number(item.price) * item.quantity).toFixed(2)} RON</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-
-                    {/* Totals */}
-                    <div className="mt-3 border-t border-border pt-3 space-y-1 text-sm">
-                      <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span>{subtotal.toFixed(2)} RON</span></div>
-                      {detailOrder.discount_amount > 0 && (
-                        <div className="flex justify-between text-green-500"><span>Discount</span><span>-{Number(detailOrder.discount_amount).toFixed(2)} RON</span></div>
-                      )}
-                      <div className="flex justify-between font-bold text-base pt-1 border-t border-border">
-                        <span>Total</span><span>{Number(detailOrder.total).toFixed(2)} RON</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Info Grid */}
-                  <div className="grid sm:grid-cols-3 gap-4">
-                    {address && (
-                      <Card className="bg-muted/30 border-border">
-                        <CardContent className="p-4 space-y-1">
-                          <h4 className="text-sm font-semibold flex items-center gap-1 text-foreground"><MapPin className="w-4 h-4" /> Adresă livrare</h4>
-                          <div className="text-sm text-muted-foreground">
-                            <p>{address.full_name}</p>
-                            <p>{address.address}</p>
-                            <p>{address.city}, {address.county} {address.postal_code}</p>
-                            <p>📞 {address.phone}</p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    )}
-                    <Card className="bg-muted/30 border-border">
-                      <CardContent className="p-4 space-y-1">
-                        <h4 className="text-sm font-semibold flex items-center gap-1 text-foreground"><CreditCard className="w-4 h-4" /> Plată</h4>
-                        <div className="text-sm text-muted-foreground">
-                          <p className="capitalize">{detailOrder.payment_method || "Ramburs"}</p>
-                          {installments && (
-                            <p className="text-xs mt-1">{installments.months || installments.count} rate × {Number(installments.monthly_amount || installments.monthlyAmount || 0).toFixed(2)} RON via {installments.provider}</p>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                    <Card className="bg-muted/30 border-border">
-                      <CardContent className="p-4 space-y-1">
-                        <h4 className="text-sm font-semibold flex items-center gap-1 text-foreground"><Gift className="w-4 h-4" /> Extra</h4>
-                        <div className="text-sm text-muted-foreground">
-                          {detailOrder.loyalty_points_earned > 0 && <p>+{detailOrder.loyalty_points_earned} puncte</p>}
-                          <p className="text-xs">Email: {detailOrder.user_email || "—"}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* Actions */}
-                  {getActions(detailOrder).length > 0 && (
-                    <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
-                      {getActions(detailOrder).map((act) => (
-                        <Button
-                          key={act.key}
-                          variant={act.variant}
-                          size="sm"
-                          className="gap-2"
-                          onClick={() => executeAction(detailOrder, act.key)}
-                        >
-                          {act.icon} {act.label}
-                        </Button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </>
-            );
-          })()}
+      {/* Tag assignment dialog */}
+      <Dialog open={!!showTagDialog} onOpenChange={() => setShowTagDialog(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader><DialogTitle className="text-sm">Tag-uri comandă</DialogTitle></DialogHeader>
+          <div className="space-y-3">
+            {allTags.map((t: any) => {
+              const isAssigned = (orderTagMap.get(showTagDialog || "") || []).includes(t.id);
+              return (
+                <label key={t.id} className="flex items-center gap-2 text-sm cursor-pointer">
+                  <Checkbox checked={isAssigned} onCheckedChange={v => v ? assignTag(showTagDialog!, t.id) : removeTag(showTagDialog!, t.id)} />
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: t.color }} />
+                  {t.name}
+                </label>
+              );
+            })}
+            <div className="border-t pt-2 flex gap-1.5">
+              <Input value={newTagName} onChange={e => setNewTagName(e.target.value)} placeholder="Tag nou..." className="h-7 text-xs flex-1" />
+              <input type="color" value={newTagColor} onChange={e => setNewTagColor(e.target.value)} className="w-7 h-7 rounded border cursor-pointer" />
+              <Button size="sm" variant="outline" className="h-7 text-xs" onClick={createTag} disabled={!newTagName.trim()}><Plus className="w-3 h-3" /></Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 
-      {/* Confirm Destructive Action */}
-      <Dialog open={!!confirmAction} onOpenChange={(open) => !open && setConfirmAction(null)}>
+      {/* Confirm destructive action */}
+      <Dialog open={!!confirmAction} onOpenChange={open => !open && setConfirmAction(null)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{confirmAction?.label}</DialogTitle>
             <DialogDescription>
-              {confirmAction?.action === "cancel"
-                ? "Ești sigur că vrei să anulezi această comandă? Clientul va fi notificat."
-                : "Ești sigur că vrei să rambursezi această comandă? Aceasta va marca comanda ca rambursată."}
+              {confirmAction?.action === "cancel" ? "Clientul va fi notificat despre anulare." : "Comanda va fi marcată ca rambursată."}
             </DialogDescription>
           </DialogHeader>
           <div>
             <Label>Motiv (opțional)</Label>
-            <Textarea
-              value={actionNote}
-              onChange={(e) => setActionNote(e.target.value)}
-              placeholder="Adaugă un motiv..."
-              rows={3}
-            />
+            <Textarea value={actionNote} onChange={e => setActionNote(e.target.value)} placeholder="Adaugă motiv..." rows={3} />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setConfirmAction(null)}>Renunță</Button>
