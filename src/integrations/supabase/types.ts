@@ -2525,6 +2525,9 @@ export type Database = {
           payment_installments: Json | null
           payment_method: string | null
           payment_status: string | null
+          review_reminder_sent: boolean | null
+          review_request_sent: boolean | null
+          review_request_sent_at: string | null
           shipping_address: Json | null
           shipping_status: string | null
           shipping_total: number | null
@@ -2557,6 +2560,9 @@ export type Database = {
           payment_installments?: Json | null
           payment_method?: string | null
           payment_status?: string | null
+          review_reminder_sent?: boolean | null
+          review_request_sent?: boolean | null
+          review_request_sent_at?: string | null
           shipping_address?: Json | null
           shipping_status?: string | null
           shipping_total?: number | null
@@ -2589,6 +2595,9 @@ export type Database = {
           payment_installments?: Json | null
           payment_method?: string | null
           payment_status?: string | null
+          review_reminder_sent?: boolean | null
+          review_request_sent?: boolean | null
+          review_request_sent_at?: string | null
           shipping_address?: Json | null
           shipping_status?: string | null
           shipping_total?: number | null
@@ -3166,6 +3175,7 @@ export type Database = {
           created_at: string
           helpful_count: number | null
           id: string
+          photos: string[] | null
           product_id: string
           pros: string | null
           rating: number
@@ -3183,6 +3193,7 @@ export type Database = {
           created_at?: string
           helpful_count?: number | null
           id?: string
+          photos?: string[] | null
           product_id: string
           pros?: string | null
           rating: number
@@ -3200,6 +3211,7 @@ export type Database = {
           created_at?: string
           helpful_count?: number | null
           id?: string
+          photos?: string[] | null
           product_id?: string
           pros?: string | null
           rating?: number
