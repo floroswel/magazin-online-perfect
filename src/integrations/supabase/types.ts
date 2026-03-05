@@ -1248,6 +1248,62 @@ export type Database = {
         }
         Relationships: []
       }
+      import_history: {
+        Row: {
+          created_at: string
+          created_count: number
+          error_count: number
+          errors: Json | null
+          file_name: string | null
+          id: string
+          import_mode: string
+          scheduled_import_id: string | null
+          skipped_count: number
+          source: string
+          total_rows: number
+          updated_count: number
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_count?: number
+          error_count?: number
+          errors?: Json | null
+          file_name?: string | null
+          id?: string
+          import_mode?: string
+          scheduled_import_id?: string | null
+          skipped_count?: number
+          source?: string
+          total_rows?: number
+          updated_count?: number
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_count?: number
+          error_count?: number
+          errors?: Json | null
+          file_name?: string | null
+          id?: string
+          import_mode?: string
+          scheduled_import_id?: string | null
+          skipped_count?: number
+          source?: string
+          total_rows?: number
+          updated_count?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "import_history_scheduled_import_id_fkey"
+            columns: ["scheduled_import_id"]
+            isOneToOne: false
+            referencedRelation: "scheduled_imports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       integration_events: {
         Row: {
           created_at: string | null
@@ -3242,6 +3298,10 @@ export type Database = {
           last_result: Json | null
           last_run_at: string | null
           name: string
+          price_margin: number | null
+          price_mode: string
+          price_multiplier: number | null
+          stock_only_sync: boolean
           updated_at: string
         }
         Insert: {
@@ -3253,6 +3313,10 @@ export type Database = {
           last_result?: Json | null
           last_run_at?: string | null
           name: string
+          price_margin?: number | null
+          price_mode?: string
+          price_multiplier?: number | null
+          stock_only_sync?: boolean
           updated_at?: string
         }
         Update: {
@@ -3264,6 +3328,10 @@ export type Database = {
           last_result?: Json | null
           last_run_at?: string | null
           name?: string
+          price_margin?: number | null
+          price_mode?: string
+          price_multiplier?: number | null
+          stock_only_sync?: boolean
           updated_at?: string
         }
         Relationships: []
