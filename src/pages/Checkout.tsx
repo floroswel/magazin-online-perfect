@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Ticket, CreditCard, Banknote, Wallet, MapPin } from "lucide-react";
+import { Ticket, CreditCard, Banknote, Wallet, MapPin, Award } from "lucide-react";
 import MokkaModal from "@/components/mokka/MokkaModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
