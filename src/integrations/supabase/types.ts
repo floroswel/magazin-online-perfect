@@ -98,6 +98,36 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          link: string | null
+          message: string | null
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          link?: string | null
+          message?: string | null
+          title: string
+          type?: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          link?: string | null
+          message?: string | null
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
       affiliate_clicks: {
         Row: {
           affiliate_id: string
