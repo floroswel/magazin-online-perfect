@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   ArrowLeft, MapPin, CreditCard, Gift, CheckCircle2, Truck, XCircle,
   RotateCcw, Package, Ban, StickyNote, Clock, Copy, FileText, Plus, Minus,
-  Tag, Pencil, Save, Printer, Send,
+  Tag, Pencil, Save, Printer, Send, ExternalLink, Loader2,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ro } from "date-fns/locale";
