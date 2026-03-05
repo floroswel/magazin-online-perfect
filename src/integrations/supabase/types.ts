@@ -2279,6 +2279,107 @@ export type Database = {
           },
         ]
       }
+      order_tag_assignments: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          tag_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          tag_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_tag_assignments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_tag_assignments_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "order_tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_tags: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      order_timeline: {
+        Row: {
+          action: string
+          changed_by: string | null
+          created_at: string
+          id: string
+          is_internal: boolean | null
+          new_status: string | null
+          note: string | null
+          old_status: string | null
+          order_id: string
+        }
+        Insert: {
+          action: string
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          is_internal?: boolean | null
+          new_status?: string | null
+          note?: string | null
+          old_status?: string | null
+          order_id: string
+        }
+        Update: {
+          action?: string
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          is_internal?: boolean | null
+          new_status?: string | null
+          note?: string | null
+          old_status?: string | null
+          order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_timeline_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           billing_address: Json | null
