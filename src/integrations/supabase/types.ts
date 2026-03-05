@@ -2742,10 +2742,16 @@ export type Database = {
       }
       payment_methods: {
         Row: {
+          allowed_counties: string[] | null
+          allowed_customer_groups: string[] | null
+          bank_details: Json | null
+          bnpl_config: Json | null
           config_json: Json | null
           created_at: string | null
           description: string | null
           display_order: number | null
+          extra_fee_type: string | null
+          extra_fee_value: number | null
           icon_url: string | null
           id: string
           is_active: boolean | null
@@ -2753,14 +2759,24 @@ export type Database = {
           max_amount: number | null
           min_amount: number | null
           name: string
+          payment_deadline_days: number | null
+          pickup_location_id: string | null
           provider: string | null
+          sandbox_mode: boolean | null
+          supports_saved_cards: boolean | null
           type: string
         }
         Insert: {
+          allowed_counties?: string[] | null
+          allowed_customer_groups?: string[] | null
+          bank_details?: Json | null
+          bnpl_config?: Json | null
           config_json?: Json | null
           created_at?: string | null
           description?: string | null
           display_order?: number | null
+          extra_fee_type?: string | null
+          extra_fee_value?: number | null
           icon_url?: string | null
           id?: string
           is_active?: boolean | null
@@ -2768,14 +2784,24 @@ export type Database = {
           max_amount?: number | null
           min_amount?: number | null
           name: string
+          payment_deadline_days?: number | null
+          pickup_location_id?: string | null
           provider?: string | null
+          sandbox_mode?: boolean | null
+          supports_saved_cards?: boolean | null
           type: string
         }
         Update: {
+          allowed_counties?: string[] | null
+          allowed_customer_groups?: string[] | null
+          bank_details?: Json | null
+          bnpl_config?: Json | null
           config_json?: Json | null
           created_at?: string | null
           description?: string | null
           display_order?: number | null
+          extra_fee_type?: string | null
+          extra_fee_value?: number | null
           icon_url?: string | null
           id?: string
           is_active?: boolean | null
@@ -2783,7 +2809,11 @@ export type Database = {
           max_amount?: number | null
           min_amount?: number | null
           name?: string
+          payment_deadline_days?: number | null
+          pickup_location_id?: string | null
           provider?: string | null
+          sandbox_mode?: boolean | null
+          supports_saved_cards?: boolean | null
           type?: string
         }
         Relationships: []
