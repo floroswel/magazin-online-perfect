@@ -194,6 +194,7 @@ export default function AdminRoutes() {
 
         {/* ═══════════ CLIENȚI / CRM ═══════════ */}
         <Route path="customers" element={<AdminCustomers />} />
+        <Route path="customers/detail/:userId" element={<AdminCustomerDetail />} />
         <Route path="customers/new" element={<AdminFilteredCustomers filter="new" title="Clienți Noi" description="Clienți înregistrați în ultima lună." />} />
         <Route path="customers/active" element={<AdminFilteredCustomers filter="active" title="Clienți Activi" description="Clienți cu activitate recentă." />} />
         <Route path="customers/inactive" element={<AdminFilteredCustomers filter="inactive" title="Clienți Inactivi" description="Clienți fără comenzi recente." />} />
