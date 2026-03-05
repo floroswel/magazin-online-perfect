@@ -89,11 +89,11 @@ export default function AdminAIGenerator() {
 
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-description`,
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-product-content`,
           {
             method: "POST",
             headers: { ...headers, "Content-Type": "application/json" },
-            body: JSON.stringify({ name: product.name, brand: product.brands?.name }),
+            body: JSON.stringify({ name: product.name, brand: product.brands?.name, language: "ro", tone: "professional", target_audience: "general" }),
           }
         );
 

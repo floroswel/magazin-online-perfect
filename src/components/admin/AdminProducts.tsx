@@ -128,7 +128,6 @@ export default function AdminProducts() {
   const [bulkDeleting, setBulkDeleting] = useState(false);
   const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
   const [previewOpen, setPreviewOpen] = useState<any>(null);
-  const [generatingDesc, setGeneratingDesc] = useState(false);
   const [removingBg, setRemovingBg] = useState<string | null>(null);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
   const [aiModalOpen, setAiModalOpen] = useState(false);
