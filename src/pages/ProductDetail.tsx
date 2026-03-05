@@ -371,7 +371,7 @@ export default function ProductDetail() {
           <TabsList>
             <TabsTrigger value="description">Descriere</TabsTrigger>
             <TabsTrigger value="specs">Specificații</TabsTrigger>
-            <TabsTrigger value="reviews">Recenzii ({reviews.length})</TabsTrigger>
+            <TabsTrigger value="reviews">Recenzii</TabsTrigger>
             <TabsTrigger value="qa">Întrebări ({questions.length})</TabsTrigger>
           </TabsList>
 
