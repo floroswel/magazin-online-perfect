@@ -57,9 +57,6 @@ export default function Account() {
 
   // Return dialog state
   const [returnOrder, setReturnOrder] = useState<any>(null);
-  const [returnReason, setReturnReason] = useState("");
-  const [returnDetails, setReturnDetails] = useState("");
-  const [submittingReturn, setSubmittingReturn] = useState(false);
 
   // Address dialog
   const [addressDialog, setAddressDialog] = useState(false);
