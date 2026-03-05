@@ -235,6 +235,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Google Login", path: "/admin/integrations/google-login" },
           { label: "NOD", path: "/admin/integrations/nod" },
           { label: "SSL Certificate", path: "/admin/integrations/ssl" },
+          { label: "🔗 Integrări ERP", path: "/admin/integrations/erp" },
         ],
       },
       {
