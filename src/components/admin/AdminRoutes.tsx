@@ -336,6 +336,7 @@ export default function AdminRoutes() {
         <Route path="settings/checkout" element={<AdminCheckoutSettings />} />
         <Route path="settings/cart" element={<AdminCartSettings />} />
         <Route path="settings/returns" element={<AdminReturnSettings />} />
+        <Route path="settings/invoices" element={<AdminInvoiceSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />
