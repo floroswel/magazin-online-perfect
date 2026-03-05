@@ -531,6 +531,7 @@ export default function AdminOrders() {
                   <TableHead><SortHeader label="Status" sk="status" /></TableHead>
                   <TableHead>Curier / AWB</TableHead>
                   <TableHead>Plată</TableHead>
+                  <TableHead>Tag-uri</TableHead>
                   <TableHead className="text-right">Acțiuni</TableHead>
                 </TableRow>
               </TableHeader>
