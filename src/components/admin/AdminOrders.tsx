@@ -691,6 +691,28 @@ export default function AdminOrders() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Bulk courier/AWB dialog */}
+      <Dialog open={bulkCourierDialog} onOpenChange={setBulkCourierDialog}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Generare AWB în masă</DialogTitle>
+            <DialogDescription>Selectează curierul pentru {selectedIds.size} comenzi</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            {carriers.map((c: any) => (
+              <Button key={c.courier} variant="outline" className="w-full justify-start gap-3 h-12" onClick={() => bulkGenerateAWB(c.courier)}>
+                <span className="text-xl">{c.courier === "fan_courier" ? "🟠" : c.courier === "sameday" ? "🔵" : c.courier === "cargus" ? "🟡" : c.courier === "dpd" ? "🔴" : "🟢"}</span>
+                <div className="text-left">
+                  <p className="text-sm font-medium">{c.display_name}</p>
+                  <p className="text-[10px] text-muted-foreground">{c.courier}</p>
+                </div>
+              </Button>
+            ))}
+            {carriers.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">Niciun curier activ configurat.</p>}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
