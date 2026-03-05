@@ -297,14 +297,63 @@ export default function ProductDetail() {
               </Button>
             </div>
 
-            <p className={`text-sm font-medium ${activeStock > 0 ? "text-green-600" : "text-destructive"}`}>
-              {activeStock > 0 ? `✓ În stoc (${activeStock} buc.)` : "✗ Stoc epuizat"}
-            </p>
-            {activeStock > 0 && activeStock <= (product.low_stock_threshold || 5) && !hasVariants && (
-              <p className="text-sm font-medium text-orange-600 dark:text-orange-400 animate-pulse">
-                ⚡ Doar {activeStock} {activeStock === 1 ? "bucată" : "bucăți"} rămase în stoc!
-              </p>
-            )}
+            {/* Stock status */}
+            {(() => {
+              const threshold = product.low_stock_threshold || 5;
+              if (activeStock > threshold) {
+                return <p className="text-sm font-medium text-green-600 dark:text-green-400">✓ În stoc</p>;
+              } else if (activeStock > 0) {
+                return (
+                  <p className="text-sm font-medium text-orange-600 dark:text-orange-400 animate-pulse">
+                    ⚡ Stoc limitat — mai {activeStock === 1 ? "este 1 bucată" : `sunt ${activeStock} bucăți`}
+                  </p>
+                );
+              } else {
+                return (
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-destructive">✗ Stoc epuizat</p>
+                    {!restockDone ? (
+                      <div className="flex gap-2">
+                        <Input
+                          type="email"
+                          placeholder="Email pentru notificare restock"
+                          value={restockEmail}
+                          onChange={(e) => setRestockEmail(e.target.value)}
+                          className="flex-1 h-9 text-sm"
+                        />
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={restockSubmitting || !restockEmail.includes("@")}
+                          onClick={async () => {
+                            setRestockSubmitting(true);
+                            const { error } = await supabase.from("restock_notifications").insert({
+                              product_id: product.id,
+                              email: restockEmail,
+                              user_id: user?.id || null,
+                            });
+                            if (error && error.code === "23505") {
+                              toast.info("Ești deja înregistrat pentru notificare!");
+                            } else if (error) {
+                              toast.error("Eroare la înregistrare");
+                            } else {
+                              toast.success("Te vom notifica când produsul revine în stoc!");
+                              setRestockDone(true);
+                            }
+                            setRestockSubmitting(false);
+                          }}
+                          className="gap-1"
+                        >
+                          <Bell className="w-3 h-3" /> Notifică-mă
+                        </Button>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-green-600 dark:text-green-400">✓ Vei primi un email când produsul revine în stoc.</p>
+                    )}
+                  </div>
+                );
+              }
+            })()}
             {activeStock > 0 && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
                 <Truck className="h-4 w-4 text-primary flex-shrink-0" />
