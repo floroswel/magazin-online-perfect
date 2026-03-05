@@ -49,6 +49,8 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
   const [showRefundDialog, setShowRefundDialog] = useState(false);
   const [refundAmount, setRefundAmount] = useState("");
   const [refundReason, setRefundReason] = useState("");
+  const [awbCourier, setAwbCourier] = useState("");
+  const [generatingAwb, setGeneratingAwb] = useState(false);
 
   const { data: customStatuses = [] } = useQuery({
     queryKey: ["order-statuses"],
