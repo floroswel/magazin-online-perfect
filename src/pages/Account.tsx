@@ -80,16 +80,8 @@ export default function Account() {
     toast.success("Profil actualizat!");
   };
 
-  const handleSubmitReturn = async () => {
-    if (!user || !returnOrder || !returnReason) return;
-    setSubmittingReturn(true);
-    const { error } = await supabase.from("returns").insert({
-      order_id: returnOrder.id, user_id: user.id, reason: returnReason, details: returnDetails || null, items: [],
-    });
-    setSubmittingReturn(false);
-    if (error) { toast.error("Eroare la trimiterea cererii de retur"); return; }
-    toast.success("Cererea de retur a fost trimisă!");
-    setReturnOrder(null); setReturnReason(""); setReturnDetails("");
+  const refreshReturns = async () => {
+    if (!user) return;
     const { data } = await supabase.from("returns").select("*").eq("user_id", user.id);
     setExistingReturns(data || []);
   };
