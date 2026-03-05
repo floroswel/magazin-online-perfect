@@ -72,6 +72,11 @@ export default function Index() {
 
   return (
     <Layout>
+      {welcomeMessage && (
+        <div className="bg-primary/10 border-b border-primary/20 py-3">
+          <div className="container text-center text-sm font-medium text-primary">{welcomeMessage}</div>
+        </div>
+      )}
       <HeroSlider />
 
       {/* Benefits bar — dynamic */}
