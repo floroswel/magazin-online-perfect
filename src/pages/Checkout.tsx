@@ -23,7 +23,7 @@ import type { Tables } from "@/integrations/supabase/types";
 export default function Checkout() {
   const { user } = useAuth();
   const { items, totalPrice, clearCart } = useCart();
-  const { totalPoints, currentLevel, addPoints } = useLoyalty();
+  const { totalPoints, currentLevel, addPoints, config: loyaltyConfig, pointsToValue, maxRedeemablePoints } = useLoyalty();
   const { format, currency } = useCurrency();
   const { hasFreeShipping, maxDiscount } = useCustomerGroups();
   const navigate = useNavigate();
