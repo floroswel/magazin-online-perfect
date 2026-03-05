@@ -1216,7 +1216,12 @@ export default function AdminProducts() {
             </div>
 
             <div className="pt-2 border-t border-border space-y-3">
-              <Label className="text-base font-semibold">SEO</Label>
+              <div className="flex items-center justify-between">
+                <Label className="text-base font-semibold">SEO</Label>
+                <Button type="button" variant="outline" size="sm" onClick={() => setAiModalOpen(true)} disabled={!form.name.trim()} className="gap-1.5 text-xs">
+                  <Sparkles className="w-3 h-3" /> Generează cu AI ✨
+                </Button>
+              </div>
               <div className="space-y-2">
                 <Label className="text-sm">Meta titlu</Label>
                 <Input value={form.meta_title} onChange={(e) => setForm({ ...form, meta_title: e.target.value })} placeholder={form.name || "Titlu pagină produs"} maxLength={60} />
