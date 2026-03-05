@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Package, User as UserIcon, Award, Gift, RotateCcw, MapPin, Plus, Trash2, Star, Clock, ChevronDown, ChevronUp, Truck, CheckCircle2, XCircle, Copy, History, RefreshCw, FileText, Download, Settings } from "lucide-react";
+import { Package, User as UserIcon, Award, Gift, RotateCcw, MapPin, Plus, Trash2, Star, Clock, ChevronDown, ChevronUp, Truck, CheckCircle2, XCircle, Copy, History, RefreshCw, FileText, Download, Settings, Users } from "lucide-react";
 import MySubscriptions from "@/components/account/MySubscriptions";
 import ReturnRequestForm from "@/components/account/ReturnRequestForm";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
+import AffiliateTab from "@/components/account/AffiliateTab";
 
 const RETURNABLE_STATUSES = ["delivered", "shipped"];
 const STATUS_TIMELINE_DEFAULT = ["pending", "processing", "shipped", "delivered"];
@@ -222,6 +223,7 @@ export default function Account() {
             <TabsTrigger value="subscriptions"><RefreshCw className="h-4 w-4 mr-1" /> Abonamente</TabsTrigger>
             <TabsTrigger value="addresses"><MapPin className="h-4 w-4 mr-1" /> Adrese</TabsTrigger>
             <TabsTrigger value="loyalty"><Award className="h-4 w-4 mr-1" /> Fidelitate</TabsTrigger>
+            <TabsTrigger value="affiliate"><Users className="h-4 w-4 mr-1" /> Afiliere</TabsTrigger>
             <TabsTrigger value="profile"><UserIcon className="h-4 w-4 mr-1" /> Profil</TabsTrigger>
             <TabsTrigger value="preferences"><Settings className="h-4 w-4 mr-1" /> Preferințe</TabsTrigger>
           </TabsList>
@@ -530,6 +532,11 @@ export default function Account() {
                 <Button onClick={updateProfile}>Salvează</Button>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* AFFILIATE TAB */}
+          <TabsContent value="affiliate" className="mt-4">
+            <AffiliateTab />
           </TabsContent>
 
           {/* PREFERENCES TAB */}

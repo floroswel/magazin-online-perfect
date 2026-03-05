@@ -27,8 +27,12 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import CustomScriptInjector from "./components/CustomScriptInjector";
 import ErrorBoundary from "./components/ErrorBoundary";
+import Affiliates from "./pages/Affiliates";
+import { useAffiliateTracking } from "./hooks/useAffiliateTracking";
 
 const queryClient = new QueryClient();
+
+const AffiliateTracker = () => { useAffiliateTracking(); return null; };
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -43,6 +47,7 @@ const App = () => (
           <CurrencyProvider>
           <CartProvider>
             <CustomScriptInjector />
+            <AffiliateTracker />
             <ErrorBoundary>
             <Routes>
               <Route path="/" element={<ErrorBoundary><Index /></ErrorBoundary>} />
@@ -59,6 +64,7 @@ const App = () => (
               <Route path="/compare" element={<ErrorBoundary><Compare /></ErrorBoundary>} />
               <Route path="/page/:slug" element={<ErrorBoundary><CmsPage /></ErrorBoundary>} />
               <Route path="/install" element={<ErrorBoundary><Install /></ErrorBoundary>} />
+              <Route path="/afilieri" element={<ErrorBoundary><Affiliates /></ErrorBoundary>} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<NotFound />} />
             </Routes>

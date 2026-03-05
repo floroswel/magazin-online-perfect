@@ -211,51 +211,152 @@ export type Database = {
           },
         ]
       }
+      affiliate_materials: {
+        Row: {
+          created_at: string
+          description: string | null
+          file_type: string | null
+          file_url: string
+          id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          file_type?: string | null
+          file_url: string
+          id?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          file_type?: string | null
+          file_url?: string
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      affiliate_payout_requests: {
+        Row: {
+          affiliate_id: string
+          amount: number
+          created_at: string
+          id: string
+          payment_method: string
+          processed_at: string | null
+          reference_number: string | null
+          status: string
+        }
+        Insert: {
+          affiliate_id: string
+          amount: number
+          created_at?: string
+          id?: string
+          payment_method?: string
+          processed_at?: string | null
+          reference_number?: string | null
+          status?: string
+        }
+        Update: {
+          affiliate_id?: string
+          amount?: number
+          created_at?: string
+          id?: string
+          payment_method?: string
+          processed_at?: string | null
+          reference_number?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_payout_requests_affiliate_id_fkey"
+            columns: ["affiliate_id"]
+            isOneToOne: false
+            referencedRelation: "affiliates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       affiliates: {
         Row: {
           affiliate_code: string
+          available_balance: number | null
           commission_rate: number
+          cookie_duration_days: number | null
           created_at: string
+          discount_code: string | null
+          discount_percent: number | null
+          email: string | null
+          full_name: string | null
           id: string
           payment_details: Json | null
           payment_method: string | null
+          pending_balance: number | null
+          promotion_plan: string | null
+          rejection_reason: string | null
           status: string
+          tax_id: string | null
           total_clicks: number | null
           total_earnings: number | null
           total_orders: number | null
           total_paid: number | null
           updated_at: string
           user_id: string
+          website: string | null
         }
         Insert: {
           affiliate_code: string
+          available_balance?: number | null
           commission_rate?: number
+          cookie_duration_days?: number | null
           created_at?: string
+          discount_code?: string | null
+          discount_percent?: number | null
+          email?: string | null
+          full_name?: string | null
           id?: string
           payment_details?: Json | null
           payment_method?: string | null
+          pending_balance?: number | null
+          promotion_plan?: string | null
+          rejection_reason?: string | null
           status?: string
+          tax_id?: string | null
           total_clicks?: number | null
           total_earnings?: number | null
           total_orders?: number | null
           total_paid?: number | null
           updated_at?: string
           user_id: string
+          website?: string | null
         }
         Update: {
           affiliate_code?: string
+          available_balance?: number | null
           commission_rate?: number
+          cookie_duration_days?: number | null
           created_at?: string
+          discount_code?: string | null
+          discount_percent?: number | null
+          email?: string | null
+          full_name?: string | null
           id?: string
           payment_details?: Json | null
           payment_method?: string | null
+          pending_balance?: number | null
+          promotion_plan?: string | null
+          rejection_reason?: string | null
           status?: string
+          tax_id?: string | null
           total_clicks?: number | null
           total_earnings?: number | null
           total_orders?: number | null
           total_paid?: number | null
           updated_at?: string
           user_id?: string
+          website?: string | null
         }
         Relationships: []
       }
@@ -2508,6 +2609,7 @@ export type Database = {
       }
       orders: {
         Row: {
+          affiliate_id: string | null
           awb_generated_at: string | null
           billing_address: Json | null
           coupon_id: string | null
@@ -2543,6 +2645,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          affiliate_id?: string | null
           awb_generated_at?: string | null
           billing_address?: Json | null
           coupon_id?: string | null
@@ -2578,6 +2681,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          affiliate_id?: string | null
           awb_generated_at?: string | null
           billing_address?: Json | null
           coupon_id?: string | null
@@ -2613,6 +2717,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "orders_affiliate_id_fkey"
+            columns: ["affiliate_id"]
+            isOneToOne: false
+            referencedRelation: "affiliates"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "orders_coupon_id_fkey"
             columns: ["coupon_id"]

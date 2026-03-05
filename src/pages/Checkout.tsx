@@ -18,6 +18,7 @@ import { useCurrency } from "@/hooks/useCurrency";
 import { useCustomerGroups } from "@/hooks/useCustomerGroups";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { getAffiliateCode } from "@/hooks/useAffiliateTracking";
 import type { Tables } from "@/integrations/supabase/types";
 
 export default function Checkout() {
@@ -163,8 +164,13 @@ export default function Checkout() {
       currency,
     };
 
-    if (user) {
-      orderData.user_id = user.id;
+    if (user) orderData.user_id = user.id;
+
+    // Affiliate tracking
+    const affCode = getAffiliateCode();
+    if (affCode) {
+      const { data: aff } = await supabase.from("affiliates").select("id").eq("affiliate_code", affCode).eq("status", "active").maybeSingle();
+      if (aff) orderData.affiliate_id = aff.id;
     }
 
     const { data: order, error } = await supabase.from("orders").insert(orderData).select().single();
