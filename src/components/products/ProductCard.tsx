@@ -1,12 +1,13 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { ShoppingCart, Star } from "lucide-react";
+import { ShoppingCart, Star, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/hooks/useCart";
 import { useCurrency } from "@/hooks/useCurrency";
 import { usePricingRules } from "@/hooks/usePricingRules";
+import { useLoyalty } from "@/hooks/useLoyalty";
 import CountdownTimer from "./CountdownTimer";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
