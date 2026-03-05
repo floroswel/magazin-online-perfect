@@ -36,14 +36,21 @@ export function useCustomerGroups() {
         .select("*")
         .in("id", groupIds);
 
-      return (groups || []).map(g => ({
-        id: g.id,
-        name: g.name,
-        discount_percentage: g.discount_percentage || 0,
-        benefits: (g.benefits && typeof g.benefits === "object" ? g.benefits : {
-          discount: 0, free_shipping: false, early_access_hours: 0, welcome_message: "", override_pricing_rules: false,
-        }) as GroupBenefits,
-      })) as UserGroup[];
+      return (groups || []).map(g => {
+        const b = g.benefits && typeof g.benefits === "object" && !Array.isArray(g.benefits) ? g.benefits as Record<string, unknown> : {};
+        return {
+          id: g.id,
+          name: g.name,
+          discount_percentage: g.discount_percentage || 0,
+          benefits: {
+            discount: Number(b.discount || 0),
+            free_shipping: !!b.free_shipping,
+            early_access_hours: Number(b.early_access_hours || 0),
+            welcome_message: String(b.welcome_message || ""),
+            override_pricing_rules: !!b.override_pricing_rules,
+          },
+        };
+      }) as UserGroup[];
     },
     enabled: !!user,
     staleTime: 120_000,
