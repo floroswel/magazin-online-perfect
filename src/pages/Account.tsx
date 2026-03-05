@@ -22,6 +22,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
+import AffiliateTab from "@/components/account/AffiliateTab";
 
 const RETURNABLE_STATUSES = ["delivered", "shipped"];
 const STATUS_TIMELINE_DEFAULT = ["pending", "processing", "shipped", "delivered"];
