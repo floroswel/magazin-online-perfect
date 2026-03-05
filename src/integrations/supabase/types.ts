@@ -3253,6 +3253,7 @@ export type Database = {
           specs: Json | null
           status: string | null
           stock: number
+          subscription_discount_percent: number | null
           tags: string[] | null
           videos: string[] | null
           visible: boolean | null
@@ -3293,6 +3294,7 @@ export type Database = {
           specs?: Json | null
           status?: string | null
           stock?: number
+          subscription_discount_percent?: number | null
           tags?: string[] | null
           videos?: string[] | null
           visible?: boolean | null
@@ -3333,6 +3335,7 @@ export type Database = {
           specs?: Json | null
           status?: string | null
           stock?: number
+          subscription_discount_percent?: number | null
           tags?: string[] | null
           videos?: string[] | null
           visible?: boolean | null
@@ -4226,6 +4229,124 @@ export type Database = {
             columns: ["to_warehouse_id"]
             isOneToOne: false
             referencedRelation: "warehouses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscription_orders: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          renewal_number: number
+          subscription_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          renewal_number?: number
+          subscription_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          renewal_number?: number
+          subscription_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_orders_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscription_orders_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          cancel_reason: string | null
+          created_at: string
+          customer_id: string
+          delivery_address_id: string | null
+          discount_percent: number
+          frequency: string
+          id: string
+          next_renewal_date: string
+          payment_method_saved: string | null
+          product_id: string
+          quantity: number
+          status: string
+          total_renewals: number
+          total_revenue: number
+          updated_at: string
+          variant_id: string | null
+        }
+        Insert: {
+          cancel_reason?: string | null
+          created_at?: string
+          customer_id: string
+          delivery_address_id?: string | null
+          discount_percent?: number
+          frequency?: string
+          id?: string
+          next_renewal_date?: string
+          payment_method_saved?: string | null
+          product_id: string
+          quantity?: number
+          status?: string
+          total_renewals?: number
+          total_revenue?: number
+          updated_at?: string
+          variant_id?: string | null
+        }
+        Update: {
+          cancel_reason?: string | null
+          created_at?: string
+          customer_id?: string
+          delivery_address_id?: string | null
+          discount_percent?: number
+          frequency?: string
+          id?: string
+          next_renewal_date?: string
+          payment_method_saved?: string | null
+          product_id?: string
+          quantity?: number
+          status?: string
+          total_renewals?: number
+          total_revenue?: number
+          updated_at?: string
+          variant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_delivery_address_id_fkey"
+            columns: ["delivery_address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
             referencedColumns: ["id"]
           },
         ]
