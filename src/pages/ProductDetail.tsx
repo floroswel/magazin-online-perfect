@@ -46,6 +46,9 @@ export default function ProductDetail() {
   const [isFav, setIsFav] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [hasVariants, setHasVariants] = useState(false);
+  const [restockEmail, setRestockEmail] = useState("");
+  const [restockSubmitting, setRestockSubmitting] = useState(false);
+  const [restockDone, setRestockDone] = useState(false);
 
   useEffect(() => {
     async function load() {
