@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import AdminOrderDetail from "./orders/AdminOrderDetail";
 
-const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
+const DEFAULT_STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   pending: { label: "În așteptare", color: "bg-yellow-500/15 text-yellow-600 border-yellow-500/30", icon: <Package className="w-3 h-3" /> },
   processing: { label: "În procesare", color: "bg-blue-500/15 text-blue-600 border-blue-500/30", icon: <CheckCircle2 className="w-3 h-3" /> },
   shipped: { label: "Expediat", color: "bg-purple-500/15 text-purple-600 border-purple-500/30", icon: <Truck className="w-3 h-3" /> },
@@ -34,7 +34,7 @@ const statusConfig: Record<string, { label: string; color: string; icon: React.R
   refunded: { label: "Rambursat", color: "bg-orange-500/15 text-orange-600 border-orange-500/30", icon: <RotateCcw className="w-3 h-3" /> },
 };
 
-export { statusConfig };
+export { DEFAULT_STATUS_CONFIG as statusConfig };
 
 type SortKey = "date" | "total" | "status" | "customer";
 type SortDir = "asc" | "desc";
@@ -60,6 +60,26 @@ export default function AdminOrders() {
   const [newTagName, setNewTagName] = useState("");
   const [newTagColor, setNewTagColor] = useState("#6366f1");
   const [showFilters, setShowFilters] = useState(false);
+
+  const { data: customStatuses = [] } = useQuery({
+    queryKey: ["order-statuses"],
+    queryFn: async () => {
+      const { data } = await supabase.from("order_statuses").select("*").order("sort_order");
+      return (data as any[]) || [];
+    },
+  });
+
+  const statusConfig = useMemo(() => {
+    if (customStatuses.length > 0) {
+      const map: Record<string, { label: string; color: string; icon: React.ReactNode }> = {};
+      customStatuses.forEach((s: any) => {
+        map[s.key] = { label: s.name, color: `border`, icon: <span className="text-xs">{s.icon}</span> };
+        (map[s.key] as any)._color = s.color;
+      });
+      return map;
+    }
+    return DEFAULT_STATUS_CONFIG;
+  }, [customStatuses]);
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["admin-orders"],
@@ -300,6 +320,10 @@ export default function AdminOrders() {
 
   const StatusChip = ({ status }: { status: string }) => {
     const cfg = statusConfig[status] || { label: status, color: "bg-muted text-muted-foreground", icon: null };
+    const customColor = (cfg as any)._color;
+    if (customColor) {
+      return <Badge variant="outline" className="gap-1 font-medium border text-[11px]" style={{ borderColor: customColor, color: customColor, backgroundColor: `${customColor}15` }}>{cfg.icon} {cfg.label}</Badge>;
+    }
     return <Badge variant="outline" className={cn("gap-1 font-medium border text-[11px]", cfg.color)}>{cfg.icon} {cfg.label}</Badge>;
   };
 

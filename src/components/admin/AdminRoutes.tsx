@@ -130,6 +130,7 @@ const AdminCustomReport = lazy(() => import("./reports/AdminCustomReport"));
 const AdminExportReports = lazy(() => import("./reports/AdminExportReports"));
 const AdminSSL = lazy(() => import("./integrations/AdminSSL"));
 const AdminERPIntegrations = lazy(() => import("./integrations/AdminERPIntegrations"));
+const AdminOrderStatuses = lazy(() => import("./orders/AdminOrderStatuses"));
 
 export default function AdminRoutes() {
   return (
@@ -150,6 +151,7 @@ export default function AdminRoutes() {
         <Route path="orders/issues" element={<AdminIssueOrders />} />
         <Route path="orders/invoices" element={<AdminInvoices />} />
         <Route path="orders/returns" element={<AdminReturns />} />
+        <Route path="orders/statuses" element={<AdminOrderStatuses />} />
 
         {/* ═══════════ PRODUSE ═══════════ */}
         <Route path="products" element={<AdminProducts />} />

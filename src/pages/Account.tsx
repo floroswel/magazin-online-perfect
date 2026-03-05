@@ -17,6 +17,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLoyalty } from "@/hooks/useLoyalty";
 import { useCurrency } from "@/hooks/useCurrency";
 import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -25,7 +26,7 @@ const RETURN_REASONS = [
   "Schimbare de opinie", "Dimensiune/Culoare greșită", "Ambalaj deteriorat", "Altul",
 ];
 const RETURNABLE_STATUSES = ["delivered", "shipped"];
-const STATUS_TIMELINE = ["pending", "processing", "shipped", "delivered"];
+const STATUS_TIMELINE_DEFAULT = ["pending", "processing", "shipped", "delivered"];
 
 export default function Account() {
   const { user } = useAuth();
@@ -39,6 +40,22 @@ export default function Account() {
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+
+  const { data: customStatuses = [] } = useQuery({
+    queryKey: ["order-statuses-storefront"],
+    queryFn: async () => {
+      const { data } = await supabase.from("order_statuses").select("*").order("sort_order");
+      return (data as any[]) || [];
+    },
+  });
+
+  const STATUS_TIMELINE = customStatuses.length > 0
+    ? customStatuses.filter((s: any) => !s.is_final || s.key === "delivered").map((s: any) => s.key)
+    : STATUS_TIMELINE_DEFAULT;
+
+  const statusLabelsFromDb: Record<string, string> = {};
+  const statusColorsFromDb: Record<string, string> = {};
+  customStatuses.forEach((s: any) => { statusLabelsFromDb[s.key] = s.name; statusColorsFromDb[s.key] = s.color; });
 
   // Return dialog state
   const [returnOrder, setReturnOrder] = useState<any>(null);
@@ -124,7 +141,7 @@ export default function Account() {
 
   if (!user) return <Layout><div className="container py-16 text-center"><p>Autentifică-te.</p><Link to="/auth"><Button className="mt-4">Autentifică-te</Button></Link></div></Layout>;
 
-  const statusLabels: Record<string, string> = { pending: "În așteptare", processing: "Se procesează", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată" };
+  const statusLabels: Record<string, string> = { pending: "În așteptare", processing: "Se procesează", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată", ...statusLabelsFromDb };
   const statusIcons: Record<string, any> = { pending: Clock, processing: Package, shipped: Truck, delivered: CheckCircle2, cancelled: XCircle };
 
   const progressToNext = nextLevel
@@ -167,7 +184,8 @@ export default function Account() {
                     <div className="flex items-center gap-3">
                       <div className="text-right">
                         <p className="font-bold text-primary">{format(Number(o.total))}</p>
-                        <Badge variant={o.status === "delivered" ? "default" : "secondary"} className="text-xs">
+                        <Badge variant={o.status === "delivered" ? "default" : "secondary"} className="text-xs"
+                          style={statusColorsFromDb[o.status] ? { borderColor: statusColorsFromDb[o.status], color: statusColorsFromDb[o.status], backgroundColor: `${statusColorsFromDb[o.status]}15` } : {}}>
                           {statusLabels[o.status] || o.status}
                         </Badge>
                       </div>
@@ -182,7 +200,7 @@ export default function Account() {
                         <div className="flex items-center justify-between px-4">
                           {STATUS_TIMELINE.map((step, i) => {
                             const isActive = i <= currentStep;
-                            const labels: Record<string, string> = { pending: "Plasată", processing: "Procesare", shipped: "Expediată", delivered: "Livrată" };
+                            const labels: Record<string, string> = { pending: "Plasată", processing: "Procesare", shipped: "Expediată", delivered: "Livrată", ...statusLabelsFromDb };
                             return (
                               <div key={step} className="flex flex-col items-center flex-1">
                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${isActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>

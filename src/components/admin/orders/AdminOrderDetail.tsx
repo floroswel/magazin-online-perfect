@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -50,7 +50,26 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
   const [refundAmount, setRefundAmount] = useState("");
   const [refundReason, setRefundReason] = useState("");
 
-  const { data: order, isLoading } = useQuery({
+  const { data: customStatuses = [] } = useQuery({
+    queryKey: ["order-statuses"],
+    queryFn: async () => {
+      const { data } = await supabase.from("order_statuses").select("*").order("sort_order");
+      return (data as any[]) || [];
+    },
+  });
+
+  const dynamicStatusConfig = useMemo(() => {
+    if (customStatuses.length > 0) {
+      const map: Record<string, { label: string; color: string; icon: React.ReactNode; _color?: string; allowed_transitions?: string[]; email_enabled?: boolean }> = {};
+      customStatuses.forEach((s: any) => {
+        map[s.key] = { label: s.name, color: "border", icon: <span className="text-xs">{s.icon}</span>, _color: s.color, allowed_transitions: s.allowed_transitions || [], email_enabled: s.email_enabled };
+      });
+      return map;
+    }
+    return statusConfig;
+  }, [customStatuses]);
+
+  const { data: orderData, isLoading } = useQuery({
     queryKey: ["admin-order-detail", orderId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -62,6 +81,17 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
       return data;
     },
   });
+
+  const order = orderData;
+
+  const allowedNextStatuses = useMemo(() => {
+    if (!order) return [];
+    const current = dynamicStatusConfig[order.status];
+    if (current && (current as any).allowed_transitions?.length > 0) {
+      return (current as any).allowed_transitions as string[];
+    }
+    return Object.keys(dynamicStatusConfig).filter(k => k !== order.status);
+  }, [order, dynamicStatusConfig]);
 
   const { data: timeline = [] } = useQuery({
     queryKey: ["order-timeline", orderId],
@@ -194,7 +224,11 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
   const billing = order.billing_address as any;
   const subtotal = (order.order_items || []).reduce((s: number, i: any) => s + Number(i.price) * i.quantity, 0);
   const StatusChip = ({ status }: { status: string }) => {
-    const cfg = statusConfig[status] || { label: status, color: "bg-muted text-muted-foreground", icon: null };
+    const cfg = dynamicStatusConfig[status] || statusConfig[status] || { label: status, color: "bg-muted text-muted-foreground", icon: null };
+    const customColor = (cfg as any)._color;
+    if (customColor) {
+      return <Badge variant="outline" className="gap-1 font-medium border" style={{ borderColor: customColor, color: customColor, backgroundColor: `${customColor}15` }}>{cfg.icon} {cfg.label}</Badge>;
+    }
     return <Badge variant="outline" className={cn("gap-1 font-medium border", cfg.color)}>{cfg.icon} {cfg.label}</Badge>;
   };
 
@@ -444,7 +478,12 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
               <Select value={newStatus} onValueChange={setNewStatus}>
                 <SelectTrigger><SelectValue placeholder="Selectează status" /></SelectTrigger>
                 <SelectContent>
-                  {Object.entries(statusConfig).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
+                  {allowedNextStatuses.map(k => {
+                    const cfg = dynamicStatusConfig[k] || statusConfig[k];
+                    return cfg ? <SelectItem key={k} value={k}>{(cfg as any)._color ? `${(cfg.icon as any)?.props?.children || ""} ` : ""}{cfg.label}</SelectItem> : null;
+                  })}
+                  {/* All statuses for super admin override */}
+                  {allowedNextStatuses.length === 0 && Object.entries(dynamicStatusConfig).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>

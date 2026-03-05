@@ -2279,6 +2279,60 @@ export type Database = {
           },
         ]
       }
+      order_statuses: {
+        Row: {
+          allowed_transitions: string[] | null
+          color: string
+          created_at: string | null
+          description: string | null
+          email_body: string | null
+          email_enabled: boolean | null
+          email_subject: string | null
+          icon: string | null
+          id: string
+          is_default: boolean | null
+          is_final: boolean | null
+          key: string
+          name: string
+          sort_order: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          allowed_transitions?: string[] | null
+          color?: string
+          created_at?: string | null
+          description?: string | null
+          email_body?: string | null
+          email_enabled?: boolean | null
+          email_subject?: string | null
+          icon?: string | null
+          id?: string
+          is_default?: boolean | null
+          is_final?: boolean | null
+          key: string
+          name: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          allowed_transitions?: string[] | null
+          color?: string
+          created_at?: string | null
+          description?: string | null
+          email_body?: string | null
+          email_enabled?: boolean | null
+          email_subject?: string | null
+          icon?: string | null
+          id?: string
+          is_default?: boolean | null
+          is_final?: boolean | null
+          key?: string
+          name?: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       order_tag_assignments: {
         Row: {
           created_at: string
