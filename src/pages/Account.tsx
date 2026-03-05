@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Package, User as UserIcon, Award, Gift, RotateCcw, MapPin, Plus, Trash2, Star, Clock, ChevronDown, ChevronUp, Truck, CheckCircle2, XCircle, Copy, History, RefreshCw } from "lucide-react";
+import { Package, User as UserIcon, Award, Gift, RotateCcw, MapPin, Plus, Trash2, Star, Clock, ChevronDown, ChevronUp, Truck, CheckCircle2, XCircle, Copy, History, RefreshCw, FileText, Download } from "lucide-react";
 import MySubscriptions from "@/components/account/MySubscriptions";
 import ReturnRequestForm from "@/components/account/ReturnRequestForm";
 import { Button } from "@/components/ui/button";
@@ -128,6 +128,57 @@ export default function Account() {
 
   if (!user) return <Layout><div className="container py-16 text-center"><p>Autentifică-te.</p><Link to="/auth"><Button className="mt-4">Autentifică-te</Button></Link></div></Layout>;
 
+  const downloadInvoicePdf = (invoiceId: string) => {
+    const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+    fetch(`https://${projectId}.supabase.co/functions/v1/generate-invoice-pdf`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ invoice_id: invoiceId }),
+    }).then(r => r.text()).then(html => {
+      const win = window.open("", "_blank");
+      if (win) { win.document.write(html); win.document.close(); }
+    }).catch(() => toast.error("Eroare la generare PDF"));
+  };
+
+  const CustomerInvoicesList = ({ userId }: { userId: string }) => {
+    const { data: invoices = [], isLoading } = useQuery({
+      queryKey: ["customer-invoices", userId],
+      queryFn: async () => {
+        // Fetch orders for user, then invoices for those orders
+        const { data: userOrders } = await supabase.from("orders").select("id").eq("user_id", userId);
+        if (!userOrders?.length) return [];
+        const orderIds = userOrders.map(o => o.id);
+        const { data } = await supabase.from("invoices").select("id, invoice_number, type, status, total, currency, issued_at, order_id").in("order_id", orderIds).order("issued_at", { ascending: false });
+        return (data as any[]) || [];
+      },
+    });
+
+    if (isLoading) return <p className="text-sm text-muted-foreground">Se încarcă...</p>;
+    if (invoices.length === 0) return <p className="text-sm text-muted-foreground">Nu ai nicio factură.</p>;
+
+    return (
+      <div className="space-y-2">
+        {invoices.map((inv: any) => (
+          <Card key={inv.id}>
+            <CardContent className="p-4 flex items-center justify-between">
+              <div>
+                <p className="font-mono font-medium text-sm">{inv.invoice_number}</p>
+                <p className="text-xs text-muted-foreground">
+                  {inv.issued_at ? new Date(inv.issued_at).toLocaleDateString("ro-RO") : "—"} · {Number(inv.total || 0).toFixed(2)} {inv.currency || "RON"}
+                </p>
+                <Badge variant="outline" className="text-[10px] mt-1">
+                  {inv.type === "proforma" ? "Proformă" : inv.type === "storno" ? "Storno" : "Factură"}
+                </Badge>
+              </div>
+              <Button variant="outline" size="sm" className="gap-1" onClick={() => downloadInvoicePdf(inv.id)}>
+                <Download className="w-3.5 h-3.5" /> Descarcă
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  };
+
   const statusLabels: Record<string, string> = { pending: "În așteptare", processing: "Se procesează", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată", ...statusLabelsFromDb };
   const statusIcons: Record<string, any> = { pending: Clock, processing: Package, shipped: Truck, delivered: CheckCircle2, cancelled: XCircle };
 
@@ -142,6 +193,7 @@ export default function Account() {
         <Tabs defaultValue="orders">
           <TabsList className="flex-wrap">
             <TabsTrigger value="orders"><Package className="h-4 w-4 mr-1" /> Comenzi</TabsTrigger>
+            <TabsTrigger value="invoices"><FileText className="h-4 w-4 mr-1" /> Facturi</TabsTrigger>
             <TabsTrigger value="subscriptions"><RefreshCw className="h-4 w-4 mr-1" /> Abonamente</TabsTrigger>
             <TabsTrigger value="addresses"><MapPin className="h-4 w-4 mr-1" /> Adrese</TabsTrigger>
             <TabsTrigger value="loyalty"><Award className="h-4 w-4 mr-1" /> Fidelitate</TabsTrigger>
@@ -251,23 +303,43 @@ export default function Account() {
                         </div>
                       )}
 
-                      {/* Return button */}
-                      <div className="flex justify-end">
-                        {hasReturn(o.id) ? (
-                          <Badge variant="outline" className="text-xs">
-                            <RotateCcw className="w-3 h-3 mr-1" /> Retur: {getReturnStatus(o.id)}
-                          </Badge>
-                        ) : RETURNABLE_STATUSES.includes(o.status) ? (
-                          <Button variant="outline" size="sm" className="text-xs gap-1" onClick={(e) => { e.stopPropagation(); setReturnOrder(o); }}>
-                            <RotateCcw className="w-3 h-3" /> Solicită retur
+                      {/* Return button + Invoice download */}
+                      <div className="flex justify-between items-center">
+                        <div>
+                          {/* Quick invoice download if order has invoices */}
+                          <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={(e) => {
+                            e.stopPropagation();
+                            supabase.from("invoices").select("id").eq("order_id", o.id).limit(1).then(({ data }) => {
+                              if (data?.[0]) downloadInvoicePdf(data[0].id);
+                              else toast.info("Nu există factură pentru această comandă.");
+                            });
+                          }}>
+                            <FileText className="w-3 h-3" /> Factură
                           </Button>
-                        ) : null}
+                        </div>
+                        <div>
+                          {hasReturn(o.id) ? (
+                            <Badge variant="outline" className="text-xs">
+                              <RotateCcw className="w-3 h-3 mr-1" /> Retur: {getReturnStatus(o.id)}
+                            </Badge>
+                          ) : RETURNABLE_STATUSES.includes(o.status) ? (
+                            <Button variant="outline" size="sm" className="text-xs gap-1" onClick={(e) => { e.stopPropagation(); setReturnOrder(o); }}>
+                              <RotateCcw className="w-3 h-3" /> Solicită retur
+                            </Button>
+                          ) : null}
+                        </div>
                       </div>
                     </div>
                   )}
                 </Card>
               );
             })}
+          </TabsContent>
+
+          {/* INVOICES TAB */}
+          <TabsContent value="invoices" className="mt-4 space-y-3">
+            <h2 className="font-semibold flex items-center gap-2"><FileText className="h-4 w-4" /> Facturile mele</h2>
+            <CustomerInvoicesList userId={user.id} />
           </TabsContent>
 
           {/* SUBSCRIPTIONS TAB */}

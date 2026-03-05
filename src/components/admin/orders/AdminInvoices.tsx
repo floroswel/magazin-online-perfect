@@ -485,6 +485,18 @@ export default function AdminInvoices() {
                           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setViewInvoice(inv)} title="Vizualizare">
                             <Eye className="w-3 h-3" />
                           </Button>
+                          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => {
+                            const projectId = (import.meta as any).env.VITE_SUPABASE_PROJECT_ID;
+                            fetch(`https://${projectId}.supabase.co/functions/v1/generate-invoice-pdf`, {
+                              method: "POST", headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ invoice_id: inv.id }),
+                            }).then(r => r.text()).then(html => {
+                              const win = window.open("", "_blank");
+                              if (win) { win.document.write(html); win.document.close(); }
+                            }).catch(() => toast.error("Eroare PDF"));
+                          }} title="Descarcă PDF">
+                            <Download className="w-3 h-3" />
+                          </Button>
                           {inv.status === "draft" && (
                             <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => openEdit(inv)} title="Editează">
                               <FileText className="w-3 h-3" />
