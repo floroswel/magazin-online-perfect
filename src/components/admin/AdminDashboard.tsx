@@ -437,6 +437,36 @@ export default function AdminDashboard() {
         </Card>
       </div>
 
+      {/* Warehouse Stock Value */}
+      {warehouseStockData.length > 0 && (
+        <Card className="shadow-sm">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Warehouse className="w-4 h-4 text-violet-600" />
+                Stoc per Depozit
+              </CardTitle>
+              <Link to="/admin/stock/warehouses">
+                <Button variant="ghost" size="sm" className="text-xs gap-1">Depozite <ArrowUpRight className="w-3 h-3" /></Button>
+              </Link>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {warehouseStockData.map((w: any) => (
+                <div key={w.id} className="p-3 rounded-lg border border-border bg-muted/30">
+                  <p className="text-sm font-medium truncate">{w.name}</p>
+                  <div className="flex items-baseline justify-between mt-1">
+                    <span className="text-lg font-bold">{w.totalValue.toLocaleString("ro-RO", { maximumFractionDigits: 0 })} RON</span>
+                    <span className="text-xs text-muted-foreground">{w.totalQty} buc</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Activity Feed */}
       <Card className="shadow-sm">
         <CardHeader className="pb-3">
