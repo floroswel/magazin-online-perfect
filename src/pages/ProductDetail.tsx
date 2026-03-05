@@ -297,6 +297,11 @@ export default function ProductDetail() {
               </Button>
             </div>
 
+            {/* Subscription option */}
+            {activeStock > 0 && (
+              <SubscriptionOption product={product} quantity={qty} selectedVariant={selectedVariant} hasVariants={hasVariants} />
+            )}
+
             {/* Stock status */}
             {(() => {
               const threshold = product.low_stock_threshold || 5;
