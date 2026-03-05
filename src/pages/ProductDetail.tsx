@@ -136,14 +136,7 @@ export default function ProductDetail() {
     }
   };
 
-  const submitReview = async () => {
-    if (!user || !product) return;
-    const { error } = await supabase.from("reviews").insert({ user_id: user.id, product_id: product.id, rating: reviewRating, comment: reviewText });
-    if (error) { toast.error("Eroare la adăugarea recenziei"); return; }
-    toast.success("Recenzie adăugată!"); setReviewText("");
-    const { data } = await supabase.from("reviews").select("*").eq("product_id", product.id).order("created_at", { ascending: false });
-    setReviews(data || []);
-  };
+  // Reviews are now handled by ProductReviews component
 
   const submitQuestion = async () => {
     if (!user || !product || !questionText.trim()) return;
