@@ -20,6 +20,9 @@ function ProductCardInner({ product }: Props) {
   const { addToCart } = useCart();
   const { format } = useCurrency();
   const { getProductDiscount } = usePricingRules();
+  const { calcPointsForPrice, config } = useLoyalty();
+
+  const pointsEarned = config.program_enabled ? calcPointsForPrice(product.price) : 0;
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
