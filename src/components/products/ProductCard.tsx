@@ -88,6 +88,12 @@ function ProductCardInner({ product }: Props) {
           {promoDiscount?.endsAt && (
             <CountdownTimer endsAt={promoDiscount.endsAt} />
           )}
+          {pointsEarned > 0 && (
+            <div className="flex items-center gap-1 text-xs text-primary">
+              <Award className="h-3 w-3" />
+              <span>+{pointsEarned} {config.program_name || "puncte"}</span>
+            </div>
+          )}
           <Button
             onClick={handleAddToCart}
             className="w-full mt-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
