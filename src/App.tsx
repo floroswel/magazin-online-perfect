@@ -27,8 +27,11 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import CustomScriptInjector from "./components/CustomScriptInjector";
 import ErrorBoundary from "./components/ErrorBoundary";
+import Affiliates from "./pages/Affiliates";
 
 const queryClient = new QueryClient();
+
+const AffiliateTracker = () => { const { useAffiliateTracking } = require("@/hooks/useAffiliateTracking"); useAffiliateTracking(); return null; };
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -43,6 +46,7 @@ const App = () => (
           <CurrencyProvider>
           <CartProvider>
             <CustomScriptInjector />
+            <AffiliateTracker />
             <ErrorBoundary>
             <Routes>
               <Route path="/" element={<ErrorBoundary><Index /></ErrorBoundary>} />
