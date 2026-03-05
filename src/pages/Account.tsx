@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Package, User as UserIcon, Award, Gift, RotateCcw, MapPin, Plus, Trash2, Star, Clock, ChevronDown, ChevronUp, Truck, CheckCircle2, XCircle, Copy, History, RefreshCw } from "lucide-react";
+import { Package, User as UserIcon, Award, Gift, RotateCcw, MapPin, Plus, Trash2, Star, Clock, ChevronDown, ChevronUp, Truck, CheckCircle2, XCircle, Copy, History, RefreshCw, FileText, Download } from "lucide-react";
 import MySubscriptions from "@/components/account/MySubscriptions";
 import ReturnRequestForm from "@/components/account/ReturnRequestForm";
 import { Button } from "@/components/ui/button";
