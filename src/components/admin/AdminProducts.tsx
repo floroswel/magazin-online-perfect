@@ -687,7 +687,12 @@ export default function AdminProducts() {
 
             {/* Specs */}
             <div className="space-y-2 pt-2 border-t border-border">
-              <Label>Specificații tehnice</Label>
+              <div className="flex items-center justify-between">
+                <Label>Specificații tehnice</Label>
+                <Button type="button" variant="outline" size="sm" onClick={() => setAttrExtractorOpen(true)} disabled={!form.description?.trim()} className="gap-1.5 text-xs">
+                  <Sparkles className="w-3 h-3" /> Extrage atribute din descriere ✨
+                </Button>
+              </div>
               {Object.entries(form.specs).length > 0 && (
                 <div className="space-y-1">
                   {Object.entries(form.specs).map(([k, v]) => (
