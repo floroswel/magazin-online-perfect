@@ -267,6 +267,108 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
     toast.success("Produs eliminat");
   };
 
+  const generateInvoice = async (type: string = "invoice") => {
+    if (!order) return;
+    setGeneratingInvoice(true);
+    try {
+      // Fetch invoice settings
+      const { data: invSettings } = await supabase
+        .from("app_settings")
+        .select("value_json")
+        .eq("key", "invoice_settings")
+        .maybeSingle();
+      const settings = (invSettings?.value_json || {}) as any;
+      const prefix = settings.invoice_prefix || "FACT";
+      const vatRate = settings.default_vat_rate || 19;
+
+      // Get next number
+      const { data: lastInv } = await supabase.from("invoices").select("invoice_number").eq("series", prefix).order("created_at", { ascending: false }).limit(1);
+      let nextNum = settings.invoice_start_number || 1;
+      if (lastInv?.[0]?.invoice_number) {
+        const match = lastInv[0].invoice_number.match(/(\d+)$/);
+        if (match) nextNum = parseInt(match[1]) + 1;
+      }
+      const invoiceNumber = `${prefix}-${new Date().getFullYear()}-${String(nextNum).padStart(5, "0")}`;
+
+      // Get order items
+      const { data: orderItems } = await supabase.from("order_items").select("*, products(name)").eq("order_id", orderId);
+      const items = (orderItems || []).map((oi: any, i: number) => ({
+        description: oi.products?.name || "Produs",
+        quantity: oi.quantity,
+        unit_price: oi.price,
+        vat_rate: vatRate,
+        vat_amount: oi.quantity * oi.price * (vatRate / 100),
+        total: oi.quantity * oi.price * (1 + vatRate / 100),
+        sort_order: i,
+        product_id: oi.product_id,
+      }));
+
+      const subtotal = items.reduce((s: number, i: any) => s + i.quantity * i.unit_price, 0);
+      const vatAmount = items.reduce((s: number, i: any) => s + i.vat_amount, 0);
+      const total = subtotal + vatAmount;
+      const addr = order.shipping_address as any;
+
+      const { data: inv, error } = await supabase.from("invoices").insert({
+        invoice_number: invoiceNumber,
+        series: prefix,
+        type,
+        order_id: orderId,
+        seller_name: settings.company_name || "",
+        seller_cui: settings.company_cui || "",
+        seller_reg_com: settings.company_reg_com || "",
+        seller_address: settings.company_address || "",
+        seller_bank: settings.company_bank || "",
+        seller_iban: settings.company_iban || "",
+        buyer_name: addr?.full_name || "",
+        buyer_address: addr ? `${addr.address}, ${addr.city}, ${addr.county}` : "",
+        buyer_email: order.user_email || "",
+        buyer_phone: addr?.phone || "",
+        vat_rate: vatRate,
+        subtotal,
+        vat_amount: vatAmount,
+        total,
+        status: "issued",
+        issued_at: new Date().toISOString(),
+        payment_method: order.payment_method,
+        payment_status: order.payment_status,
+        currency: "RON",
+      }).select().single();
+
+      if (error) throw error;
+
+      // Insert items
+      const invoiceItems = items.map((item: any) => ({ ...item, invoice_id: inv.id }));
+      await supabase.from("invoice_items").insert(invoiceItems);
+
+      // Timeline entry
+      await supabase.from("order_timeline").insert({
+        order_id: orderId, action: "invoice", note: `Factură ${type === "proforma" ? "proformă" : ""} generată: ${invoiceNumber}`,
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["order-invoices", orderId] });
+      queryClient.invalidateQueries({ queryKey: ["order-timeline", orderId] });
+      queryClient.invalidateQueries({ queryKey: ["admin-invoices"] });
+      toast.success(`Factură ${invoiceNumber} generată!`);
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+    setGeneratingInvoice(false);
+  };
+
+  const downloadInvoicePdf = async (invoiceId: string) => {
+    const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+    const url = `https://${projectId}.supabase.co/functions/v1/generate-invoice-pdf`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ invoice_id: invoiceId }),
+    });
+    if (!res.ok) { toast.error("Eroare la generare PDF"); return; }
+    const html = await res.text();
+    const win = window.open("", "_blank");
+    if (win) { win.document.write(html); win.document.close(); }
+  };
+
   if (isLoading || !order) {
     return <div className="text-center py-12 text-muted-foreground">Se încarcă...</div>;
   }
