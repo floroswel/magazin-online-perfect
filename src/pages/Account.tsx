@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Package, User as UserIcon, Award, Gift, RotateCcw, MapPin, Plus, Trash2, Star, Clock, ChevronDown, ChevronUp, Truck, CheckCircle2, XCircle, Copy, History } from "lucide-react";
+import { Package, User as UserIcon, Award, Gift, RotateCcw, MapPin, Plus, Trash2, Star, Clock, ChevronDown, ChevronUp, Truck, CheckCircle2, XCircle, Copy, History, RefreshCw } from "lucide-react";
+import MySubscriptions from "@/components/account/MySubscriptions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -155,6 +156,7 @@ export default function Account() {
         <Tabs defaultValue="orders">
           <TabsList className="flex-wrap">
             <TabsTrigger value="orders"><Package className="h-4 w-4 mr-1" /> Comenzi</TabsTrigger>
+            <TabsTrigger value="subscriptions"><RefreshCw className="h-4 w-4 mr-1" /> Abonamente</TabsTrigger>
             <TabsTrigger value="addresses"><MapPin className="h-4 w-4 mr-1" /> Adrese</TabsTrigger>
             <TabsTrigger value="loyalty"><Award className="h-4 w-4 mr-1" /> Fidelitate</TabsTrigger>
             <TabsTrigger value="profile"><UserIcon className="h-4 w-4 mr-1" /> Profil</TabsTrigger>
@@ -280,6 +282,12 @@ export default function Account() {
                 </Card>
               );
             })}
+          </TabsContent>
+
+          {/* SUBSCRIPTIONS TAB */}
+          <TabsContent value="subscriptions" className="mt-4">
+            <h2 className="font-semibold mb-3 flex items-center gap-2"><RefreshCw className="h-4 w-4" /> Abonamentele mele</h2>
+            <MySubscriptions />
           </TabsContent>
 
           {/* ADDRESSES TAB */}
