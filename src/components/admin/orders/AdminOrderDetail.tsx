@@ -52,6 +52,7 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
   const [awbCourier, setAwbCourier] = useState("");
   const [generatingAwb, setGeneratingAwb] = useState(false);
   const [generatingInvoice, setGeneratingInvoice] = useState(false);
+  const [smartbillLoading, setSmartbillLoading] = useState(false);
 
   const { data: customStatuses = [] } = useQuery({
     queryKey: ["order-statuses"],
@@ -679,6 +680,78 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
                   Proformă
                 </Button>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* SmartBill */}
+          <Card>
+            <CardContent className="p-4">
+              <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><FileText className="w-3.5 h-3.5" /> SmartBill</h4>
+              {(order as any).smartbill_number ? (
+                <div className="space-y-2 mb-2">
+                  <div className="flex items-center justify-between text-xs bg-muted/30 rounded p-2">
+                    <div>
+                      <span className="font-mono font-medium">{(order as any).smartbill_number}</span>
+                      <Badge variant="outline" className={cn("ml-1 text-[9px]",
+                        (order as any).smartbill_status === "synced" ? "border-green-500/50 text-green-600" :
+                        (order as any).smartbill_status === "error" ? "border-destructive text-destructive" : ""
+                      )}>
+                        {(order as any).smartbill_status === "synced" ? "✅ Sincronizat" :
+                         (order as any).smartbill_status === "error" ? "⚠️ Eroare" : "⏳ În așteptare"}
+                      </Badge>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" className="w-full h-7 text-[10px]" disabled={smartbillLoading} onClick={async () => {
+                    setSmartbillLoading(true);
+                    try {
+                      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+                      const res = await fetch(`https://${projectId}.supabase.co/functions/v1/smartbill`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ action: "download_pdf", order_id: orderId }),
+                      });
+                      if (!res.ok) { const d = await res.json(); toast.error(d.error); setSmartbillLoading(false); return; }
+                      const blob = await res.blob();
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a"); a.href = url; a.download = `SmartBill-${(order as any).smartbill_number}.pdf`; a.click();
+                      URL.revokeObjectURL(url);
+                      toast.success("PDF descărcat!");
+                    } catch (err: any) { toast.error(err.message); }
+                    setSmartbillLoading(false);
+                  }}>
+                    {smartbillLoading ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Download className="w-3 h-3 mr-1" />}
+                    Descarcă din SmartBill
+                  </Button>
+                </div>
+              ) : (
+                <p className="text-[10px] text-muted-foreground mb-2">Nefacturat în SmartBill.</p>
+              )}
+              {!(order as any).smartbill_number && (
+                <div className="flex gap-1">
+                  <Button size="sm" className="flex-1 h-7 text-[10px]" disabled={smartbillLoading} onClick={async () => {
+                    setSmartbillLoading(true);
+                    try {
+                      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+                      const res = await fetch(`https://${projectId}.supabase.co/functions/v1/smartbill`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ action: "create_invoice", order_id: orderId }),
+                      });
+                      const data = await res.json();
+                      if (data.ok) {
+                        toast.success(`Factură SmartBill ${data.number} emisă!`);
+                        queryClient.invalidateQueries({ queryKey: ["admin-order-detail", orderId] });
+                      } else {
+                        toast.error(data.error);
+                      }
+                    } catch (err: any) { toast.error(err.message); }
+                    setSmartbillLoading(false);
+                  }}>
+                    {smartbillLoading ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <FileText className="w-3 h-3 mr-1" />}
+                    Emite în SmartBill
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
 

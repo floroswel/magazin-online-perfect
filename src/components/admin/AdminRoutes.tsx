@@ -135,6 +135,7 @@ const AdminERPIntegrations = lazy(() => import("./integrations/AdminERPIntegrati
 const AdminOrderStatuses = lazy(() => import("./orders/AdminOrderStatuses"));
 const AdminReturnSettings = lazy(() => import("./settings/AdminReturnSettings"));
 const AdminInvoiceSettings = lazy(() => import("./settings/AdminInvoiceSettings"));
+const AdminSmartBillSettings = lazy(() => import("./settings/AdminSmartBillSettings"));
 
 export default function AdminRoutes() {
   return (
@@ -341,6 +342,7 @@ export default function AdminRoutes() {
         <Route path="settings/cart" element={<AdminCartSettings />} />
         <Route path="settings/returns" element={<AdminReturnSettings />} />
         <Route path="settings/invoices" element={<AdminInvoiceSettings />} />
+        <Route path="settings/smartbill" element={<AdminSmartBillSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />
