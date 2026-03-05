@@ -112,7 +112,7 @@ export default function AdminDashboard() {
 
   const totalRevenue = orders.reduce((s: number, o: any) => s + Number(o.total), 0);
   const pendingOrders = orders.filter((o: any) => o.status === "pending").length;
-  const lowStockProducts = products.filter((p: any) => p.stock <= 5);
+  const lowStockProducts = products.filter((p: any) => p.stock <= (p.low_stock_threshold ?? 5));
   const activeSubs = subscribers.filter((s: any) => s.is_active).length;
 
   const recentOrders = orders.slice(0, 5);
