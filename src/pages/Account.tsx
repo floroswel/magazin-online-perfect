@@ -41,6 +41,22 @@ export default function Account() {
   const [editPhone, setEditPhone] = useState("");
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
 
+  const { data: customStatuses = [] } = useQuery({
+    queryKey: ["order-statuses-storefront"],
+    queryFn: async () => {
+      const { data } = await supabase.from("order_statuses").select("*").order("sort_order");
+      return (data as any[]) || [];
+    },
+  });
+
+  const STATUS_TIMELINE = customStatuses.length > 0
+    ? customStatuses.filter((s: any) => !s.is_final || s.key === "delivered").map((s: any) => s.key)
+    : STATUS_TIMELINE_DEFAULT;
+
+  const statusLabelsFromDb: Record<string, string> = {};
+  const statusColorsFromDb: Record<string, string> = {};
+  customStatuses.forEach((s: any) => { statusLabelsFromDb[s.key] = s.name; statusColorsFromDb[s.key] = s.color; });
+
   // Return dialog state
   const [returnOrder, setReturnOrder] = useState<any>(null);
   const [returnReason, setReturnReason] = useState("");
