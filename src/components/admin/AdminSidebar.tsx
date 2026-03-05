@@ -47,6 +47,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Comenzi cu probleme", path: "/admin/orders/issues" },
           { label: "Facturi & documente", path: "/admin/orders/invoices" },
           { label: "Retururi (RMA)", path: "/admin/orders/returns" },
+          { label: "🎨 Statusuri comenzi", path: "/admin/orders/statuses" },
         ],
       },
       {

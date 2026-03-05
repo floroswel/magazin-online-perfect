@@ -151,6 +151,7 @@ export default function AdminRoutes() {
         <Route path="orders/issues" element={<AdminIssueOrders />} />
         <Route path="orders/invoices" element={<AdminInvoices />} />
         <Route path="orders/returns" element={<AdminReturns />} />
+        <Route path="orders/statuses" element={<AdminOrderStatuses />} />
 
         {/* ═══════════ PRODUSE ═══════════ */}
         <Route path="products" element={<AdminProducts />} />
