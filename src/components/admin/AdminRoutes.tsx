@@ -171,6 +171,7 @@ export default function AdminRoutes() {
 
         {/* ═══════════ STOC & DEPOZIT ═══════════ */}
         <Route path="stock" element={<AdminStockOverview />} />
+        <Route path="stock/manager" element={<AdminStockManager />} />
         <Route path="stock/warehouses" element={<AdminWarehouses />} />
         <Route path="stock/transfers" element={<AdminStockTransfers />} />
         <Route path="stock/movements" element={<AdminStockMovements />} />
