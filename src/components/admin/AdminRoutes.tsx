@@ -131,6 +131,7 @@ const AdminExportReports = lazy(() => import("./reports/AdminExportReports"));
 const AdminSSL = lazy(() => import("./integrations/AdminSSL"));
 const AdminERPIntegrations = lazy(() => import("./integrations/AdminERPIntegrations"));
 const AdminOrderStatuses = lazy(() => import("./orders/AdminOrderStatuses"));
+const AdminReturnSettings = lazy(() => import("./settings/AdminReturnSettings"));
 
 export default function AdminRoutes() {
   return (
@@ -333,6 +334,7 @@ export default function AdminRoutes() {
         <Route path="settings/currency" element={<AdminCurrencySettings />} />
         <Route path="settings/checkout" element={<AdminCheckoutSettings />} />
         <Route path="settings/cart" element={<AdminCartSettings />} />
+        <Route path="settings/returns" element={<AdminReturnSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />

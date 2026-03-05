@@ -3612,55 +3612,122 @@ export type Database = {
           },
         ]
       }
+      return_request_items: {
+        Row: {
+          created_at: string
+          exchange_product_id: string | null
+          exchange_variant_id: string | null
+          id: string
+          order_item_id: string | null
+          product_id: string | null
+          product_name: string
+          quantity: number
+          return_request_id: string
+        }
+        Insert: {
+          created_at?: string
+          exchange_product_id?: string | null
+          exchange_variant_id?: string | null
+          id?: string
+          order_item_id?: string | null
+          product_id?: string | null
+          product_name?: string
+          quantity?: number
+          return_request_id: string
+        }
+        Update: {
+          created_at?: string
+          exchange_product_id?: string | null
+          exchange_variant_id?: string | null
+          id?: string
+          order_item_id?: string | null
+          product_id?: string | null
+          product_name?: string
+          quantity?: number
+          return_request_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "return_request_items_exchange_product_id_fkey"
+            columns: ["exchange_product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "return_request_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "return_request_items_return_request_id_fkey"
+            columns: ["return_request_id"]
+            isOneToOne: false
+            referencedRelation: "returns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       returns: {
         Row: {
           admin_notes: string | null
           created_at: string
+          customer_id: string | null
           details: string | null
           id: string
           images: Json | null
           items: Json
           order_id: string
+          photos: string[] | null
           reason: string
           refund_amount: number | null
           resolution: string | null
           rma_number: string | null
           status: string
           tracking_number: string | null
+          type: string
           updated_at: string
           user_id: string
         }
         Insert: {
           admin_notes?: string | null
           created_at?: string
+          customer_id?: string | null
           details?: string | null
           id?: string
           images?: Json | null
           items?: Json
           order_id: string
+          photos?: string[] | null
           reason: string
           refund_amount?: number | null
           resolution?: string | null
           rma_number?: string | null
           status?: string
           tracking_number?: string | null
+          type?: string
           updated_at?: string
           user_id: string
         }
         Update: {
           admin_notes?: string | null
           created_at?: string
+          customer_id?: string | null
           details?: string | null
           id?: string
           images?: Json | null
           items?: Json
           order_id?: string
+          photos?: string[] | null
           reason?: string
           refund_amount?: number | null
           resolution?: string | null
           rma_number?: string | null
           status?: string
           tracking_number?: string | null
+          type?: string
           updated_at?: string
           user_id?: string
         }

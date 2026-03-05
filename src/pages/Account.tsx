@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Package, User as UserIcon, Award, Gift, RotateCcw, MapPin, Plus, Trash2, Star, Clock, ChevronDown, ChevronUp, Truck, CheckCircle2, XCircle, Copy, History, RefreshCw } from "lucide-react";
 import MySubscriptions from "@/components/account/MySubscriptions";
+import ReturnRequestForm from "@/components/account/ReturnRequestForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -22,10 +23,6 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 
-const RETURN_REASONS = [
-  "Produs defect", "Produs greșit livrat", "Nu corespunde descrierii",
-  "Schimbare de opinie", "Dimensiune/Culoare greșită", "Ambalaj deteriorat", "Altul",
-];
 const RETURNABLE_STATUSES = ["delivered", "shipped"];
 const STATUS_TIMELINE_DEFAULT = ["pending", "processing", "shipped", "delivered"];
 
@@ -60,9 +57,6 @@ export default function Account() {
 
   // Return dialog state
   const [returnOrder, setReturnOrder] = useState<any>(null);
-  const [returnReason, setReturnReason] = useState("");
-  const [returnDetails, setReturnDetails] = useState("");
-  const [submittingReturn, setSubmittingReturn] = useState(false);
 
   // Address dialog
   const [addressDialog, setAddressDialog] = useState(false);
@@ -86,16 +80,8 @@ export default function Account() {
     toast.success("Profil actualizat!");
   };
 
-  const handleSubmitReturn = async () => {
-    if (!user || !returnOrder || !returnReason) return;
-    setSubmittingReturn(true);
-    const { error } = await supabase.from("returns").insert({
-      order_id: returnOrder.id, user_id: user.id, reason: returnReason, details: returnDetails || null, items: [],
-    });
-    setSubmittingReturn(false);
-    if (error) { toast.error("Eroare la trimiterea cererii de retur"); return; }
-    toast.success("Cererea de retur a fost trimisă!");
-    setReturnOrder(null); setReturnReason(""); setReturnDetails("");
+  const refreshReturns = async () => {
+    if (!user) return;
     const { data } = await supabase.from("returns").select("*").eq("user_id", user.id);
     setExistingReturns(data || []);
   };
@@ -447,36 +433,16 @@ export default function Account() {
         </Tabs>
       </div>
 
-      {/* Return Request Dialog */}
-      <Dialog open={!!returnOrder} onOpenChange={(open) => !open && setReturnOrder(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2"><RotateCcw className="w-5 h-5 text-primary" /> Solicită retur</DialogTitle>
-            <DialogDescription>Comanda #{returnOrder?.id.slice(0, 8)} — {format(Number(returnOrder?.total))}</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label>Motivul returului *</Label>
-              <Select value={returnReason} onValueChange={setReturnReason}>
-                <SelectTrigger><SelectValue placeholder="Selectează motivul" /></SelectTrigger>
-                <SelectContent>
-                  {RETURN_REASONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Detalii suplimentare</Label>
-              <Textarea rows={3} value={returnDetails} onChange={e => setReturnDetails(e.target.value)} placeholder="Descrie problema în detaliu..." />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setReturnOrder(null)}>Anulează</Button>
-            <Button onClick={handleSubmitReturn} disabled={!returnReason || submittingReturn}>
-              {submittingReturn ? "Se trimite..." : "Trimite cererea"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Return Request Form */}
+      {returnOrder && user && (
+        <ReturnRequestForm
+          order={returnOrder}
+          open={!!returnOrder}
+          onClose={() => setReturnOrder(null)}
+          onSuccess={refreshReturns}
+          userId={user.id}
+        />
+      )}
 
       {/* Add Address Dialog */}
       <Dialog open={addressDialog} onOpenChange={setAddressDialog}>
