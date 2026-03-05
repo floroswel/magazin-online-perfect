@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import AIGeneratorModal from "@/components/admin/products/AIGeneratorModal";
+import AttributeExtractorModal from "@/components/admin/products/AttributeExtractorModal";
 
 // ─── Types ───
 interface BundleComponent {
@@ -126,9 +128,10 @@ export default function AdminProducts() {
   const [bulkDeleting, setBulkDeleting] = useState(false);
   const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
   const [previewOpen, setPreviewOpen] = useState<any>(null);
-  const [generatingDesc, setGeneratingDesc] = useState(false);
   const [removingBg, setRemovingBg] = useState<string | null>(null);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [aiModalOpen, setAiModalOpen] = useState(false);
+  const [attrExtractorOpen, setAttrExtractorOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const variantImageRef = useRef<HTMLInputElement>(null);
@@ -634,7 +637,12 @@ export default function AdminProducts() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Descriere scurtă</Label>
+              <div className="flex items-center justify-between">
+                <Label>Descriere scurtă</Label>
+                <Button type="button" variant="outline" size="sm" onClick={() => setAiModalOpen(true)} className="gap-1.5 text-xs" disabled={!form.name.trim()}>
+                  <Sparkles className="w-3 h-3" /> Generează cu AI ✨
+                </Button>
+              </div>
               <Textarea value={form.short_description} onChange={(e) => setForm({ ...form, short_description: e.target.value })} rows={2} placeholder="Rezumat scurt afișat pe card/listing..." />
             </div>
             <div className="space-y-2">
@@ -642,26 +650,12 @@ export default function AdminProducts() {
                 <Label>Descriere completă (rich text)</Label>
                 <Button
                   type="button" variant="outline" size="sm"
-                  disabled={!form.name.trim() || generatingDesc}
-                  onClick={async () => {
-                    setGeneratingDesc(true);
-                    try {
-                      const categoryName = categories.find((c: any) => c.id === form.category_id)?.name;
-                      const brandName = brandsList.find((b: any) => b.id === form.brand_id)?.name;
-                      const { data, error } = await supabase.functions.invoke("generate-description", {
-                        body: { name: form.name, brand: brandName, category: categoryName, specs: form.specs },
-                      });
-                      if (error) throw error;
-                      if (data?.error) throw new Error(data.error);
-                      setForm((f) => ({ ...f, description: data.description }));
-                      toast.success("Descriere generată cu AI!");
-                    } catch (err: any) { toast.error(err.message || "Eroare la generare"); }
-                    setGeneratingDesc(false);
-                  }}
+                  disabled={!form.name.trim()}
+                  onClick={() => setAiModalOpen(true)}
                   className="gap-1.5 text-xs"
                 >
-                  {generatingDesc ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                  {generatingDesc ? "Generez..." : "Generează cu AI"}
+                  <Sparkles className="w-3 h-3" />
+                  Generează cu AI ✨
                 </Button>
               </div>
               <RichTextEditor content={form.description} onChange={(html) => setForm((f) => ({ ...f, description: html }))} />
@@ -692,7 +686,12 @@ export default function AdminProducts() {
 
             {/* Specs */}
             <div className="space-y-2 pt-2 border-t border-border">
-              <Label>Specificații tehnice</Label>
+              <div className="flex items-center justify-between">
+                <Label>Specificații tehnice</Label>
+                <Button type="button" variant="outline" size="sm" onClick={() => setAttrExtractorOpen(true)} disabled={!form.description?.trim()} className="gap-1.5 text-xs">
+                  <Sparkles className="w-3 h-3" /> Extrage atribute din descriere ✨
+                </Button>
+              </div>
               {Object.entries(form.specs).length > 0 && (
                 <div className="space-y-1">
                   {Object.entries(form.specs).map(([k, v]) => (
@@ -1216,7 +1215,12 @@ export default function AdminProducts() {
             </div>
 
             <div className="pt-2 border-t border-border space-y-3">
-              <Label className="text-base font-semibold">SEO</Label>
+              <div className="flex items-center justify-between">
+                <Label className="text-base font-semibold">SEO</Label>
+                <Button type="button" variant="outline" size="sm" onClick={() => setAiModalOpen(true)} disabled={!form.name.trim()} className="gap-1.5 text-xs">
+                  <Sparkles className="w-3 h-3" /> Generează cu AI ✨
+                </Button>
+              </div>
               <div className="space-y-2">
                 <Label className="text-sm">Meta titlu</Label>
                 <Input value={form.meta_title} onChange={(e) => setForm({ ...form, meta_title: e.target.value })} placeholder={form.name || "Titlu pagină produs"} maxLength={60} />
@@ -1540,6 +1544,46 @@ export default function AdminProducts() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* AI Generator Modal */}
+      <AIGeneratorModal
+        open={aiModalOpen}
+        onClose={() => setAiModalOpen(false)}
+        productName={form.name}
+        currentValues={{
+          description: form.description,
+          short_description: form.short_description,
+          meta_title: form.meta_title,
+          meta_description: form.meta_description,
+          tags: form.tags,
+        }}
+        brand={brandsList.find((b: any) => b.id === form.brand_id)?.name}
+        category={categories.find((c: any) => c.id === form.category_id)?.name}
+        specs={form.specs}
+        onApply={(field, value) => {
+          setForm((f) => ({ ...f, [field]: value }));
+        }}
+        onApplyAll={(values) => {
+          setForm((f) => ({
+            ...f,
+            description: values.description,
+            short_description: values.short_description,
+            meta_title: values.meta_title,
+            meta_description: values.meta_description,
+            tags: values.tags,
+          }));
+        }}
+      />
+
+      {/* Attribute Extractor Modal */}
+      <AttributeExtractorModal
+        open={attrExtractorOpen}
+        onClose={() => setAttrExtractorOpen(false)}
+        productName={form.name}
+        description={form.description}
+        currentSpecs={form.specs}
+        onApply={(specs) => setForm((f) => ({ ...f, specs }))}
+      />
     </div>
   );
 }
