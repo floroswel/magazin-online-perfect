@@ -1064,34 +1064,52 @@ export type Database = {
       }
       customer_groups: {
         Row: {
+          benefits: Json | null
+          color: string | null
           conditions: Json | null
           created_at: string | null
           description: string | null
           discount_percentage: number | null
           id: string
           is_default: boolean | null
+          last_sync_at: string | null
+          member_count: number | null
           name: string
+          rules: Json | null
           slug: string
+          type: string | null
         }
         Insert: {
+          benefits?: Json | null
+          color?: string | null
           conditions?: Json | null
           created_at?: string | null
           description?: string | null
           discount_percentage?: number | null
           id?: string
           is_default?: boolean | null
+          last_sync_at?: string | null
+          member_count?: number | null
           name: string
+          rules?: Json | null
           slug: string
+          type?: string | null
         }
         Update: {
+          benefits?: Json | null
+          color?: string | null
           conditions?: Json | null
           created_at?: string | null
           description?: string | null
           discount_percentage?: number | null
           id?: string
           is_default?: boolean | null
+          last_sync_at?: string | null
+          member_count?: number | null
           name?: string
+          rules?: Json | null
           slug?: string
+          type?: string | null
         }
         Relationships: []
       }
