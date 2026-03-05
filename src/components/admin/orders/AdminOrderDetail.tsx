@@ -210,6 +210,30 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
     setShowRefundDialog(false);
   };
 
+  const generateAWB = async () => {
+    if (!order || !awbCourier) return;
+    setGeneratingAwb(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-awb", {
+        body: { order_ids: [orderId], courier: awbCourier },
+      });
+      if (error) throw error;
+      const result = data?.results?.[0];
+      if (result?.success) {
+        toast.success(`AWB generat: ${result.awb}`);
+        queryClient.invalidateQueries({ queryKey: ["admin-order-detail", orderId] });
+        queryClient.invalidateQueries({ queryKey: ["order-timeline", orderId] });
+        queryClient.invalidateQueries({ queryKey: ["tracking-events", orderId] });
+        queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      } else {
+        toast.error(result?.error || "Eroare la generare AWB");
+      }
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+    setGeneratingAwb(false);
+  };
+
   const updateItemQuantity = async (itemId: string, newQty: number) => {
     if (newQty < 1) return;
     await supabase.from("order_items").update({ quantity: newQty }).eq("id", itemId);
