@@ -471,7 +471,7 @@ export default function AdminOrders() {
 
             {/* Bulk actions bar */}
             {someSelected && (
-              <div className="flex items-center gap-2 p-2 bg-primary/5 rounded-lg border border-primary/20">
+              <div className="flex flex-wrap items-center gap-2 p-2 bg-primary/5 rounded-lg border border-primary/20">
                 <span className="text-xs font-medium">{selectedIds.size} selectate</span>
                 <Select onValueChange={v => bulkChangeStatus(v)}>
                   <SelectTrigger className="w-[150px] h-7 text-xs"><SelectValue placeholder="Schimbă status" /></SelectTrigger>
@@ -479,8 +479,38 @@ export default function AdminOrders() {
                     {Object.entries(statusConfig).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
+                <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setBulkCourierDialog(true)}>
+                  <Truck className="w-3 h-3 mr-1" />Generează AWB
+                </Button>
+                <Select onValueChange={v => bulkAssignCourier(v)}>
+                  <SelectTrigger className="w-[140px] h-7 text-xs"><SelectValue placeholder="Alocă curier" /></SelectTrigger>
+                  <SelectContent>
+                    {carriers.map((c: any) => <SelectItem key={c.courier} value={c.courier}>{c.display_name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
                 <Button variant="outline" size="sm" className="h-7 text-xs" onClick={exportCSV}><Download className="w-3 h-3 mr-1" />Export CSV</Button>
                 <Button variant="ghost" size="sm" className="h-7 text-xs ml-auto" onClick={() => setSelectedIds(new Set())}>Deselectează</Button>
+              </div>
+            )}
+
+            {/* Bulk progress */}
+            {bulkProgress && (
+              <div className="p-3 bg-muted/30 rounded-lg border space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="flex items-center gap-1">
+                    {bulkProgress.running && <Loader2 className="w-3 h-3 animate-spin" />}
+                    Procesare: {bulkProgress.current}/{bulkProgress.total}
+                  </span>
+                  <span className="text-muted-foreground">
+                    ✅ {bulkProgress.succeeded} reușite · ❌ {bulkProgress.failed} eșuate
+                  </span>
+                </div>
+                <Progress value={(bulkProgress.current / bulkProgress.total) * 100} className="h-2" />
+                {bulkProgress.details.length > 0 && (
+                  <div className="text-[10px] text-destructive max-h-16 overflow-y-auto">
+                    {bulkProgress.details.map((d, i) => <p key={i}>{d}</p>)}
+                  </div>
+                )}
               </div>
             )}
           </div>
