@@ -103,6 +103,22 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
     },
   });
 
+  const { data: carriers = [] } = useQuery({
+    queryKey: ["courier-configs-active"],
+    queryFn: async () => {
+      const { data } = await supabase.from("courier_configs").select("*").eq("is_active", true).order("display_name");
+      return (data as any[]) || [];
+    },
+  });
+
+  const { data: trackingEvents = [] } = useQuery({
+    queryKey: ["tracking-events", orderId],
+    queryFn: async () => {
+      const { data } = await supabase.from("tracking_events").select("*").eq("order_id", orderId).order("event_at", { ascending: false });
+      return (data as any[]) || [];
+    },
+  });
+
   const { data: orderTags = [] } = useQuery({
     queryKey: ["order-detail-tags", orderId],
     queryFn: async () => {
