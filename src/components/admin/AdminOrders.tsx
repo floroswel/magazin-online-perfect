@@ -275,13 +275,61 @@ export default function AdminOrders() {
 
   const bulkChangeStatus = async (newStatus: string) => {
     const ids = [...selectedIds];
-    for (const id of ids) {
-      await supabase.from("orders").update({ status: newStatus }).eq("id", id);
-      await supabase.from("order_timeline").insert({ order_id: id, action: "status_change", new_status: newStatus, note: "Bulk update" });
+    setBulkProgress({ running: true, current: 0, total: ids.length, succeeded: 0, failed: 0, details: [] });
+    let succeeded = 0, failed = 0;
+    const details: string[] = [];
+    for (let i = 0; i < ids.length; i++) {
+      try {
+        await supabase.from("orders").update({ status: newStatus }).eq("id", ids[i]);
+        await supabase.from("order_timeline").insert({ order_id: ids[i], action: "status_change", new_status: newStatus, note: "Bulk update" });
+        succeeded++;
+      } catch { failed++; details.push(`#${ids[i].slice(0, 8)} eșuat`); }
+      setBulkProgress({ running: true, current: i + 1, total: ids.length, succeeded, failed, details });
     }
     queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
-    toast.success(`${ids.length} comenzi actualizate la ${statusConfig[newStatus]?.label || newStatus}`);
+    toast.success(`${succeeded} comenzi actualizate, ${failed} eșuate`);
     setSelectedIds(new Set());
+    setTimeout(() => setBulkProgress(null), 3000);
+  };
+
+  const bulkGenerateAWB = async (courier: string) => {
+    const ids = [...selectedIds];
+    setBulkProgress({ running: true, current: 0, total: ids.length, succeeded: 0, failed: 0, details: [] });
+    setBulkCourierDialog(false);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-awb", {
+        body: { order_ids: ids, courier },
+      });
+      if (error) throw error;
+      const summary = data?.summary || { succeeded: 0, failed: 0 };
+      const resultDetails = (data?.results || []).filter((r: any) => !r.success).map((r: any) => `#${r.order_id.slice(0, 8)}: ${r.error}`);
+      setBulkProgress({ running: false, current: ids.length, total: ids.length, succeeded: summary.succeeded, failed: summary.failed, details: resultDetails });
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      toast.success(`${summary.succeeded} AWB-uri generate, ${summary.failed} eșuate`);
+      setSelectedIds(new Set());
+    } catch (err: any) {
+      toast.error("Eroare generare AWB: " + err.message);
+      setBulkProgress(null);
+    }
+    setTimeout(() => setBulkProgress(null), 5000);
+  };
+
+  const bulkAssignCourier = async (courier: string) => {
+    const ids = [...selectedIds];
+    setBulkProgress({ running: true, current: 0, total: ids.length, succeeded: 0, failed: 0, details: [] });
+    setBulkCourierDialog(false);
+    let succeeded = 0, failed = 0;
+    for (let i = 0; i < ids.length; i++) {
+      try {
+        await supabase.from("orders").update({ courier }).eq("id", ids[i]);
+        succeeded++;
+      } catch { failed++; }
+      setBulkProgress({ running: true, current: i + 1, total: ids.length, succeeded, failed, details: [] });
+    }
+    queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+    toast.success(`${succeeded} comenzi alocate la ${carriers.find((c: any) => c.courier === courier)?.display_name || courier}`);
+    setSelectedIds(new Set());
+    setTimeout(() => setBulkProgress(null), 3000);
   };
 
   // ─── Tags ───
