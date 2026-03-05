@@ -142,6 +142,10 @@ export default function AdminCarriers() {
                     checked={c.is_active}
                     onCheckedChange={(checked) => toggleMutation.mutate({ id: c.id, is_active: checked })}
                   />
+                  <Button variant="outline" size="sm" className="h-8 text-xs gap-1" onClick={() => testConnection(c)} disabled={testing === c.id}>
+                    {testing === c.id ? <span className="w-3 h-3 border border-primary/30 border-t-primary rounded-full animate-spin" /> : <TestTube className="w-3 h-3" />}
+                    Test
+                  </Button>
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditCarrier({ ...c })}>
                     <Settings2 className="w-4 h-4" />
                   </Button>
