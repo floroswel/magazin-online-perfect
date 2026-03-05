@@ -1146,6 +1146,264 @@ export type Database = {
         }
         Relationships: []
       }
+      erp_field_mappings: {
+        Row: {
+          created_at: string
+          entity_type: string
+          erp_field: string
+          id: string
+          integration_id: string
+          store_field: string
+          transform: string | null
+        }
+        Insert: {
+          created_at?: string
+          entity_type?: string
+          erp_field: string
+          id?: string
+          integration_id: string
+          store_field: string
+          transform?: string | null
+        }
+        Update: {
+          created_at?: string
+          entity_type?: string
+          erp_field?: string
+          id?: string
+          integration_id?: string
+          store_field?: string
+          transform?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "erp_field_mappings_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "erp_integrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      erp_integrations: {
+        Row: {
+          api_base_url: string | null
+          api_key: string | null
+          auth_type: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          last_error: string | null
+          last_sync_at: string | null
+          name: string
+          order_status_mapping: Json | null
+          status: string
+          stock_conflict_resolution: string | null
+          sync_customers: boolean | null
+          sync_direction: string | null
+          sync_frequency: string | null
+          sync_orders: boolean | null
+          sync_products: boolean | null
+          sync_stock: boolean | null
+          template: string | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          api_base_url?: string | null
+          api_key?: string | null
+          auth_type?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          last_error?: string | null
+          last_sync_at?: string | null
+          name: string
+          order_status_mapping?: Json | null
+          status?: string
+          stock_conflict_resolution?: string | null
+          sync_customers?: boolean | null
+          sync_direction?: string | null
+          sync_frequency?: string | null
+          sync_orders?: boolean | null
+          sync_products?: boolean | null
+          sync_stock?: boolean | null
+          template?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          api_base_url?: string | null
+          api_key?: string | null
+          auth_type?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          last_error?: string | null
+          last_sync_at?: string | null
+          name?: string
+          order_status_mapping?: Json | null
+          status?: string
+          stock_conflict_resolution?: string | null
+          sync_customers?: boolean | null
+          sync_direction?: string | null
+          sync_frequency?: string | null
+          sync_orders?: boolean | null
+          sync_products?: boolean | null
+          sync_stock?: boolean | null
+          template?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      erp_sync_logs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          direction: string
+          errors: Json | null
+          id: string
+          integration_id: string | null
+          integration_name: string | null
+          records_created: number | null
+          records_failed: number | null
+          records_total: number | null
+          records_updated: number | null
+          started_at: string
+          status: string
+          sync_type: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          direction?: string
+          errors?: Json | null
+          id?: string
+          integration_id?: string | null
+          integration_name?: string | null
+          records_created?: number | null
+          records_failed?: number | null
+          records_total?: number | null
+          records_updated?: number | null
+          started_at?: string
+          status?: string
+          sync_type: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          direction?: string
+          errors?: Json | null
+          id?: string
+          integration_id?: string | null
+          integration_name?: string | null
+          records_created?: number | null
+          records_failed?: number | null
+          records_total?: number | null
+          records_updated?: number | null
+          started_at?: string
+          status?: string
+          sync_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "erp_sync_logs_integration_id_fkey"
+            columns: ["integration_id"]
+            isOneToOne: false
+            referencedRelation: "erp_integrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      erp_webhook_logs: {
+        Row: {
+          created_at: string
+          direction: string
+          error_message: string | null
+          event_type: string | null
+          id: string
+          method: string | null
+          request_payload: Json | null
+          response_body: string | null
+          response_status: number | null
+          status: string
+          url: string | null
+          webhook_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          direction?: string
+          error_message?: string | null
+          event_type?: string | null
+          id?: string
+          method?: string | null
+          request_payload?: Json | null
+          response_body?: string | null
+          response_status?: number | null
+          status?: string
+          url?: string | null
+          webhook_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          direction?: string
+          error_message?: string | null
+          event_type?: string | null
+          id?: string
+          method?: string | null
+          request_payload?: Json | null
+          response_body?: string | null
+          response_status?: number | null
+          status?: string
+          url?: string | null
+          webhook_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "erp_webhook_logs_webhook_id_fkey"
+            columns: ["webhook_id"]
+            isOneToOne: false
+            referencedRelation: "erp_webhooks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      erp_webhooks: {
+        Row: {
+          created_at: string
+          destination_url: string
+          event_type: string
+          id: string
+          is_active: boolean | null
+          last_triggered_at: string | null
+          name: string
+          secret_key: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          destination_url: string
+          event_type: string
+          id?: string
+          is_active?: boolean | null
+          last_triggered_at?: string | null
+          name: string
+          secret_key?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          destination_url?: string
+          event_type?: string
+          id?: string
+          is_active?: boolean | null
+          last_triggered_at?: string | null
+          name?: string
+          secret_key?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
