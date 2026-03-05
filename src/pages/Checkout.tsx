@@ -179,7 +179,11 @@ export default function Checkout() {
       await supabase.from("coupon_usage").insert({ coupon_id: appliedCoupon.id, user_id: user.id, order_id: order.id });
     }
 
-    if (user && pointsEarned > 0) {
+    if (user && pointsToUse > 0) {
+      await addPoints(-pointsToUse, "redeem", `Folosite la comandă #${order.id.slice(0, 8)}`, order.id);
+    }
+
+    if (user && pointsEarned > 0 && pointsToUse < totalPoints) {
       await addPoints(pointsEarned, "purchase", `Comandă #${order.id.slice(0, 8)}`, order.id);
     }
 
