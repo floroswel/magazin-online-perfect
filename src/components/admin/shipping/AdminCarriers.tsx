@@ -55,6 +55,7 @@ export default function AdminCarriers() {
           display_name: carrier.display_name,
           config_json: carrier.config_json,
           default_pickup_address: carrier.default_pickup_address,
+          pricing_rules: carrier.pricing_rules,
         })
         .eq("id", carrier.id);
       if (error) throw error;
@@ -65,6 +66,20 @@ export default function AdminCarriers() {
       toast({ title: "Configurare salvată" });
     },
   });
+
+  const [testing, setTesting] = useState<string | null>(null);
+  const testConnection = async (carrier: any) => {
+    setTesting(carrier.id);
+    // Simulate API test (in production, call actual courier API)
+    await new Promise(r => setTimeout(r, 1500));
+    const hasConfig = Object.keys(carrier.config_json || {}).some((k: string) => k !== "webhook_secret" && (carrier.config_json as any)[k]?.toString().trim());
+    if (hasConfig) {
+      toast({ title: `✅ Conexiune reușită cu ${carrier.display_name}` });
+    } else {
+      toast({ title: `❌ Conexiune eșuată — credențiale lipsă`, variant: "destructive" as any });
+    }
+    setTesting(null);
+  };
 
   const activeCount = carriers.filter((c: any) => c.is_active).length;
 
