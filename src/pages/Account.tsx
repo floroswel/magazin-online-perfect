@@ -128,6 +128,57 @@ export default function Account() {
 
   if (!user) return <Layout><div className="container py-16 text-center"><p>Autentifică-te.</p><Link to="/auth"><Button className="mt-4">Autentifică-te</Button></Link></div></Layout>;
 
+  const downloadInvoicePdf = (invoiceId: string) => {
+    const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+    fetch(`https://${projectId}.supabase.co/functions/v1/generate-invoice-pdf`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ invoice_id: invoiceId }),
+    }).then(r => r.text()).then(html => {
+      const win = window.open("", "_blank");
+      if (win) { win.document.write(html); win.document.close(); }
+    }).catch(() => toast.error("Eroare la generare PDF"));
+  };
+
+  const CustomerInvoicesList = ({ userId }: { userId: string }) => {
+    const { data: invoices = [], isLoading } = useQuery({
+      queryKey: ["customer-invoices", userId],
+      queryFn: async () => {
+        // Fetch orders for user, then invoices for those orders
+        const { data: userOrders } = await supabase.from("orders").select("id").eq("user_id", userId);
+        if (!userOrders?.length) return [];
+        const orderIds = userOrders.map(o => o.id);
+        const { data } = await supabase.from("invoices").select("id, invoice_number, type, status, total, currency, issued_at, order_id").in("order_id", orderIds).order("issued_at", { ascending: false });
+        return (data as any[]) || [];
+      },
+    });
+
+    if (isLoading) return <p className="text-sm text-muted-foreground">Se încarcă...</p>;
+    if (invoices.length === 0) return <p className="text-sm text-muted-foreground">Nu ai nicio factură.</p>;
+
+    return (
+      <div className="space-y-2">
+        {invoices.map((inv: any) => (
+          <Card key={inv.id}>
+            <CardContent className="p-4 flex items-center justify-between">
+              <div>
+                <p className="font-mono font-medium text-sm">{inv.invoice_number}</p>
+                <p className="text-xs text-muted-foreground">
+                  {inv.issued_at ? new Date(inv.issued_at).toLocaleDateString("ro-RO") : "—"} · {Number(inv.total || 0).toFixed(2)} {inv.currency || "RON"}
+                </p>
+                <Badge variant="outline" className="text-[10px] mt-1">
+                  {inv.type === "proforma" ? "Proformă" : inv.type === "storno" ? "Storno" : "Factură"}
+                </Badge>
+              </div>
+              <Button variant="outline" size="sm" className="gap-1" onClick={() => downloadInvoicePdf(inv.id)}>
+                <Download className="w-3.5 h-3.5" /> Descarcă
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  };
+
   const statusLabels: Record<string, string> = { pending: "În așteptare", processing: "Se procesează", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată", ...statusLabelsFromDb };
   const statusIcons: Record<string, any> = { pending: Clock, processing: Package, shipped: Truck, delivered: CheckCircle2, cancelled: XCircle };
 
