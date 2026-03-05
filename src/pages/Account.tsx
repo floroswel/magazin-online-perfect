@@ -528,6 +528,80 @@ export default function Account() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* PREFERENCES TAB */}
+          <TabsContent value="preferences" className="mt-4 space-y-4">
+            <Card>
+              <CardHeader><CardTitle className="text-base flex items-center gap-2"><Settings className="w-4 h-4" /> Preferințe notificări</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                {[
+                  { key: "order_updates", label: "Actualizări comenzi" },
+                  { key: "promotions", label: "Promoții și oferte" },
+                  { key: "newsletter", label: "Newsletter" },
+                ].map(item => {
+                  const prefs = (profile?.notification_preferences as any) || { order_updates: true, promotions: true, newsletter: true };
+                  return (
+                    <div key={item.key} className="flex items-center justify-between">
+                      <Label className="text-sm">{item.label}</Label>
+                      <input
+                        type="checkbox"
+                        checked={prefs[item.key] !== false}
+                        onChange={async (e) => {
+                          const newPrefs = { ...prefs, [item.key]: e.target.checked };
+                          await supabase.from("profiles").update({ notification_preferences: newPrefs as any }).eq("user_id", user.id);
+                          setProfile((p: any) => p ? { ...p, notification_preferences: newPrefs } : p);
+                          toast.success("Preferințe actualizate");
+                        }}
+                        className="h-4 w-4 rounded border-input"
+                      />
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="text-base">Limbă & Monedă</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                <div>
+                  <Label className="text-sm">Limbă preferată</Label>
+                  <Select
+                    value={(profile as any)?.preferred_language || "ro"}
+                    onValueChange={async (v) => {
+                      await supabase.from("profiles").update({ preferred_language: v } as any).eq("user_id", user.id);
+                      setProfile((p: any) => p ? { ...p, preferred_language: v } : p);
+                      toast.success("Limbă actualizată");
+                    }}
+                  >
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ro">Română</SelectItem>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="hu">Magyar</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-sm">Monedă preferată</Label>
+                  <Select
+                    value={(profile as any)?.preferred_currency || "RON"}
+                    onValueChange={async (v) => {
+                      await supabase.from("profiles").update({ preferred_currency: v } as any).eq("user_id", user.id);
+                      setProfile((p: any) => p ? { ...p, preferred_currency: v } : p);
+                      toast.success("Monedă actualizată");
+                    }}
+                  >
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="RON">RON (Lei)</SelectItem>
+                      <SelectItem value="EUR">EUR (Euro)</SelectItem>
+                      <SelectItem value="USD">USD (Dollar)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </TabsList>  
         </Tabs>
       </div>
 
