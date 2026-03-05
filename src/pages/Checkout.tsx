@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Ticket, CreditCard, Banknote, Wallet, MapPin } from "lucide-react";
+import { Ticket, CreditCard, Banknote, Wallet, MapPin, Award } from "lucide-react";
 import MokkaModal from "@/components/mokka/MokkaModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
 import Layout from "@/components/layout/Layout";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
@@ -22,7 +23,7 @@ import type { Tables } from "@/integrations/supabase/types";
 export default function Checkout() {
   const { user } = useAuth();
   const { items, totalPrice, clearCart } = useCart();
-  const { totalPoints, currentLevel, addPoints } = useLoyalty();
+  const { totalPoints, currentLevel, addPoints, config: loyaltyConfig, pointsToValue, maxRedeemablePoints } = useLoyalty();
   const { format, currency } = useCurrency();
   const { hasFreeShipping, maxDiscount } = useCustomerGroups();
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ export default function Checkout() {
   const [isGuest, setIsGuest] = useState(false);
   const [wantInvoice, setWantInvoice] = useState(false);
   const [invoiceForm, setInvoiceForm] = useState({ companyName: "", cui: "", regCom: "", address: "" });
+  const [pointsToUse, setPointsToUse] = useState(0);
 
   useEffect(() => {
     if (user) {
@@ -76,9 +78,11 @@ export default function Checkout() {
   const shipping = hasFreeShipping ? 0 : (totalPrice >= 200 ? 0 : 19.99);
   const groupDiscount = maxDiscount > 0 ? totalPrice * (maxDiscount / 100) : 0;
   const loyaltyDiscount = user && currentLevel ? (totalPrice * (currentLevel.discount_percentage / 100)) : 0;
-  const subtotalAfterDiscounts = totalPrice - couponDiscount - loyaltyDiscount - groupDiscount;
+  const pointsDiscount = pointsToValue(pointsToUse);
+  const subtotalAfterDiscounts = totalPrice - couponDiscount - loyaltyDiscount - groupDiscount - pointsDiscount;
   const total = Math.max(0, subtotalAfterDiscounts + shipping);
-  const pointsEarned = user ? Math.floor(total / 10) : 0;
+  const maxPoints = maxRedeemablePoints(totalPrice);
+  const pointsEarned = user && loyaltyConfig.program_enabled ? Math.floor(total / loyaltyConfig.earn_rate_per_amount) * loyaltyConfig.earn_rate_points : 0;
 
   const selectSavedAddress = (addrId: string) => {
     const addr = savedAddresses.find(a => a.id === addrId);
@@ -152,7 +156,7 @@ export default function Checkout() {
       payment_method: paymentMethod,
       shipping_address: form,
       coupon_id: appliedCoupon?.id || null,
-      discount_amount: couponDiscount + loyaltyDiscount,
+      discount_amount: couponDiscount + loyaltyDiscount + groupDiscount + pointsDiscount,
       loyalty_points_earned: pointsEarned,
       payment_installments: installmentData,
       user_email: user?.email || form.email,
@@ -175,7 +179,11 @@ export default function Checkout() {
       await supabase.from("coupon_usage").insert({ coupon_id: appliedCoupon.id, user_id: user.id, order_id: order.id });
     }
 
-    if (user && pointsEarned > 0) {
+    if (user && pointsToUse > 0) {
+      await addPoints(-pointsToUse, "redeem", `Folosite la comandă #${order.id.slice(0, 8)}`, order.id);
+    }
+
+    if (user && pointsEarned > 0 && pointsToUse < totalPoints) {
       await addPoints(pointsEarned, "purchase", `Comandă #${order.id.slice(0, 8)}`, order.id);
     }
 
@@ -379,10 +387,45 @@ export default function Checkout() {
                   <span>-{format(loyaltyDiscount)}</span>
                 </div>
               )}
+              {pointsDiscount > 0 && (
+                <div className="flex justify-between text-sm text-green-600">
+                  <span>Puncte folosite ({pointsToUse})</span>
+                  <span>-{format(pointsDiscount)}</span>
+                </div>
+              )}
+              {groupDiscount > 0 && (
+                <div className="flex justify-between text-sm text-green-600">
+                  <span>Discount grup</span>
+                  <span>-{format(groupDiscount)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Livrare</span>
                 <span>{shipping === 0 ? "GRATUITĂ" : format(shipping)}</span>
               </div>
+
+              {/* Points redemption slider */}
+              {user && maxPoints > 0 && loyaltyConfig.program_enabled && (
+                <div className="bg-primary/5 rounded-lg p-3 space-y-2">
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <Award className="h-4 w-4 text-primary" />
+                    <span>Folosește punctele ({totalPoints} disponibile)</span>
+                  </div>
+                  <Slider
+                    value={[pointsToUse]}
+                    onValueChange={([v]) => setPointsToUse(v)}
+                    max={maxPoints}
+                    min={0}
+                    step={1}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>{pointsToUse} puncte</span>
+                    <span>= -{format(pointsToValue(pointsToUse))} reducere</span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">Max {loyaltyConfig.max_redeem_percent}% din total, minim {loyaltyConfig.min_points_redeem} puncte</p>
+                </div>
+              )}
               <div className="border-t pt-3 flex justify-between font-bold text-lg">
                 <span>Total</span>
                 <span className="text-primary">{format(total)}</span>

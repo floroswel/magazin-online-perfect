@@ -1,12 +1,13 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { ShoppingCart, Star } from "lucide-react";
+import { ShoppingCart, Star, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/hooks/useCart";
 import { useCurrency } from "@/hooks/useCurrency";
 import { usePricingRules } from "@/hooks/usePricingRules";
+import { useLoyalty } from "@/hooks/useLoyalty";
 import CountdownTimer from "./CountdownTimer";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
@@ -19,6 +20,9 @@ function ProductCardInner({ product }: Props) {
   const { addToCart } = useCart();
   const { format } = useCurrency();
   const { getProductDiscount } = usePricingRules();
+  const { calcPointsForPrice, config } = useLoyalty();
+
+  const pointsEarned = config.program_enabled ? calcPointsForPrice(product.price) : 0;
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -83,6 +87,12 @@ function ProductCardInner({ product }: Props) {
           </div>
           {promoDiscount?.endsAt && (
             <CountdownTimer endsAt={promoDiscount.endsAt} />
+          )}
+          {pointsEarned > 0 && (
+            <div className="flex items-center gap-1 text-xs text-primary">
+              <Award className="h-3 w-3" />
+              <span>+{pointsEarned} {config.program_name || "puncte"}</span>
+            </div>
           )}
           <Button
             onClick={handleAddToCart}
