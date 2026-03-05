@@ -303,17 +303,31 @@ export default function Account() {
                         </div>
                       )}
 
-                      {/* Return button */}
-                      <div className="flex justify-end">
-                        {hasReturn(o.id) ? (
-                          <Badge variant="outline" className="text-xs">
-                            <RotateCcw className="w-3 h-3 mr-1" /> Retur: {getReturnStatus(o.id)}
-                          </Badge>
-                        ) : RETURNABLE_STATUSES.includes(o.status) ? (
-                          <Button variant="outline" size="sm" className="text-xs gap-1" onClick={(e) => { e.stopPropagation(); setReturnOrder(o); }}>
-                            <RotateCcw className="w-3 h-3" /> Solicită retur
+                      {/* Return button + Invoice download */}
+                      <div className="flex justify-between items-center">
+                        <div>
+                          {/* Quick invoice download if order has invoices */}
+                          <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={(e) => {
+                            e.stopPropagation();
+                            supabase.from("invoices").select("id").eq("order_id", o.id).limit(1).then(({ data }) => {
+                              if (data?.[0]) downloadInvoicePdf(data[0].id);
+                              else toast.info("Nu există factură pentru această comandă.");
+                            });
+                          }}>
+                            <FileText className="w-3 h-3" /> Factură
                           </Button>
-                        ) : null}
+                        </div>
+                        <div>
+                          {hasReturn(o.id) ? (
+                            <Badge variant="outline" className="text-xs">
+                              <RotateCcw className="w-3 h-3 mr-1" /> Retur: {getReturnStatus(o.id)}
+                            </Badge>
+                          ) : RETURNABLE_STATUSES.includes(o.status) ? (
+                            <Button variant="outline" size="sm" className="text-xs gap-1" onClick={(e) => { e.stopPropagation(); setReturnOrder(o); }}>
+                              <RotateCcw className="w-3 h-3" /> Solicită retur
+                            </Button>
+                          ) : null}
+                        </div>
                       </div>
                     </div>
                   )}
