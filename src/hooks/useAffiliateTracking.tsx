@@ -30,9 +30,7 @@ export function useAffiliateTracking() {
               total_clicks: (undefined as any), // We'll use rpc or just increment
             }).eq("id", data.id);
             // Simple increment via raw update
-            supabase.rpc("increment_affiliate_clicks" as any, { aff_id: data.id }).catch(() => {
-              // Fallback: just record the click, don't worry about counter
-            });
+            // Click recorded via affiliate_clicks table
           });
         }
       });

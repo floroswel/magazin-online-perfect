@@ -63,6 +63,7 @@ const App = () => (
               <Route path="/compare" element={<ErrorBoundary><Compare /></ErrorBoundary>} />
               <Route path="/page/:slug" element={<ErrorBoundary><CmsPage /></ErrorBoundary>} />
               <Route path="/install" element={<ErrorBoundary><Install /></ErrorBoundary>} />
+              <Route path="/afilieri" element={<ErrorBoundary><Affiliates /></ErrorBoundary>} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
