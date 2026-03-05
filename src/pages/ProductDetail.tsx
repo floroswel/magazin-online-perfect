@@ -425,38 +425,8 @@ export default function ProductDetail() {
 
           <TabsContent value="reviews">
             <Card>
-              <CardContent className="pt-6 space-y-4">
-                {user && (
-                  <div className="border rounded-lg p-4 space-y-3">
-                    <h4 className="font-medium">Adaugă o recenzie</h4>
-                    <div className="flex gap-1">
-                      {[1, 2, 3, 4, 5].map(s => (
-                        <button key={s} onClick={() => setReviewRating(s)}>
-                          <Star className={`h-5 w-5 cursor-pointer ${s <= reviewRating ? "fill-emag-yellow text-emag-yellow" : "text-muted"}`} />
-                        </button>
-                      ))}
-                    </div>
-                    <Textarea value={reviewText} onChange={e => setReviewText(e.target.value)} placeholder="Scrie recenzia ta..." />
-                    <Button onClick={submitReview} disabled={!reviewText.trim()}>Trimite recenzia</Button>
-                  </div>
-                )}
-                {reviews.length === 0 ? (
-                  <p className="text-muted-foreground text-sm">Nicio recenzie încă. Fii primul!</p>
-                ) : (
-                  reviews.map(r => (
-                    <div key={r.id} className="border-b pb-4 last:border-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className="flex">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <Star key={i} className={`h-3 w-3 ${i < r.rating ? "fill-emag-yellow text-emag-yellow" : "text-muted"}`} />
-                          ))}
-                        </div>
-                        <span className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("ro-RO")}</span>
-                      </div>
-                      <p className="text-sm">{r.comment}</p>
-                    </div>
-                  ))
-                )}
+              <CardContent className="pt-6">
+                <ProductReviews productId={product.id} productName={product.name} />
               </CardContent>
             </Card>
           </TabsContent>
