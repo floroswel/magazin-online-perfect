@@ -598,7 +598,7 @@ export default function AdminOrders() {
                       {/* Inline expand */}
                       {isExpanded && (
                         <TableRow key={`${order.id}-exp`}>
-                          <TableCell colSpan={10} className="bg-muted/20 p-4">
+                          <TableCell colSpan={11} className="bg-muted/20 p-4">
                             <div className="grid md:grid-cols-3 gap-4">
                               <div>
                                 <h4 className="text-xs font-semibold mb-1.5 text-muted-foreground">PRODUSE</h4>
