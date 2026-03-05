@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ShoppingCart, Heart, Star, Minus, Plus, ArrowLeft, GitCompare, MessageSquare, Truck, Package, Ruler, Bell } from "lucide-react";
+import ProductReviews from "@/components/products/ProductReviews";
 import ProductImageGallery from "@/components/products/ProductImageGallery";
 import VariantSelector from "@/components/products/VariantSelector";
 import CountdownTimer from "@/components/products/CountdownTimer";
@@ -35,14 +36,11 @@ export default function ProductDetail() {
   const [product, setProduct] = useState<any>(null);
   const [similar, setSimilar] = useState<Tables<"products">[]>([]);
   const [relatedProducts, setRelatedProducts] = useState<Tables<"products">[]>([]);
-  const [reviews, setReviews] = useState<Tables<"reviews">[]>([]);
-  const [questions, setQuestions] = useState<any[]>([]);
   const [recentlyViewed, setRecentlyViewed] = useState<Tables<"products">[]>([]);
   const [bundleComponents, setBundleComponents] = useState<any[]>([]);
+  const [questions, setQuestions] = useState<any[]>([]);
   const [qty, setQty] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [reviewText, setReviewText] = useState("");
-  const [reviewRating, setReviewRating] = useState(5);
   const [questionText, setQuestionText] = useState("");
   const [isFav, setIsFav] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
@@ -65,13 +63,11 @@ export default function ProductDetail() {
         localStorage.setItem("recently_viewed", JSON.stringify(updated));
       } catch {}
 
-      const [simRes, revRes, qRes] = await Promise.all([
+      const [simRes, qRes] = await Promise.all([
         supabase.from("products").select("*").eq("category_id", prod.category_id!).neq("id", prod.id).eq("visible", true).limit(4),
-        supabase.from("reviews").select("*").eq("product_id", prod.id).order("created_at", { ascending: false }),
         supabase.from("product_questions").select("*").eq("product_id", prod.id).order("created_at", { ascending: false }),
       ]);
       setSimilar(simRes.data || []);
-      setReviews(revRes.data || []);
       setQuestions(qRes.data || []);
 
       // Load related products
@@ -140,14 +136,7 @@ export default function ProductDetail() {
     }
   };
 
-  const submitReview = async () => {
-    if (!user || !product) return;
-    const { error } = await supabase.from("reviews").insert({ user_id: user.id, product_id: product.id, rating: reviewRating, comment: reviewText });
-    if (error) { toast.error("Eroare la adăugarea recenziei"); return; }
-    toast.success("Recenzie adăugată!"); setReviewText("");
-    const { data } = await supabase.from("reviews").select("*").eq("product_id", product.id).order("created_at", { ascending: false });
-    setReviews(data || []);
-  };
+  // Reviews are now handled by ProductReviews component
 
   const submitQuestion = async () => {
     if (!user || !product || !questionText.trim()) return;
@@ -382,7 +371,7 @@ export default function ProductDetail() {
           <TabsList>
             <TabsTrigger value="description">Descriere</TabsTrigger>
             <TabsTrigger value="specs">Specificații</TabsTrigger>
-            <TabsTrigger value="reviews">Recenzii ({reviews.length})</TabsTrigger>
+            <TabsTrigger value="reviews">Recenzii</TabsTrigger>
             <TabsTrigger value="qa">Întrebări ({questions.length})</TabsTrigger>
           </TabsList>
 
@@ -424,38 +413,8 @@ export default function ProductDetail() {
 
           <TabsContent value="reviews">
             <Card>
-              <CardContent className="pt-6 space-y-4">
-                {user && (
-                  <div className="border rounded-lg p-4 space-y-3">
-                    <h4 className="font-medium">Adaugă o recenzie</h4>
-                    <div className="flex gap-1">
-                      {[1, 2, 3, 4, 5].map(s => (
-                        <button key={s} onClick={() => setReviewRating(s)}>
-                          <Star className={`h-5 w-5 cursor-pointer ${s <= reviewRating ? "fill-emag-yellow text-emag-yellow" : "text-muted"}`} />
-                        </button>
-                      ))}
-                    </div>
-                    <Textarea value={reviewText} onChange={e => setReviewText(e.target.value)} placeholder="Scrie recenzia ta..." />
-                    <Button onClick={submitReview} disabled={!reviewText.trim()}>Trimite recenzia</Button>
-                  </div>
-                )}
-                {reviews.length === 0 ? (
-                  <p className="text-muted-foreground text-sm">Nicio recenzie încă. Fii primul!</p>
-                ) : (
-                  reviews.map(r => (
-                    <div key={r.id} className="border-b pb-4 last:border-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className="flex">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <Star key={i} className={`h-3 w-3 ${i < r.rating ? "fill-emag-yellow text-emag-yellow" : "text-muted"}`} />
-                          ))}
-                        </div>
-                        <span className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("ro-RO")}</span>
-                      </div>
-                      <p className="text-sm">{r.comment}</p>
-                    </div>
-                  ))
-                )}
+              <CardContent className="pt-6">
+                <ProductReviews productId={product.id} productName={product.name} />
               </CardContent>
             </Card>
           </TabsContent>
