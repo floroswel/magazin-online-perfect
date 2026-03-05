@@ -111,6 +111,24 @@ export default function AdminDashboard() {
     },
   });
 
+  const { data: warehouseStockData = [] } = useQuery({
+    queryKey: ["admin-dashboard-warehouse-stock"],
+    queryFn: async () => {
+      const { data: warehouses } = await supabase.from("warehouses").select("id, name, is_active").eq("is_active", true).order("name");
+      if (!warehouses?.length) return [];
+      const { data: ws } = await supabase.from("warehouse_stock").select("warehouse_id, product_id, quantity");
+      const productIds = [...new Set((ws || []).map(r => r.product_id))];
+      const { data: prods } = await supabase.from("products").select("id, price").in("id", productIds.length ? productIds : ["none"]);
+      const priceMap = Object.fromEntries((prods || []).map(p => [p.id, Number(p.price)]));
+      return warehouses.map(w => {
+        const items = (ws || []).filter(r => r.warehouse_id === w.id);
+        const totalQty = items.reduce((s, r) => s + r.quantity, 0);
+        const totalValue = items.reduce((s, r) => s + r.quantity * (priceMap[r.product_id] || 0), 0);
+        return { id: w.id, name: w.name, totalQty, totalValue };
+      });
+    },
+  });
+
   const totalRevenue = orders.reduce((s: number, o: any) => s + Number(o.total), 0);
   const pendingOrders = orders.filter((o: any) => o.status === "pending").length;
   const lowStockProducts = products.filter((p: any) => p.stock <= (p.low_stock_threshold ?? 5));
