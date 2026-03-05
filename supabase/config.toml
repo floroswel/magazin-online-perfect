@@ -56,3 +56,6 @@ verify_jwt = false
 
 [functions.request-reviews]
 verify_jwt = false
+
+[functions.smartbill]
+verify_jwt = false
