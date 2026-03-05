@@ -651,26 +651,12 @@ export default function AdminProducts() {
                 <Label>Descriere completă (rich text)</Label>
                 <Button
                   type="button" variant="outline" size="sm"
-                  disabled={!form.name.trim() || generatingDesc}
-                  onClick={async () => {
-                    setGeneratingDesc(true);
-                    try {
-                      const categoryName = categories.find((c: any) => c.id === form.category_id)?.name;
-                      const brandName = brandsList.find((b: any) => b.id === form.brand_id)?.name;
-                      const { data, error } = await supabase.functions.invoke("generate-description", {
-                        body: { name: form.name, brand: brandName, category: categoryName, specs: form.specs },
-                      });
-                      if (error) throw error;
-                      if (data?.error) throw new Error(data.error);
-                      setForm((f) => ({ ...f, description: data.description }));
-                      toast.success("Descriere generată cu AI!");
-                    } catch (err: any) { toast.error(err.message || "Eroare la generare"); }
-                    setGeneratingDesc(false);
-                  }}
+                  disabled={!form.name.trim()}
+                  onClick={() => setAiModalOpen(true)}
                   className="gap-1.5 text-xs"
                 >
-                  {generatingDesc ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                  {generatingDesc ? "Generez..." : "Generează cu AI"}
+                  <Sparkles className="w-3 h-3" />
+                  Generează cu AI ✨
                 </Button>
               </div>
               <RichTextEditor content={form.description} onChange={(html) => setForm((f) => ({ ...f, description: html }))} />
