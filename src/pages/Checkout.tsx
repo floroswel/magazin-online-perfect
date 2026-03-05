@@ -18,6 +18,7 @@ import { useCurrency } from "@/hooks/useCurrency";
 import { useCustomerGroups } from "@/hooks/useCustomerGroups";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { getAffiliateCode } from "@/hooks/useAffiliateTracking";
 import type { Tables } from "@/integrations/supabase/types";
 
 export default function Checkout() {
