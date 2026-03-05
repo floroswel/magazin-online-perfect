@@ -316,7 +316,8 @@ export default function Checkout() {
                     {selectedMethod.payment_deadline_days && <p className="text-xs text-amber-700 mt-1">⏳ Termen plată: {selectedMethod.payment_deadline_days} zile</p>}
                   </CardContent>
                 </Card>
-              )}
+                );
+              })()}
 
               {/* Installment selector */}
               {selectedMethod?.type === "installments" && (
