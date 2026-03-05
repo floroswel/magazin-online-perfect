@@ -36,8 +36,7 @@ export default function ProductDetail() {
   const [product, setProduct] = useState<any>(null);
   const [similar, setSimilar] = useState<Tables<"products">[]>([]);
   const [relatedProducts, setRelatedProducts] = useState<Tables<"products">[]>([]);
-  const [reviews, setReviews] = useState<Tables<"reviews">[]>([]);
-  const [questions, setQuestions] = useState<any[]>([]);
+  const [relatedProducts, setRelatedProducts] = useState<Tables<"products">[]>([]);
   const [recentlyViewed, setRecentlyViewed] = useState<Tables<"products">[]>([]);
   const [bundleComponents, setBundleComponents] = useState<any[]>([]);
   const [qty, setQty] = useState(1);
