@@ -105,6 +105,14 @@ export default function AdminOrders() {
     },
   });
 
+  const { data: carriers = [] } = useQuery({
+    queryKey: ["courier-configs-active"],
+    queryFn: async () => {
+      const { data } = await supabase.from("courier_configs").select("*").eq("is_active", true).order("display_name");
+      return (data as any[]) || [];
+    },
+  });
+
   const { data: tagAssignments = [] } = useQuery({
     queryKey: ["order-tag-assignments"],
     queryFn: async () => {
