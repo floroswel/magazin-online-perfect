@@ -36,5 +36,11 @@ verify_jwt = false
 [functions.extract-attributes]
 verify_jwt = false
 
+[functions.generate-awb]
+verify_jwt = false
+
+[functions.check-tracking]
+verify_jwt = false
+
 [functions.erp-sync]
 verify_jwt = false
