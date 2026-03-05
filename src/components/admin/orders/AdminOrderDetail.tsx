@@ -52,6 +52,7 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
   const [awbCourier, setAwbCourier] = useState("");
   const [generatingAwb, setGeneratingAwb] = useState(false);
   const [generatingInvoice, setGeneratingInvoice] = useState(false);
+  const [smartbillLoading, setSmartbillLoading] = useState(false);
 
   const { data: customStatuses = [] } = useQuery({
     queryKey: ["order-statuses"],
