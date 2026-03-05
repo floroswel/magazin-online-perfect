@@ -573,7 +573,8 @@ export default function AdminOrders() {
                           </div>
                         </TableCell>
                         <TableCell className="text-xs capitalize text-muted-foreground">{order.payment_method || "ramburs"}</TableCell>
-                          <div className="flex gap-0.5 flex-wrap">
+                        <TableCell>
+                          <div className="flex gap-0.5 flex-wrap items-center">
                             {oTags.map((t: any) => (
                               <Badge key={t.id} variant="outline" className="text-[9px] px-1.5 py-0 border" style={{ borderColor: t.color, color: t.color }}>{t.name}</Badge>
                             ))}
