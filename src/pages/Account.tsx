@@ -433,36 +433,16 @@ export default function Account() {
         </Tabs>
       </div>
 
-      {/* Return Request Dialog */}
-      <Dialog open={!!returnOrder} onOpenChange={(open) => !open && setReturnOrder(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2"><RotateCcw className="w-5 h-5 text-primary" /> Solicită retur</DialogTitle>
-            <DialogDescription>Comanda #{returnOrder?.id.slice(0, 8)} — {format(Number(returnOrder?.total))}</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label>Motivul returului *</Label>
-              <Select value={returnReason} onValueChange={setReturnReason}>
-                <SelectTrigger><SelectValue placeholder="Selectează motivul" /></SelectTrigger>
-                <SelectContent>
-                  {RETURN_REASONS.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Detalii suplimentare</Label>
-              <Textarea rows={3} value={returnDetails} onChange={e => setReturnDetails(e.target.value)} placeholder="Descrie problema în detaliu..." />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setReturnOrder(null)}>Anulează</Button>
-            <Button onClick={handleSubmitReturn} disabled={!returnReason || submittingReturn}>
-              {submittingReturn ? "Se trimite..." : "Trimite cererea"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Return Request Form */}
+      {returnOrder && user && (
+        <ReturnRequestForm
+          order={returnOrder}
+          open={!!returnOrder}
+          onClose={() => setReturnOrder(null)}
+          onSuccess={refreshReturns}
+          userId={user.id}
+        />
+      )}
 
       {/* Add Address Dialog */}
       <Dialog open={addressDialog} onOpenChange={setAddressDialog}>
