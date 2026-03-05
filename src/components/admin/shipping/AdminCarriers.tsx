@@ -215,6 +215,35 @@ export default function AdminCarriers() {
                   </div>
                 ))}
               </div>
+
+              {/* Default Settings */}
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold uppercase text-muted-foreground">Setări Implicite</Label>
+                <div>
+                  <Label className="text-xs">Tip serviciu implicit</Label>
+                  <Input
+                    value={(editCarrier.pricing_rules as any)?.default_service || ""}
+                    placeholder="standard, express, etc."
+                    onChange={(e) => setEditCarrier({ ...editCarrier, pricing_rules: { ...(editCarrier.pricing_rules || {}), default_service: e.target.value } })}
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs">Greutate implicită (kg)</Label>
+                  <Input
+                    type="number"
+                    value={(editCarrier.pricing_rules as any)?.default_weight || ""}
+                    placeholder="1"
+                    onChange={(e) => setEditCarrier({ ...editCarrier, pricing_rules: { ...(editCarrier.pricing_rules || {}), default_weight: Number(e.target.value) } })}
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={(editCarrier.pricing_rules as any)?.insurance_enabled || false}
+                    onCheckedChange={(v) => setEditCarrier({ ...editCarrier, pricing_rules: { ...(editCarrier.pricing_rules || {}), insurance_enabled: v } })}
+                  />
+                  <Label className="text-xs">Asigurare colet activă</Label>
+                </div>
+              </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setEditCarrier(null)}>Anulează</Button>
