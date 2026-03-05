@@ -61,6 +61,9 @@ export default function AdminOrders() {
   const [newTagName, setNewTagName] = useState("");
   const [newTagColor, setNewTagColor] = useState("#6366f1");
   const [showFilters, setShowFilters] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState<{ running: boolean; current: number; total: number; succeeded: number; failed: number; details: string[] } | null>(null);
+  const [bulkCourierDialog, setBulkCourierDialog] = useState(false);
+  const [selectedCourier, setSelectedCourier] = useState("");
 
   const { data: customStatuses = [] } = useQuery({
     queryKey: ["order-statuses"],
