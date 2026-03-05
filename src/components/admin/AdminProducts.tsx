@@ -1545,6 +1545,46 @@ export default function AdminProducts() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* AI Generator Modal */}
+      <AIGeneratorModal
+        open={aiModalOpen}
+        onClose={() => setAiModalOpen(false)}
+        productName={form.name}
+        currentValues={{
+          description: form.description,
+          short_description: form.short_description,
+          meta_title: form.meta_title,
+          meta_description: form.meta_description,
+          tags: form.tags,
+        }}
+        brand={brandsList.find((b: any) => b.id === form.brand_id)?.name}
+        category={categories.find((c: any) => c.id === form.category_id)?.name}
+        specs={form.specs}
+        onApply={(field, value) => {
+          setForm((f) => ({ ...f, [field]: value }));
+        }}
+        onApplyAll={(values) => {
+          setForm((f) => ({
+            ...f,
+            description: values.description,
+            short_description: values.short_description,
+            meta_title: values.meta_title,
+            meta_description: values.meta_description,
+            tags: values.tags,
+          }));
+        }}
+      />
+
+      {/* Attribute Extractor Modal */}
+      <AttributeExtractorModal
+        open={attrExtractorOpen}
+        onClose={() => setAttrExtractorOpen(false)}
+        productName={form.name}
+        description={form.description}
+        currentSpecs={form.specs}
+        onApply={(specs) => setForm((f) => ({ ...f, specs }))}
+      />
     </div>
   );
 }
