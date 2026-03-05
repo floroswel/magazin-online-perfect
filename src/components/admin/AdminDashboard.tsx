@@ -14,6 +14,7 @@ import {
   RotateCcw,
   ArrowDownUp,
   Activity,
+  Warehouse,
 } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import { ro } from "date-fns/locale";
