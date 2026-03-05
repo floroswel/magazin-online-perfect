@@ -28,10 +28,11 @@ import ResetPassword from "./pages/ResetPassword";
 import CustomScriptInjector from "./components/CustomScriptInjector";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Affiliates from "./pages/Affiliates";
+import { useAffiliateTracking } from "./hooks/useAffiliateTracking";
 
 const queryClient = new QueryClient();
 
-const AffiliateTracker = () => { const { useAffiliateTracking } = require("@/hooks/useAffiliateTracking"); useAffiliateTracking(); return null; };
+const AffiliateTracker = () => { useAffiliateTracking(); return null; };
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
