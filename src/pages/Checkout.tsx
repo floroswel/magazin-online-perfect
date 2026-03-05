@@ -14,6 +14,7 @@ import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useLoyalty } from "@/hooks/useLoyalty";
 import { useCurrency } from "@/hooks/useCurrency";
+import { useCustomerGroups } from "@/hooks/useCustomerGroups";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
