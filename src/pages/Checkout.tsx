@@ -41,6 +41,7 @@ export default function Checkout() {
   const [isGuest, setIsGuest] = useState(false);
   const [wantInvoice, setWantInvoice] = useState(false);
   const [invoiceForm, setInvoiceForm] = useState({ companyName: "", cui: "", regCom: "", address: "" });
+  const [pointsToUse, setPointsToUse] = useState(0);
 
   useEffect(() => {
     if (user) {
