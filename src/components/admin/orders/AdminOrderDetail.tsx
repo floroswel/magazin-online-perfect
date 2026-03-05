@@ -485,13 +485,55 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
             </CardContent>
           </Card>
 
-          {/* Fulfillment */}
+          {/* Fulfillment & AWB */}
           <Card>
             <CardContent className="p-4">
-              <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><Truck className="w-3.5 h-3.5" /> Livrare</h4>
-              <div className="text-sm text-muted-foreground">
+              <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><Truck className="w-3.5 h-3.5" /> Livrare & AWB</h4>
+              <div className="text-sm text-muted-foreground space-y-2">
                 <p>Status: {order.shipping_status || "—"}</p>
-                {order.fulfillment_warehouse_id && <p className="text-xs">Depozit: {order.fulfillment_warehouse_id.slice(0, 8)}</p>}
+                {order.fulfillment_warehouse_id && <p className="text-xs">Depozit: {(order.fulfillment_warehouse_id as string).slice(0, 8)}</p>}
+
+                {(order as any).tracking_number ? (
+                  <div className="bg-muted/30 rounded-lg p-3 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-foreground">AWB</span>
+                      <Badge variant="outline" className="text-[10px] font-mono">{(order as any).tracking_number}</Badge>
+                    </div>
+                    {(order as any).courier && (
+                      <p className="text-xs">Curier: {carriers.find((c: any) => c.courier === (order as any).courier)?.display_name || (order as any).courier}</p>
+                    )}
+                    {(order as any).tracking_url && (
+                      <a href={(order as any).tracking_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary flex items-center gap-1 hover:underline">
+                        <ExternalLink className="w-3 h-3" /> Urmărire colet
+                      </a>
+                    )}
+                    {trackingEvents.length > 0 && (
+                      <div className="mt-2 border-t pt-2 space-y-1">
+                        <p className="text-[10px] font-semibold text-foreground">Istoric tracking</p>
+                        {trackingEvents.slice(0, 5).map((ev: any) => (
+                          <div key={ev.id} className="text-[10px] text-muted-foreground">
+                            <span className="font-medium">{ev.status}</span> — {ev.description || "—"}
+                            <span className="ml-1 opacity-60">{format(new Date(ev.event_at), "dd.MM HH:mm")}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-2 border-t pt-2">
+                    <p className="text-xs font-medium text-foreground">Generare AWB</p>
+                    <Select value={awbCourier} onValueChange={setAwbCourier}>
+                      <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Selectează curier" /></SelectTrigger>
+                      <SelectContent>
+                        {carriers.map((c: any) => <SelectItem key={c.courier} value={c.courier}>{c.display_name}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                    <Button size="sm" className="w-full" onClick={generateAWB} disabled={!awbCourier || generatingAwb}>
+                      {generatingAwb ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <Printer className="w-3.5 h-3.5 mr-1" />}
+                      {generatingAwb ? "Se generează..." : "Generează AWB"}
+                    </Button>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
