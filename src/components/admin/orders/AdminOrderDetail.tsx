@@ -649,6 +649,39 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
             </CardContent>
           </Card>
 
+          {/* Invoices */}
+          <Card>
+            <CardContent className="p-4">
+              <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><Receipt className="w-3.5 h-3.5" /> Facturi</h4>
+              {orderInvoices.length > 0 ? (
+                <div className="space-y-2 mb-3">
+                  {orderInvoices.map((inv: any) => (
+                    <div key={inv.id} className="flex items-center justify-between text-xs bg-muted/30 rounded p-2">
+                      <div>
+                        <span className="font-mono font-medium">{inv.invoice_number}</span>
+                        <Badge variant="outline" className="ml-1 text-[9px]">{inv.type === "proforma" ? "Proformă" : inv.type === "storno" ? "Storno" : "Factură"}</Badge>
+                      </div>
+                      <Button variant="ghost" size="sm" className="h-6 text-[10px] gap-1" onClick={() => downloadInvoicePdf(inv.id)}>
+                        <Download className="w-3 h-3" /> PDF
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[10px] text-muted-foreground mb-2">Nicio factură generată.</p>
+              )}
+              <div className="flex gap-1">
+                <Button size="sm" className="flex-1 h-7 text-[10px]" onClick={() => generateInvoice("invoice")} disabled={generatingInvoice}>
+                  {generatingInvoice ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <FileText className="w-3 h-3 mr-1" />}
+                  Factură
+                </Button>
+                <Button size="sm" variant="outline" className="flex-1 h-7 text-[10px]" onClick={() => generateInvoice("proforma")} disabled={generatingInvoice}>
+                  Proformă
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Extra */}
           <Card>
             <CardContent className="p-4">
