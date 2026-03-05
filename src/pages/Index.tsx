@@ -14,6 +14,7 @@ import BlogPreview from "@/components/home/BlogPreview";
 import { supabase } from "@/integrations/supabase/client";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
 import { useStoreBranding } from "@/hooks/useStoreBranding";
+import { useCustomerGroups } from "@/hooks/useCustomerGroups";
 import type { Tables } from "@/integrations/supabase/types";
 
 interface BenefitItem { icon: string; text: string }
@@ -30,6 +31,7 @@ const IconMap: Record<string, any> = {
 
 export default function Index() {
   const branding = useStoreBranding();
+  const { welcomeMessage } = useCustomerGroups();
   const [featured, setFeatured] = useState<Tables<"products">[]>([]);
   const [loading, setLoading] = useState(true);
   const [benefits, setBenefits] = useState<BenefitItem[]>([
@@ -70,6 +72,11 @@ export default function Index() {
 
   return (
     <Layout>
+      {welcomeMessage && (
+        <div className="bg-primary/10 border-b border-primary/20 py-3">
+          <div className="container text-center text-sm font-medium text-primary">{welcomeMessage}</div>
+        </div>
+      )}
       <HeroSlider />
 
       {/* Benefits bar — dynamic */}

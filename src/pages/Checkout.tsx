@@ -14,6 +14,7 @@ import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useLoyalty } from "@/hooks/useLoyalty";
 import { useCurrency } from "@/hooks/useCurrency";
+import { useCustomerGroups } from "@/hooks/useCustomerGroups";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
@@ -23,6 +24,7 @@ export default function Checkout() {
   const { items, totalPrice, clearCart } = useCart();
   const { totalPoints, currentLevel, addPoints } = useLoyalty();
   const { format, currency } = useCurrency();
+  const { hasFreeShipping, maxDiscount } = useCustomerGroups();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({ fullName: "", phone: "", email: "", address: "", city: "", county: "", postalCode: "" });
@@ -71,9 +73,10 @@ export default function Checkout() {
     );
   }
 
-  const shipping = totalPrice >= 200 ? 0 : 19.99;
+  const shipping = hasFreeShipping ? 0 : (totalPrice >= 200 ? 0 : 19.99);
+  const groupDiscount = maxDiscount > 0 ? totalPrice * (maxDiscount / 100) : 0;
   const loyaltyDiscount = user && currentLevel ? (totalPrice * (currentLevel.discount_percentage / 100)) : 0;
-  const subtotalAfterDiscounts = totalPrice - couponDiscount - loyaltyDiscount;
+  const subtotalAfterDiscounts = totalPrice - couponDiscount - loyaltyDiscount - groupDiscount;
   const total = Math.max(0, subtotalAfterDiscounts + shipping);
   const pointsEarned = user ? Math.floor(total / 10) : 0;
 

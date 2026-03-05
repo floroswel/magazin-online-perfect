@@ -20,6 +20,7 @@ const AdminInventory = lazy(() => import("./stock/AdminInventory"));
 const AdminCustomers = lazy(() => import("./customers/AdminCustomers"));
 const AdminCustomerDetail = lazy(() => import("./customers/AdminCustomerDetail"));
 const AdminCustomerGroups = lazy(() => import("./customers/AdminCustomerGroups"));
+const AdminCustomerGroupDetail = lazy(() => import("./customers/AdminCustomerGroupDetail"));
 const AdminCustomerSegments = lazy(() => import("./customers/AdminCustomerSegments"));
 const AdminImportExport = lazy(() => import("./products/AdminImportExport"));
 const AdminAuditLog = lazy(() => import("./users/AdminAuditLog"));
@@ -201,6 +202,7 @@ export default function AdminRoutes() {
         <Route path="customers/vip" element={<AdminFilteredCustomers filter="vip" title="Clienți VIP" description="Top clienți după valoare." />} />
         <Route path="customers/b2b" element={<AdminFilteredCustomers filter="b2b" title="Clienți B2B" description="Persoane juridice." />} />
         <Route path="customers/groups" element={<AdminCustomerGroups />} />
+        <Route path="customers/groups/:groupId" element={<AdminCustomerGroupDetail />} />
         <Route path="customers/segments" element={<AdminCustomerSegments />} />
         <Route path="customers/tags" element={<AdminCustomerTags />} />
         <Route path="customers/loyalty" element={<AdminLoyalty />} />
