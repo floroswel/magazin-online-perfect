@@ -63,13 +63,11 @@ export default function ProductDetail() {
         localStorage.setItem("recently_viewed", JSON.stringify(updated));
       } catch {}
 
-      const [simRes, revRes, qRes] = await Promise.all([
+      const [simRes, qRes] = await Promise.all([
         supabase.from("products").select("*").eq("category_id", prod.category_id!).neq("id", prod.id).eq("visible", true).limit(4),
-        supabase.from("reviews").select("*").eq("product_id", prod.id).order("created_at", { ascending: false }),
         supabase.from("product_questions").select("*").eq("product_id", prod.id).order("created_at", { ascending: false }),
       ]);
       setSimilar(simRes.data || []);
-      setReviews(revRes.data || []);
       setQuestions(qRes.data || []);
 
       // Load related products
