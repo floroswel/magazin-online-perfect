@@ -13,6 +13,7 @@ const AdminCoupons = lazy(() => import("./AdminCoupons"));
 const AdminNewsletter = lazy(() => import("./AdminNewsletter"));
 const AdminReports = lazy(() => import("./AdminReports"));
 const AdminStockOverview = lazy(() => import("./stock/AdminStockOverview"));
+const AdminStockManager = lazy(() => import("./stock/AdminStockManager"));
 const AdminStockMovements = lazy(() => import("./stock/AdminStockMovements"));
 const AdminStockAlerts = lazy(() => import("./stock/AdminStockAlerts"));
 const AdminInventory = lazy(() => import("./stock/AdminInventory"));
@@ -170,6 +171,7 @@ export default function AdminRoutes() {
 
         {/* ═══════════ STOC & DEPOZIT ═══════════ */}
         <Route path="stock" element={<AdminStockOverview />} />
+        <Route path="stock/manager" element={<AdminStockManager />} />
         <Route path="stock/warehouses" element={<AdminWarehouses />} />
         <Route path="stock/transfers" element={<AdminStockTransfers />} />
         <Route path="stock/movements" element={<AdminStockMovements />} />

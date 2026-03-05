@@ -66,7 +66,7 @@ export default function AdminDashboard() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
-        .select("id, name, stock, price, image_url")
+        .select("id, name, stock, low_stock_threshold, price, image_url, sku")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
 
   const totalRevenue = orders.reduce((s: number, o: any) => s + Number(o.total), 0);
   const pendingOrders = orders.filter((o: any) => o.status === "pending").length;
-  const lowStockProducts = products.filter((p: any) => p.stock <= 5);
+  const lowStockProducts = products.filter((p: any) => p.stock <= (p.low_stock_threshold ?? 5));
   const activeSubs = subscribers.filter((s: any) => s.is_active).length;
 
   const recentOrders = orders.slice(0, 5);
@@ -383,9 +383,9 @@ export default function AdminDashboard() {
                 <AlertTriangle className="w-4 h-4 text-orange-500" />
                 Stoc Scăzut
               </CardTitle>
-              <Link to="/admin/products">
+              <Link to="/admin/stock/manager">
                 <Button variant="ghost" size="sm" className="text-xs gap-1">
-                  Produse <ArrowUpRight className="w-3 h-3" />
+                  Manager stocuri <ArrowUpRight className="w-3 h-3" />
                 </Button>
               </Link>
             </div>
