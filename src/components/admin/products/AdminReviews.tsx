@@ -135,11 +135,12 @@ export default function AdminReviews() {
 
   const saveSettings = async () => {
     setSavingSettings(true);
-    await supabase.from("app_settings").upsert({
-      key: "review_settings",
-      value_json: settings as unknown as Record<string, unknown>,
-      description: "Review & feedback settings",
-    }, { onConflict: "key" });
+    const { data: existing } = await supabase.from("app_settings").select("id").eq("key", "review_settings").maybeSingle();
+    if (existing) {
+      await supabase.from("app_settings").update({ value_json: settings as unknown as Record<string, unknown> }).eq("key", "review_settings");
+    } else {
+      await supabase.from("app_settings").insert({ key: "review_settings", value_json: settings as unknown as Record<string, unknown>, description: "Review & feedback settings" });
+    }
     setSavingSettings(false);
     toast.success("Setări salvate");
   };
