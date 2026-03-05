@@ -189,7 +189,32 @@ export default function Account() {
   return (
     <Layout>
       <div className="container py-6 max-w-4xl">
-        <h1 className="text-2xl font-bold mb-6">Contul meu</h1>
+        {/* Personalized greeting */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold">Bună, {profile?.full_name?.split(" ")[0] || "acolo"}! 👋</h1>
+          <p className="text-sm text-muted-foreground">Gestionează contul, comenzile și preferințele tale.</p>
+        </div>
+
+        {/* Quick stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          <Card><CardContent className="p-3 text-center">
+            <p className="text-lg font-bold">{orders.length}</p>
+            <p className="text-[10px] text-muted-foreground">Comenzi</p>
+          </CardContent></Card>
+          <Card><CardContent className="p-3 text-center">
+            <p className="text-lg font-bold">{totalPoints}</p>
+            <p className="text-[10px] text-muted-foreground">Puncte fidelitate</p>
+          </CardContent></Card>
+          <Card><CardContent className="p-3 text-center">
+            <p className="text-lg font-bold">{currentLevel?.icon || "🥉"} {currentLevel?.name || "Bronze"}</p>
+            <p className="text-[10px] text-muted-foreground">Nivel</p>
+          </CardContent></Card>
+          <Card><CardContent className="p-3 text-center">
+            <p className="text-lg font-bold">{addresses.length}</p>
+            <p className="text-[10px] text-muted-foreground">Adrese salvate</p>
+          </CardContent></Card>
+        </div>
+
         <Tabs defaultValue="orders">
           <TabsList className="flex-wrap">
             <TabsTrigger value="orders"><Package className="h-4 w-4 mr-1" /> Comenzi</TabsTrigger>
@@ -198,6 +223,7 @@ export default function Account() {
             <TabsTrigger value="addresses"><MapPin className="h-4 w-4 mr-1" /> Adrese</TabsTrigger>
             <TabsTrigger value="loyalty"><Award className="h-4 w-4 mr-1" /> Fidelitate</TabsTrigger>
             <TabsTrigger value="profile"><UserIcon className="h-4 w-4 mr-1" /> Profil</TabsTrigger>
+            <TabsTrigger value="preferences"><Settings className="h-4 w-4 mr-1" /> Preferințe</TabsTrigger>
           </TabsList>
 
           {/* ORDERS TAB */}
