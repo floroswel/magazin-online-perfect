@@ -1095,6 +1095,30 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_notes: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          note: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          note: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          note?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       dynamic_categories: {
         Row: {
           created_at: string
@@ -3385,6 +3409,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          abc_class: string | null
           avatar_url: string | null
           company: string | null
           created_at: string
@@ -3393,12 +3418,17 @@ export type Database = {
           full_name: string | null
           gdpr_consents: Json | null
           id: string
+          is_blocked: boolean | null
+          last_login_at: string | null
           last_name: string | null
           last_order_at: string | null
           loyalty_tier: string | null
           marketing_preferences: Json | null
+          notification_preferences: Json | null
           orders_count: number | null
           phone: string | null
+          preferred_currency: string | null
+          preferred_language: string | null
           segments: string[] | null
           tags: string[] | null
           total_spent: number | null
@@ -3407,6 +3437,7 @@ export type Database = {
           vat_number: string | null
         }
         Insert: {
+          abc_class?: string | null
           avatar_url?: string | null
           company?: string | null
           created_at?: string
@@ -3415,12 +3446,17 @@ export type Database = {
           full_name?: string | null
           gdpr_consents?: Json | null
           id?: string
+          is_blocked?: boolean | null
+          last_login_at?: string | null
           last_name?: string | null
           last_order_at?: string | null
           loyalty_tier?: string | null
           marketing_preferences?: Json | null
+          notification_preferences?: Json | null
           orders_count?: number | null
           phone?: string | null
+          preferred_currency?: string | null
+          preferred_language?: string | null
           segments?: string[] | null
           tags?: string[] | null
           total_spent?: number | null
@@ -3429,6 +3465,7 @@ export type Database = {
           vat_number?: string | null
         }
         Update: {
+          abc_class?: string | null
           avatar_url?: string | null
           company?: string | null
           created_at?: string
@@ -3437,12 +3474,17 @@ export type Database = {
           full_name?: string | null
           gdpr_consents?: Json | null
           id?: string
+          is_blocked?: boolean | null
+          last_login_at?: string | null
           last_name?: string | null
           last_order_at?: string | null
           loyalty_tier?: string | null
           marketing_preferences?: Json | null
+          notification_preferences?: Json | null
           orders_count?: number | null
           phone?: string | null
+          preferred_currency?: string | null
+          preferred_language?: string | null
           segments?: string[] | null
           tags?: string[] | null
           total_spent?: number | null
