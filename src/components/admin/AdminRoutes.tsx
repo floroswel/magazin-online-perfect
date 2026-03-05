@@ -132,6 +132,7 @@ const AdminSSL = lazy(() => import("./integrations/AdminSSL"));
 const AdminERPIntegrations = lazy(() => import("./integrations/AdminERPIntegrations"));
 const AdminOrderStatuses = lazy(() => import("./orders/AdminOrderStatuses"));
 const AdminReturnSettings = lazy(() => import("./settings/AdminReturnSettings"));
+const AdminInvoiceSettings = lazy(() => import("./settings/AdminInvoiceSettings"));
 
 export default function AdminRoutes() {
   return (
