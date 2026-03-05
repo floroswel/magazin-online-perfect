@@ -62,7 +62,7 @@ const DEFAULT_TEMPLATES: Record<string, { subject: string; body: string }> = {
 function renderPreview(html: string) {
   let rendered = html || "";
   for (const [key, val] of Object.entries(SAMPLE_DATA)) {
-    rendered = rendered.replaceAll(key, val);
+    rendered = rendered.split(key).join(val);
   }
   return rendered;
 }
