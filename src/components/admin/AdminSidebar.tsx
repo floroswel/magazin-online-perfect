@@ -75,6 +75,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         label: "Stoc & Depozit", icon: Warehouse,
         children: [
           { label: "Stocuri", path: "/admin/stock" },
+          { label: "📋 Manager stocuri", path: "/admin/stock/manager" },
           { label: "Depozite", path: "/admin/stock/warehouses" },
           { label: "Transferuri stoc", path: "/admin/stock/transfers" },
           { label: "Mișcări stoc", path: "/admin/stock/movements" },
