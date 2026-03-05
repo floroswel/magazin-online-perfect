@@ -129,6 +129,7 @@ const AdminConnectors = lazy(() => import("./channels/AdminConnectors"));
 const AdminCustomReport = lazy(() => import("./reports/AdminCustomReport"));
 const AdminExportReports = lazy(() => import("./reports/AdminExportReports"));
 const AdminSSL = lazy(() => import("./integrations/AdminSSL"));
+const AdminERPIntegrations = lazy(() => import("./integrations/AdminERPIntegrations"));
 
 export default function AdminRoutes() {
   return (
