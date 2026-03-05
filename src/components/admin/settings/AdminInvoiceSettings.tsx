@@ -50,7 +50,7 @@ export default function AdminInvoiceSettings() {
         .select("value_json")
         .eq("key", "invoice_settings")
         .maybeSingle();
-      return data?.value_json as InvoiceSettings | null;
+      return data?.value_json as unknown as InvoiceSettings | null;
     },
   });
 
