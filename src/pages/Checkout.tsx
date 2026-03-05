@@ -78,9 +78,11 @@ export default function Checkout() {
   const shipping = hasFreeShipping ? 0 : (totalPrice >= 200 ? 0 : 19.99);
   const groupDiscount = maxDiscount > 0 ? totalPrice * (maxDiscount / 100) : 0;
   const loyaltyDiscount = user && currentLevel ? (totalPrice * (currentLevel.discount_percentage / 100)) : 0;
-  const subtotalAfterDiscounts = totalPrice - couponDiscount - loyaltyDiscount - groupDiscount;
+  const pointsDiscount = pointsToValue(pointsToUse);
+  const subtotalAfterDiscounts = totalPrice - couponDiscount - loyaltyDiscount - groupDiscount - pointsDiscount;
   const total = Math.max(0, subtotalAfterDiscounts + shipping);
-  const pointsEarned = user ? Math.floor(total / 10) : 0;
+  const maxPoints = maxRedeemablePoints(totalPrice);
+  const pointsEarned = user && loyaltyConfig.program_enabled ? Math.floor(total / loyaltyConfig.earn_rate_per_amount) * loyaltyConfig.earn_rate_points : 0;
 
   const selectSavedAddress = (addrId: string) => {
     const addr = savedAddresses.find(a => a.id === addrId);
