@@ -156,7 +156,7 @@ export default function Checkout() {
       payment_method: paymentMethod,
       shipping_address: form,
       coupon_id: appliedCoupon?.id || null,
-      discount_amount: couponDiscount + loyaltyDiscount,
+      discount_amount: couponDiscount + loyaltyDiscount + groupDiscount + pointsDiscount,
       loyalty_points_earned: pointsEarned,
       payment_installments: installmentData,
       user_email: user?.email || form.email,
