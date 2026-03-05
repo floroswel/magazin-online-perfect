@@ -14,10 +14,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { Progress } from "@/components/ui/progress";
 import {
   ChevronDown, ChevronRight, MapPin, CreditCard, Gift, Download, CalendarIcon,
   CheckCircle2, Truck, XCircle, RotateCcw, Eye, Package, Search, Ban,
-  Tag, Plus, FileText, Copy, StickyNote, Clock, ArrowUpDown, Printer,
+  Tag, Plus, FileText, Copy, StickyNote, Clock, ArrowUpDown, Printer, Loader2,
 } from "lucide-react";
 import { format, startOfDay, endOfDay } from "date-fns";
 import { ro } from "date-fns/locale";
