@@ -284,6 +284,8 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Coș de cumpărături", path: "/admin/settings/cart" },
           { label: "Checkout", path: "/admin/settings/checkout" },
           { label: "Email / SMTP", path: "/admin/settings/email" },
+          { label: "📧 Șabloane email", path: "/admin/content/email-templates" },
+          { label: "📋 Log email-uri", path: "/admin/settings/email-logs" },
           { label: "SEO global", path: "/admin/settings/seo" },
           { label: "Notificări", path: "/admin/settings/notifications" },
           { label: "Securitate", path: "/admin/settings/security" },
