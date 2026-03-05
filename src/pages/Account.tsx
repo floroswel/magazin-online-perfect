@@ -418,7 +418,10 @@ export default function Account() {
               <div className="p-6 text-center" style={{ background: `linear-gradient(135deg, ${currentLevel?.color || '#CD7F32'}22, ${currentLevel?.color || '#CD7F32'}11)` }}>
                 <span className="text-5xl">{currentLevel?.icon || '🥉'}</span>
                 <h2 className="text-2xl font-bold mt-2">{currentLevel?.name || 'Bronze'}</h2>
-                <p className="text-3xl font-bold text-primary mt-1">{totalPoints} puncte</p>
+                <p className="text-3xl font-bold text-primary mt-1">{totalPoints} {loyaltyConfig.program_name || "puncte"}</p>
+                {loyaltyConfig.redeem_rate_points > 0 && (
+                  <p className="text-xs text-muted-foreground mt-1">Valoare: {pointsToValue(totalPoints).toFixed(2)} lei</p>
+                )}
                 {currentLevel && currentLevel.discount_percentage > 0 && (
                   <p className="text-sm font-medium mt-1">Reducere permanentă: {currentLevel.discount_percentage}%</p>
                 )}
