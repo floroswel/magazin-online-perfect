@@ -225,7 +225,11 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
   const billing = order.billing_address as any;
   const subtotal = (order.order_items || []).reduce((s: number, i: any) => s + Number(i.price) * i.quantity, 0);
   const StatusChip = ({ status }: { status: string }) => {
-    const cfg = statusConfig[status] || { label: status, color: "bg-muted text-muted-foreground", icon: null };
+    const cfg = dynamicStatusConfig[status] || statusConfig[status] || { label: status, color: "bg-muted text-muted-foreground", icon: null };
+    const customColor = (cfg as any)._color;
+    if (customColor) {
+      return <Badge variant="outline" className="gap-1 font-medium border" style={{ borderColor: customColor, color: customColor, backgroundColor: `${customColor}15` }}>{cfg.icon} {cfg.label}</Badge>;
+    }
     return <Badge variant="outline" className={cn("gap-1 font-medium border", cfg.color)}>{cfg.icon} {cfg.label}</Badge>;
   };
 
