@@ -16,7 +16,6 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceKey);
 
-    // Get all active scheduled imports that are due
     const { data: schedules, error: fetchErr } = await supabase
       .from("scheduled_imports")
       .select("*")
@@ -28,7 +27,6 @@ Deno.serve(async (req) => {
     const results: { id: string; name: string; status: string; inserted?: number; error?: string }[] = [];
 
     for (const schedule of schedules || []) {
-      // Check if enough time has passed since last run
       if (schedule.last_run_at) {
         const lastRun = new Date(schedule.last_run_at);
         const diffMinutes = (now.getTime() - lastRun.getTime()) / (1000 * 60);
@@ -39,7 +37,6 @@ Deno.serve(async (req) => {
       }
 
       try {
-        // Call the import-products function internally
         const importUrl = `${supabaseUrl}/functions/v1/import-products`;
         const res = await fetch(importUrl, {
           method: "POST",
@@ -47,18 +44,22 @@ Deno.serve(async (req) => {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${serviceKey}`,
           },
-          body: JSON.stringify({ feed_url: schedule.feed_url }),
+          body: JSON.stringify({
+            feed_url: schedule.feed_url,
+            import_mode: "create_and_update",
+            price_mode: schedule.price_mode || "as_is",
+            price_multiplier: schedule.price_multiplier || 1.0,
+            price_margin: schedule.price_margin || 0,
+            stock_only_sync: schedule.stock_only_sync || false,
+            scheduled_import_id: schedule.id,
+          }),
         });
 
         const data = await res.json();
 
-        // Update last run info
         await supabase
           .from("scheduled_imports")
-          .update({
-            last_run_at: now.toISOString(),
-            last_result: data,
-          })
+          .update({ last_run_at: now.toISOString(), last_result: data })
           .eq("id", schedule.id);
 
         results.push({
@@ -72,12 +73,8 @@ Deno.serve(async (req) => {
         const errorMsg = err instanceof Error ? err.message : "Unknown error";
         await supabase
           .from("scheduled_imports")
-          .update({
-            last_run_at: now.toISOString(),
-            last_result: { error: errorMsg },
-          })
+          .update({ last_run_at: now.toISOString(), last_result: { error: errorMsg } })
           .eq("id", schedule.id);
-
         results.push({ id: schedule.id, name: schedule.name, status: "error", error: errorMsg });
       }
     }
