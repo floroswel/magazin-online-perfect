@@ -131,6 +131,8 @@ export default function AdminProducts() {
   const [generatingDesc, setGeneratingDesc] = useState(false);
   const [removingBg, setRemovingBg] = useState<string | null>(null);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [aiModalOpen, setAiModalOpen] = useState(false);
+  const [attrExtractorOpen, setAttrExtractorOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const variantImageRef = useRef<HTMLInputElement>(null);
