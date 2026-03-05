@@ -184,7 +184,8 @@ export default function Account() {
                     <div className="flex items-center gap-3">
                       <div className="text-right">
                         <p className="font-bold text-primary">{format(Number(o.total))}</p>
-                        <Badge variant={o.status === "delivered" ? "default" : "secondary"} className="text-xs">
+                        <Badge variant={o.status === "delivered" ? "default" : "secondary"} className="text-xs"
+                          style={statusColorsFromDb[o.status] ? { borderColor: statusColorsFromDb[o.status], color: statusColorsFromDb[o.status], backgroundColor: `${statusColorsFromDb[o.status]}15` } : {}}>
                           {statusLabels[o.status] || o.status}
                         </Badge>
                       </div>
