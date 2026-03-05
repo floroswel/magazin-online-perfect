@@ -383,10 +383,45 @@ export default function Checkout() {
                   <span>-{format(loyaltyDiscount)}</span>
                 </div>
               )}
+              {pointsDiscount > 0 && (
+                <div className="flex justify-between text-sm text-green-600">
+                  <span>Puncte folosite ({pointsToUse})</span>
+                  <span>-{format(pointsDiscount)}</span>
+                </div>
+              )}
+              {groupDiscount > 0 && (
+                <div className="flex justify-between text-sm text-green-600">
+                  <span>Discount grup</span>
+                  <span>-{format(groupDiscount)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Livrare</span>
                 <span>{shipping === 0 ? "GRATUITĂ" : format(shipping)}</span>
               </div>
+
+              {/* Points redemption slider */}
+              {user && maxPoints > 0 && loyaltyConfig.program_enabled && (
+                <div className="bg-primary/5 rounded-lg p-3 space-y-2">
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <Award className="h-4 w-4 text-primary" />
+                    <span>Folosește punctele ({totalPoints} disponibile)</span>
+                  </div>
+                  <Slider
+                    value={[pointsToUse]}
+                    onValueChange={([v]) => setPointsToUse(v)}
+                    max={maxPoints}
+                    min={0}
+                    step={1}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>{pointsToUse} puncte</span>
+                    <span>= -{format(pointsToValue(pointsToUse))} reducere</span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">Max {loyaltyConfig.max_redeem_percent}% din total, minim {loyaltyConfig.min_points_redeem} puncte</p>
+                </div>
+              )}
               <div className="border-t pt-3 flex justify-between font-bold text-lg">
                 <span>Total</span>
                 <span className="text-primary">{format(total)}</span>
