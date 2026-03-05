@@ -50,7 +50,36 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
   const [refundAmount, setRefundAmount] = useState("");
   const [refundReason, setRefundReason] = useState("");
 
-  const { data: order, isLoading } = useQuery({
+  const { data: customStatuses = [] } = useQuery({
+    queryKey: ["order-statuses"],
+    queryFn: async () => {
+      const { data } = await supabase.from("order_statuses").select("*").order("sort_order");
+      return (data as any[]) || [];
+    },
+  });
+
+  const dynamicStatusConfig = useMemo(() => {
+    if (customStatuses.length > 0) {
+      const map: Record<string, { label: string; color: string; icon: React.ReactNode; _color?: string; allowed_transitions?: string[]; email_enabled?: boolean }> = {};
+      customStatuses.forEach((s: any) => {
+        map[s.key] = { label: s.name, color: "border", icon: <span className="text-xs">{s.icon}</span>, _color: s.color, allowed_transitions: s.allowed_transitions || [], email_enabled: s.email_enabled };
+      });
+      return map;
+    }
+    return statusConfig;
+  }, [customStatuses]);
+
+  const allowedNextStatuses = useMemo(() => {
+    if (!order) return [];
+    const current = dynamicStatusConfig[order.status];
+    if (current && (current as any).allowed_transitions?.length > 0) {
+      return (current as any).allowed_transitions as string[];
+    }
+    // Fallback: show all
+    return Object.keys(dynamicStatusConfig).filter(k => k !== order.status);
+  }, [order, dynamicStatusConfig]);
+
+  const { data: orderData, isLoading } = useQuery({
     queryKey: ["admin-order-detail", orderId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -62,6 +91,8 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
       return data;
     },
   });
+
+  const order = orderData;
 
   const { data: timeline = [] } = useQuery({
     queryKey: ["order-timeline", orderId],
