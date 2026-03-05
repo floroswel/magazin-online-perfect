@@ -20,6 +20,7 @@ const AdminInventory = lazy(() => import("./stock/AdminInventory"));
 const AdminCustomers = lazy(() => import("./customers/AdminCustomers"));
 const AdminCustomerDetail = lazy(() => import("./customers/AdminCustomerDetail"));
 const AdminCustomerGroups = lazy(() => import("./customers/AdminCustomerGroups"));
+const AdminCustomerGroupDetail = lazy(() => import("./customers/AdminCustomerGroupDetail"));
 const AdminCustomerSegments = lazy(() => import("./customers/AdminCustomerSegments"));
 const AdminImportExport = lazy(() => import("./products/AdminImportExport"));
 const AdminAuditLog = lazy(() => import("./users/AdminAuditLog"));
