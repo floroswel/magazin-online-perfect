@@ -3,8 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Save, Bell } from "lucide-react";
+import { Save, Bell, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AdminNotificationSettings() {
@@ -12,8 +13,12 @@ export default function AdminNotificationSettings() {
   const [settings, setSettings] = useState({
     admin_new_order: true,
     admin_low_stock: true,
+    admin_low_stock_threshold: 5,
     admin_new_review: true,
     admin_return_request: true,
+    admin_new_customer: false,
+    admin_failed_payment: true,
+    admin_emails: "",
     customer_order_confirmation: true,
     customer_shipping_update: true,
     customer_delivery_confirmation: true,
@@ -35,22 +40,7 @@ export default function AdminNotificationSettings() {
   };
 
   const toggle = (key: string) => setSettings((s) => ({ ...s, [key]: !(s as any)[key] }));
-
-  const groups = [
-    { label: "Notificări Admin", items: [
-      { key: "admin_new_order", label: "Comandă nouă" },
-      { key: "admin_low_stock", label: "Stoc scăzut" },
-      { key: "admin_new_review", label: "Review nou" },
-      { key: "admin_return_request", label: "Cerere retur" },
-    ]},
-    { label: "Notificări Client", items: [
-      { key: "customer_order_confirmation", label: "Confirmare comandă" },
-      { key: "customer_shipping_update", label: "Update livrare" },
-      { key: "customer_delivery_confirmation", label: "Confirmare livrare" },
-      { key: "customer_review_reminder", label: "Reminder review" },
-      { key: "customer_abandoned_cart", label: "Coș abandonat" },
-    ]},
-  ];
+  const set = (key: string, value: any) => setSettings((s) => ({ ...s, [key]: value }));
 
   return (
     <div className="space-y-4">
@@ -61,19 +51,67 @@ export default function AdminNotificationSettings() {
         </div>
         <Button onClick={save} disabled={saving}><Save className="w-4 h-4 mr-1" /> Salvează</Button>
       </div>
-      {groups.map((g) => (
-        <Card key={g.label}>
-          <CardHeader className="pb-2"><CardTitle className="text-base flex items-center gap-2"><Bell className="w-4 h-4" />{g.label}</CardTitle></CardHeader>
-          <CardContent className="space-y-3">
-            {g.items.map((item) => (
-              <div key={item.key} className="flex items-center justify-between">
-                <Label>{item.label}</Label>
-                <Switch checked={(settings as any)[item.key]} onCheckedChange={() => toggle(item.key)} />
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      ))}
+
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base flex items-center gap-2"><Bell className="w-4 h-4" />Notificări Admin</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div>
+            <Label className="text-xs text-muted-foreground">Adrese email admin (separate prin virgulă)</Label>
+            <Input
+              value={settings.admin_emails}
+              onChange={(e) => set("admin_emails", e.target.value)}
+              placeholder="admin@magazin.ro, manager@magazin.ro"
+              className="mt-1"
+            />
+          </div>
+          {[
+            { key: "admin_new_order", label: "Comandă nouă" },
+            { key: "admin_low_stock", label: "Stoc scăzut" },
+            { key: "admin_new_review", label: "Review nou" },
+            { key: "admin_return_request", label: "Cerere retur" },
+            { key: "admin_new_customer", label: "Client nou înregistrat" },
+            { key: "admin_failed_payment", label: "Plată eșuată" },
+          ].map((item) => (
+            <div key={item.key} className="flex items-center justify-between">
+              <Label>{item.label}</Label>
+              <Switch checked={(settings as any)[item.key]} onCheckedChange={() => toggle(item.key)} />
+            </div>
+          ))}
+          {settings.admin_low_stock && (
+            <div className="flex items-center gap-2 pl-4">
+              <Label className="text-xs text-muted-foreground">Prag stoc scăzut:</Label>
+              <Input
+                type="number"
+                value={settings.admin_low_stock_threshold}
+                onChange={(e) => set("admin_low_stock_threshold", Number(e.target.value))}
+                className="w-20 h-8"
+              />
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base flex items-center gap-2"><Mail className="w-4 h-4" />Notificări Client</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {[
+            { key: "customer_order_confirmation", label: "Confirmare comandă" },
+            { key: "customer_shipping_update", label: "Update livrare" },
+            { key: "customer_delivery_confirmation", label: "Confirmare livrare" },
+            { key: "customer_review_reminder", label: "Reminder review" },
+            { key: "customer_abandoned_cart", label: "Coș abandonat" },
+          ].map((item) => (
+            <div key={item.key} className="flex items-center justify-between">
+              <Label>{item.label}</Label>
+              <Switch checked={(settings as any)[item.key]} onCheckedChange={() => toggle(item.key)} />
+            </div>
+          ))}
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell } from "lucide-react";
+import { Bell, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -14,111 +14,89 @@ import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { ro } from "date-fns/locale";
 
-interface OrderNotification {
+interface AdminNotif {
   id: string;
-  total: number;
-  user_email: string | null;
+  type: string;
+  title: string;
+  message: string | null;
+  link: string | null;
+  is_read: boolean;
   created_at: string;
-  status: string;
-  read: boolean;
 }
 
 export default function AdminNotifications() {
-  const [notifications, setNotifications] = useState<OrderNotification[]>([]);
+  const [notifications, setNotifications] = useState<AdminNotif[]>([]);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.is_read).length;
 
-  // Load recent orders on mount
   useEffect(() => {
     const fetchRecent = async () => {
       const { data } = await supabase
-        .from("orders")
-        .select("id, total, user_email, created_at, status")
+        .from("admin_notifications")
+        .select("*")
         .order("created_at", { ascending: false })
-        .limit(10);
-
-      if (data) {
-        setNotifications(
-          data.map((o) => ({ ...o, read: true }))
-        );
-      }
+        .limit(20);
+      if (data) setNotifications(data as AdminNotif[]);
     };
     fetchRecent();
   }, []);
 
-  // Subscribe to realtime new orders
+  // Realtime subscription
   useEffect(() => {
     const channel = supabase
-      .channel("admin-orders-realtime")
+      .channel("admin-notifications-rt")
       .on(
         "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "orders",
-        },
+        { event: "INSERT", schema: "public", table: "admin_notifications" },
         (payload) => {
-          const newOrder = payload.new as any;
-          const notification: OrderNotification = {
-            id: newOrder.id,
-            total: newOrder.total,
-            user_email: newOrder.user_email,
-            created_at: newOrder.created_at,
-            status: newOrder.status,
-            read: false,
-          };
+          const n = payload.new as AdminNotif;
+          setNotifications((prev) => [n, ...prev.slice(0, 19)]);
+          toast.info(n.title, { description: n.message || undefined });
+        }
+      )
+      .subscribe();
 
-          setNotifications((prev) => [notification, ...prev.slice(0, 19)]);
-
-          toast.info("🛒 Comandă nouă!", {
-            description: `${newOrder.user_email || "Client"} — ${Number(newOrder.total).toLocaleString("ro-RO")} RON`,
-            action: {
-              label: "Vezi",
-              onClick: () => navigate("/admin/orders"),
-            },
+    // Also subscribe to orders for auto-creating notifications
+    const orderChannel = supabase
+      .channel("admin-orders-notif")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "orders" },
+        async (payload) => {
+          const o = payload.new as any;
+          await supabase.from("admin_notifications").insert({
+            type: "order",
+            title: `🛒 Comandă nouă #${(o.id || "").slice(0, 8)}`,
+            message: `${o.user_email || "Client"} — ${Number(o.total).toLocaleString("ro-RO")} RON`,
+            link: "/admin/orders",
           });
         }
       )
       .on(
         "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "orders",
-        },
-        (payload) => {
-          const updated = payload.new as any;
-          const old = payload.old as any;
-          if (old.status === updated.status) return;
-
-          const statusLabels: Record<string, string> = {
-            pending: "În așteptare",
-            processing: "În procesare",
-            shipped: "Expediată",
-            delivered: "Livrată",
-            cancelled: "Anulată",
-            refunded: "Rambursată",
-          };
-
-          const notification: OrderNotification = {
-            id: updated.id,
-            total: updated.total,
-            user_email: updated.user_email,
-            created_at: new Date().toISOString(),
-            status: updated.status,
-            read: false,
-          };
-
-          setNotifications((prev) => [notification, ...prev.slice(0, 19)]);
-
-          toast.info(`📦 Status actualizat`, {
-            description: `#${updated.id.slice(0, 8)} → ${statusLabels[updated.status] || updated.status}`,
-            action: {
-              label: "Vezi",
-              onClick: () => navigate("/admin/orders"),
-            },
+        { event: "INSERT", schema: "public", table: "returns" },
+        async (payload) => {
+          const r = payload.new as any;
+          await supabase.from("admin_notifications").insert({
+            type: "return",
+            title: "📦 Cerere retur nouă",
+            message: `Retur pentru comanda #${(r.order_id || "").slice(0, 8)}`,
+            link: "/admin/orders/returns",
+          });
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "reviews" },
+        async (payload) => {
+          const rv = payload.new as any;
+          await supabase.from("admin_notifications").insert({
+            type: "review",
+            title: "⭐ Review nou",
+            message: `Rating: ${rv.rating}/5`,
+            link: "/admin/products/reviews",
           });
         }
       )
@@ -126,19 +104,36 @@ export default function AdminNotifications() {
 
     return () => {
       supabase.removeChannel(channel);
+      supabase.removeChannel(orderChannel);
     };
-  }, [navigate]);
+  }, []);
 
-  const markAllRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  const markRead = async (id: string) => {
+    await supabase.from("admin_notifications").update({ is_read: true }).eq("id", id);
+    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, is_read: true } : n)));
   };
 
-  const handleClick = (notif: OrderNotification) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === notif.id ? { ...n, read: true } : n))
-    );
+  const markAllRead = async () => {
+    const unreadIds = notifications.filter((n) => !n.is_read).map((n) => n.id);
+    if (unreadIds.length === 0) return;
+    await supabase.from("admin_notifications").update({ is_read: true }).in("id", unreadIds);
+    setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
+  };
+
+  const handleClick = (notif: AdminNotif) => {
+    if (!notif.is_read) markRead(notif.id);
     setOpen(false);
-    navigate("/admin/orders");
+    if (notif.link) navigate(notif.link);
+  };
+
+  const typeEmoji: Record<string, string> = {
+    order: "🛒",
+    return: "📦",
+    review: "⭐",
+    stock: "📉",
+    customer: "👤",
+    payment: "💳",
+    info: "ℹ️",
   };
 
   return (
@@ -157,19 +152,14 @@ export default function AdminNotifications() {
         <div className="flex items-center justify-between px-4 py-3 border-b">
           <h4 className="font-semibold text-sm">Notificări</h4>
           {unreadCount > 0 && (
-            <button
-              onClick={markAllRead}
-              className="text-xs text-primary hover:underline"
-            >
-              Marchează citite
+            <button onClick={markAllRead} className="text-xs text-primary hover:underline flex items-center gap-1">
+              <Check className="w-3 h-3" /> Marchează citite
             </button>
           )}
         </div>
         <ScrollArea className="max-h-80">
           {notifications.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">
-              Nicio notificare
-            </p>
+            <p className="text-sm text-muted-foreground text-center py-8">Nicio notificare</p>
           ) : (
             <div className="divide-y">
               {notifications.map((notif) => (
@@ -177,26 +167,22 @@ export default function AdminNotifications() {
                   key={notif.id}
                   onClick={() => handleClick(notif)}
                   className={`w-full text-left px-4 py-3 hover:bg-muted/50 transition-colors ${
-                    !notif.read ? "bg-primary/5" : ""
+                    !notif.is_read ? "bg-primary/5" : ""
                   }`}
                 >
                   <div className="flex items-start gap-2">
-                    {!notif.read && (
+                    {!notif.is_read && (
                       <span className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />
                     )}
-                    <div className={!notif.read ? "" : "pl-4"}>
+                    <div className={!notif.is_read ? "" : "pl-4"}>
                       <p className="text-sm font-medium">
-                        Comandă #{notif.id.slice(0, 8)}
+                        {typeEmoji[notif.type] || "📌"} {notif.title}
                       </p>
-                      <p className="text-xs text-muted-foreground">
-                        {notif.user_email || "Client"} —{" "}
-                        {Number(notif.total).toLocaleString("ro-RO")} RON
-                      </p>
+                      {notif.message && (
+                        <p className="text-xs text-muted-foreground">{notif.message}</p>
+                      )}
                       <p className="text-[11px] text-muted-foreground mt-0.5">
-                        {formatDistanceToNow(new Date(notif.created_at), {
-                          addSuffix: true,
-                          locale: ro,
-                        })}
+                        {formatDistanceToNow(new Date(notif.created_at), { addSuffix: true, locale: ro })}
                       </p>
                     </div>
                   </div>
