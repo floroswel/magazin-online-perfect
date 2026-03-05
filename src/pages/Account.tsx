@@ -601,7 +601,6 @@ export default function Account() {
               </CardContent>
             </Card>
           </TabsContent>
-        </TabsList>  
         </Tabs>
       </div>
 
