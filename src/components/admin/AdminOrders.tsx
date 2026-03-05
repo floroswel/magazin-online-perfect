@@ -560,8 +560,19 @@ export default function AdminOrders() {
                           <p className="font-semibold text-sm">{Number(order.total).toLocaleString("ro-RO", { minimumFractionDigits: 2 })} RON</p>
                         </TableCell>
                         <TableCell><StatusChip status={order.status} /></TableCell>
-                        <TableCell className="text-xs capitalize text-muted-foreground">{order.payment_method || "ramburs"}</TableCell>
                         <TableCell>
+                          <div className="text-xs">
+                            {order.tracking_number ? (
+                              <>
+                                <span className="font-mono text-[10px]">{order.tracking_number}</span>
+                                {order.courier && <p className="text-muted-foreground capitalize">{carriers.find((c: any) => c.courier === order.courier)?.display_name || order.courier}</p>}
+                              </>
+                            ) : (
+                              <span className="text-muted-foreground">—</span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-xs capitalize text-muted-foreground">{order.payment_method || "ramburs"}</TableCell>
                           <div className="flex gap-0.5 flex-wrap">
                             {oTags.map((t: any) => (
                               <Badge key={t.id} variant="outline" className="text-[9px] px-1.5 py-0 border" style={{ borderColor: t.color, color: t.color }}>{t.name}</Badge>
