@@ -383,9 +383,9 @@ export default function AdminDashboard() {
                 <AlertTriangle className="w-4 h-4 text-orange-500" />
                 Stoc Scăzut
               </CardTitle>
-              <Link to="/admin/products">
+              <Link to="/admin/stock/manager">
                 <Button variant="ghost" size="sm" className="text-xs gap-1">
-                  Produse <ArrowUpRight className="w-3 h-3" />
+                  Manager stocuri <ArrowUpRight className="w-3 h-3" />
                 </Button>
               </Link>
             </div>
