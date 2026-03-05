@@ -478,7 +478,12 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
               <Select value={newStatus} onValueChange={setNewStatus}>
                 <SelectTrigger><SelectValue placeholder="Selectează status" /></SelectTrigger>
                 <SelectContent>
-                  {Object.entries(statusConfig).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
+                  {allowedNextStatuses.map(k => {
+                    const cfg = dynamicStatusConfig[k] || statusConfig[k];
+                    return cfg ? <SelectItem key={k} value={k}>{(cfg as any)._color ? `${(cfg.icon as any)?.props?.children || ""} ` : ""}{cfg.label}</SelectItem> : null;
+                  })}
+                  {/* All statuses for super admin override */}
+                  {allowedNextStatuses.length === 0 && Object.entries(dynamicStatusConfig).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
