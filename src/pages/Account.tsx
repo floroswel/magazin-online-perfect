@@ -23,10 +23,6 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 
-const RETURN_REASONS = [
-  "Produs defect", "Produs greșit livrat", "Nu corespunde descrierii",
-  "Schimbare de opinie", "Dimensiune/Culoare greșită", "Ambalaj deteriorat", "Altul",
-];
 const RETURNABLE_STATUSES = ["delivered", "shipped"];
 const STATUS_TIMELINE_DEFAULT = ["pending", "processing", "shipped", "delivered"];
 
