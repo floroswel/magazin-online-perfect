@@ -28,7 +28,7 @@ const STATUS_TIMELINE_DEFAULT = ["pending", "processing", "shipped", "delivered"
 
 export default function Account() {
   const { user } = useAuth();
-  const { totalPoints, currentLevel, nextLevel, levels, loading: loyaltyLoading } = useLoyalty();
+  const { totalPoints, currentLevel, nextLevel, levels, loading: loyaltyLoading, config: loyaltyConfig, pointsToValue } = useLoyalty();
   const { format } = useCurrency();
   const [profile, setProfile] = useState<Tables<"profiles"> | null>(null);
   const [orders, setOrders] = useState<any[]>([]);
