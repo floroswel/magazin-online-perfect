@@ -44,9 +44,9 @@ export default function AdminABTests() {
   const { data: tests = [], isLoading } = useQuery({
     queryKey: ["admin-ab-tests"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("ab_tests").select("*").order("created_at", { ascending: false });
+      const { data, error } = await (supabase as any).from("ab_tests").select("*").order("created_at", { ascending: false });
       if (error) throw error;
-      return data;
+      return data as any[];
     },
   });
 
@@ -58,10 +58,10 @@ export default function AdminABTests() {
         starts_at: form.starts_at || null, ends_at: form.ends_at || null,
       };
       if (editId) {
-        const { error } = await supabase.from("ab_tests").update(payload).eq("id", editId);
+        const { error } = await (supabase as any).from("ab_tests").update(payload).eq("id", editId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("ab_tests").insert(payload);
+        const { error } = await (supabase as any).from("ab_tests").insert(payload);
         if (error) throw error;
       }
     },
@@ -70,13 +70,13 @@ export default function AdminABTests() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: string) => { const { error } = await supabase.from("ab_tests").delete().eq("id", id); if (error) throw error; },
+    mutationFn: async (id: string) => { const { error } = await (supabase as any).from("ab_tests").delete().eq("id", id); if (error) throw error; },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-ab-tests"] }); toast.success("Test șters!"); },
   });
 
   const toggleStatus = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase.from("ab_tests").update({ status }).eq("id", id);
+      const { error } = await (supabase as any).from("ab_tests").update({ status }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-ab-tests"] }); toast.success("Status actualizat!"); },
@@ -84,7 +84,7 @@ export default function AdminABTests() {
 
   const declareWinner = useMutation({
     mutationFn: async ({ id, winner }: { id: string; winner: string }) => {
-      const { error } = await supabase.from("ab_tests").update({ winner, status: "completed" }).eq("id", id);
+      const { error } = await (supabase as any).from("ab_tests").update({ winner, status: "completed" }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-ab-tests"] }); toast.success("Câștigător declarat!"); },

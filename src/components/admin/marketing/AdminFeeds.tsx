@@ -37,9 +37,9 @@ export default function AdminFeeds() {
   const { data: feeds = [], isLoading } = useQuery({
     queryKey: ["admin-feed-configs"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("feed_configs").select("*").order("created_at", { ascending: true });
+      const { data, error } = await (supabase as any).from("feed_configs").select("*").order("created_at", { ascending: true });
       if (error) throw error;
-      return data;
+      return data as any[];
     },
   });
 
@@ -50,10 +50,10 @@ export default function AdminFeeds() {
         filters: form.filters as any, field_mappings: form.field_mappings as any,
       };
       if (editId) {
-        const { error } = await supabase.from("feed_configs").update(payload).eq("id", editId);
+        const { error } = await (supabase as any).from("feed_configs").update(payload).eq("id", editId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("feed_configs").insert(payload);
+        const { error } = await (supabase as any).from("feed_configs").insert(payload);
         if (error) throw error;
       }
     },
@@ -62,13 +62,13 @@ export default function AdminFeeds() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: string) => { const { error } = await supabase.from("feed_configs").delete().eq("id", id); if (error) throw error; },
+    mutationFn: async (id: string) => { const { error } = await (supabase as any).from("feed_configs").delete().eq("id", id); if (error) throw error; },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-feed-configs"] }); toast.success("Feed șters!"); },
   });
 
   const toggleActive = useMutation({
     mutationFn: async ({ id, active }: { id: string; active: boolean }) => {
-      const { error } = await supabase.from("feed_configs").update({ is_active: active }).eq("id", id);
+      const { error } = await (supabase as any).from("feed_configs").update({ is_active: active }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-feed-configs"] }),
