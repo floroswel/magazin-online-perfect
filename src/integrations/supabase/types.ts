@@ -1577,6 +1577,36 @@ export type Database = {
         }
         Relationships: []
       }
+      events: {
+        Row: {
+          created_at: string | null
+          entity_id: string | null
+          entity_type: string
+          event_type: string
+          id: string
+          payload: Json | null
+          processed: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type: string
+          event_type: string
+          id?: string
+          payload?: Json | null
+          processed?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          event_type?: string
+          id?: string
+          payload?: Json | null
+          processed?: boolean | null
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
