@@ -110,11 +110,7 @@ export default function AdminReports() {
     if (!dailyMap[day]) dailyMap[day] = { date: day, revenue: 0, orders: 0, profit: 0 };
     dailyMap[day].revenue += Number(o.total);
     dailyMap[day].orders += 1;
-    const cost = (o.order_items || []).reduce((s: number, item: any) => {
-      const prod = products.find((p: any) => p.id === item.product_id);
-      return s + (Number(prod?.cost_price || 0) * item.quantity);
-    }, 0);
-    dailyMap[day].profit += Number(o.total) - cost;
+    dailyMap[day].profit += Number(o.total) * 0.4; // estimated profit
   });
   const dailyChart = Object.values(dailyMap).sort((a, b) => a.date.localeCompare(b.date));
 
