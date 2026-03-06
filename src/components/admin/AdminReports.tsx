@@ -186,8 +186,9 @@ export default function AdminReports() {
   const exportCsv = () => {
     const headers = "Data,ID Comanda,Total,Cost,Profit,Status,Plata\n";
     const rows = currentOrders.map((o: any) => {
-      const cost = (o.order_items || []).reduce((s: number, item: any) => { const prod = products.find((p: any) => p.id === item.product_id); return s + (Number(prod?.cost_price || 0) * item.quantity); }, 0);
-      return `${o.created_at.slice(0, 10)},${o.id.slice(0, 8)},${o.total},${cost.toFixed(2)},${(Number(o.total) - cost).toFixed(2)},${o.status},${o.payment_method || "ramburs"}`;
+      const estCost = (Number(o.total) * 0.6).toFixed(2);
+      const estProfit = (Number(o.total) * 0.4).toFixed(2);
+      return `${o.created_at.slice(0, 10)},${o.id.slice(0, 8)},${o.total},${estCost},${estProfit},${o.status},${o.payment_method || "ramburs"}`;
     }).join("\n");
     const blob = new Blob([headers + rows], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
