@@ -101,7 +101,6 @@ export default function AdminReports() {
   const totalCost = totalRevenue * 0.6; // placeholder 60% cost estimate
   const grossProfit = totalRevenue - totalCost;
   const profitMargin = totalRevenue > 0 ? (grossProfit / totalRevenue) * 100 : 0;
-  const profitMargin = totalRevenue > 0 ? (grossProfit / totalRevenue) * 100 : 0;
 
   // Daily revenue chart
   const dailyMap: Record<string, { date: string; revenue: number; orders: number; profit: number }> = {};
