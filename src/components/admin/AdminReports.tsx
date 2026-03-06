@@ -9,13 +9,11 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line, AreaChart, Area, ComposedChart,
 } from "recharts";
-import { TrendingUp, ShoppingCart, Package, Users, Percent, ArrowUpRight, ArrowDownRight, Download, AlertTriangle } from "lucide-react";
+import { TrendingUp, ShoppingCart, Package, Users, Percent, ArrowUpRight, ArrowDownRight, Download, AlertTriangle, DollarSign } from "lucide-react";
 
 const COLORS = ["hsl(0, 80%, 50%)", "hsl(42, 100%, 50%)", "hsl(210, 80%, 45%)", "hsl(150, 60%, 45%)", "hsl(280, 60%, 50%)", "hsl(30, 80%, 50%)", "hsl(180, 60%, 45%)", "hsl(330, 70%, 50%)"];
 
-function getDaysAgo(days: number) {
-  const d = new Date(); d.setDate(d.getDate() - days); return d.toISOString();
-}
+function getDaysAgo(days: number) { const d = new Date(); d.setDate(d.getDate() - days); return d.toISOString(); }
 
 function KpiCard({ icon: Icon, label, value, subtitle, trend }: { icon: any; label: string; value: string; subtitle?: string; trend?: number }) {
   return (
@@ -54,7 +52,7 @@ export default function AdminReports() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("id, total, status, created_at, payment_method, user_id, discount_amount, order_items(quantity, price, product_id, products(name, category_id, brand))")
+        .select("id, total, status, created_at, payment_method, user_id, discount_amount, order_items(quantity, price, product_id, products(name, category_id, brand, price))")
         .gte("created_at", prevCutoff)
         .order("created_at", { ascending: true });
       if (error) throw error;
@@ -64,28 +62,17 @@ export default function AdminReports() {
 
   const { data: products = [] } = useQuery({
     queryKey: ["admin-reports-products"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("products").select("id, name, stock, price, brand, category_id");
-      if (error) throw error;
-      return data || [];
-    },
+    queryFn: async () => { const { data } = await supabase.from("products").select("id, name, stock, price, cost_price, brand, category_id"); return data || []; },
   });
 
   const { data: categories = [] } = useQuery({
     queryKey: ["admin-reports-categories"],
-    queryFn: async () => {
-      const { data } = await supabase.from("categories").select("id, name");
-      return data || [];
-    },
+    queryFn: async () => { const { data } = await supabase.from("categories").select("id, name"); return data || []; },
   });
 
   const { data: profiles = [] } = useQuery({
     queryKey: ["admin-reports-profiles", period],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("profiles").select("user_id, created_at").gte("created_at", prevCutoff);
-      if (error) throw error;
-      return data || [];
-    },
+    queryFn: async () => { const { data } = await supabase.from("profiles").select("user_id, created_at").gte("created_at", prevCutoff); return data || []; },
   });
 
   const currentOrders = orders.filter((o: any) => o.created_at >= cutoff);
@@ -108,16 +95,30 @@ export default function AdminReports() {
   const lowStock = products.filter((p: any) => p.stock <= 5).length;
   const deliveredOrders = currentOrders.filter((o: any) => o.status === "delivered").length;
   const conversionRate = totalOrdersCount > 0 ? (deliveredOrders / totalOrdersCount) * 100 : 0;
-
   const totalDiscount = currentOrders.reduce((s: number, o: any) => s + Number(o.discount_amount || 0), 0);
 
+  // Profit calculation
+  const totalCost = currentOrders.reduce((s: number, o: any) => {
+    return s + (o.order_items || []).reduce((is: number, item: any) => {
+      const prod = products.find((p: any) => p.id === item.product_id);
+      return is + (Number(prod?.cost_price || 0) * item.quantity);
+    }, 0);
+  }, 0);
+  const grossProfit = totalRevenue - totalCost;
+  const profitMargin = totalRevenue > 0 ? (grossProfit / totalRevenue) * 100 : 0;
+
   // Daily revenue chart
-  const dailyMap: Record<string, { date: string; revenue: number; orders: number }> = {};
+  const dailyMap: Record<string, { date: string; revenue: number; orders: number; profit: number }> = {};
   currentOrders.forEach((o: any) => {
     const day = o.created_at.slice(0, 10);
-    if (!dailyMap[day]) dailyMap[day] = { date: day, revenue: 0, orders: 0 };
+    if (!dailyMap[day]) dailyMap[day] = { date: day, revenue: 0, orders: 0, profit: 0 };
     dailyMap[day].revenue += Number(o.total);
     dailyMap[day].orders += 1;
+    const cost = (o.order_items || []).reduce((s: number, item: any) => {
+      const prod = products.find((p: any) => p.id === item.product_id);
+      return s + (Number(prod?.cost_price || 0) * item.quantity);
+    }, 0);
+    dailyMap[day].profit += Number(o.total) - cost;
   });
   const dailyChart = Object.values(dailyMap).sort((a, b) => a.date.localeCompare(b.date));
 
@@ -172,20 +173,31 @@ export default function AdminReports() {
     { name: "Livrate", value: deliveredOrders },
   ];
 
-  // Customers: new vs returning
+  // Customers: new vs returning + LTV
   const firstOrderMap: Record<string, string> = {};
   orders.forEach((o: any) => { if (!firstOrderMap[o.user_id] || o.created_at < firstOrderMap[o.user_id]) firstOrderMap[o.user_id] = o.created_at; });
   const newCustomersOrders = currentOrders.filter((o: any) => firstOrderMap[o.user_id] >= cutoff).length;
   const returningOrders = totalOrdersCount - newCustomersOrders;
 
-  // Stock alerts
+  // Customer LTV (per unique customer in period)
+  const customerTotals: Record<string, number> = {};
+  currentOrders.forEach((o: any) => { customerTotals[o.user_id] = (customerTotals[o.user_id] || 0) + Number(o.total); });
+  const ltv = uniqueCustomers > 0 ? Object.values(customerTotals).reduce((s, v) => s + v, 0) / uniqueCustomers : 0;
+
+  // Stock rotation (sold qty / avg stock)
+  const stockRotation = products.length > 0 ? (Object.values(prodSales).reduce((s, p) => s + p.qty, 0) / products.length).toFixed(1) : "0";
+
+  // Low stock products
   const lowStockProducts = products.filter((p: any) => p.stock <= 5 && p.stock > 0).slice(0, 10);
   const outOfStockProducts = products.filter((p: any) => p.stock <= 0).slice(0, 10);
 
   // CSV Export
   const exportCsv = () => {
-    const headers = "Data,ID Comanda,Total,Status,Plata\n";
-    const rows = currentOrders.map((o: any) => `${o.created_at.slice(0, 10)},${o.id.slice(0, 8)},${o.total},${o.status},${o.payment_method || "ramburs"}`).join("\n");
+    const headers = "Data,ID Comanda,Total,Cost,Profit,Status,Plata\n";
+    const rows = currentOrders.map((o: any) => {
+      const cost = (o.order_items || []).reduce((s: number, item: any) => { const prod = products.find((p: any) => p.id === item.product_id); return s + (Number(prod?.cost_price || 0) * item.quantity); }, 0);
+      return `${o.created_at.slice(0, 10)},${o.id.slice(0, 8)},${o.total},${cost.toFixed(2)},${(Number(o.total) - cost).toFixed(2)},${o.status},${o.payment_method || "ramburs"}`;
+    }).join("\n");
     const blob = new Blob([headers + rows], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a"); a.href = url; a.download = `raport-${period}zile.csv`; a.click();
@@ -210,11 +222,13 @@ export default function AdminReports() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-3">
         <KpiCard icon={TrendingUp} label="Venituri" value={`${totalRevenue.toFixed(0)} RON`} trend={revenueTrend} />
+        <KpiCard icon={DollarSign} label="Profit brut" value={`${grossProfit.toFixed(0)} RON`} subtitle={`Marjă ${profitMargin.toFixed(0)}%`} />
         <KpiCard icon={ShoppingCart} label="Comenzi" value={String(totalOrdersCount)} trend={ordersTrend} />
         <KpiCard icon={Package} label="Valoare medie" value={`${avgOrderValue.toFixed(0)} RON`} trend={avgTrend} />
         <KpiCard icon={Users} label="Clienți unici" value={String(uniqueCustomers)} subtitle={`${newProfiles} noi`} />
+        <KpiCard icon={Users} label="LTV mediu" value={`${ltv.toFixed(0)} RON`} subtitle="per client" />
         <KpiCard icon={Percent} label="Rată livrare" value={`${conversionRate.toFixed(1)}%`} subtitle={`${deliveredOrders} livrate`} />
         <KpiCard icon={AlertTriangle} label="Stoc scăzut" value={String(lowStock)} subtitle={`${outOfStockProducts.length} epuizate`} />
       </div>
@@ -222,8 +236,9 @@ export default function AdminReports() {
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList className="flex-wrap">
           <TabsTrigger value="overview">Prezentare generală</TabsTrigger>
+          <TabsTrigger value="profit">Profit</TabsTrigger>
           <TabsTrigger value="products">Produse & Categorii</TabsTrigger>
-          <TabsTrigger value="customers">Clienți</TabsTrigger>
+          <TabsTrigger value="customers">Clienți & LTV</TabsTrigger>
           <TabsTrigger value="funnel">Conversie</TabsTrigger>
           <TabsTrigger value="stock">Stoc</TabsTrigger>
         </TabsList>
@@ -235,17 +250,12 @@ export default function AdminReports() {
               {dailyChart.length > 0 ? (
                 <ResponsiveContainer width="100%" height={280}>
                   <ComposedChart data={dailyChart}>
-                    <defs>
-                      <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(0, 80%, 50%)" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="hsl(0, 80%, 50%)" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
+                    <defs><linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="hsl(0, 80%, 50%)" stopOpacity={0.3} /><stop offset="95%" stopColor="hsl(0, 80%, 50%)" stopOpacity={0} /></linearGradient></defs>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(v) => new Date(v).toLocaleDateString("ro-RO", { day: "numeric", month: "short" })} />
+                    <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={v => new Date(v).toLocaleDateString("ro-RO", { day: "numeric", month: "short" })} />
                     <YAxis yAxisId="left" tick={{ fontSize: 11 }} />
                     <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11 }} />
-                    <Tooltip labelFormatter={(v) => new Date(v).toLocaleDateString("ro-RO")} formatter={(v: number, name: string) => [name === "revenue" ? `${v.toFixed(0)} RON` : v, name === "revenue" ? "Venituri" : "Comenzi"]} />
+                    <Tooltip labelFormatter={v => new Date(v).toLocaleDateString("ro-RO")} formatter={(v: number, name: string) => [name === "revenue" ? `${v.toFixed(0)} RON` : v, name === "revenue" ? "Venituri" : "Comenzi"]} />
                     <Area yAxisId="left" type="monotone" dataKey="revenue" stroke="hsl(0, 80%, 50%)" fill="url(#revGrad)" />
                     <Line yAxisId="right" type="monotone" dataKey="orders" stroke="hsl(210, 80%, 45%)" strokeWidth={2} dot={false} />
                   </ComposedChart>
@@ -253,7 +263,6 @@ export default function AdminReports() {
               ) : <p className="text-center text-muted-foreground py-8">Nicio dată pentru perioada selectată.</p>}
             </CardContent>
           </Card>
-
           <div className="grid lg:grid-cols-2 gap-4">
             <Card>
               <CardHeader><CardTitle className="text-sm">Status Comenzi</CardTitle></CardHeader>
@@ -282,6 +291,31 @@ export default function AdminReports() {
           </div>
         </TabsContent>
 
+        <TabsContent value="profit" className="space-y-4">
+          <div className="grid lg:grid-cols-3 gap-4">
+            <KpiCard icon={TrendingUp} label="Venituri totale" value={`${totalRevenue.toFixed(0)} RON`} />
+            <KpiCard icon={Package} label="Cost produse" value={`${totalCost.toFixed(0)} RON`} />
+            <KpiCard icon={DollarSign} label="Profit brut" value={`${grossProfit.toFixed(0)} RON`} subtitle={`Marjă ${profitMargin.toFixed(0)}%`} />
+          </div>
+          <Card>
+            <CardHeader><CardTitle className="text-sm">Profit zilnic</CardTitle></CardHeader>
+            <CardContent>
+              {dailyChart.length > 0 ? (
+                <ResponsiveContainer width="100%" height={280}>
+                  <AreaChart data={dailyChart}>
+                    <defs><linearGradient id="profGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="hsl(150, 60%, 45%)" stopOpacity={0.3} /><stop offset="95%" stopColor="hsl(150, 60%, 45%)" stopOpacity={0} /></linearGradient></defs>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={v => new Date(v).toLocaleDateString("ro-RO", { day: "numeric", month: "short" })} />
+                    <YAxis tick={{ fontSize: 11 }} />
+                    <Tooltip labelFormatter={v => new Date(v).toLocaleDateString("ro-RO")} formatter={(v: number) => [`${v.toFixed(0)} RON`, "Profit"]} />
+                    <Area type="monotone" dataKey="profit" stroke="hsl(150, 60%, 45%)" fill="url(#profGrad)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              ) : <p className="text-center text-muted-foreground py-8">Nicio dată.</p>}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="products" className="space-y-4">
           <Card>
             <CardHeader><CardTitle className="text-sm">Top Produse (după venituri)</CardTitle></CardHeader>
@@ -299,7 +333,6 @@ export default function AdminReports() {
               ) : <p className="text-center text-muted-foreground py-8">Niciun produs vândut.</p>}
             </CardContent>
           </Card>
-
           <div className="grid lg:grid-cols-2 gap-4">
             <Card>
               <CardHeader><CardTitle className="text-sm">Venituri per Categorie</CardTitle></CardHeader>
@@ -317,7 +350,6 @@ export default function AdminReports() {
                 ) : <p className="text-center text-muted-foreground py-8">Nicio dată.</p>}
               </CardContent>
             </Card>
-
             <Card>
               <CardHeader><CardTitle className="text-sm">Venituri per Brand</CardTitle></CardHeader>
               <CardContent>
@@ -337,7 +369,7 @@ export default function AdminReports() {
           </div>
         </TabsContent>
 
-        <TabsContent value="customers">
+        <TabsContent value="customers" className="space-y-4">
           <div className="grid lg:grid-cols-2 gap-4">
             <Card>
               <CardHeader><CardTitle className="text-sm">Clienți noi vs. recurenți</CardTitle></CardHeader>
@@ -350,15 +382,17 @@ export default function AdminReports() {
               </CardContent>
             </Card>
             <Card>
-              <CardHeader><CardTitle className="text-sm">Statistici clienți</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="text-sm">Statistici clienți & LTV</CardTitle></CardHeader>
               <CardContent className="space-y-3 pt-2">
                 {[
                   ["Clienți unici (perioadă)", uniqueCustomers],
                   ["Conturi noi create", newProfiles],
                   ["Comenzi clienți noi", newCustomersOrders],
                   ["Comenzi clienți recurenți", returningOrders],
+                  ["LTV mediu per client", `${ltv.toFixed(0)} RON`],
                   ["Valoare medie per client", uniqueCustomers > 0 ? `${(totalRevenue / uniqueCustomers).toFixed(0)} RON` : "0 RON"],
                   ["Total discount-uri acordate", `${totalDiscount.toFixed(0)} RON`],
+                  ["Rotație stoc (medie)", `${stockRotation} buc/produs`],
                 ].map(([label, val], i) => (
                   <div key={i} className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{label}</span>
