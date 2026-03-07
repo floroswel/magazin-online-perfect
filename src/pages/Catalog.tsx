@@ -475,6 +475,9 @@ export default function Catalog() {
           </div>
         </div>
       </div>
+      {breadcrumbJsonLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd }} />
+      )}
     </Layout>
   );
 }
