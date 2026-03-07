@@ -189,7 +189,7 @@ export default function Checkout() {
 
     const orderData: any = {
       total, payment_method: paymentMethod, shipping_address: form,
-      coupon_id: appliedCoupon?.id || null,
+      coupon_id: appliedCoupons[0]?.id || null,
       discount_amount: couponDiscount + loyaltyDiscount + groupDiscount + pointsDiscount,
       loyalty_points_earned: pointsEarned,
       payment_installments: installmentData,
