@@ -179,18 +179,24 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-3">Newsletter</h4>
             <p className="text-sm text-white/70 mb-3">Primește oferte exclusive și noutăți direct pe email.</p>
-            <form onSubmit={handleSubscribe} className="flex gap-2">
-              <Input
-                type="email"
-                placeholder="Email-ul tău"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
-                required
-              />
-              <Button type="submit" size="icon" disabled={loading} className="shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground">
-                <Mail className="w-4 h-4" />
-              </Button>
+            <form onSubmit={handleSubscribe} className="space-y-2">
+              <div className="flex gap-2">
+                <Input
+                  type="email"
+                  placeholder="Email-ul tău"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                  required
+                />
+                <Button type="submit" size="icon" disabled={loading} className="shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground">
+                  <Mail className="w-4 h-4" />
+                </Button>
+              </div>
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input type="checkbox" checked={gdprConsent} onChange={e => setGdprConsent(e.target.checked)} className="mt-0.5 rounded border-white/30" />
+                <span className="text-[11px] text-white/60">Sunt de acord să primesc emailuri promoționale.</span>
+              </label>
             </form>
             <div className="mt-4 space-y-2 text-sm text-white/70">
               <p className="flex items-center gap-2"><Phone className="w-3.5 h-3.5" /> {branding.phone}</p>
