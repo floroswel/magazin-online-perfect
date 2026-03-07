@@ -56,7 +56,7 @@ function ProductCardInner({ product, eager = false }: Props & { eager?: boolean 
     : 0;
 
   return (
-    <Link to={`/product/${product.slug}`}>
+    <Link to={`/product/${product.slug}`} onMouseEnter={() => prefetchProduct(product.slug)}>
       <Card className="group h-full hover:shadow-lg transition-all duration-200 border-border overflow-hidden bg-card">
         <div className="relative aspect-square overflow-hidden bg-white p-4">
           {/* Promotion badge with custom color */}
