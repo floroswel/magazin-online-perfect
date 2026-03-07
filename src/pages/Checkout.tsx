@@ -121,22 +121,52 @@ export default function Checkout() {
   const applyCoupon = async () => {
     if (!couponCode.trim()) return;
     setCouponLoading(true);
-    const { data: coupon } = await supabase.from("coupons").select("*").eq("code", couponCode.trim().toUpperCase()).eq("is_active", true).maybeSingle();
-    if (!coupon) { toast.error("Codul de reducere nu este valid"); setCouponLoading(false); return; }
-    if (coupon.min_order_value && totalPrice < coupon.min_order_value) { toast.error(`Comanda minimă pentru acest cupon este ${format(coupon.min_order_value)}`); setCouponLoading(false); return; }
-    if (coupon.valid_until && new Date(coupon.valid_until) < new Date()) { toast.error("Acest cupon a expirat"); setCouponLoading(false); return; }
-    if (user) {
-      const { data: usage } = await supabase.from("coupon_usage").select("id").eq("coupon_id", coupon.id).eq("user_id", user.id).maybeSingle();
-      if (usage) { toast.error("Ai folosit deja acest cupon"); setCouponLoading(false); return; }
+    const code = couponCode.trim().toUpperCase();
+    // Check if already applied
+    if (appliedCoupons.find(c => c.code === code)) { toast.error("Acest cod este deja aplicat"); setCouponLoading(false); return; }
+    // Check stacking
+    if (appliedCoupons.length > 0) {
+      const existingAllowStacking = appliedCoupons.every(c => c.combine_with_codes);
+      if (!existingAllowStacking) { toast.error("Codurile existente nu permit combinarea cu alte coduri"); setCouponLoading(false); return; }
     }
-    const discount = coupon.discount_type === "percentage" ? totalPrice * (coupon.discount_value / 100) : coupon.discount_value;
-    setCouponDiscount(Math.min(discount, totalPrice));
-    setAppliedCoupon(coupon);
+    const { data: coupon } = await supabase.from("coupons").select("*").eq("code", code).eq("is_active", true).maybeSingle();
+    if (!coupon) { toast.error("Cod invalid"); setCouponLoading(false); return; }
+    if (coupon.valid_from && new Date(coupon.valid_from) > new Date()) { toast.error("Acest cod nu este încă activ"); setCouponLoading(false); return; }
+    if (coupon.valid_until && new Date(coupon.valid_until) < new Date()) { toast.error("Cod expirat"); setCouponLoading(false); return; }
+    if (coupon.min_order_value && totalPrice < coupon.min_order_value) { toast.error(`Valoare minimă comandă: ${format(coupon.min_order_value)}`); setCouponLoading(false); return; }
+    const totalQty = items.reduce((s, i) => s + i.quantity, 0);
+    if (coupon.min_quantity && totalQty < coupon.min_quantity) { toast.error(`Cantitate minimă: ${coupon.min_quantity} produse`); setCouponLoading(false); return; }
+    if (coupon.max_uses && (coupon.used_count || 0) >= coupon.max_uses) { toast.error("Ai atins limita de utilizări"); setCouponLoading(false); return; }
+    if (appliedCoupons.length > 0 && !coupon.combine_with_codes) { toast.error("Acest cod nu se combină cu alte coduri"); setCouponLoading(false); return; }
+    if (user) {
+      if (coupon.max_uses_per_customer) {
+        const { count } = await supabase.from("coupon_usage").select("id", { count: "exact", head: true }).eq("coupon_id", coupon.id).eq("user_id", user.id);
+        if ((count || 0) >= coupon.max_uses_per_customer) { toast.error("Ai folosit deja acest cod de maximul de ori permis"); setCouponLoading(false); return; }
+      }
+      if (coupon.first_order_only) {
+        const { count } = await supabase.from("orders").select("id", { count: "exact", head: true }).eq("user_id", user.id);
+        if ((count || 0) > 0) { toast.error("Acest cod e valabil doar pentru prima comandă"); setCouponLoading(false); return; }
+      }
+      if (coupon.specific_customer_id && coupon.specific_customer_id !== user.id) { toast.error("Acest cod nu este valabil pentru contul tău"); setCouponLoading(false); return; }
+    }
+    // Calculate discount
+    let discount = 0;
+    if (coupon.discount_type === "percentage" || coupon.discount_type === "combined") {
+      discount = totalPrice * (coupon.discount_value / 100);
+    } else if (coupon.discount_type === "fixed") {
+      discount = coupon.discount_value;
+    }
+    discount = Math.min(discount, totalPrice);
+    const enriched = { ...coupon, _discount: discount };
+    setAppliedCoupons(prev => [...prev, enriched]);
+    setCouponCode("");
     toast.success(`Cupon aplicat! Economisești ${format(discount)}`);
     setCouponLoading(false);
   };
 
-  const removeCoupon = () => { setCouponDiscount(0); setAppliedCoupon(null); setCouponCode(""); };
+  const removeCoupon = (couponId: string) => {
+    setAppliedCoupons(prev => prev.filter(c => c.id !== couponId));
+  };
 
   const getInstallmentAmount = () => {
     const months = parseInt(installmentMonths);
