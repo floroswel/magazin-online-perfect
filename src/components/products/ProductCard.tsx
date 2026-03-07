@@ -78,8 +78,11 @@ function ProductCardInner({ product, eager = false }: Props & { eager?: boolean 
           )}
           <img
             src={product.image_url || "/placeholder.svg"}
-            alt={product.name}
-            loading="lazy"
+            alt={product.name || "Produs"}
+            width={600}
+            height={600}
+            loading={eager ? "eager" : "lazy"}
+            decoding={eager ? "sync" : "async"}
             className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200"
           />
         </div>
