@@ -49,21 +49,23 @@ export default function RecoverCart() {
         return;
       }
 
-      const items = Array.isArray(cart.items) ? cart.items : [];
+      const items = Array.isArray(cart.items) ? (cart.items as any[]) : [];
 
       if (user) {
         // Restore cart items to cart_items table
         for (const item of items) {
+          const pid = item.product_id as string;
+          const qty = (item.quantity as number) || 1;
           const { data: existing } = await supabase
             .from("cart_items")
             .select("id, quantity")
             .eq("user_id", user.id)
-            .eq("product_id", item.product_id)
+            .eq("product_id", pid)
             .maybeSingle();
 
           if (existing) {
             await supabase.from("cart_items")
-              .update({ quantity: item.quantity })
+              .update({ quantity: qty })
               .eq("id", existing.id);
           } else {
             await supabase.from("cart_items")
