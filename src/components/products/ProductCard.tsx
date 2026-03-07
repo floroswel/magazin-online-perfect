@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import { ShoppingCart, Star, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/hooks/useCart";
 import { useCurrency } from "@/hooks/useCurrency";
 import { usePricingRules } from "@/hooks/usePricingRules";
+import { usePromotions } from "@/hooks/usePromotions";
 import { useLoyalty } from "@/hooks/useLoyalty";
 import CountdownTimer from "./CountdownTimer";
 import { toast } from "sonner";
@@ -20,6 +20,7 @@ function ProductCardInner({ product }: Props) {
   const { addToCart } = useCart();
   const { format } = useCurrency();
   const { getProductDiscount } = usePricingRules();
+  const { getProductPromotion } = usePromotions();
   const { calcPointsForPrice, config } = useLoyalty();
 
   const pointsEarned = config.program_enabled ? calcPointsForPrice(product.price) : 0;
@@ -31,10 +32,21 @@ function ProductCardInner({ product }: Props) {
     toast.success("Produs adăugat în coș!");
   };
 
-  // Dynamic pricing rule discount
-  const promoDiscount = getProductDiscount(product);
+  // Try pricing rules first, then promotions engine
+  const pricingDiscount = getProductDiscount(product);
+  const promotion = getProductPromotion(product);
 
-  // Use promo price if available, otherwise fall back to old_price logic
+  // Use whichever gives a better price
+  const promoDiscount = pricingDiscount || (promotion ? {
+    originalPrice: product.price,
+    discountedPrice: promotion.discountedPrice,
+    savings: promotion.savings,
+    savingsPercent: promotion.savingsPercent,
+    badgeText: promotion.badgeText,
+    endsAt: promotion.endsAt,
+    rules: [],
+  } : null);
+
   const effectivePrice = promoDiscount ? promoDiscount.discountedPrice : product.price;
   const showOldPrice = promoDiscount ? product.price : product.old_price;
   const discount = showOldPrice && showOldPrice > effectivePrice
@@ -45,9 +57,16 @@ function ProductCardInner({ product }: Props) {
     <Link to={`/product/${product.slug}`}>
       <Card className="group h-full hover:shadow-lg transition-all duration-200 border-border overflow-hidden bg-card">
         <div className="relative aspect-square overflow-hidden bg-white p-4">
-          {promoDiscount && (
+          {/* Promotion badge with custom color */}
+          {promotion && !pricingDiscount && (
+            <span className="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded z-10 text-white"
+              style={{ backgroundColor: promotion.badgeColor }}>
+              {promotion.badgeText}
+            </span>
+          )}
+          {pricingDiscount && (
             <span className="absolute top-2 right-2 bg-primary text-primary-foreground text-[10px] font-bold px-1.5 py-0.5 rounded z-10">
-              {promoDiscount.badgeText}
+              {pricingDiscount.badgeText}
             </span>
           )}
           {discount > 0 && (
@@ -85,7 +104,17 @@ function ProductCardInner({ product }: Props) {
               </span>
             )}
           </div>
-          {promoDiscount?.endsAt && (
+          {/* Savings message */}
+          {promoDiscount && promoDiscount.savings > 0 && (
+            <p className="text-[11px] font-medium text-green-600">
+              Economisești {format(promoDiscount.savings)}
+            </p>
+          )}
+          {/* Countdown */}
+          {promotion?.showCountdown && promotion?.endsAt && (
+            <CountdownTimer endsAt={promotion.endsAt} />
+          )}
+          {promoDiscount?.endsAt && !promotion && (
             <CountdownTimer endsAt={promoDiscount.endsAt} />
           )}
           {pointsEarned > 0 && (

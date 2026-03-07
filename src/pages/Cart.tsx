@@ -1,15 +1,19 @@
 import { Link } from "react-router-dom";
-import { Trash2, Minus, Plus, ShoppingBag } from "lucide-react";
+import { Trash2, Minus, Plus, ShoppingBag, Tag, Gift, Truck, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import Layout from "@/components/layout/Layout";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useCurrency } from "@/hooks/useCurrency";
+import { usePromotions } from "@/hooks/usePromotions";
+import CountdownTimer from "@/components/products/CountdownTimer";
 
 export default function Cart() {
   const { user } = useAuth();
   const { items, totalPrice, updateQuantity, removeFromCart } = useCart();
   const { format } = useCurrency();
+  const { getCartPromotions, hasFreeShipping } = usePromotions();
 
   if (items.length === 0) {
     return (
@@ -24,7 +28,26 @@ export default function Cart() {
     );
   }
 
-  const shipping = totalPrice >= 200 ? 0 : 19.99;
+  const totalQty = items.reduce((s, i) => s + i.quantity, 0);
+  const freeShipping = hasFreeShipping(totalPrice, totalQty);
+  const shipping = freeShipping ? 0 : (totalPrice >= 200 ? 0 : 19.99);
+
+  // Get cart-level promotions
+  const cartPromos = getCartPromotions(
+    items.map(i => ({ product: i.product, quantity: i.quantity })),
+    totalPrice
+  );
+  const totalSavings = cartPromos.reduce((s, p) => s + p.savings, 0);
+
+  const promoIcon = (type: string) => {
+    switch (type) {
+      case "free_shipping": return <Truck className="h-3.5 w-3.5" />;
+      case "buy_x_get_y": return <Gift className="h-3.5 w-3.5" />;
+      case "gift_product": return <Gift className="h-3.5 w-3.5" />;
+      case "spend_threshold": return <Zap className="h-3.5 w-3.5" />;
+      default: return <Tag className="h-3.5 w-3.5" />;
+    }
+  };
 
   return (
     <Layout>
@@ -61,6 +84,34 @@ export default function Cart() {
                 </div>
               </div>
             ))}
+
+            {/* Active promotions in cart */}
+            {cartPromos.length > 0 && (
+              <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-4 space-y-2">
+                <p className="text-sm font-semibold text-green-700 dark:text-green-400 flex items-center gap-2">
+                  <Tag className="h-4 w-4" /> Promoții aplicate
+                </p>
+                {cartPromos.map((cp, i) => (
+                  <div key={i} className="flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-2 text-green-600 dark:text-green-400">
+                      {promoIcon(cp.type)}
+                      {cp.label}
+                      {cp.promo.ends_at && cp.promo.show_countdown && (
+                        <CountdownTimer endsAt={cp.promo.ends_at} className="ml-1" />
+                      )}
+                    </span>
+                    {cp.savings > 0 && (
+                      <span className="font-semibold text-green-700 dark:text-green-400">-{format(cp.savings)}</span>
+                    )}
+                  </div>
+                ))}
+                {totalSavings > 0 && (
+                  <p className="text-sm font-bold text-green-700 dark:text-green-300 pt-1 border-t border-green-200 dark:border-green-800">
+                    🎉 Felicitări! Economisești {format(totalSavings)} cu promoțiile active!
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="bg-card rounded-lg border p-6 h-fit sticky top-24 space-y-3">
@@ -69,13 +120,21 @@ export default function Cart() {
               <span className="text-muted-foreground">Subtotal</span>
               <span>{format(totalPrice)}</span>
             </div>
+            {totalSavings > 0 && (
+              <div className="flex justify-between text-sm text-green-600">
+                <span>Economii promoții</span>
+                <span className="font-medium">-{format(totalSavings)}</span>
+              </div>
+            )}
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Livrare</span>
-              <span className={shipping === 0 ? "text-green-600 font-medium" : ""}>{shipping === 0 ? "GRATUITĂ" : format(shipping)}</span>
+              <span className={shipping === 0 ? "text-green-600 font-medium" : ""}>
+                {shipping === 0 ? (freeShipping ? "GRATUITĂ (promoție)" : "GRATUITĂ") : format(shipping)}
+              </span>
             </div>
             <div className="border-t pt-3 flex justify-between font-bold text-lg">
               <span>Total</span>
-              <span className="text-primary">{format(totalPrice + shipping)}</span>
+              <span className="text-primary">{format(totalPrice - totalSavings + shipping)}</span>
             </div>
             <Link to="/checkout" className="block">
               <Button className="w-full font-semibold" size="lg">Finalizează comanda</Button>
