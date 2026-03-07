@@ -189,7 +189,13 @@ export default function Checkout() {
     if (!user && (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))) { toast.error("Adresa de email nu este validă"); return; }
     setSubmitting(true);
 
-    const isInstallments = selectedMethod?.type === "installments";
+    // Track payment info + begin checkout
+    trackAddPaymentInfo(paymentMethod);
+    trackBeginCheckout(
+      items.map(i => ({ id: i.product_id, name: i.product.name, price: i.product.price, quantity: i.quantity })),
+      totalPrice
+    );
+
     const installmentData = isInstallments ? { provider: selectedMethod.provider || paymentMethod, months: parseInt(installmentMonths), monthly_amount: parseFloat(getInstallmentAmount()) } : null;
 
     const orderData: any = {
