@@ -10,6 +10,7 @@ import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrency } from "@/hooks/useCurrency";
+import { safeJsonLd } from "@/lib/sanitize-json-ld";
 
 interface Cat {
   id: string;
