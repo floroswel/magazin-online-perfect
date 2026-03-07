@@ -114,7 +114,12 @@ export default function Cart() {
                 )}
               </div>
             )}
-          </div>
+
+            {/* Free shipping progress bar */}
+            <FreeShippingBar currentTotal={totalPrice} />
+
+            {/* Cross-sell suggestions */}
+            <CartCrossSell cartProductIds={items.map(i => i.product_id)} />
 
           <div className="bg-card rounded-lg border p-6 h-fit sticky top-24 space-y-3">
             <h2 className="font-bold text-lg">Sumar comandă</h2>
