@@ -7,6 +7,7 @@ import VariantSelector from "@/components/products/VariantSelector";
 import CountdownTimer from "@/components/products/CountdownTimer";
 import FrequentlyBoughtTogether from "@/components/products/FrequentlyBoughtTogether";
 import UpgradeRecommendation from "@/components/products/UpgradeRecommendation";
+import { trackViewItem, trackAddToCart } from "@/hooks/useMarketingTracking";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
