@@ -39,9 +39,9 @@ export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [installmentMonths, setInstallmentMonths] = useState("3");
   const [couponCode, setCouponCode] = useState("");
-  const [couponDiscount, setCouponDiscount] = useState(0);
-  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [appliedCoupons, setAppliedCoupons] = useState<any[]>([]);
   const [couponLoading, setCouponLoading] = useState(false);
+  const [couponExpanded, setCouponExpanded] = useState(false);
   const [mokkaModalOpen, setMokkaModalOpen] = useState(false);
   const [mokkaIframeUrl, setMokkaIframeUrl] = useState("");
   const [savedAddresses, setSavedAddresses] = useState<Tables<"addresses">[]>([]);
@@ -100,10 +100,13 @@ export default function Checkout() {
   // Calculate extra fee from selected payment method
   const extraFee = selectedMethod ? (selectedMethod.extra_fee_type === "fixed" ? (selectedMethod.extra_fee_value || 0) : selectedMethod.extra_fee_type === "percent" ? totalPrice * ((selectedMethod.extra_fee_value || 0) / 100) : 0) : 0;
 
-  const shipping = hasFreeShipping ? 0 : (totalPrice >= 200 ? 0 : 19.99);
+  const baseShipping = hasFreeShipping ? 0 : (totalPrice >= 200 ? 0 : 19.99);
   const groupDiscount = maxDiscount > 0 ? totalPrice * (maxDiscount / 100) : 0;
   const loyaltyDiscount = user && currentLevel ? (totalPrice * (currentLevel.discount_percentage / 100)) : 0;
   const pointsDiscount = pointsToValue(pointsToUse);
+  const couponDiscount = appliedCoupons.reduce((sum, c) => sum + c._discount, 0);
+  const couponFreeShipping = appliedCoupons.some(c => c.discount_type === "free_shipping" || c.includes_free_shipping);
+  const shipping = couponFreeShipping ? 0 : baseShipping;
   const subtotalAfterDiscounts = totalPrice - couponDiscount - loyaltyDiscount - groupDiscount - pointsDiscount;
   const total = Math.max(0, subtotalAfterDiscounts + shipping + extraFee);
   const maxPoints = maxRedeemablePoints(totalPrice);
@@ -118,22 +121,52 @@ export default function Checkout() {
   const applyCoupon = async () => {
     if (!couponCode.trim()) return;
     setCouponLoading(true);
-    const { data: coupon } = await supabase.from("coupons").select("*").eq("code", couponCode.trim().toUpperCase()).eq("is_active", true).maybeSingle();
-    if (!coupon) { toast.error("Codul de reducere nu este valid"); setCouponLoading(false); return; }
-    if (coupon.min_order_value && totalPrice < coupon.min_order_value) { toast.error(`Comanda minimă pentru acest cupon este ${format(coupon.min_order_value)}`); setCouponLoading(false); return; }
-    if (coupon.valid_until && new Date(coupon.valid_until) < new Date()) { toast.error("Acest cupon a expirat"); setCouponLoading(false); return; }
-    if (user) {
-      const { data: usage } = await supabase.from("coupon_usage").select("id").eq("coupon_id", coupon.id).eq("user_id", user.id).maybeSingle();
-      if (usage) { toast.error("Ai folosit deja acest cupon"); setCouponLoading(false); return; }
+    const code = couponCode.trim().toUpperCase();
+    // Check if already applied
+    if (appliedCoupons.find(c => c.code === code)) { toast.error("Acest cod este deja aplicat"); setCouponLoading(false); return; }
+    // Check stacking
+    if (appliedCoupons.length > 0) {
+      const existingAllowStacking = appliedCoupons.every(c => c.combine_with_codes);
+      if (!existingAllowStacking) { toast.error("Codurile existente nu permit combinarea cu alte coduri"); setCouponLoading(false); return; }
     }
-    const discount = coupon.discount_type === "percentage" ? totalPrice * (coupon.discount_value / 100) : coupon.discount_value;
-    setCouponDiscount(Math.min(discount, totalPrice));
-    setAppliedCoupon(coupon);
+    const { data: coupon } = await supabase.from("coupons").select("*").eq("code", code).eq("is_active", true).maybeSingle();
+    if (!coupon) { toast.error("Cod invalid"); setCouponLoading(false); return; }
+    if (coupon.valid_from && new Date(coupon.valid_from) > new Date()) { toast.error("Acest cod nu este încă activ"); setCouponLoading(false); return; }
+    if (coupon.valid_until && new Date(coupon.valid_until) < new Date()) { toast.error("Cod expirat"); setCouponLoading(false); return; }
+    if (coupon.min_order_value && totalPrice < coupon.min_order_value) { toast.error(`Valoare minimă comandă: ${format(coupon.min_order_value)}`); setCouponLoading(false); return; }
+    const totalQty = items.reduce((s, i) => s + i.quantity, 0);
+    if (coupon.min_quantity && totalQty < coupon.min_quantity) { toast.error(`Cantitate minimă: ${coupon.min_quantity} produse`); setCouponLoading(false); return; }
+    if (coupon.max_uses && (coupon.used_count || 0) >= coupon.max_uses) { toast.error("Ai atins limita de utilizări"); setCouponLoading(false); return; }
+    if (appliedCoupons.length > 0 && !coupon.combine_with_codes) { toast.error("Acest cod nu se combină cu alte coduri"); setCouponLoading(false); return; }
+    if (user) {
+      if (coupon.max_uses_per_customer) {
+        const { count } = await supabase.from("coupon_usage").select("id", { count: "exact", head: true }).eq("coupon_id", coupon.id).eq("user_id", user.id);
+        if ((count || 0) >= coupon.max_uses_per_customer) { toast.error("Ai folosit deja acest cod de maximul de ori permis"); setCouponLoading(false); return; }
+      }
+      if (coupon.first_order_only) {
+        const { count } = await supabase.from("orders").select("id", { count: "exact", head: true }).eq("user_id", user.id);
+        if ((count || 0) > 0) { toast.error("Acest cod e valabil doar pentru prima comandă"); setCouponLoading(false); return; }
+      }
+      if (coupon.specific_customer_id && coupon.specific_customer_id !== user.id) { toast.error("Acest cod nu este valabil pentru contul tău"); setCouponLoading(false); return; }
+    }
+    // Calculate discount
+    let discount = 0;
+    if (coupon.discount_type === "percentage" || coupon.discount_type === "combined") {
+      discount = totalPrice * (coupon.discount_value / 100);
+    } else if (coupon.discount_type === "fixed") {
+      discount = coupon.discount_value;
+    }
+    discount = Math.min(discount, totalPrice);
+    const enriched = { ...coupon, _discount: discount };
+    setAppliedCoupons(prev => [...prev, enriched]);
+    setCouponCode("");
     toast.success(`Cupon aplicat! Economisești ${format(discount)}`);
     setCouponLoading(false);
   };
 
-  const removeCoupon = () => { setCouponDiscount(0); setAppliedCoupon(null); setCouponCode(""); };
+  const removeCoupon = (couponId: string) => {
+    setAppliedCoupons(prev => prev.filter(c => c.id !== couponId));
+  };
 
   const getInstallmentAmount = () => {
     const months = parseInt(installmentMonths);
@@ -156,7 +189,7 @@ export default function Checkout() {
 
     const orderData: any = {
       total, payment_method: paymentMethod, shipping_address: form,
-      coupon_id: appliedCoupon?.id || null,
+      coupon_id: appliedCoupons[0]?.id || null,
       discount_amount: couponDiscount + loyaltyDiscount + groupDiscount + pointsDiscount,
       loyalty_points_earned: pointsEarned,
       payment_installments: installmentData,
@@ -181,7 +214,11 @@ export default function Checkout() {
     const orderItems = items.map(i => ({ order_id: order.id, product_id: i.product_id, quantity: i.quantity, price: i.product.price }));
     await supabase.from("order_items").insert(orderItems);
 
-    if (appliedCoupon && user) await supabase.from("coupon_usage").insert({ coupon_id: appliedCoupon.id, user_id: user.id, order_id: order.id });
+    if (appliedCoupons.length > 0 && user) {
+      for (const ac of appliedCoupons) {
+        await supabase.from("coupon_usage").insert({ coupon_id: ac.id, user_id: user.id, order_id: order.id });
+      }
+    }
     if (user && pointsToUse > 0) await addPoints(-pointsToUse, "redeem", `Folosite la comandă #${order.id.slice(0, 8)}`, order.id);
     if (user && pointsEarned > 0 && pointsToUse < totalPoints) await addPoints(pointsEarned, "purchase", `Comandă #${order.id.slice(0, 8)}`, order.id);
 
@@ -347,17 +384,24 @@ export default function Checkout() {
 
               {/* Coupon */}
               <div>
-                <h2 className="text-lg font-semibold pt-2 mb-2">Cod de reducere</h2>
-                {appliedCoupon ? (
-                  <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg p-3">
-                    <Ticket className="h-4 w-4 text-green-600" />
-                    <span className="text-sm font-medium text-green-700 flex-1">{appliedCoupon.code} — {appliedCoupon.discount_type === "percentage" ? `${appliedCoupon.discount_value}%` : `${appliedCoupon.discount_value} lei`} reducere</span>
-                    <Button variant="ghost" size="sm" onClick={removeCoupon} className="text-destructive">Elimină</Button>
-                  </div>
-                ) : (
-                  <div className="flex gap-2">
-                    <Input value={couponCode} onChange={e => setCouponCode(e.target.value.toUpperCase())} placeholder="Introdu codul" className="flex-1" />
-                    <Button type="button" variant="outline" onClick={applyCoupon} disabled={couponLoading}>{couponLoading ? "..." : "Aplică"}</Button>
+                <button type="button" onClick={() => setCouponExpanded(!couponExpanded)} className="text-sm font-semibold pt-2 mb-2 flex items-center gap-2 hover:text-primary transition-colors">
+                  <Ticket className="h-4 w-4" /> Ai un cod de reducere?
+                </button>
+                {couponExpanded && (
+                  <div className="space-y-2">
+                    {appliedCoupons.map(ac => (
+                      <div key={ac.id} className="flex items-center gap-2 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-2">
+                        <Ticket className="h-4 w-4 text-green-600 shrink-0" />
+                        <span className="text-sm font-medium text-green-700 dark:text-green-400 flex-1">
+                          {ac.code} — {ac.discount_type === "free_shipping" ? "Transport gratuit" : ac.discount_type === "percentage" || ac.discount_type === "combined" ? `${ac.discount_value}%` : `${ac.discount_value} lei`}
+                        </span>
+                        <Button variant="ghost" size="sm" onClick={() => removeCoupon(ac.id)} className="text-destructive h-7 px-2">✕</Button>
+                      </div>
+                    ))}
+                    <div className="flex gap-2">
+                      <Input value={couponCode} onChange={e => setCouponCode(e.target.value.toUpperCase())} placeholder="Introdu codul" className="flex-1" />
+                      <Button type="button" variant="outline" onClick={applyCoupon} disabled={couponLoading}>{couponLoading ? "..." : "Aplică"}</Button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -372,7 +416,9 @@ export default function Checkout() {
                   <span>{format(item.product.price * item.quantity)}</span>
                 </div>
               ))}
-              {couponDiscount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Cupon ({appliedCoupon?.code})</span><span>-{format(couponDiscount)}</span></div>}
+              {appliedCoupons.map(ac => (
+                <div key={ac.id} className="flex justify-between text-sm text-green-600"><span>Cupon ({ac.code})</span><span>-{format(ac._discount)}</span></div>
+              ))}
               {loyaltyDiscount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Reducere fidelitate ({currentLevel?.name})</span><span>-{format(loyaltyDiscount)}</span></div>}
               {pointsDiscount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Puncte folosite ({pointsToUse})</span><span>-{format(pointsDiscount)}</span></div>}
               {groupDiscount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Discount grup</span><span>-{format(groupDiscount)}</span></div>}

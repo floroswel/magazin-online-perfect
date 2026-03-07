@@ -980,48 +980,101 @@ export type Database = {
       }
       coupons: {
         Row: {
+          applies_to: string
+          category_ids: string[] | null
           code: string
+          combine_with_codes: boolean
+          combine_with_promotions: boolean
           created_at: string
+          customer_group_ids: string[] | null
+          customer_scope: string
           description: string | null
           discount_type: string
           discount_value: number
+          first_order_only: boolean
           id: string
+          includes_free_shipping: boolean
           is_active: boolean | null
           max_uses: number | null
+          max_uses_per_customer: number | null
           min_order_value: number | null
+          min_quantity: number | null
+          parent_code_id: string | null
+          product_ids: string[] | null
+          revenue_generated: number
+          specific_customer_id: string | null
+          total_discount_given: number
           used_count: number | null
           valid_from: string | null
           valid_until: string | null
         }
         Insert: {
+          applies_to?: string
+          category_ids?: string[] | null
           code: string
+          combine_with_codes?: boolean
+          combine_with_promotions?: boolean
           created_at?: string
+          customer_group_ids?: string[] | null
+          customer_scope?: string
           description?: string | null
           discount_type?: string
           discount_value: number
+          first_order_only?: boolean
           id?: string
+          includes_free_shipping?: boolean
           is_active?: boolean | null
           max_uses?: number | null
+          max_uses_per_customer?: number | null
           min_order_value?: number | null
+          min_quantity?: number | null
+          parent_code_id?: string | null
+          product_ids?: string[] | null
+          revenue_generated?: number
+          specific_customer_id?: string | null
+          total_discount_given?: number
           used_count?: number | null
           valid_from?: string | null
           valid_until?: string | null
         }
         Update: {
+          applies_to?: string
+          category_ids?: string[] | null
           code?: string
+          combine_with_codes?: boolean
+          combine_with_promotions?: boolean
           created_at?: string
+          customer_group_ids?: string[] | null
+          customer_scope?: string
           description?: string | null
           discount_type?: string
           discount_value?: number
+          first_order_only?: boolean
           id?: string
+          includes_free_shipping?: boolean
           is_active?: boolean | null
           max_uses?: number | null
+          max_uses_per_customer?: number | null
           min_order_value?: number | null
+          min_quantity?: number | null
+          parent_code_id?: string | null
+          product_ids?: string[] | null
+          revenue_generated?: number
+          specific_customer_id?: string | null
+          total_discount_given?: number
           used_count?: number | null
           valid_from?: string | null
           valid_until?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "coupons_parent_code_id_fkey"
+            columns: ["parent_code_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       courier_configs: {
         Row: {
