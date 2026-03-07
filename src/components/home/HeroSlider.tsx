@@ -57,7 +57,7 @@ export default function HeroSlider() {
             {b.link_url ? (
               <Link to={b.link_url} className="block h-full">
                 {b.image_url ? (
-                  <img src={b.image_url} alt={b.title} className="w-full h-full object-cover" />
+                  <img src={b.image_url} alt={b.title} className="w-full h-full object-cover" loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : undefined} width={1920} height={460} />
                 ) : (
                   <div className="w-full h-full emag-gradient flex items-center justify-center">
                     <h2 className="text-white text-2xl md:text-4xl font-bold text-center px-4">{b.title}</h2>
