@@ -1,14 +1,52 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Code, Copy, RefreshCw, Key } from "lucide-react";
-import { useState } from "react";
+import { Code, Copy, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
+function generateKey() {
+  return "mk_live_" + crypto.randomUUID().replace(/-/g, "").slice(0, 24);
+}
+
 export default function AdminAPI() {
-  const [apiKey] = useState("mk_live_" + Math.random().toString(36).substring(2, 18));
+  const queryClient = useQueryClient();
+
+  const { data: settings } = useQuery({
+    queryKey: ["api-external-settings"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("app_settings")
+        .select("value_json")
+        .eq("key", "external_api")
+        .maybeSingle();
+      return (data?.value_json as any) || { apiKey: generateKey() };
+    },
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: async (updated: any) => {
+      const { data: existing } = await supabase.from("app_settings").select("id").eq("key", "external_api").maybeSingle();
+      if (existing) {
+        const { error } = await supabase.from("app_settings").update({ value_json: updated as any }).eq("key", "external_api");
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("app_settings").insert({ key: "external_api", value_json: updated as any });
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["api-external-settings"] }),
+  });
+
+  const apiKey = settings?.apiKey || "";
+
+  const regenerate = () => {
+    const newKey = generateKey();
+    saveMutation.mutate({ ...settings, apiKey: newKey });
+    toast({ title: "Cheie regenerată și salvată" });
+  };
 
   return (
     <div className="space-y-4">
@@ -25,7 +63,7 @@ export default function AdminAPI() {
               <Button variant="outline" size="icon" onClick={() => { navigator.clipboard.writeText(apiKey); toast({ title: "Copiat!" }); }}>
                 <Copy className="w-4 h-4" />
               </Button>
-              <Button variant="outline" size="icon" onClick={() => toast({ title: "Cheie regenerată" })}>
+              <Button variant="outline" size="icon" onClick={regenerate}>
                 <RefreshCw className="w-4 h-4" />
               </Button>
             </div>
