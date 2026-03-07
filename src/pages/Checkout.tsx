@@ -104,6 +104,8 @@ export default function Checkout() {
   const groupDiscount = maxDiscount > 0 ? totalPrice * (maxDiscount / 100) : 0;
   const loyaltyDiscount = user && currentLevel ? (totalPrice * (currentLevel.discount_percentage / 100)) : 0;
   const pointsDiscount = pointsToValue(pointsToUse);
+  const couponDiscount = appliedCoupons.reduce((sum, c) => sum + c._discount, 0);
+  const couponFreeShipping = appliedCoupons.some(c => c.discount_type === "free_shipping" || c.includes_free_shipping);
   const subtotalAfterDiscounts = totalPrice - couponDiscount - loyaltyDiscount - groupDiscount - pointsDiscount;
   const total = Math.max(0, subtotalAfterDiscounts + shipping + extraFee);
   const maxPoints = maxRedeemablePoints(totalPrice);
