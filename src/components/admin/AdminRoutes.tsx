@@ -130,6 +130,7 @@ const AdminAPI = lazy(() => import("./channels/AdminAPI"));
 const AdminConnectors = lazy(() => import("./channels/AdminConnectors"));
 const AdminCustomReport = lazy(() => import("./reports/AdminCustomReport"));
 const AdminExportReports = lazy(() => import("./reports/AdminExportReports"));
+const AdminFinancialReports = lazy(() => import("./reports/AdminFinancialReports"));
 const AdminSSL = lazy(() => import("./integrations/AdminSSL"));
 const AdminERPIntegrations = lazy(() => import("./integrations/AdminERPIntegrations"));
 const AdminOrderStatuses = lazy(() => import("./orders/AdminOrderStatuses"));
