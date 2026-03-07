@@ -116,7 +116,7 @@ export default function ProductDetail() {
       setLoading(false);
 
       // Track view_item event
-      trackViewItem({ id: prod.id, name: prod.name, price: prod.price, category: prod.category_id || undefined, brand: prod.brands?.name || undefined });
+      trackViewItem({ id: prod.id, name: prod.name, price: prod.price, category: prod.category_id || undefined, brand: (prod as any).brands?.name || undefined });
     }
     load();
   }, [slug, user]);
