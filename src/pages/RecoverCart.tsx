@@ -69,7 +69,7 @@ export default function RecoverCart() {
               .eq("id", existing.id);
           } else {
             await supabase.from("cart_items")
-              .insert({ user_id: user.id, product_id: item.product_id, quantity: item.quantity });
+              .insert({ user_id: user.id, product_id: pid, quantity: qty });
           }
         }
       } else {
