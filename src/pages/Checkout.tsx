@@ -153,20 +153,44 @@ export default function Checkout() {
         const { count } = await supabase.from("orders").select("id", { count: "exact", head: true }).eq("user_id", user.id);
         if ((count || 0) > 0) { toast.error("Acest cod e valabil doar pentru prima comandă"); setCouponLoading(false); return; }
       }
-      if (coupon.specific_customer_id && coupon.specific_customer_id !== user.id) { toast.error("Acest cod nu este valabil pentru contul tău"); setCouponLoading(false); return; }
+    if (coupon.specific_customer_id && coupon.specific_customer_id !== user.id) { toast.error("Acest cod nu este valabil pentru contul tău"); setCouponLoading(false); return; }
     }
-    // Calculate discount
+
+    // Check product/category scope — find eligible items
+    let eligibleItems = items;
+    if (coupon.applies_to === "categories" && coupon.category_ids?.length > 0) {
+      eligibleItems = items.filter(i => i.product.category_id && coupon.category_ids.includes(i.product.category_id));
+      if (eligibleItems.length === 0) { toast.error("Codul nu este valid pentru produsele din coș (categorii diferite)"); setCouponLoading(false); return; }
+    } else if (coupon.applies_to === "products" && coupon.product_ids?.length > 0) {
+      eligibleItems = items.filter(i => coupon.product_ids.includes(i.product_id));
+      if (eligibleItems.length === 0) { toast.error("Codul nu este valid pentru produsele din coș"); setCouponLoading(false); return; }
+    }
+
+    // Calculate discount only on eligible items
+    const eligibleTotal = eligibleItems.reduce((s, i) => s + i.quantity * i.product.price, 0);
     let discount = 0;
     if (coupon.discount_type === "percentage" || coupon.discount_type === "combined") {
-      discount = totalPrice * (coupon.discount_value / 100);
+      discount = eligibleTotal * (coupon.discount_value / 100);
     } else if (coupon.discount_type === "fixed") {
-      discount = coupon.discount_value;
+      discount = Math.min(coupon.discount_value, eligibleTotal);
+    } else if (coupon.applies_to === "first_expensive") {
+      const sorted = [...items].sort((a, b) => b.product.price - a.product.price);
+      const target = sorted[0]?.product.price || 0;
+      discount = coupon.discount_type === "percentage" ? target * (coupon.discount_value / 100) : Math.min(coupon.discount_value, target);
+    } else if (coupon.applies_to === "first_cheapest") {
+      const sorted = [...items].sort((a, b) => a.product.price - b.product.price);
+      const target = sorted[0]?.product.price || 0;
+      discount = coupon.discount_type === "percentage" ? target * (coupon.discount_value / 100) : Math.min(coupon.discount_value, target);
     }
     discount = Math.min(discount, totalPrice);
-    const enriched = { ...coupon, _discount: discount };
+    discount = Math.round(discount * 100) / 100;
+    const enriched = { ...coupon, _discount: discount, _eligibleProductIds: eligibleItems.map(i => i.product_id) };
     setAppliedCoupons(prev => [...prev, enriched]);
     setCouponCode("");
-    toast.success(`Cupon aplicat! Economisești ${format(discount)}`);
+    toast.success(eligibleItems.length < items.length
+      ? `Cupon aplicat pe ${eligibleItems.length} produs(e) eligibil(e)! Economisești ${format(discount)}`
+      : `Cupon aplicat! Economisești ${format(discount)}`
+    );
     setCouponLoading(false);
   };
 
