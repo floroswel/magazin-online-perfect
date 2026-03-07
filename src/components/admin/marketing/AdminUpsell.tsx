@@ -2,7 +2,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -13,11 +12,10 @@ import { toast } from "@/hooks/use-toast";
 
 type Relation = {
   id: string;
-  source_product_id: string;
-  target_product_id: string;
+  product_id: string;
+  related_product_id: string;
   relation_type: string;
-  display_order: number;
-  is_active: boolean;
+  sort_order: number | null;
   source_name?: string;
   target_name?: string;
 };
@@ -39,12 +37,12 @@ export default function AdminUpsell() {
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase.from("product_relations").select("*").order("display_order");
+    const { data } = await supabase.from("product_relations").select("*").order("sort_order");
     if (data) {
-      const pIds = [...new Set(data.flatMap(r => [r.source_product_id, r.target_product_id]))];
+      const pIds = [...new Set(data.flatMap(r => [r.product_id, r.related_product_id]))];
       const { data: prods } = await supabase.from("products").select("id, name").in("id", pIds.length ? pIds : ["_"]);
       const nameMap = Object.fromEntries((prods || []).map(p => [p.id, p.name]));
-      setRelations(data.map(r => ({ ...r, source_name: nameMap[r.source_product_id] || "?", target_name: nameMap[r.target_product_id] || "?" })));
+      setRelations(data.map(r => ({ ...r, source_name: nameMap[r.product_id] || "?", target_name: nameMap[r.related_product_id] || "?" })));
     }
     setLoading(false);
   };
@@ -57,20 +55,15 @@ export default function AdminUpsell() {
   const handleAdd = async () => {
     if (!form.source || !form.target) return;
     const { error } = await supabase.from("product_relations").insert({
-      source_product_id: form.source,
-      target_product_id: form.target,
+      product_id: form.source,
+      related_product_id: form.target,
       relation_type: form.type,
-    } as any);
+    });
     if (error) { toast({ title: "Eroare", description: error.message, variant: "destructive" }); return; }
     toast({ title: "Relație adăugată" });
     setDialogOpen(false);
     setForm({ source: "", target: "", type: "cross_sell" });
     load();
-  };
-
-  const toggleActive = async (id: string, active: boolean) => {
-    await supabase.from("product_relations").update({ is_active: active } as any).eq("id", id);
-    setRelations(r => r.map(x => x.id === id ? { ...x, is_active: active } : x));
   };
 
   const handleDelete = async (id: string) => {
@@ -109,7 +102,6 @@ export default function AdminUpsell() {
                 <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => handleDelete(r.id)}>
                   <Trash2 className="w-3.5 h-3.5" />
                 </Button>
-                <Switch checked={r.is_active} onCheckedChange={(c) => toggleActive(r.id, c)} />
               </CardContent>
             </Card>
           ))}

@@ -11,18 +11,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
-type LandingPage = {
-  id: string;
-  name: string;
-  slug: string;
-  published: boolean;
-  visits: number;
-  conversions: number;
-  created_at: string;
-};
-
 export default function AdminLandingPages() {
-  const [pages, setPages] = useState<LandingPage[]>([]);
+  const [pages, setPages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [form, setForm] = useState({ name: "", slug: "" });
@@ -30,24 +20,24 @@ export default function AdminLandingPages() {
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase.from("landing_pages").select("*").order("created_at", { ascending: false });
-    setPages((data as LandingPage[]) || []);
+    const { data } = await (supabase as any).from("landing_pages").select("*").order("created_at", { ascending: false });
+    setPages(data || []);
     setLoading(false);
   };
 
   useEffect(() => { load(); }, []);
 
-  const totalVisits = pages.reduce((s, p) => s + p.visits, 0);
-  const totalConversions = pages.reduce((s, p) => s + p.conversions, 0);
+  const totalVisits = pages.reduce((s: number, p: any) => s + (p.visits || 0), 0);
+  const totalConversions = pages.reduce((s: number, p: any) => s + (p.conversions || 0), 0);
   const conversionRate = totalVisits > 0 ? ((totalConversions / totalVisits) * 100).toFixed(1) : "0";
 
   const handleSave = async () => {
     if (!form.name || !form.slug) return;
     if (editingId) {
-      await supabase.from("landing_pages").update({ name: form.name, slug: form.slug } as any).eq("id", editingId);
+      await (supabase as any).from("landing_pages").update({ name: form.name, slug: form.slug }).eq("id", editingId);
       toast({ title: "Pagină actualizată" });
     } else {
-      const { error } = await supabase.from("landing_pages").insert({ name: form.name, slug: form.slug } as any);
+      const { error } = await (supabase as any).from("landing_pages").insert({ name: form.name, slug: form.slug });
       if (error) { toast({ title: "Eroare", description: error.message, variant: "destructive" }); return; }
       toast({ title: "Landing page creată" });
     }
@@ -57,21 +47,21 @@ export default function AdminLandingPages() {
     load();
   };
 
-  const handleEdit = (p: LandingPage) => {
+  const handleEdit = (p: any) => {
     setForm({ name: p.name, slug: p.slug });
     setEditingId(p.id);
     setDialogOpen(true);
   };
 
   const handleDelete = async (id: string) => {
-    await supabase.from("landing_pages").delete().eq("id", id);
+    await (supabase as any).from("landing_pages").delete().eq("id", id);
     toast({ title: "Pagină ștearsă" });
     load();
   };
 
   const togglePublished = async (id: string, published: boolean) => {
-    await supabase.from("landing_pages").update({ published } as any).eq("id", id);
-    setPages(p => p.map(x => x.id === id ? { ...x, published } : x));
+    await (supabase as any).from("landing_pages").update({ published }).eq("id", id);
+    setPages(p => p.map((x: any) => x.id === id ? { ...x, published } : x));
   };
 
   return (
@@ -84,7 +74,7 @@ export default function AdminLandingPages() {
         <Button size="sm" onClick={() => { setForm({ name: "", slug: "" }); setEditingId(null); setDialogOpen(true); }}><Plus className="w-4 h-4 mr-1" /> Landing page nouă</Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <Card><CardContent className="p-4 text-center"><p className="text-2xl font-bold">{pages.filter(p => p.published).length}</p><p className="text-xs text-muted-foreground">Active</p></CardContent></Card>
+        <Card><CardContent className="p-4 text-center"><p className="text-2xl font-bold">{pages.filter((p: any) => p.published).length}</p><p className="text-xs text-muted-foreground">Active</p></CardContent></Card>
         <Card><CardContent className="p-4 text-center"><p className="text-2xl font-bold">{totalVisits}</p><p className="text-xs text-muted-foreground">Vizite totale</p></CardContent></Card>
         <Card><CardContent className="p-4 text-center"><p className="text-2xl font-bold">{conversionRate}%</p><p className="text-xs text-muted-foreground">Rată conversie</p></CardContent></Card>
       </div>
@@ -107,7 +97,7 @@ export default function AdminLandingPages() {
               <TableBody>
                 {pages.length === 0 ? (
                   <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Nu există landing pages.</TableCell></TableRow>
-                ) : pages.map(p => (
+                ) : pages.map((p: any) => (
                   <TableRow key={p.id}>
                     <TableCell className="font-medium text-sm">{p.name}</TableCell>
                     <TableCell className="text-xs font-mono text-muted-foreground">/lp/{p.slug}</TableCell>
