@@ -518,7 +518,7 @@ export default function ProductDetail() {
         )}
       </div>
 
-      {/* Schema.org JSON-LD */}
+      {/* Schema.org Product JSON-LD */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({
         "@context": "https://schema.org",
         "@type": "Product",
@@ -541,6 +541,17 @@ export default function ProductDetail() {
           ratingValue: product.rating || 0,
           reviewCount: product.review_count,
         } : undefined,
+      }) }} />
+
+      {/* BreadcrumbList JSON-LD */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Acasă", item: window.location.origin },
+          { "@type": "ListItem", position: 2, name: "Catalog", item: window.location.origin + "/catalog" },
+          { "@type": "ListItem", position: 3, name: product.name, item: window.location.href },
+        ],
       }) }} />
 
       {/* Sticky mobile Add to Cart */}
