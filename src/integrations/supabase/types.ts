@@ -2359,58 +2359,150 @@ export type Database = {
       }
       newsletter_campaigns: {
         Row: {
+          blocks: Json | null
+          bounce_count: number | null
+          click_count: number | null
           content: string
           created_at: string
           id: string
+          open_count: number | null
+          preview_text: string | null
           recipient_count: number | null
+          scheduled_at: string | null
+          sender_email: string | null
+          sender_name: string | null
           sent_at: string | null
           status: string
           subject: string
+          target_groups: string[] | null
+          target_segment: string | null
+          unsubscribe_count: number | null
+          updated_at: string | null
         }
         Insert: {
+          blocks?: Json | null
+          bounce_count?: number | null
+          click_count?: number | null
           content: string
           created_at?: string
           id?: string
+          open_count?: number | null
+          preview_text?: string | null
           recipient_count?: number | null
+          scheduled_at?: string | null
+          sender_email?: string | null
+          sender_name?: string | null
           sent_at?: string | null
           status?: string
           subject: string
+          target_groups?: string[] | null
+          target_segment?: string | null
+          unsubscribe_count?: number | null
+          updated_at?: string | null
         }
         Update: {
+          blocks?: Json | null
+          bounce_count?: number | null
+          click_count?: number | null
           content?: string
           created_at?: string
           id?: string
+          open_count?: number | null
+          preview_text?: string | null
           recipient_count?: number | null
+          scheduled_at?: string | null
+          sender_email?: string | null
+          sender_name?: string | null
           sent_at?: string | null
           status?: string
           subject?: string
+          target_groups?: string[] | null
+          target_segment?: string | null
+          unsubscribe_count?: number | null
+          updated_at?: string | null
         }
         Relationships: []
       }
+      newsletter_groups: {
+        Row: {
+          auto_sync_customer_group_id: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          member_count: number | null
+          name: string
+        }
+        Insert: {
+          auto_sync_customer_group_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          member_count?: number | null
+          name: string
+        }
+        Update: {
+          auto_sync_customer_group_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          member_count?: number | null
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "newsletter_groups_auto_sync_customer_group_id_fkey"
+            columns: ["auto_sync_customer_group_id"]
+            isOneToOne: false
+            referencedRelation: "customer_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       newsletter_subscribers: {
         Row: {
+          confirmation_token: string | null
+          confirmed: boolean | null
+          consent_at: string | null
+          consent_ip: string | null
           email: string
+          groups: string[] | null
           id: string
           is_active: boolean
           name: string | null
+          source: string | null
           subscribed_at: string
           unsubscribed_at: string | null
+          user_id: string | null
         }
         Insert: {
+          confirmation_token?: string | null
+          confirmed?: boolean | null
+          consent_at?: string | null
+          consent_ip?: string | null
           email: string
+          groups?: string[] | null
           id?: string
           is_active?: boolean
           name?: string | null
+          source?: string | null
           subscribed_at?: string
           unsubscribed_at?: string | null
+          user_id?: string | null
         }
         Update: {
+          confirmation_token?: string | null
+          confirmed?: boolean | null
+          consent_at?: string | null
+          consent_ip?: string | null
           email?: string
+          groups?: string[] | null
           id?: string
           is_active?: boolean
           name?: string | null
+          source?: string | null
           subscribed_at?: string
           unsubscribed_at?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
