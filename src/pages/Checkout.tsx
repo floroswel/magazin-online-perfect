@@ -98,6 +98,10 @@ export default function Checkout() {
     return <Layout><div className="container py-16 text-center"><p>Coșul este gol.</p><Link to="/catalog"><Button className="mt-4">Vezi produse</Button></Link></div></Layout>;
   }
 
+  // Fire begin_checkout on mount
+  const checkoutItems = items.map(i => ({ id: i.product_id, name: i.product.name, price: i.product.price, quantity: i.quantity }));
+  // We track this inline below to avoid hooks-after-conditional issues
+
   // Calculate extra fee from selected payment method
   const extraFee = selectedMethod ? (selectedMethod.extra_fee_type === "fixed" ? (selectedMethod.extra_fee_value || 0) : selectedMethod.extra_fee_type === "percent" ? totalPrice * ((selectedMethod.extra_fee_value || 0) / 100) : 0) : 0;
 
