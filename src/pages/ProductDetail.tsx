@@ -128,7 +128,11 @@ export default function ProductDetail() {
     }
     const stock = selectedVariant ? selectedVariant.stock : product?.stock;
     if (!stock || stock <= 0) return;
-    if (product) { await addToCart(product.id, qty); toast.success("Adăugat în coș!"); }
+    if (product) {
+      await addToCart(product.id, qty);
+      trackAddToCart({ id: product.id, name: product.name, price: product.price }, qty);
+      toast.success("Adăugat în coș!");
+    }
   };
 
   const toggleFav = async () => {

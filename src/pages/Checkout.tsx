@@ -21,6 +21,7 @@ import { useCustomerGroups } from "@/hooks/useCustomerGroups";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getAffiliateCode } from "@/hooks/useAffiliateTracking";
+import { trackBeginCheckout, trackAddPaymentInfo, trackPurchase, getUtmData } from "@/hooks/useMarketingTracking";
 import type { Tables } from "@/integrations/supabase/types";
 
 const methodIcons: Record<string, any> = {
