@@ -17,12 +17,13 @@ interface Props {
   product: Tables<"products">;
 }
 
-function ProductCardInner({ product }: Props) {
+function ProductCardInner({ product, eager = false }: Props & { eager?: boolean }) {
   const { addToCart } = useCart();
   const { format } = useCurrency();
   const { getProductDiscount } = usePricingRules();
   const { getProductPromotion } = usePromotions();
   const { calcPointsForPrice, config } = useLoyalty();
+  const { prefetchProduct } = usePrefetch();
 
   const pointsEarned = config.program_enabled ? calcPointsForPrice(product.price) : 0;
 
