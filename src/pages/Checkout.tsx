@@ -50,6 +50,7 @@ export default function Checkout() {
   const [wantInvoice, setWantInvoice] = useState(false);
   const [invoiceForm, setInvoiceForm] = useState({ companyName: "", cui: "", regCom: "", address: "" });
   const [pointsToUse, setPointsToUse] = useState(0);
+  const [newsletterOptin, setNewsletterOptin] = useState(false);
 
   // Fetch enabled payment methods from DB
   const { data: paymentMethods = [] } = useQuery({
