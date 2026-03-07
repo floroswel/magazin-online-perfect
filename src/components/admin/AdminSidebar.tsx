@@ -296,6 +296,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Facturare", path: "/admin/settings/invoices" },
           { label: "Badge-uri legale footer", path: "/admin/settings/footer-badges" },
           { label: "Setări footer", path: "/admin/settings/footer" },
+          { label: "⚡ Performanță", path: "/admin/settings/performance" },
         ],
       },
       {

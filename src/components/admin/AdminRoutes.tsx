@@ -349,6 +349,7 @@ export default function AdminRoutes() {
         <Route path="settings/returns" element={<AdminReturnSettings />} />
         <Route path="settings/invoices" element={<AdminInvoiceSettings />} />
         <Route path="settings/smartbill" element={<AdminSmartBillSettings />} />
+        <Route path="settings/performance" element={<AdminPerformance />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />
