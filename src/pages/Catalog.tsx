@@ -10,6 +10,7 @@ import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrency } from "@/hooks/useCurrency";
+import { safeJsonLd } from "@/lib/sanitize-json-ld";
 
 interface Cat {
   id: string;
@@ -150,6 +151,40 @@ export default function Catalog() {
     }
     load();
   }, [categorySlug, searchQuery, smartSlug, smartCategory, sort, priceRange, selectedBrands, inStockOnly, selectedRatings, categories, currentPage, perPage]);
+
+  // Dynamic SEO meta tags for categories
+  useEffect(() => {
+    if (currentCategory) {
+      document.title = (currentCategory as any).meta_title || `${currentCategory.name} | MegaShop`;
+      const desc = (currentCategory as any).meta_description || `Cumpără ${currentCategory.name} online la prețuri avantajoase.`;
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) { metaDesc = document.createElement("meta"); metaDesc.setAttribute("name", "description"); document.head.appendChild(metaDesc); }
+      metaDesc.setAttribute("content", desc);
+    } else if (searchQuery) {
+      document.title = `Căutare: ${searchQuery} | MegaShop`;
+    } else {
+      document.title = "Catalog | MegaShop";
+    }
+  }, [currentCategory, searchQuery]);
+
+  // BreadcrumbList JSON-LD
+  const breadcrumbJsonLd = useMemo(() => {
+    if (breadcrumbs.length === 0) return null;
+    return safeJsonLd({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Acasă", item: window.location.origin },
+        { "@type": "ListItem", position: 2, name: "Catalog", item: window.location.origin + "/catalog" },
+        ...breadcrumbs.map((b, i) => ({
+          "@type": "ListItem",
+          position: i + 3,
+          name: b.name,
+          item: window.location.origin + `/catalog?category=${b.slug}`,
+        })),
+      ],
+    });
+  }, [breadcrumbs]);
 
   const totalPages = Math.ceil(totalCount / perPage);
 
@@ -440,6 +475,9 @@ export default function Catalog() {
           </div>
         </div>
       </div>
+      {breadcrumbJsonLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd }} />
+      )}
     </Layout>
   );
 }

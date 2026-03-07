@@ -59,6 +59,25 @@ export default function ProductDetail() {
       if (!prod) { setLoading(false); return; }
       setProduct(prod);
 
+      // Set page SEO meta
+      document.title = prod.meta_title || `${prod.name} | MegaShop`;
+      const setMeta = (name: string, content: string, attr = "name") => {
+        let el = document.querySelector(`meta[${attr}="${name}"]`);
+        if (!el) { el = document.createElement("meta"); el.setAttribute(attr, name); document.head.appendChild(el); }
+        el.setAttribute("content", content);
+      };
+      if (prod.meta_description) setMeta("description", prod.meta_description);
+      setMeta("og:title", prod.meta_title || prod.name, "property");
+      setMeta("og:description", prod.meta_description || prod.short_description || "", "property");
+      setMeta("og:type", "product", "property");
+      setMeta("og:image", prod.image_url || "/pwa-512x512.png", "property");
+      setMeta("og:url", window.location.href, "property");
+      setMeta("og:price:amount", String(prod.price), "property");
+      setMeta("og:price:currency", "RON", "property");
+      setMeta("twitter:card", "summary_large_image");
+      setMeta("twitter:title", prod.meta_title || prod.name);
+      setMeta("twitter:image", prod.image_url || "/pwa-512x512.png");
+
       // Track in localStorage
       try {
         const ids: string[] = JSON.parse(localStorage.getItem("recently_viewed") || "[]");
@@ -499,7 +518,7 @@ export default function ProductDetail() {
         )}
       </div>
 
-      {/* Schema.org JSON-LD */}
+      {/* Schema.org Product JSON-LD */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({
         "@context": "https://schema.org",
         "@type": "Product",
@@ -522,6 +541,17 @@ export default function ProductDetail() {
           ratingValue: product.rating || 0,
           reviewCount: product.review_count,
         } : undefined,
+      }) }} />
+
+      {/* BreadcrumbList JSON-LD */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Acasă", item: window.location.origin },
+          { "@type": "ListItem", position: 2, name: "Catalog", item: window.location.origin + "/catalog" },
+          { "@type": "ListItem", position: 3, name: product.name, item: window.location.href },
+        ],
       }) }} />
 
       {/* Sticky mobile Add to Cart */}
