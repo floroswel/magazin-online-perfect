@@ -2872,6 +2872,9 @@ export type Database = {
           order_id: string | null
           payment_method_id: string | null
           provider_response: Json | null
+          reconciled: boolean | null
+          reconciled_at: string | null
+          reconciled_by: string | null
           refunded_amount: number | null
           status: string | null
           updated_at: string | null
@@ -2890,6 +2893,9 @@ export type Database = {
           order_id?: string | null
           payment_method_id?: string | null
           provider_response?: Json | null
+          reconciled?: boolean | null
+          reconciled_at?: string | null
+          reconciled_by?: string | null
           refunded_amount?: number | null
           status?: string | null
           updated_at?: string | null
@@ -2908,6 +2914,9 @@ export type Database = {
           order_id?: string | null
           payment_method_id?: string | null
           provider_response?: Json | null
+          reconciled?: boolean | null
+          reconciled_at?: string | null
+          reconciled_by?: string | null
           refunded_amount?: number | null
           status?: string | null
           updated_at?: string | null

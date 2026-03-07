@@ -130,6 +130,7 @@ const AdminAPI = lazy(() => import("./channels/AdminAPI"));
 const AdminConnectors = lazy(() => import("./channels/AdminConnectors"));
 const AdminCustomReport = lazy(() => import("./reports/AdminCustomReport"));
 const AdminExportReports = lazy(() => import("./reports/AdminExportReports"));
+const AdminFinancialReports = lazy(() => import("./reports/AdminFinancialReports"));
 const AdminSSL = lazy(() => import("./integrations/AdminSSL"));
 const AdminERPIntegrations = lazy(() => import("./integrations/AdminERPIntegrations"));
 const AdminOrderStatuses = lazy(() => import("./orders/AdminOrderStatuses"));
@@ -320,7 +321,7 @@ export default function AdminRoutes() {
         <Route path="reports/inventory" element={<AdminReportPage type="inventory" title="Stoc & Rotație" description="Rotație stoc, valoare stoc, dead stock." />} />
         <Route path="reports/conversion" element={<AdminReportPage type="conversion" title="Conversie / Funnel" description="Vizualizare funnel: vizite → coș → comandă." />} />
         <Route path="reports/marketing" element={<AdminReportPage type="marketing" title="Marketing ROI" description="Analiză eficiență campanii per canal." />} />
-        <Route path="reports/financial" element={<AdminReportPage type="financial" title="Rapoarte Financiare" description="Cifră de afaceri, TVA, costuri, decontări." />} />
+        <Route path="reports/financial" element={<AdminFinancialReports />} />
         <Route path="reports/custom" element={<AdminCustomReport />} />
         <Route path="reports/export" element={<AdminExportReports />} />
 
