@@ -4574,6 +4574,42 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_redirects: {
+        Row: {
+          created_at: string | null
+          hit_count: number | null
+          id: string
+          is_active: boolean | null
+          last_hit_at: string | null
+          notes: string | null
+          redirect_type: number | null
+          source_url: string
+          target_url: string
+        }
+        Insert: {
+          created_at?: string | null
+          hit_count?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_hit_at?: string | null
+          notes?: string | null
+          redirect_type?: number | null
+          source_url: string
+          target_url: string
+        }
+        Update: {
+          created_at?: string | null
+          hit_count?: number | null
+          id?: string
+          is_active?: boolean | null
+          last_hit_at?: string | null
+          notes?: string | null
+          redirect_type?: number | null
+          source_url?: string
+          target_url?: string
+        }
+        Relationships: []
+      }
       shipment_events: {
         Row: {
           created_at: string | null
