@@ -234,6 +234,7 @@ export default function AdminRoutes() {
         <Route path="marketing/ab-tests" element={<AdminABTests />} />
         <Route path="marketing/reports" element={<AdminReportPage type="marketing" title="Rapoarte Marketing" description="Conversie campanii, utilizare vouchere, ROI per canal." />} />
         <Route path="marketing/integrations" element={<AdminMarketingIntegrations />} />
+        <Route path="marketing/retargeting" element={<AdminRetargeting />} />
 
         {/* ═══════════ CONȚINUT ═══════════ */}
         <Route path="content/pages" element={<AdminCmsPages />} />

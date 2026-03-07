@@ -137,6 +137,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Teste A/B", path: "/admin/marketing/ab-tests" },
           { label: "Rapoarte marketing", path: "/admin/marketing/reports" },
           { label: "📊 Integrări marketing", path: "/admin/marketing/integrations" },
+          { label: "🎯 Retargetare & Win-Back", path: "/admin/marketing/retargeting" },
         ],
       },
     ],
