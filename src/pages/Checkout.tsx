@@ -470,6 +470,10 @@ export default function Checkout() {
               {pointsEarned > 0 && (
                 <div className="bg-primary/5 rounded-lg p-2 text-center text-sm"><span className="font-medium">+{pointsEarned} puncte fidelitate</span> la această comandă</div>
               )}
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input type="checkbox" checked={newsletterOptin} onChange={e => setNewsletterOptin(e.target.checked)} className="mt-0.5 rounded" />
+                <span className="text-xs text-muted-foreground">Doresc să primesc oferte și noutăți pe email</span>
+              </label>
               <Button type="submit" className="w-full font-semibold" size="lg" disabled={submitting || availableMethods.length === 0}>
                 {submitting ? "Se procesează..." : "Plasează comanda"}
               </Button>
