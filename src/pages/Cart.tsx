@@ -8,6 +8,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCurrency } from "@/hooks/useCurrency";
 import { usePromotions } from "@/hooks/usePromotions";
 import CountdownTimer from "@/components/products/CountdownTimer";
+import FreeShippingBar from "@/components/cart/FreeShippingBar";
+import CartCrossSell from "@/components/cart/CartCrossSell";
 
 export default function Cart() {
   const { user } = useAuth();
@@ -112,6 +114,12 @@ export default function Cart() {
                 )}
               </div>
             )}
+
+            {/* Free shipping progress bar */}
+            <FreeShippingBar currentTotal={totalPrice} />
+
+            {/* Cross-sell suggestions */}
+            <CartCrossSell cartProductIds={items.map(i => i.product_id)} />
           </div>
 
           <div className="bg-card rounded-lg border p-6 h-fit sticky top-24 space-y-3">

@@ -3396,6 +3396,9 @@ export type Database = {
       }
       product_relations: {
         Row: {
+          approved: boolean | null
+          auto_generated: boolean | null
+          co_purchase_count: number | null
           created_at: string | null
           id: string
           product_id: string
@@ -3404,6 +3407,9 @@ export type Database = {
           sort_order: number | null
         }
         Insert: {
+          approved?: boolean | null
+          auto_generated?: boolean | null
+          co_purchase_count?: number | null
           created_at?: string | null
           id?: string
           product_id: string
@@ -3412,6 +3418,9 @@ export type Database = {
           sort_order?: number | null
         }
         Update: {
+          approved?: boolean | null
+          auto_generated?: boolean | null
+          co_purchase_count?: number | null
           created_at?: string | null
           id?: string
           product_id?: string
@@ -4013,6 +4022,67 @@ export type Database = {
           {
             foreignKeyName: "recently_viewed_product_id_fkey"
             columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recommendation_clicks: {
+        Row: {
+          clicked_at: string
+          converted: boolean | null
+          id: string
+          order_id: string | null
+          product_id: string
+          recommendation_type: string
+          recommended_product_id: string
+          revenue: number | null
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          clicked_at?: string
+          converted?: boolean | null
+          id?: string
+          order_id?: string | null
+          product_id: string
+          recommendation_type?: string
+          recommended_product_id: string
+          revenue?: number | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          clicked_at?: string
+          converted?: boolean | null
+          id?: string
+          order_id?: string | null
+          product_id?: string
+          recommendation_type?: string
+          recommended_product_id?: string
+          revenue?: number | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recommendation_clicks_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recommendation_clicks_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recommendation_clicks_recommended_product_id_fkey"
+            columns: ["recommended_product_id"]
             isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
