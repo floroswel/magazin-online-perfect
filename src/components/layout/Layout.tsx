@@ -5,10 +5,12 @@ import BackToTop from "./BackToTop";
 import CookieConsent from "@/components/CookieConsent";
 import PushPermissionPopup from "@/components/PushPermissionPopup";
 import NewsletterPopup from "@/components/NewsletterPopup";
+import SeoHead from "@/components/SeoHead";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
+      <SeoHead />
       <Header />
       <Breadcrumbs />
       <main className="flex-1">{children}</main>
