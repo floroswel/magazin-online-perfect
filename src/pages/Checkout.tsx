@@ -384,17 +384,24 @@ export default function Checkout() {
 
               {/* Coupon */}
               <div>
-                <h2 className="text-lg font-semibold pt-2 mb-2">Cod de reducere</h2>
-                {appliedCoupon ? (
-                  <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg p-3">
-                    <Ticket className="h-4 w-4 text-green-600" />
-                    <span className="text-sm font-medium text-green-700 flex-1">{appliedCoupon.code} — {appliedCoupon.discount_type === "percentage" ? `${appliedCoupon.discount_value}%` : `${appliedCoupon.discount_value} lei`} reducere</span>
-                    <Button variant="ghost" size="sm" onClick={removeCoupon} className="text-destructive">Elimină</Button>
-                  </div>
-                ) : (
-                  <div className="flex gap-2">
-                    <Input value={couponCode} onChange={e => setCouponCode(e.target.value.toUpperCase())} placeholder="Introdu codul" className="flex-1" />
-                    <Button type="button" variant="outline" onClick={applyCoupon} disabled={couponLoading}>{couponLoading ? "..." : "Aplică"}</Button>
+                <button type="button" onClick={() => setCouponExpanded(!couponExpanded)} className="text-sm font-semibold pt-2 mb-2 flex items-center gap-2 hover:text-primary transition-colors">
+                  <Ticket className="h-4 w-4" /> Ai un cod de reducere?
+                </button>
+                {couponExpanded && (
+                  <div className="space-y-2">
+                    {appliedCoupons.map(ac => (
+                      <div key={ac.id} className="flex items-center gap-2 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-2">
+                        <Ticket className="h-4 w-4 text-green-600 shrink-0" />
+                        <span className="text-sm font-medium text-green-700 dark:text-green-400 flex-1">
+                          {ac.code} — {ac.discount_type === "free_shipping" ? "Transport gratuit" : ac.discount_type === "percentage" || ac.discount_type === "combined" ? `${ac.discount_value}%` : `${ac.discount_value} lei`}
+                        </span>
+                        <Button variant="ghost" size="sm" onClick={() => removeCoupon(ac.id)} className="text-destructive h-7 px-2">✕</Button>
+                      </div>
+                    ))}
+                    <div className="flex gap-2">
+                      <Input value={couponCode} onChange={e => setCouponCode(e.target.value.toUpperCase())} placeholder="Introdu codul" className="flex-1" />
+                      <Button type="button" variant="outline" onClick={applyCoupon} disabled={couponLoading}>{couponLoading ? "..." : "Aplică"}</Button>
+                    </div>
                   </div>
                 )}
               </div>
