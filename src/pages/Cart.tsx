@@ -8,6 +8,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCurrency } from "@/hooks/useCurrency";
 import { usePromotions } from "@/hooks/usePromotions";
 import CountdownTimer from "@/components/products/CountdownTimer";
+import FreeShippingBar from "@/components/cart/FreeShippingBar";
+import CartCrossSell from "@/components/cart/CartCrossSell";
 
 export default function Cart() {
   const { user } = useAuth();
