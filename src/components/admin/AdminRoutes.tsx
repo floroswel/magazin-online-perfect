@@ -116,6 +116,7 @@ const AdminFeeds = lazy(() => import("./marketing/AdminFeeds"));
 const AdminPixels = lazy(() => import("./marketing/AdminPixels"));
 const AdminRecommendations = lazy(() => import("./marketing/AdminRecommendations"));
 const AdminABTests = lazy(() => import("./marketing/AdminABTests"));
+const AdminMarketingIntegrations = lazy(() => import("./marketing/AdminMarketingIntegrations"));
 const AdminLandingPages = lazy(() => import("./content/AdminLandingPages"));
 const AdminMenus = lazy(() => import("./content/AdminMenus"));
 const AdminEmailTemplates = lazy(() => import("./content/AdminEmailTemplates"));
