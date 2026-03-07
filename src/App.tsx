@@ -29,6 +29,7 @@ import CustomScriptInjector from "./components/CustomScriptInjector";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Affiliates from "./pages/Affiliates";
 import RecoverCart from "./pages/RecoverCart";
+import Unsubscribe from "./pages/Unsubscribe";
 import { useAffiliateTracking } from "./hooks/useAffiliateTracking";
 import { initTracking, trackPageView } from "./hooks/useMarketingTracking";
 import { useEffect } from "react";
