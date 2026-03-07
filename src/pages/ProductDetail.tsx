@@ -114,6 +114,9 @@ export default function ProductDetail() {
         setRecentlyViewed((rv || []).map((d: any) => d.product).filter(Boolean));
       }
       setLoading(false);
+
+      // Track view_item event
+      trackViewItem({ id: prod.id, name: prod.name, price: prod.price, category: prod.category_id || undefined, brand: prod.brands?.name || undefined });
     }
     load();
   }, [slug, user]);
