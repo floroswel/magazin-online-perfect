@@ -81,6 +81,8 @@ export default function Footer() {
   const infoPages = pages.filter(p => p.placement === "footer_info");
   const helpPages = pages.filter(p => p.placement === "footer_help");
 
+  const [gdprConsent, setGdprConsent] = useState(false);
+
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = emailSchema.safeParse(email);
@@ -88,10 +90,14 @@ export default function Footer() {
       toast.error(result.error.errors[0].message);
       return;
     }
+    if (!gdprConsent) {
+      toast.error("Trebuie să accepți primirea emailurilor promoționale.");
+      return;
+    }
     setLoading(true);
     const { error } = await supabase
       .from("newsletter_subscribers")
-      .insert({ email: result.data });
+      .insert({ email: result.data, source: "footer", consent_at: new Date().toISOString() } as any);
 
     if (error) {
       if (error.code === "23505") {
@@ -102,6 +108,8 @@ export default function Footer() {
     } else {
       toast.success("Te-ai abonat cu succes la newsletter! 🎉");
       setEmail("");
+      setGdprConsent(false);
+      localStorage.setItem("newsletter_subscribed", "1");
     }
     setLoading(false);
   };
