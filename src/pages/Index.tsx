@@ -4,6 +4,7 @@ import { ArrowRight, Zap, Truck, Shield, RotateCcw, Star, Heart, Gift, Clock, Pe
 import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
 import MokkaBanner from "@/components/mokka/MokkaBanner";
+import HeroSlider from "@/components/home/HeroSlider";
 import { ProductCardSkeleton } from "@/components/ui/skeletons";
 import CategoryGrid from "@/components/home/CategoryGrid";
 import FlashDeals from "@/components/home/FlashDeals";
