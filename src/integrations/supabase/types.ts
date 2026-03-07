@@ -17,39 +17,66 @@ export type Database = {
       abandoned_carts: {
         Row: {
           created_at: string
+          email_1_sent_at: string | null
+          email_2_sent_at: string | null
+          email_3_sent_at: string | null
           id: string
           items: Json
           last_activity_at: string
+          lost: boolean
           recovered: boolean | null
           recovered_at: string | null
+          recovered_order_id: string | null
+          recovery_coupon_code: string | null
           recovery_email_sent: boolean | null
           recovery_email_sent_at: string | null
+          recovery_token: string | null
+          recovery_token_expires_at: string | null
+          status: string
           total: number | null
           user_email: string | null
           user_id: string
         }
         Insert: {
           created_at?: string
+          email_1_sent_at?: string | null
+          email_2_sent_at?: string | null
+          email_3_sent_at?: string | null
           id?: string
           items?: Json
           last_activity_at?: string
+          lost?: boolean
           recovered?: boolean | null
           recovered_at?: string | null
+          recovered_order_id?: string | null
+          recovery_coupon_code?: string | null
           recovery_email_sent?: boolean | null
           recovery_email_sent_at?: string | null
+          recovery_token?: string | null
+          recovery_token_expires_at?: string | null
+          status?: string
           total?: number | null
           user_email?: string | null
           user_id: string
         }
         Update: {
           created_at?: string
+          email_1_sent_at?: string | null
+          email_2_sent_at?: string | null
+          email_3_sent_at?: string | null
           id?: string
           items?: Json
           last_activity_at?: string
+          lost?: boolean
           recovered?: boolean | null
           recovered_at?: string | null
+          recovered_order_id?: string | null
+          recovery_coupon_code?: string | null
           recovery_email_sent?: boolean | null
           recovery_email_sent_at?: string | null
+          recovery_token?: string | null
+          recovery_token_expires_at?: string | null
+          status?: string
           total?: number | null
           user_email?: string | null
           user_id?: string
