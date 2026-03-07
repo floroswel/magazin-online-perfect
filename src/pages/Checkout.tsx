@@ -50,6 +50,7 @@ export default function Checkout() {
   const [wantInvoice, setWantInvoice] = useState(false);
   const [invoiceForm, setInvoiceForm] = useState({ companyName: "", cui: "", regCom: "", address: "" });
   const [pointsToUse, setPointsToUse] = useState(0);
+  const [newsletterOptin, setNewsletterOptin] = useState(false);
 
   // Fetch enabled payment methods from DB
   const { data: paymentMethods = [] } = useQuery({
@@ -245,6 +246,16 @@ export default function Checkout() {
         body: { type: "order_placed", to: user?.email || form.email, data: { orderId: order.id, customerName: form.fullName, total, paymentMethod, pointsEarned, items: items.map(i => ({ name: i.product.name, quantity: i.quantity, price: i.product.price })) } },
       });
     } catch (emailErr) { console.error("Email notification failed:", emailErr); }
+
+    // Newsletter opt-in from checkout
+    if (newsletterOptin && (user?.email || form.email)) {
+      try {
+        await supabase.from("newsletter_subscribers").upsert(
+          { email: user?.email || form.email, source: "checkout", consent_at: new Date().toISOString() } as any,
+          { onConflict: "email" }
+        );
+      } catch {}
+    }
 
     // Track purchase event
     trackPurchase({
@@ -469,6 +480,10 @@ export default function Checkout() {
               {pointsEarned > 0 && (
                 <div className="bg-primary/5 rounded-lg p-2 text-center text-sm"><span className="font-medium">+{pointsEarned} puncte fidelitate</span> la această comandă</div>
               )}
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input type="checkbox" checked={newsletterOptin} onChange={e => setNewsletterOptin(e.target.checked)} className="mt-0.5 rounded" />
+                <span className="text-xs text-muted-foreground">Doresc să primesc oferte și noutăți pe email</span>
+              </label>
               <Button type="submit" className="w-full font-semibold" size="lg" disabled={submitting || availableMethods.length === 0}>
                 {submitting ? "Se procesează..." : "Plasează comanda"}
               </Button>

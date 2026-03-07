@@ -29,6 +29,7 @@ import CustomScriptInjector from "./components/CustomScriptInjector";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Affiliates from "./pages/Affiliates";
 import RecoverCart from "./pages/RecoverCart";
+import Unsubscribe from "./pages/Unsubscribe";
 import { useAffiliateTracking } from "./hooks/useAffiliateTracking";
 import { initTracking, trackPageView } from "./hooks/useMarketingTracking";
 import { useEffect } from "react";
@@ -78,6 +79,7 @@ const App = () => (
               <Route path="/page/:slug" element={<ErrorBoundary><CmsPage /></ErrorBoundary>} />
               <Route path="/install" element={<ErrorBoundary><Install /></ErrorBoundary>} />
               <Route path="/afilieri" element={<ErrorBoundary><Affiliates /></ErrorBoundary>} />
+              <Route path="/unsubscribe" element={<ErrorBoundary><Unsubscribe /></ErrorBoundary>} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
