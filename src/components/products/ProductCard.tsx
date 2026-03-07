@@ -8,6 +8,7 @@ import { useCurrency } from "@/hooks/useCurrency";
 import { usePricingRules } from "@/hooks/usePricingRules";
 import { usePromotions } from "@/hooks/usePromotions";
 import { useLoyalty } from "@/hooks/useLoyalty";
+import { usePrefetch } from "@/hooks/usePrefetch";
 import CountdownTimer from "./CountdownTimer";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
@@ -16,12 +17,13 @@ interface Props {
   product: Tables<"products">;
 }
 
-function ProductCardInner({ product }: Props) {
+function ProductCardInner({ product, eager = false }: Props & { eager?: boolean }) {
   const { addToCart } = useCart();
   const { format } = useCurrency();
   const { getProductDiscount } = usePricingRules();
   const { getProductPromotion } = usePromotions();
   const { calcPointsForPrice, config } = useLoyalty();
+  const { prefetchProduct } = usePrefetch();
 
   const pointsEarned = config.program_enabled ? calcPointsForPrice(product.price) : 0;
 
@@ -54,7 +56,7 @@ function ProductCardInner({ product }: Props) {
     : 0;
 
   return (
-    <Link to={`/product/${product.slug}`}>
+    <Link to={`/product/${product.slug}`} onMouseEnter={() => prefetchProduct(product.slug)}>
       <Card className="group h-full hover:shadow-lg transition-all duration-200 border-border overflow-hidden bg-card">
         <div className="relative aspect-square overflow-hidden bg-white p-4">
           {/* Promotion badge with custom color */}
@@ -76,8 +78,11 @@ function ProductCardInner({ product }: Props) {
           )}
           <img
             src={product.image_url || "/placeholder.svg"}
-            alt={product.name}
-            loading="lazy"
+            alt={product.name || "Produs"}
+            width={600}
+            height={600}
+            loading={eager ? "eager" : "lazy"}
+            decoding={eager ? "sync" : "async"}
             className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200"
           />
         </div>

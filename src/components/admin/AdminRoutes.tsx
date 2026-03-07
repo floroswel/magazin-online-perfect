@@ -139,6 +139,7 @@ const AdminOrderStatuses = lazy(() => import("./orders/AdminOrderStatuses"));
 const AdminReturnSettings = lazy(() => import("./settings/AdminReturnSettings"));
 const AdminInvoiceSettings = lazy(() => import("./settings/AdminInvoiceSettings"));
 const AdminSmartBillSettings = lazy(() => import("./settings/AdminSmartBillSettings"));
+const AdminPerformance = lazy(() => import("./settings/AdminPerformance"));
 
 export default function AdminRoutes() {
   return (
@@ -348,6 +349,7 @@ export default function AdminRoutes() {
         <Route path="settings/returns" element={<AdminReturnSettings />} />
         <Route path="settings/invoices" element={<AdminInvoiceSettings />} />
         <Route path="settings/smartbill" element={<AdminSmartBillSettings />} />
+        <Route path="settings/performance" element={<AdminPerformance />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />

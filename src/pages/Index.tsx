@@ -5,6 +5,7 @@ import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
 import MokkaBanner from "@/components/mokka/MokkaBanner";
 import HeroSlider from "@/components/home/HeroSlider";
+import { ProductCardSkeleton } from "@/components/ui/skeletons";
 import CategoryGrid from "@/components/home/CategoryGrid";
 import FlashDeals from "@/components/home/FlashDeals";
 import BestSellers from "@/components/home/BestSellers";
@@ -110,12 +111,12 @@ export default function Index() {
           {loading ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="h-80 bg-muted rounded-lg animate-pulse" />
+                <ProductCardSkeleton key={i} />
               ))}
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {featured.map(p => <ProductCard key={p.id} product={p} />)}
+              {featured.map((p, i) => <ProductCard key={p.id} product={p} eager={i < 4} />)}
             </div>
           )}
         </section>
