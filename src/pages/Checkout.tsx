@@ -247,6 +247,16 @@ export default function Checkout() {
       });
     } catch (emailErr) { console.error("Email notification failed:", emailErr); }
 
+    // Newsletter opt-in from checkout
+    if (newsletterOptin && (user?.email || form.email)) {
+      try {
+        await supabase.from("newsletter_subscribers").upsert(
+          { email: user?.email || form.email, source: "checkout", consent_at: new Date().toISOString() } as any,
+          { onConflict: "email" }
+        );
+      } catch {}
+    }
+
     // Track purchase event
     trackPurchase({
       id: order.id,
