@@ -117,6 +117,7 @@ const AdminPixels = lazy(() => import("./marketing/AdminPixels"));
 const AdminRecommendations = lazy(() => import("./marketing/AdminRecommendations"));
 const AdminABTests = lazy(() => import("./marketing/AdminABTests"));
 const AdminMarketingIntegrations = lazy(() => import("./marketing/AdminMarketingIntegrations"));
+const AdminRetargeting = lazy(() => import("./marketing/AdminRetargeting"));
 const AdminLandingPages = lazy(() => import("./content/AdminLandingPages"));
 const AdminMenus = lazy(() => import("./content/AdminMenus"));
 const AdminEmailTemplates = lazy(() => import("./content/AdminEmailTemplates"));
@@ -233,6 +234,7 @@ export default function AdminRoutes() {
         <Route path="marketing/ab-tests" element={<AdminABTests />} />
         <Route path="marketing/reports" element={<AdminReportPage type="marketing" title="Rapoarte Marketing" description="Conversie campanii, utilizare vouchere, ROI per canal." />} />
         <Route path="marketing/integrations" element={<AdminMarketingIntegrations />} />
+        <Route path="marketing/retargeting" element={<AdminRetargeting />} />
 
         {/* ═══════════ CONȚINUT ═══════════ */}
         <Route path="content/pages" element={<AdminCmsPages />} />

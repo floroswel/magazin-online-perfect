@@ -3749,8 +3749,11 @@ export type Database = {
           phone: string | null
           preferred_currency: string | null
           preferred_language: string | null
+          recommendation_optout: boolean | null
           segments: string[] | null
           smartbill_client_id: string | null
+          sms_consent: boolean | null
+          sms_consent_at: string | null
           tags: string[] | null
           total_spent: number | null
           updated_at: string
@@ -3778,8 +3781,11 @@ export type Database = {
           phone?: string | null
           preferred_currency?: string | null
           preferred_language?: string | null
+          recommendation_optout?: boolean | null
           segments?: string[] | null
           smartbill_client_id?: string | null
+          sms_consent?: boolean | null
+          sms_consent_at?: string | null
           tags?: string[] | null
           total_spent?: number | null
           updated_at?: string
@@ -3807,8 +3813,11 @@ export type Database = {
           phone?: string | null
           preferred_currency?: string | null
           preferred_language?: string | null
+          recommendation_optout?: boolean | null
           segments?: string[] | null
           smartbill_client_id?: string | null
+          sms_consent?: boolean | null
+          sms_consent_at?: string | null
           tags?: string[] | null
           total_spent?: number | null
           updated_at?: string
@@ -3965,6 +3974,62 @@ export type Database = {
             columns: ["gift_product_id"]
             isOneToOne: false
             referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      push_campaigns: {
+        Row: {
+          body: string
+          clicked_count: number | null
+          created_at: string | null
+          delivered_count: number | null
+          id: string
+          image_url: string | null
+          sent_at: string | null
+          sent_count: number | null
+          status: string | null
+          target: string | null
+          target_group_id: string | null
+          title: string
+          url: string | null
+        }
+        Insert: {
+          body: string
+          clicked_count?: number | null
+          created_at?: string | null
+          delivered_count?: number | null
+          id?: string
+          image_url?: string | null
+          sent_at?: string | null
+          sent_count?: number | null
+          status?: string | null
+          target?: string | null
+          target_group_id?: string | null
+          title: string
+          url?: string | null
+        }
+        Update: {
+          body?: string
+          clicked_count?: number | null
+          created_at?: string | null
+          delivered_count?: number | null
+          id?: string
+          image_url?: string | null
+          sent_at?: string | null
+          sent_count?: number | null
+          status?: string | null
+          target?: string | null
+          target_group_id?: string | null
+          title?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_campaigns_target_group_id_fkey"
+            columns: ["target_group_id"]
+            isOneToOne: false
+            referencedRelation: "customer_groups"
             referencedColumns: ["id"]
           },
         ]
@@ -4566,6 +4631,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      sms_campaigns: {
+        Row: {
+          cost: number | null
+          created_at: string | null
+          id: string
+          message: string
+          name: string
+          recipient_count: number | null
+          scheduled_at: string | null
+          sent_count: number | null
+          status: string | null
+          target_segment: string | null
+          trigger_type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          cost?: number | null
+          created_at?: string | null
+          id?: string
+          message: string
+          name: string
+          recipient_count?: number | null
+          scheduled_at?: string | null
+          sent_count?: number | null
+          status?: string | null
+          target_segment?: string | null
+          trigger_type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          cost?: number | null
+          created_at?: string | null
+          id?: string
+          message?: string
+          name?: string
+          recipient_count?: number | null
+          scheduled_at?: string | null
+          sent_count?: number | null
+          status?: string | null
+          target_segment?: string | null
+          trigger_type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       staff_metadata: {
         Row: {
@@ -5341,6 +5451,148 @@ export type Database = {
             columns: ["connector_instance_id"]
             isOneToOne: false
             referencedRelation: "connector_instances"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      winback_campaigns: {
+        Row: {
+          created_at: string | null
+          email_1_enabled: boolean | null
+          email_1_subject: string | null
+          email_1_template_id: string | null
+          email_2_delay_days: number | null
+          email_2_discount_percent: number | null
+          email_2_discount_validity_days: number | null
+          email_2_enabled: boolean | null
+          email_2_subject: string | null
+          email_3_delay_days: number | null
+          email_3_discount_percent: number | null
+          email_3_enabled: boolean | null
+          email_3_free_shipping: boolean | null
+          email_3_subject: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          target_group_id: string | null
+          target_segment: string
+          trigger_days: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email_1_enabled?: boolean | null
+          email_1_subject?: string | null
+          email_1_template_id?: string | null
+          email_2_delay_days?: number | null
+          email_2_discount_percent?: number | null
+          email_2_discount_validity_days?: number | null
+          email_2_enabled?: boolean | null
+          email_2_subject?: string | null
+          email_3_delay_days?: number | null
+          email_3_discount_percent?: number | null
+          email_3_enabled?: boolean | null
+          email_3_free_shipping?: boolean | null
+          email_3_subject?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          target_group_id?: string | null
+          target_segment?: string
+          trigger_days?: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email_1_enabled?: boolean | null
+          email_1_subject?: string | null
+          email_1_template_id?: string | null
+          email_2_delay_days?: number | null
+          email_2_discount_percent?: number | null
+          email_2_discount_validity_days?: number | null
+          email_2_enabled?: boolean | null
+          email_2_subject?: string | null
+          email_3_delay_days?: number | null
+          email_3_discount_percent?: number | null
+          email_3_enabled?: boolean | null
+          email_3_free_shipping?: boolean | null
+          email_3_subject?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          target_group_id?: string | null
+          target_segment?: string
+          trigger_days?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "winback_campaigns_target_group_id_fkey"
+            columns: ["target_group_id"]
+            isOneToOne: false
+            referencedRelation: "customer_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      winback_enrollments: {
+        Row: {
+          campaign_id: string
+          converted: boolean | null
+          converted_at: string | null
+          converted_order_id: string | null
+          coupon_code: string | null
+          created_at: string | null
+          email_1_sent_at: string | null
+          email_2_sent_at: string | null
+          email_3_sent_at: string | null
+          id: string
+          revenue: number | null
+          status: string
+          updated_at: string | null
+          user_email: string | null
+          user_id: string
+        }
+        Insert: {
+          campaign_id: string
+          converted?: boolean | null
+          converted_at?: string | null
+          converted_order_id?: string | null
+          coupon_code?: string | null
+          created_at?: string | null
+          email_1_sent_at?: string | null
+          email_2_sent_at?: string | null
+          email_3_sent_at?: string | null
+          id?: string
+          revenue?: number | null
+          status?: string
+          updated_at?: string | null
+          user_email?: string | null
+          user_id: string
+        }
+        Update: {
+          campaign_id?: string
+          converted?: boolean | null
+          converted_at?: string | null
+          converted_order_id?: string | null
+          coupon_code?: string | null
+          created_at?: string | null
+          email_1_sent_at?: string | null
+          email_2_sent_at?: string | null
+          email_3_sent_at?: string | null
+          id?: string
+          revenue?: number | null
+          status?: string
+          updated_at?: string | null
+          user_email?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "winback_enrollments_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "winback_campaigns"
             referencedColumns: ["id"]
           },
         ]

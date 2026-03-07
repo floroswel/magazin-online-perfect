@@ -3,6 +3,7 @@ import Footer from "./Footer";
 import Breadcrumbs from "./Breadcrumbs";
 import BackToTop from "./BackToTop";
 import CookieConsent from "@/components/CookieConsent";
+import PushPermissionPopup from "@/components/PushPermissionPopup";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,6 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <Footer />
       <BackToTop />
       <CookieConsent />
+      <PushPermissionPopup />
     </div>
   );
 }
