@@ -210,6 +210,10 @@ export default function Checkout() {
     if (extraFee > 0) orderData.payment_fee = extraFee;
     if (user) orderData.user_id = user.id;
 
+    // Save UTM data to order
+    const utmData = getUtmData();
+    if (utmData) orderData.utm_data = utmData;
+
     // Bank transfer → status pending
     if (selectedMethod?.type === "bank_transfer") orderData.status = "în așteptare plată";
 
