@@ -5,6 +5,8 @@ import ProductReviews from "@/components/products/ProductReviews";
 import ProductImageGallery from "@/components/products/ProductImageGallery";
 import VariantSelector from "@/components/products/VariantSelector";
 import CountdownTimer from "@/components/products/CountdownTimer";
+import FrequentlyBoughtTogether from "@/components/products/FrequentlyBoughtTogether";
+import UpgradeRecommendation from "@/components/products/UpgradeRecommendation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
