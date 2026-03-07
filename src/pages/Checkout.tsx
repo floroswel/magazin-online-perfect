@@ -196,6 +196,7 @@ export default function Checkout() {
       totalPrice
     );
 
+    const isInstallments = selectedMethod?.type === "installments";
     const installmentData = isInstallments ? { provider: selectedMethod.provider || paymentMethod, months: parseInt(installmentMonths), monthly_amount: parseFloat(getInstallmentAmount()) } : null;
 
     const orderData: any = {
