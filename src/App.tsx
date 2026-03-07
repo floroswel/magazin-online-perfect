@@ -28,6 +28,7 @@ import ResetPassword from "./pages/ResetPassword";
 import CustomScriptInjector from "./components/CustomScriptInjector";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Affiliates from "./pages/Affiliates";
+import RecoverCart from "./pages/RecoverCart";
 import { useAffiliateTracking } from "./hooks/useAffiliateTracking";
 
 const queryClient = new QueryClient();
@@ -55,6 +56,7 @@ const App = () => (
               <Route path="/product/:slug" element={<ErrorBoundary><ProductDetail /></ErrorBoundary>} />
               <Route path="/cart" element={<ErrorBoundary><Cart /></ErrorBoundary>} />
               <Route path="/checkout" element={<ErrorBoundary><Checkout /></ErrorBoundary>} />
+              <Route path="/checkout/recover" element={<ErrorBoundary><RecoverCart /></ErrorBoundary>} />
               <Route path="/order-confirmation/:orderId" element={<ErrorBoundary><OrderConfirmation /></ErrorBoundary>} />
               <Route path="/auth" element={<ErrorBoundary><Auth /></ErrorBoundary>} />
               <Route path="/forgot-password" element={<ErrorBoundary><ForgotPassword /></ErrorBoundary>} />
