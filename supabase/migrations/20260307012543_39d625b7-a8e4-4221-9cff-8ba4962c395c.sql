@@ -1,0 +1,2 @@
+
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS utm_data jsonb DEFAULT NULL;

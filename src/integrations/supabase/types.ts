@@ -2756,6 +2756,7 @@ export type Database = {
           updated_at: string
           user_email: string | null
           user_id: string
+          utm_data: Json | null
         }
         Insert: {
           affiliate_id?: string | null
@@ -2795,6 +2796,7 @@ export type Database = {
           updated_at?: string
           user_email?: string | null
           user_id: string
+          utm_data?: Json | null
         }
         Update: {
           affiliate_id?: string | null
@@ -2834,6 +2836,7 @@ export type Database = {
           updated_at?: string
           user_email?: string | null
           user_id?: string
+          utm_data?: Json | null
         }
         Relationships: [
           {

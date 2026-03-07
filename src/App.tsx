@@ -30,10 +30,20 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import Affiliates from "./pages/Affiliates";
 import RecoverCart from "./pages/RecoverCart";
 import { useAffiliateTracking } from "./hooks/useAffiliateTracking";
+import { initTracking, trackPageView } from "./hooks/useMarketingTracking";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const queryClient = new QueryClient();
 
 const AffiliateTracker = () => { useAffiliateTracking(); return null; };
+
+const TrackingInit = () => {
+  const location = useLocation();
+  useEffect(() => { initTracking(); }, []);
+  useEffect(() => { trackPageView(); }, [location.pathname]);
+  return null;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -49,6 +59,7 @@ const App = () => (
           <CartProvider>
             <CustomScriptInjector />
             <AffiliateTracker />
+            <TrackingInit />
             <ErrorBoundary>
             <Routes>
               <Route path="/" element={<ErrorBoundary><Index /></ErrorBoundary>} />

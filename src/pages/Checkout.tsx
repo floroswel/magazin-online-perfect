@@ -21,6 +21,7 @@ import { useCustomerGroups } from "@/hooks/useCustomerGroups";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getAffiliateCode } from "@/hooks/useAffiliateTracking";
+import { trackBeginCheckout, trackAddPaymentInfo, trackPurchase, getUtmData } from "@/hooks/useMarketingTracking";
 import type { Tables } from "@/integrations/supabase/types";
 
 const methodIcons: Record<string, any> = {
@@ -96,6 +97,10 @@ export default function Checkout() {
   if (items.length === 0) {
     return <Layout><div className="container py-16 text-center"><p>Coșul este gol.</p><Link to="/catalog"><Button className="mt-4">Vezi produse</Button></Link></div></Layout>;
   }
+
+  // Fire begin_checkout on mount
+  const checkoutItems = items.map(i => ({ id: i.product_id, name: i.product.name, price: i.product.price, quantity: i.quantity }));
+  // We track this inline below to avoid hooks-after-conditional issues
 
   // Calculate extra fee from selected payment method
   const extraFee = selectedMethod ? (selectedMethod.extra_fee_type === "fixed" ? (selectedMethod.extra_fee_value || 0) : selectedMethod.extra_fee_type === "percent" ? totalPrice * ((selectedMethod.extra_fee_value || 0) / 100) : 0) : 0;
@@ -184,6 +189,13 @@ export default function Checkout() {
     if (!user && (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))) { toast.error("Adresa de email nu este validă"); return; }
     setSubmitting(true);
 
+    // Track payment info + begin checkout
+    trackAddPaymentInfo(paymentMethod);
+    trackBeginCheckout(
+      items.map(i => ({ id: i.product_id, name: i.product.name, price: i.product.price, quantity: i.quantity })),
+      totalPrice
+    );
+
     const isInstallments = selectedMethod?.type === "installments";
     const installmentData = isInstallments ? { provider: selectedMethod.provider || paymentMethod, months: parseInt(installmentMonths), monthly_amount: parseFloat(getInstallmentAmount()) } : null;
 
@@ -198,6 +210,10 @@ export default function Checkout() {
     };
     if (extraFee > 0) orderData.payment_fee = extraFee;
     if (user) orderData.user_id = user.id;
+
+    // Save UTM data to order
+    const utmData = getUtmData();
+    if (utmData) orderData.utm_data = utmData;
 
     // Bank transfer → status pending
     if (selectedMethod?.type === "bank_transfer") orderData.status = "în așteptare plată";
@@ -229,6 +245,13 @@ export default function Checkout() {
         body: { type: "order_placed", to: user?.email || form.email, data: { orderId: order.id, customerName: form.fullName, total, paymentMethod, pointsEarned, items: items.map(i => ({ name: i.product.name, quantity: i.quantity, price: i.product.price })) } },
       });
     } catch (emailErr) { console.error("Email notification failed:", emailErr); }
+
+    // Track purchase event
+    trackPurchase({
+      id: order.id,
+      total,
+      items: items.map(i => ({ id: i.product_id, name: i.product.name, price: i.product.price, quantity: i.quantity })),
+    });
 
     toast.success("Comanda a fost plasată cu succes!");
     navigate("/order-confirmation/" + order.id);

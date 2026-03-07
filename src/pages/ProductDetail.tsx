@@ -7,6 +7,7 @@ import VariantSelector from "@/components/products/VariantSelector";
 import CountdownTimer from "@/components/products/CountdownTimer";
 import FrequentlyBoughtTogether from "@/components/products/FrequentlyBoughtTogether";
 import UpgradeRecommendation from "@/components/products/UpgradeRecommendation";
+import { trackViewItem, trackAddToCart } from "@/hooks/useMarketingTracking";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
@@ -113,6 +114,9 @@ export default function ProductDetail() {
         setRecentlyViewed((rv || []).map((d: any) => d.product).filter(Boolean));
       }
       setLoading(false);
+
+      // Track view_item event
+      trackViewItem({ id: prod.id, name: prod.name, price: prod.price, category: prod.category_id || undefined, brand: (prod as any).brands?.name || undefined });
     }
     load();
   }, [slug, user]);
@@ -124,7 +128,11 @@ export default function ProductDetail() {
     }
     const stock = selectedVariant ? selectedVariant.stock : product?.stock;
     if (!stock || stock <= 0) return;
-    if (product) { await addToCart(product.id, qty); toast.success("Adăugat în coș!"); }
+    if (product) {
+      await addToCart(product.id, qty);
+      trackAddToCart({ id: product.id, name: product.name, price: product.price }, qty);
+      toast.success("Adăugat în coș!");
+    }
   };
 
   const toggleFav = async () => {
