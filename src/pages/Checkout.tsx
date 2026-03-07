@@ -214,7 +214,11 @@ export default function Checkout() {
     const orderItems = items.map(i => ({ order_id: order.id, product_id: i.product_id, quantity: i.quantity, price: i.product.price }));
     await supabase.from("order_items").insert(orderItems);
 
-    if (appliedCoupon && user) await supabase.from("coupon_usage").insert({ coupon_id: appliedCoupon.id, user_id: user.id, order_id: order.id });
+    if (appliedCoupons.length > 0 && user) {
+      for (const ac of appliedCoupons) {
+        await supabase.from("coupon_usage").insert({ coupon_id: ac.id, user_id: user.id, order_id: order.id });
+      }
+    }
     if (user && pointsToUse > 0) await addPoints(-pointsToUse, "redeem", `Folosite la comandă #${order.id.slice(0, 8)}`, order.id);
     if (user && pointsEarned > 0 && pointsToUse < totalPoints) await addPoints(pointsEarned, "purchase", `Comandă #${order.id.slice(0, 8)}`, order.id);
 
