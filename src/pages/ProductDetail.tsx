@@ -454,6 +454,12 @@ export default function ProductDetail() {
           </TabsContent>
         </Tabs>
 
+        {/* Frequently bought together */}
+        <FrequentlyBoughtTogether productId={product.id} currentProduct={product} />
+
+        {/* Upgrade recommendation (upsell) */}
+        <UpgradeRecommendation productId={product.id} currentProduct={product} />
+
         {/* Related products (manual selection) */}
         {relatedProducts.length > 0 && (
           <section className="mt-8">
