@@ -416,7 +416,9 @@ export default function Checkout() {
                   <span>{format(item.product.price * item.quantity)}</span>
                 </div>
               ))}
-              {couponDiscount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Cupon ({appliedCoupon?.code})</span><span>-{format(couponDiscount)}</span></div>}
+              {appliedCoupons.map(ac => (
+                <div key={ac.id} className="flex justify-between text-sm text-green-600"><span>Cupon ({ac.code})</span><span>-{format(ac._discount)}</span></div>
+              ))}
               {loyaltyDiscount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Reducere fidelitate ({currentLevel?.name})</span><span>-{format(loyaltyDiscount)}</span></div>}
               {pointsDiscount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Puncte folosite ({pointsToUse})</span><span>-{format(pointsDiscount)}</span></div>}
               {groupDiscount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Discount grup</span><span>-{format(groupDiscount)}</span></div>}
