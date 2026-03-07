@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { Eye, Save } from "lucide-react";
-import { useState } from "react";
+import { Eye, Save, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const pixelProviders = [
   { key: "meta_pixel", name: "Meta (Facebook) Pixel", placeholder: "123456789012345", desc: "Urmărire conversii Facebook & Instagram Ads" },
@@ -18,6 +18,36 @@ const pixelProviders = [
 
 export default function AdminPixels() {
   const [configs, setConfigs] = useState<Record<string, { id: string; active: boolean }>>({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.from("app_settings").select("*").eq("key", "pixel_tracking").maybeSingle();
+      if (data?.value_json) {
+        setConfigs(data.value_json as Record<string, { id: string; active: boolean }>);
+      }
+      setLoading(false);
+    })();
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    const { error } = await supabase.from("app_settings").upsert({
+      key: "pixel_tracking",
+      value_json: configs as any,
+      description: "Pixel tracking configuration",
+      updated_at: new Date().toISOString(),
+    }, { onConflict: "key" });
+    setSaving(false);
+    if (error) {
+      toast({ title: "Eroare la salvare", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Configurare salvată" });
+    }
+  };
+
+  if (loading) return <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>;
 
   return (
     <div className="space-y-4">
@@ -44,7 +74,9 @@ export default function AdminPixels() {
           </Card>
         ))}
       </div>
-      <Button onClick={() => toast({ title: "Configurare salvată" })}><Save className="w-4 h-4 mr-1" /> Salvează toate</Button>
+      <Button onClick={handleSave} disabled={saving}>
+        {saving ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Save className="w-4 h-4 mr-1" />} Salvează toate
+      </Button>
     </div>
   );
 }
