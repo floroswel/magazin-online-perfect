@@ -39,9 +39,9 @@ export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [installmentMonths, setInstallmentMonths] = useState("3");
   const [couponCode, setCouponCode] = useState("");
-  const [couponDiscount, setCouponDiscount] = useState(0);
-  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [appliedCoupons, setAppliedCoupons] = useState<any[]>([]);
   const [couponLoading, setCouponLoading] = useState(false);
+  const [couponExpanded, setCouponExpanded] = useState(false);
   const [mokkaModalOpen, setMokkaModalOpen] = useState(false);
   const [mokkaIframeUrl, setMokkaIframeUrl] = useState("");
   const [savedAddresses, setSavedAddresses] = useState<Tables<"addresses">[]>([]);
