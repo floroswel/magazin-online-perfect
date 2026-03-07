@@ -100,7 +100,7 @@ export default function Checkout() {
   // Calculate extra fee from selected payment method
   const extraFee = selectedMethod ? (selectedMethod.extra_fee_type === "fixed" ? (selectedMethod.extra_fee_value || 0) : selectedMethod.extra_fee_type === "percent" ? totalPrice * ((selectedMethod.extra_fee_value || 0) / 100) : 0) : 0;
 
-  const shipping = hasFreeShipping ? 0 : (totalPrice >= 200 ? 0 : 19.99);
+  const baseShipping = hasFreeShipping ? 0 : (totalPrice >= 200 ? 0 : 19.99);
   const groupDiscount = maxDiscount > 0 ? totalPrice * (maxDiscount / 100) : 0;
   const loyaltyDiscount = user && currentLevel ? (totalPrice * (currentLevel.discount_percentage / 100)) : 0;
   const pointsDiscount = pointsToValue(pointsToUse);
