@@ -3727,73 +3727,145 @@ export type Database = {
       }
       promotions: {
         Row: {
+          active: boolean | null
+          active_days: number[] | null
+          active_hour_end: number | null
+          active_hour_start: number | null
+          applies_to_customers: string | null
+          applies_to_products: string | null
           badge_text: string | null
           banner_url: string | null
+          brand_ids: string[] | null
           bundle_products: Json | null
+          category_ids: string[] | null
           conditions: Json | null
           created_at: string | null
+          customer_group_ids: string[] | null
           discount_type: string | null
           discount_value: number | null
           ends_at: string | null
+          excluded_category_ids: string[] | null
+          excluded_product_ids: string[] | null
           gift_product_id: string | null
           id: string
           is_combinable: boolean | null
+          label: string | null
+          label_color: string | null
           max_discount: number | null
           max_uses: number | null
           max_uses_per_user: number | null
           name: string
+          new_customers_only: boolean | null
+          no_combine: boolean | null
           priority: number | null
+          product_ids: string[] | null
+          registered_only: boolean | null
+          required_payment_method: string | null
+          show_countdown: boolean | null
+          spend_tiers: Json | null
           starts_at: string | null
           status: string | null
+          total_discount_given: number | null
+          total_orders: number | null
+          total_revenue: number | null
           type: string
           updated_at: string | null
           used_count: number | null
+          volume_tiers: Json | null
         }
         Insert: {
+          active?: boolean | null
+          active_days?: number[] | null
+          active_hour_end?: number | null
+          active_hour_start?: number | null
+          applies_to_customers?: string | null
+          applies_to_products?: string | null
           badge_text?: string | null
           banner_url?: string | null
+          brand_ids?: string[] | null
           bundle_products?: Json | null
+          category_ids?: string[] | null
           conditions?: Json | null
           created_at?: string | null
+          customer_group_ids?: string[] | null
           discount_type?: string | null
           discount_value?: number | null
           ends_at?: string | null
+          excluded_category_ids?: string[] | null
+          excluded_product_ids?: string[] | null
           gift_product_id?: string | null
           id?: string
           is_combinable?: boolean | null
+          label?: string | null
+          label_color?: string | null
           max_discount?: number | null
           max_uses?: number | null
           max_uses_per_user?: number | null
           name: string
+          new_customers_only?: boolean | null
+          no_combine?: boolean | null
           priority?: number | null
+          product_ids?: string[] | null
+          registered_only?: boolean | null
+          required_payment_method?: string | null
+          show_countdown?: boolean | null
+          spend_tiers?: Json | null
           starts_at?: string | null
           status?: string | null
+          total_discount_given?: number | null
+          total_orders?: number | null
+          total_revenue?: number | null
           type: string
           updated_at?: string | null
           used_count?: number | null
+          volume_tiers?: Json | null
         }
         Update: {
+          active?: boolean | null
+          active_days?: number[] | null
+          active_hour_end?: number | null
+          active_hour_start?: number | null
+          applies_to_customers?: string | null
+          applies_to_products?: string | null
           badge_text?: string | null
           banner_url?: string | null
+          brand_ids?: string[] | null
           bundle_products?: Json | null
+          category_ids?: string[] | null
           conditions?: Json | null
           created_at?: string | null
+          customer_group_ids?: string[] | null
           discount_type?: string | null
           discount_value?: number | null
           ends_at?: string | null
+          excluded_category_ids?: string[] | null
+          excluded_product_ids?: string[] | null
           gift_product_id?: string | null
           id?: string
           is_combinable?: boolean | null
+          label?: string | null
+          label_color?: string | null
           max_discount?: number | null
           max_uses?: number | null
           max_uses_per_user?: number | null
           name?: string
+          new_customers_only?: boolean | null
+          no_combine?: boolean | null
           priority?: number | null
+          product_ids?: string[] | null
+          registered_only?: boolean | null
+          required_payment_method?: string | null
+          show_countdown?: boolean | null
+          spend_tiers?: Json | null
           starts_at?: string | null
           status?: string | null
+          total_discount_given?: number | null
+          total_orders?: number | null
+          total_revenue?: number | null
           type?: string
           updated_at?: string | null
           used_count?: number | null
+          volume_tiers?: Json | null
         }
         Relationships: [
           {
