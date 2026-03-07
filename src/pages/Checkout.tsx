@@ -245,6 +245,13 @@ export default function Checkout() {
       });
     } catch (emailErr) { console.error("Email notification failed:", emailErr); }
 
+    // Track purchase event
+    trackPurchase({
+      id: order.id,
+      total,
+      items: items.map(i => ({ id: i.product_id, name: i.product.name, price: i.product.price, quantity: i.quantity })),
+    });
+
     toast.success("Comanda a fost plasată cu succes!");
     navigate("/order-confirmation/" + order.id);
     setSubmitting(false);
