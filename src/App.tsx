@@ -59,6 +59,7 @@ const App = () => (
           <CartProvider>
             <CustomScriptInjector />
             <AffiliateTracker />
+            <TrackingInit />
             <ErrorBoundary>
             <Routes>
               <Route path="/" element={<ErrorBoundary><Index /></ErrorBoundary>} />
