@@ -20,7 +20,7 @@ import { ro } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-type ReturnStatus = "pending" | "approved" | "rejected" | "shipped" | "received" | "refunded" | "closed";
+type ReturnStatus = "pending" | "approved" | "rejected" | "shipped" | "received" | "refunded" | "exchanged" | "closed";
 
 const STATUS_CONFIG: Record<ReturnStatus, { label: string; color: string; icon: typeof Clock }> = {
   pending: { label: "Solicitată", color: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30", icon: Clock },
@@ -29,6 +29,7 @@ const STATUS_CONFIG: Record<ReturnStatus, { label: string; color: string; icon: 
   shipped: { label: "Expediat", color: "bg-purple-500/15 text-purple-400 border-purple-500/30", icon: Truck },
   received: { label: "Recepționat", color: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30", icon: Package },
   refunded: { label: "Rambursat", color: "bg-green-500/15 text-green-400 border-green-500/30", icon: RotateCcw },
+  exchanged: { label: "Schimbat", color: "bg-indigo-500/15 text-indigo-400 border-indigo-500/30", icon: ArrowLeftRight },
   closed: { label: "Finalizată", color: "bg-gray-500/15 text-gray-400 border-gray-500/30", icon: Ban },
 };
 
@@ -37,8 +38,9 @@ const STATUS_FLOW: Record<ReturnStatus, ReturnStatus[]> = {
   approved: ["shipped", "closed"],
   rejected: ["closed"],
   shipped: ["received"],
-  received: ["refunded", "closed"],
+  received: ["refunded", "exchanged", "closed"],
   refunded: ["closed"],
+  exchanged: ["closed"],
   closed: [],
 };
 
