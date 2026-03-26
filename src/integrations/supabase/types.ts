@@ -387,6 +387,168 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_bulk_jobs: {
+        Row: {
+          completed: number
+          created_at: string
+          error_log: Json | null
+          failed: number
+          finished_at: string | null
+          generation_targets: Json
+          id: string
+          job_type: string
+          started_at: string | null
+          started_by: string
+          status: string
+          target_ids: Json
+          total_products: number
+        }
+        Insert: {
+          completed?: number
+          created_at?: string
+          error_log?: Json | null
+          failed?: number
+          finished_at?: string | null
+          generation_targets?: Json
+          id?: string
+          job_type?: string
+          started_at?: string | null
+          started_by: string
+          status?: string
+          target_ids?: Json
+          total_products?: number
+        }
+        Update: {
+          completed?: number
+          created_at?: string
+          error_log?: Json | null
+          failed?: number
+          finished_at?: string | null
+          generation_targets?: Json
+          id?: string
+          job_type?: string
+          started_at?: string | null
+          started_by?: string
+          status?: string
+          target_ids?: Json
+          total_products?: number
+        }
+        Relationships: []
+      }
+      ai_generator_log: {
+        Row: {
+          action_type: string
+          admin_user_id: string
+          approved_at: string | null
+          approved_by: string | null
+          category_id: string | null
+          created_at: string
+          generated_content: string
+          id: string
+          original_content: string | null
+          product_id: string | null
+          status: string
+          uniqueness_score: number | null
+        }
+        Insert: {
+          action_type?: string
+          admin_user_id: string
+          approved_at?: string | null
+          approved_by?: string | null
+          category_id?: string | null
+          created_at?: string
+          generated_content?: string
+          id?: string
+          original_content?: string | null
+          product_id?: string | null
+          status?: string
+          uniqueness_score?: number | null
+        }
+        Update: {
+          action_type?: string
+          admin_user_id?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          category_id?: string | null
+          created_at?: string
+          generated_content?: string
+          id?: string
+          original_content?: string | null
+          product_id?: string | null
+          status?: string
+          uniqueness_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_generator_log_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_generator_log_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_generator_settings: {
+        Row: {
+          content_length: string
+          content_length_max: number | null
+          content_length_min: number | null
+          created_at: string
+          enabled: boolean
+          format_bullets: boolean
+          format_diacritics: boolean
+          format_emojis: boolean
+          format_html: boolean
+          format_plain_text: boolean
+          id: string
+          language: string
+          manual_approval: boolean
+          tone: string
+          updated_at: string
+        }
+        Insert: {
+          content_length?: string
+          content_length_max?: number | null
+          content_length_min?: number | null
+          created_at?: string
+          enabled?: boolean
+          format_bullets?: boolean
+          format_diacritics?: boolean
+          format_emojis?: boolean
+          format_html?: boolean
+          format_plain_text?: boolean
+          id?: string
+          language?: string
+          manual_approval?: boolean
+          tone?: string
+          updated_at?: string
+        }
+        Update: {
+          content_length?: string
+          content_length_max?: number | null
+          content_length_min?: number | null
+          created_at?: string
+          enabled?: boolean
+          format_bullets?: boolean
+          format_diacritics?: boolean
+          format_emojis?: boolean
+          format_html?: boolean
+          format_plain_text?: boolean
+          id?: string
+          language?: string
+          manual_approval?: boolean
+          tone?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       app_settings: {
         Row: {
           description: string | null
