@@ -388,6 +388,7 @@ export default function AdminRoutes() {
         <Route path="settings/multi-store" element={<AdminMultiStoreSettings />} />
         <Route path="settings/customer-portal" element={<AdminCustomerPortalSettings />} />
         <Route path="settings/cui-validation" element={<AdminCuiValidation />} />
+        <Route path="settings/bundles" element={<AdminBundleSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />

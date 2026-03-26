@@ -313,6 +313,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "🌍 Multi-Store & Limbi", path: "/admin/settings/multi-store" },
           { label: "👤 Portal client", path: "/admin/settings/customer-portal" },
           { label: "🏢 Validare CUI/CIF (ANAF)", path: "/admin/settings/cui-validation" },
+          { label: "📦 Pachete de Produse", path: "/admin/settings/bundles" },
         ],
       },
       {
