@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Package, User as UserIcon, Award, Gift, RotateCcw, MapPin, Plus, Trash2, Star, Clock, ChevronDown, ChevronUp, Truck, CheckCircle2, XCircle, Copy, History, RefreshCw, FileText, Download, Settings, Users } from "lucide-react";
+import { Package, User as UserIcon, Award, Gift, RotateCcw, MapPin, Plus, Trash2, Star, Clock, ChevronDown, ChevronUp, Truck, CheckCircle2, XCircle, Copy, History, RefreshCw, FileText, Download, Settings, Users, Heart, Share2 } from "lucide-react";
 import MySubscriptions from "@/components/account/MySubscriptions";
 import ReturnRequestForm from "@/components/account/ReturnRequestForm";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,9 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 import AffiliateTab from "@/components/account/AffiliateTab";
+import ReferralTab from "@/components/account/ReferralTab";
+import WishlistTab from "@/components/account/WishlistTab";
+import GiftCardTab from "@/components/account/GiftCardTab";
 
 const RETURNABLE_STATUSES = ["delivered", "shipped"];
 const STATUS_TIMELINE_DEFAULT = ["pending", "processing", "shipped", "delivered"];
@@ -224,6 +227,9 @@ export default function Account() {
             <TabsTrigger value="addresses"><MapPin className="h-4 w-4 mr-1" /> Adrese</TabsTrigger>
             <TabsTrigger value="loyalty"><Award className="h-4 w-4 mr-1" /> Fidelitate</TabsTrigger>
             <TabsTrigger value="affiliate"><Users className="h-4 w-4 mr-1" /> Afiliere</TabsTrigger>
+            <TabsTrigger value="referral"><Share2 className="h-4 w-4 mr-1" /> Recomandă</TabsTrigger>
+            <TabsTrigger value="wishlists"><Heart className="h-4 w-4 mr-1" /> Wishlist</TabsTrigger>
+            <TabsTrigger value="giftcards"><Gift className="h-4 w-4 mr-1" /> Card cadou</TabsTrigger>
             <TabsTrigger value="profile"><UserIcon className="h-4 w-4 mr-1" /> Profil</TabsTrigger>
             <TabsTrigger value="preferences"><Settings className="h-4 w-4 mr-1" /> Preferințe</TabsTrigger>
           </TabsList>
@@ -537,6 +543,21 @@ export default function Account() {
           {/* AFFILIATE TAB */}
           <TabsContent value="affiliate" className="mt-4">
             <AffiliateTab />
+          </TabsContent>
+
+          {/* REFERRAL TAB */}
+          <TabsContent value="referral" className="mt-4">
+            <ReferralTab />
+          </TabsContent>
+
+          {/* WISHLISTS TAB */}
+          <TabsContent value="wishlists" className="mt-4">
+            <WishlistTab />
+          </TabsContent>
+
+          {/* GIFT CARDS TAB */}
+          <TabsContent value="giftcards" className="mt-4">
+            <GiftCardTab />
           </TabsContent>
 
           {/* PREFERENCES TAB */}

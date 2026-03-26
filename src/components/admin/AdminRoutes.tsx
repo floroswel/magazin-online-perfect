@@ -46,6 +46,8 @@ const AdminAbandonedCarts = lazy(() => import("./customers/AdminAbandonedCarts")
 const AdminBlacklist = lazy(() => import("./customers/AdminBlacklist"));
 const AdminCustomScripts = lazy(() => import("./content/AdminCustomScripts"));
 const AdminAffiliates = lazy(() => import("./marketing/AdminAffiliates"));
+const AdminGiftCards = lazy(() => import("./marketing/AdminGiftCards"));
+const AdminReferrals = lazy(() => import("./marketing/AdminReferrals"));
 const AdminBrands = lazy(() => import("./products/AdminBrands"));
 const AdminReviews = lazy(() => import("./products/AdminReviews"));
 const AdminCmsPages = lazy(() => import("./content/AdminCmsPages"));
@@ -231,6 +233,8 @@ export default function AdminRoutes() {
         <Route path="marketing/feeds" element={<AdminFeeds />} />
         <Route path="marketing/pixels" element={<AdminPixels />} />
         <Route path="marketing/affiliates" element={<AdminAffiliates />} />
+        <Route path="marketing/gift-cards" element={<AdminGiftCards />} />
+        <Route path="marketing/referrals" element={<AdminReferrals />} />
         <Route path="marketing/recommendations" element={<AdminRecommendations />} />
         <Route path="marketing/ab-tests" element={<AdminABTests />} />
         <Route path="marketing/reports" element={<AdminReportPage type="marketing" title="Rapoarte Marketing" description="Conversie campanii, utilizare vouchere, ROI per canal." />} />

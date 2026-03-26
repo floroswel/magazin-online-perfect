@@ -6,6 +6,8 @@ import CookieConsent from "@/components/CookieConsent";
 import PushPermissionPopup from "@/components/PushPermissionPopup";
 import NewsletterPopup from "@/components/NewsletterPopup";
 import SeoHead from "@/components/SeoHead";
+import SocialProofPopup from "@/components/SocialProofPopup";
+import LiveChat from "@/components/LiveChat";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -19,6 +21,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <CookieConsent />
       <PushPermissionPopup />
       <NewsletterPopup />
+      <SocialProofPopup />
+      <LiveChat />
     </div>
   );
 }
