@@ -210,6 +210,7 @@ export default function AdminRoutes() {
         <Route path="products/seo" element={<AdminProductSEO />} />
         <Route path="products/bundles" element={<AdminBundleList />} />
         <Route path="products/lines" element={<AdminProductLines />} />
+        <Route path="products/customization" element={<AdminCustomizationFields />} />
 
         {/* ═══════════ STOC & DEPOZIT ═══════════ */}
         <Route path="stock" element={<AdminStockOverview />} />
