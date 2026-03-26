@@ -119,6 +119,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Coșuri abandonate", path: "/admin/customers/abandoned" },
           { label: "Tichete suport", path: "/admin/customers/tickets" },
           { label: "GDPR & date", path: "/admin/customers/gdpr" },
+          { label: "💰 Tranzacții Wallet", path: "/admin/customers/wallet" },
           { label: "Import clienți", path: "/admin/customers/import" },
           { label: "Export clienți", path: "/admin/customers/export" },
         ],
@@ -322,6 +323,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "🔗 Linii de Produse", path: "/admin/settings/product-lines" },
           { label: "✏️ Personalizare Comandă", path: "/admin/settings/customization" },
           { label: "📋 Manager Stocuri", path: "/admin/settings/stock-manager" },
+          { label: "💰 Portofel Virtual", path: "/admin/settings/wallet" },
         ],
       },
       {

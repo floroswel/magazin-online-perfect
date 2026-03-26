@@ -1657,6 +1657,39 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_wallets: {
+        Row: {
+          available_balance: number
+          created_at: string
+          customer_id: string
+          id: string
+          pending_balance: number
+          total_earned: number
+          total_used: number
+          updated_at: string
+        }
+        Insert: {
+          available_balance?: number
+          created_at?: string
+          customer_id: string
+          id?: string
+          pending_balance?: number
+          total_earned?: number
+          total_used?: number
+          updated_at?: string
+        }
+        Update: {
+          available_balance?: number
+          created_at?: string
+          customer_id?: string
+          id?: string
+          pending_balance?: number
+          total_earned?: number
+          total_used?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       customization_field_products: {
         Row: {
           created_at: string
@@ -6454,6 +6487,119 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      wallet_settings: {
+        Row: {
+          allowed_delivery_method_ids: Json | null
+          allowed_ips: string | null
+          checkout_display_name: string
+          condition_categories: Json | null
+          condition_countries: Json | null
+          condition_customer_groups: Json | null
+          condition_max_order_value: number | null
+          condition_min_order_value: number | null
+          delivery_method_restriction: string
+          enabled: boolean
+          id: string
+          limit_by_customer_type: boolean
+          limit_individual_pct: number | null
+          limit_legal_pct: number | null
+          updated_at: string
+          usage_mode: string
+        }
+        Insert: {
+          allowed_delivery_method_ids?: Json | null
+          allowed_ips?: string | null
+          checkout_display_name?: string
+          condition_categories?: Json | null
+          condition_countries?: Json | null
+          condition_customer_groups?: Json | null
+          condition_max_order_value?: number | null
+          condition_min_order_value?: number | null
+          delivery_method_restriction?: string
+          enabled?: boolean
+          id?: string
+          limit_by_customer_type?: boolean
+          limit_individual_pct?: number | null
+          limit_legal_pct?: number | null
+          updated_at?: string
+          usage_mode?: string
+        }
+        Update: {
+          allowed_delivery_method_ids?: Json | null
+          allowed_ips?: string | null
+          checkout_display_name?: string
+          condition_categories?: Json | null
+          condition_countries?: Json | null
+          condition_customer_groups?: Json | null
+          condition_max_order_value?: number | null
+          condition_min_order_value?: number | null
+          delivery_method_restriction?: string
+          enabled?: boolean
+          id?: string
+          limit_by_customer_type?: boolean
+          limit_individual_pct?: number | null
+          limit_legal_pct?: number | null
+          updated_at?: string
+          usage_mode?: string
+        }
+        Relationships: []
+      }
+      wallet_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by_admin_id: string | null
+          customer_id: string
+          description: string
+          direction: string
+          id: string
+          order_id: string | null
+          return_id: string | null
+          status: string
+          type: string
+          updated_at: string
+          wallet_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by_admin_id?: string | null
+          customer_id: string
+          description?: string
+          direction?: string
+          id?: string
+          order_id?: string | null
+          return_id?: string | null
+          status?: string
+          type?: string
+          updated_at?: string
+          wallet_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by_admin_id?: string | null
+          customer_id?: string
+          description?: string
+          direction?: string
+          id?: string
+          order_id?: string | null
+          return_id?: string | null
+          status?: string
+          type?: string
+          updated_at?: string
+          wallet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "customer_wallets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       warehouse_stock: {
         Row: {
