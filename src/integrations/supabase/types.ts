@@ -739,6 +739,199 @@ export type Database = {
         }
         Relationships: []
       }
+      bank_accounts: {
+        Row: {
+          account_holder: string
+          bank_name: string
+          branch: string | null
+          created_at: string
+          currency: string
+          display_order: number
+          iban: string
+          id: string
+          is_default: boolean
+          settings_id: string
+          show_on_documents: boolean
+          swift_bic: string | null
+          updated_at: string
+        }
+        Insert: {
+          account_holder?: string
+          bank_name?: string
+          branch?: string | null
+          created_at?: string
+          currency?: string
+          display_order?: number
+          iban?: string
+          id?: string
+          is_default?: boolean
+          settings_id: string
+          show_on_documents?: boolean
+          swift_bic?: string | null
+          updated_at?: string
+        }
+        Update: {
+          account_holder?: string
+          bank_name?: string
+          branch?: string | null
+          created_at?: string
+          currency?: string
+          display_order?: number
+          iban?: string
+          id?: string
+          is_default?: boolean
+          settings_id?: string
+          show_on_documents?: boolean
+          swift_bic?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_accounts_settings_id_fkey"
+            columns: ["settings_id"]
+            isOneToOne: false
+            referencedRelation: "bank_transfer_settings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bank_transfer_payments: {
+        Row: {
+          amount_expected: number
+          amount_received: number
+          bank_transaction_ref: string | null
+          confirmed_by_admin_id: string | null
+          created_at: string
+          id: string
+          internal_note: string | null
+          order_id: string
+          payment_deadline: string
+          payment_reference: string
+          payment_status: string
+          received_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount_expected?: number
+          amount_received?: number
+          bank_transaction_ref?: string | null
+          confirmed_by_admin_id?: string | null
+          created_at?: string
+          id?: string
+          internal_note?: string | null
+          order_id: string
+          payment_deadline: string
+          payment_reference?: string
+          payment_status?: string
+          received_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount_expected?: number
+          amount_received?: number
+          bank_transaction_ref?: string | null
+          confirmed_by_admin_id?: string | null
+          created_at?: string
+          id?: string
+          internal_note?: string | null
+          order_id?: string
+          payment_deadline?: string
+          payment_reference?: string
+          payment_status?: string
+          received_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_transfer_payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bank_transfer_settings: {
+        Row: {
+          allowed_delivery_method_ids: Json | null
+          allowed_ips: string | null
+          auto_cancel_expired: boolean
+          business_days_only: boolean
+          checkout_display_name: string
+          company_name: string
+          condition_categories: Json | null
+          condition_countries: Json | null
+          condition_customer_groups: Json | null
+          cui: string
+          customer_message: string | null
+          delivery_restriction: string
+          enabled: boolean
+          id: string
+          limit_by_customer_type: boolean
+          limit_individual_max: number | null
+          limit_individual_min: number | null
+          limit_legal_max: number | null
+          limit_legal_min: number | null
+          max_order_value: number | null
+          min_order_value: number | null
+          payment_term_unit: string
+          payment_term_value: number
+          updated_at: string
+        }
+        Insert: {
+          allowed_delivery_method_ids?: Json | null
+          allowed_ips?: string | null
+          auto_cancel_expired?: boolean
+          business_days_only?: boolean
+          checkout_display_name?: string
+          company_name?: string
+          condition_categories?: Json | null
+          condition_countries?: Json | null
+          condition_customer_groups?: Json | null
+          cui?: string
+          customer_message?: string | null
+          delivery_restriction?: string
+          enabled?: boolean
+          id?: string
+          limit_by_customer_type?: boolean
+          limit_individual_max?: number | null
+          limit_individual_min?: number | null
+          limit_legal_max?: number | null
+          limit_legal_min?: number | null
+          max_order_value?: number | null
+          min_order_value?: number | null
+          payment_term_unit?: string
+          payment_term_value?: number
+          updated_at?: string
+        }
+        Update: {
+          allowed_delivery_method_ids?: Json | null
+          allowed_ips?: string | null
+          auto_cancel_expired?: boolean
+          business_days_only?: boolean
+          checkout_display_name?: string
+          company_name?: string
+          condition_categories?: Json | null
+          condition_countries?: Json | null
+          condition_customer_groups?: Json | null
+          cui?: string
+          customer_message?: string | null
+          delivery_restriction?: string
+          enabled?: boolean
+          id?: string
+          limit_by_customer_type?: boolean
+          limit_individual_max?: number | null
+          limit_individual_min?: number | null
+          limit_legal_max?: number | null
+          limit_legal_min?: number | null
+          max_order_value?: number | null
+          min_order_value?: number | null
+          payment_term_unit?: string
+          payment_term_value?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       banners: {
         Row: {
           active: boolean
