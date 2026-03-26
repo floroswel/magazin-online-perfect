@@ -545,6 +545,21 @@ export default function Account() {
             <AffiliateTab />
           </TabsContent>
 
+          {/* REFERRAL TAB */}
+          <TabsContent value="referral" className="mt-4">
+            <ReferralTab />
+          </TabsContent>
+
+          {/* WISHLISTS TAB */}
+          <TabsContent value="wishlists" className="mt-4">
+            <WishlistTab />
+          </TabsContent>
+
+          {/* GIFT CARDS TAB */}
+          <TabsContent value="giftcards" className="mt-4">
+            <GiftCardTab />
+          </TabsContent>
+
           {/* PREFERENCES TAB */}
           <TabsContent value="preferences" className="mt-4 space-y-4">
             <Card>
