@@ -421,6 +421,7 @@ export default function AdminRoutes() {
         <Route path="settings/customization" element={<AdminCustomizationSettings />} />
         <Route path="settings/stock-manager" element={<AdminStockManagerSettings />} />
         <Route path="settings/wallet" element={<AdminWalletSettings />} />
+        <Route path="settings/360-slider" element={<Admin360SliderSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />
