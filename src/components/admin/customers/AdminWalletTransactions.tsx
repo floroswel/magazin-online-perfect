@@ -107,11 +107,12 @@ export default function AdminWalletTransactions() {
       let walletId = manualDialog.walletId;
 
       if (!customerId && manualForm.customerEmail) {
-        const { data: profile } = await (supabase
-          .from("profiles")
+        const { data: profileData } = await supabase
+          .from("profiles" as any)
           .select("user_id")
-          .eq("email", manualForm.customerEmail) as any)
+          .eq("email", manualForm.customerEmail)
           .maybeSingle();
+        const profile = profileData as any;
         if (!profile) throw new Error("Client negăsit cu acest email");
         customerId = profile.user_id;
       }
