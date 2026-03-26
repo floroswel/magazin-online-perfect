@@ -21,8 +21,8 @@ export default function AdminBundles() {
   const { data: bundles = [], isLoading } = useQuery({
     queryKey: ["admin-bundles"],
     queryFn: async () => {
-      const { data } = await supabase.from("product_bundles").select("*, product_bundle_items(*, products(name, price, image_url))").order("created_at", { ascending: false });
-      return (data as any[]) || [];
+      const { data } = await supabase.from("app_settings").select("value_json").eq("key", "product_bundles_list").maybeSingle();
+      return ((data?.value_json as any) || []) as any[];
     },
   });
 
