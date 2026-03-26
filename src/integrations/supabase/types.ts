@@ -6426,6 +6426,126 @@ export type Database = {
           },
         ]
       }
+      tbi_settings: {
+        Row: {
+          allowed_delivery_ids: Json | null
+          allowed_ips: string | null
+          checkout_display_name: string
+          condition_categories: Json | null
+          condition_countries: Json | null
+          condition_customer_groups: Json | null
+          delivery_restriction: string
+          demo_mode: boolean
+          enabled: boolean
+          enabled_products: Json
+          id: string
+          limit_by_customer_type: boolean
+          limit_individual_pct: number | null
+          limit_legal_pct: number | null
+          max_order_value: number | null
+          merchant_public_key: string | null
+          min_order_value: number
+          password: string | null
+          sftl_public_key: string | null
+          show_footer_icon: boolean
+          show_snippet: boolean
+          store_id: string | null
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          allowed_delivery_ids?: Json | null
+          allowed_ips?: string | null
+          checkout_display_name?: string
+          condition_categories?: Json | null
+          condition_countries?: Json | null
+          condition_customer_groups?: Json | null
+          delivery_restriction?: string
+          demo_mode?: boolean
+          enabled?: boolean
+          enabled_products?: Json
+          id?: string
+          limit_by_customer_type?: boolean
+          limit_individual_pct?: number | null
+          limit_legal_pct?: number | null
+          max_order_value?: number | null
+          merchant_public_key?: string | null
+          min_order_value?: number
+          password?: string | null
+          sftl_public_key?: string | null
+          show_footer_icon?: boolean
+          show_snippet?: boolean
+          store_id?: string | null
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          allowed_delivery_ids?: Json | null
+          allowed_ips?: string | null
+          checkout_display_name?: string
+          condition_categories?: Json | null
+          condition_countries?: Json | null
+          condition_customer_groups?: Json | null
+          delivery_restriction?: string
+          demo_mode?: boolean
+          enabled?: boolean
+          enabled_products?: Json
+          id?: string
+          limit_by_customer_type?: boolean
+          limit_individual_pct?: number | null
+          limit_legal_pct?: number | null
+          max_order_value?: number | null
+          merchant_public_key?: string | null
+          min_order_value?: number
+          password?: string | null
+          sftl_public_key?: string | null
+          show_footer_icon?: boolean
+          show_snippet?: boolean
+          store_id?: string | null
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      tbi_transactions: {
+        Row: {
+          created_at: string
+          encrypted_payload_sent: string | null
+          id: string
+          last_callback_at: string | null
+          motiv: string | null
+          order_id: string | null
+          status: string
+          status_id_raw: string | null
+          tbi_credit_application_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          encrypted_payload_sent?: string | null
+          id?: string
+          last_callback_at?: string | null
+          motiv?: string | null
+          order_id?: string | null
+          status?: string
+          status_id_raw?: string | null
+          tbi_credit_application_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          encrypted_payload_sent?: string | null
+          id?: string
+          last_callback_at?: string | null
+          motiv?: string | null
+          order_id?: string | null
+          status?: string
+          status_id_raw?: string | null
+          tbi_credit_application_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tracking_events: {
         Row: {
           courier: string | null

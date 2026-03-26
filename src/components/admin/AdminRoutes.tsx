@@ -157,6 +157,7 @@ const AdminPurchaseOrders = lazy(() => import("./stock/AdminPurchaseOrders"));
 const AdminStockManagerSettings = lazy(() => import("./settings/AdminStockManagerSettings"));
 const AdminWalletSettings = lazy(() => import("./settings/AdminWalletSettings"));
 const AdminWalletTransactions = lazy(() => import("./customers/AdminWalletTransactions"));
+const AdminTBISettings = lazy(() => import("./payments/AdminTBISettings"));
 const AdminPriceAlerts = lazy(() => import("./marketing/AdminPriceAlerts"));
 const AdminSocialProofSettings = lazy(() => import("./marketing/AdminSocialProofSettings"));
 const AdminLiveChatSettings = lazy(() => import("./marketing/AdminLiveChatSettings"));
@@ -308,6 +309,7 @@ export default function AdminRoutes() {
         <Route path="payments/mokka" element={<AdminMokkaSettings />} />
         <Route path="payments/settlements" element={<AdminSettlements />} />
         <Route path="payments/reconciliation" element={<AdminReconciliation />} />
+        <Route path="payments/tbi" element={<AdminTBISettings />} />
 
         {/* ═══════════ LIVRARE ═══════════ */}
         <Route path="shipping/carriers" element={<AdminCarriers />} />
@@ -329,7 +331,7 @@ export default function AdminRoutes() {
         <Route path="integrations/netopia" element={<AdminIntegrationConfig integrationKey="netopia" title="Netopia Payments" description="Configurare Netopia." fields={[{ key: "signature", label: "Signature" }, { key: "public_key", label: "Public Key" }, { key: "private_key", label: "Private Key", type: "password" }]} />} />
         <Route path="integrations/euplatesc" element={<AdminIntegrationConfig integrationKey="euplatesc" title="euPlătesc" description="Configurare euPlătesc." fields={[{ key: "mid", label: "MID" }, { key: "key", label: "Cheie secretă", type: "password" }]} />} />
         <Route path="integrations/plati-online" element={<AdminIntegrationConfig integrationKey="plati-online" title="Plăți Online" description="Configurare plăți-online.ro." fields={[{ key: "api_key", label: "API Key", type: "password" }, { key: "ipn_url", label: "IPN URL", type: "url" }]} />} />
-        <Route path="integrations/tbi-bank" element={<AdminIntegrationConfig integrationKey="tbi-bank" title="TBI Bank" description="Configurare TBI Bank rate." fields={[{ key: "merchant_id", label: "Merchant ID" }, { key: "api_key", label: "API Key", type: "password" }]} />} />
+        <Route path="integrations/tbi-bank" element={<AdminTBISettings />} />
         <Route path="integrations/paypo" element={<AdminIntegrationConfig integrationKey="paypo" title="PayPo" description="Configurare PayPo." fields={[{ key: "api_key", label: "API Key", type: "password" }, { key: "mode", label: "Mod (test/live)" }]} />} />
         <Route path="integrations/leanpay" element={<AdminIntegrationConfig integrationKey="leanpay" title="LeanPay" description="Configurare LeanPay." fields={[{ key: "api_key", label: "API Key", type: "password" }]} />} />
         <Route path="integrations/banca-transilvania" element={<AdminIntegrationConfig integrationKey="banca-transilvania" title="Banca Transilvania" description="Configurare BT Pay." fields={[{ key: "terminal_id", label: "Terminal ID" }, { key: "api_key", label: "API Key", type: "password" }]} />} />
