@@ -315,6 +315,7 @@ export default function AdminRoutes() {
         <Route path="payments/tbi" element={<AdminTBISettings />} />
         <Route path="payments/paypo" element={<AdminPayPoSettings />} />
         <Route path="payments/bank-transfer" element={<AdminBankTransferSettings />} />
+        <Route path="payments/netopia" element={<AdminNetopiaSettings />} />
 
         {/* ═══════════ LIVRARE ═══════════ */}
         <Route path="shipping/carriers" element={<AdminCarriers />} />
