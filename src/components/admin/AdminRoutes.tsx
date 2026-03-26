@@ -256,6 +256,7 @@ export default function AdminRoutes() {
         <Route path="customers/gdpr" element={<AdminGdprData />} />
         <Route path="customers/import" element={<AdminCustomerImportExport mode="import" />} />
         <Route path="customers/export" element={<AdminCustomerImportExport mode="export" />} />
+        <Route path="customers/wallet" element={<AdminWalletTransactions />} />
 
         {/* ═══════════ MARKETING ═══════════ */}
         <Route path="coupons" element={<AdminCoupons />} />
