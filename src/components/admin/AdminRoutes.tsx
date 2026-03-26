@@ -148,6 +148,8 @@ const AdminBundleList = lazy(() => import("./products/AdminBundleList"));
 const AdminBundleSettings = lazy(() => import("./settings/AdminBundleSettings"));
 const AdminPriceLists = lazy(() => import("./stock/AdminPriceLists"));
 const AdminPriceListSettings = lazy(() => import("./settings/AdminPriceListSettings"));
+const AdminProductLines = lazy(() => import("./products/AdminProductLines"));
+const AdminProductLineSettings = lazy(() => import("./settings/AdminProductLineSettings"));
 const AdminPriceAlerts = lazy(() => import("./marketing/AdminPriceAlerts"));
 const AdminSocialProofSettings = lazy(() => import("./marketing/AdminSocialProofSettings"));
 const AdminLiveChatSettings = lazy(() => import("./marketing/AdminLiveChatSettings"));
