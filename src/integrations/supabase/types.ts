@@ -850,6 +850,153 @@ export type Database = {
         }
         Relationships: []
       }
+      bundle_components: {
+        Row: {
+          bundle_id: string
+          created_at: string
+          id: string
+          product_id: string
+          quantity: number
+          sort_order: number
+        }
+        Insert: {
+          bundle_id: string
+          created_at?: string
+          id?: string
+          product_id: string
+          quantity?: number
+          sort_order?: number
+        }
+        Update: {
+          bundle_id?: string
+          created_at?: string
+          id?: string
+          product_id?: string
+          quantity?: number
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bundle_components_bundle_id_fkey"
+            columns: ["bundle_id"]
+            isOneToOne: false
+            referencedRelation: "bundle_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bundle_components_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bundle_products: {
+        Row: {
+          availability_rule: string
+          brand_id: string | null
+          category_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          images: Json | null
+          meta_description: string | null
+          meta_title: string | null
+          name: string
+          order_display_mode: string
+          original_total_value: number | null
+          price_type: string
+          price_value: number
+          short_description: string | null
+          slug: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          availability_rule?: string
+          brand_id?: string | null
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          images?: Json | null
+          meta_description?: string | null
+          meta_title?: string | null
+          name: string
+          order_display_mode?: string
+          original_total_value?: number | null
+          price_type?: string
+          price_value?: number
+          short_description?: string | null
+          slug: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          availability_rule?: string
+          brand_id?: string | null
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          images?: Json | null
+          meta_description?: string | null
+          meta_title?: string | null
+          name?: string
+          order_display_mode?: string
+          original_total_value?: number | null
+          price_type?: string
+          price_value?: number
+          short_description?: string | null
+          slug?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bundle_products_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bundle_products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bundle_settings: {
+        Row: {
+          default_availability_rule: string
+          default_order_display_mode: string
+          enabled: boolean
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          default_availability_rule?: string
+          default_order_display_mode?: string
+          enabled?: boolean
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          default_availability_rule?: string
+          default_order_display_mode?: string
+          enabled?: boolean
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       cart_items: {
         Row: {
           created_at: string
