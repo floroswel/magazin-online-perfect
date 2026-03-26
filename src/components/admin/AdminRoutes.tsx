@@ -155,6 +155,11 @@ const AdminCustomerPortalSettings = lazy(() => import("./settings/AdminCustomerP
 const AdminTrafficAnalytics = lazy(() => import("./reports/AdminTrafficAnalytics"));
 const AdminCartbot = lazy(() => import("./marketing/AdminCartbot"));
 const AdminCuiValidation = lazy(() => import("./settings/AdminCuiValidation"));
+const AdminAIGeneratorHub = lazy(() => import("./ai/AdminAIGeneratorHub"));
+const AdminAIGeneratorSettings = lazy(() => import("./ai/AdminAIGeneratorSettings"));
+const AdminAIPendingApprovals = lazy(() => import("./ai/AdminAIPendingApprovals"));
+const AdminAIBulkJobs = lazy(() => import("./ai/AdminAIBulkJobs"));
+const AdminAIUsageStats = lazy(() => import("./ai/AdminAIUsageStats"));
 
 export default function AdminRoutes() {
   return (
@@ -390,7 +395,11 @@ export default function AdminRoutes() {
         <Route path="users/audit" element={<AdminAuditLog />} />
 
         {/* ═══════════ APLICAȚII ═══════════ */}
-        <Route path="modules/ai-generator" element={<AdminAIGenerator />} />
+        <Route path="modules/ai-generator" element={<AdminAIGeneratorHub />} />
+        <Route path="modules/ai-generator/settings" element={<AdminAIGeneratorSettings />} />
+        <Route path="modules/ai-generator/approvals" element={<AdminAIPendingApprovals />} />
+        <Route path="modules/ai-generator/bulk" element={<AdminAIBulkJobs />} />
+        <Route path="modules/ai-generator/usage" element={<AdminAIUsageStats />} />
         <Route path="modules/logs" element={<AdminLogs />} />
       </Routes>
     </Suspense>
