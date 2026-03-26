@@ -3089,6 +3089,167 @@ export type Database = {
         }
         Relationships: []
       }
+      netopia_settings: {
+        Row: {
+          allowed_delivery_method_ids: Json | null
+          allowed_ips: string | null
+          checkout_display_name: string
+          condition_categories: Json | null
+          condition_countries: Json | null
+          condition_customer_groups: Json | null
+          currency: string
+          delivery_restriction: string
+          demo_mode: boolean
+          enabled: boolean
+          id: string
+          limit_by_customer_type: boolean
+          limit_individual_max: number | null
+          limit_individual_min: number | null
+          limit_legal_max: number | null
+          limit_legal_min: number | null
+          max_order_value: number | null
+          merchant_key_filename: string | null
+          merchant_key_path: string | null
+          merchant_key_uploaded_at: string | null
+          merchant_signature: string
+          min_order_value: number | null
+          netopia_cert_filename: string | null
+          netopia_cert_path: string | null
+          netopia_cert_uploaded_at: string | null
+          show_footer_icon: boolean
+          updated_at: string
+        }
+        Insert: {
+          allowed_delivery_method_ids?: Json | null
+          allowed_ips?: string | null
+          checkout_display_name?: string
+          condition_categories?: Json | null
+          condition_countries?: Json | null
+          condition_customer_groups?: Json | null
+          currency?: string
+          delivery_restriction?: string
+          demo_mode?: boolean
+          enabled?: boolean
+          id?: string
+          limit_by_customer_type?: boolean
+          limit_individual_max?: number | null
+          limit_individual_min?: number | null
+          limit_legal_max?: number | null
+          limit_legal_min?: number | null
+          max_order_value?: number | null
+          merchant_key_filename?: string | null
+          merchant_key_path?: string | null
+          merchant_key_uploaded_at?: string | null
+          merchant_signature?: string
+          min_order_value?: number | null
+          netopia_cert_filename?: string | null
+          netopia_cert_path?: string | null
+          netopia_cert_uploaded_at?: string | null
+          show_footer_icon?: boolean
+          updated_at?: string
+        }
+        Update: {
+          allowed_delivery_method_ids?: Json | null
+          allowed_ips?: string | null
+          checkout_display_name?: string
+          condition_categories?: Json | null
+          condition_countries?: Json | null
+          condition_customer_groups?: Json | null
+          currency?: string
+          delivery_restriction?: string
+          demo_mode?: boolean
+          enabled?: boolean
+          id?: string
+          limit_by_customer_type?: boolean
+          limit_individual_max?: number | null
+          limit_individual_min?: number | null
+          limit_legal_max?: number | null
+          limit_legal_min?: number | null
+          max_order_value?: number | null
+          merchant_key_filename?: string | null
+          merchant_key_path?: string | null
+          merchant_key_uploaded_at?: string | null
+          merchant_signature?: string
+          min_order_value?: number | null
+          netopia_cert_filename?: string | null
+          netopia_cert_path?: string | null
+          netopia_cert_uploaded_at?: string | null
+          show_footer_icon?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      netopia_transactions: {
+        Row: {
+          action: string | null
+          created_at: string
+          error_code: string | null
+          error_message: string | null
+          id: string
+          ipn_raw_xml: string | null
+          ipn_received_at: string | null
+          netopia_order_id: string
+          netopia_purchase_id: string | null
+          order_id: string
+          original_amount: number | null
+          pan_masked: string | null
+          payment_instrument_id: string | null
+          processed_amount: number | null
+          status: string
+          token_expiration_date: string | null
+          token_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          action?: string | null
+          created_at?: string
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          ipn_raw_xml?: string | null
+          ipn_received_at?: string | null
+          netopia_order_id?: string
+          netopia_purchase_id?: string | null
+          order_id: string
+          original_amount?: number | null
+          pan_masked?: string | null
+          payment_instrument_id?: string | null
+          processed_amount?: number | null
+          status?: string
+          token_expiration_date?: string | null
+          token_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          action?: string | null
+          created_at?: string
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          ipn_raw_xml?: string | null
+          ipn_received_at?: string | null
+          netopia_order_id?: string
+          netopia_purchase_id?: string | null
+          order_id?: string
+          original_amount?: number | null
+          pan_masked?: string | null
+          payment_instrument_id?: string | null
+          processed_amount?: number | null
+          status?: string
+          token_expiration_date?: string | null
+          token_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "netopia_transactions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       newsletter_campaigns: {
         Row: {
           blocks: Json | null
