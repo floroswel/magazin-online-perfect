@@ -221,6 +221,8 @@ export default function AdminRoutes() {
         <Route path="stock/warehouses" element={<AdminWarehouses />} />
         <Route path="stock/transfers" element={<AdminStockTransfers />} />
         <Route path="stock/movements" element={<AdminStockMovements />} />
+        <Route path="stock/suppliers" element={<AdminSupplierManager />} />
+        <Route path="stock/purchase-orders" element={<AdminPurchaseOrders />} />
         <Route path="stock/adjustments" element={<AdminStockAdjustments />} />
         <Route path="stock/inventory" element={<AdminInventory />} />
         <Route path="stock/nir" element={<AdminNIR />} />
