@@ -51,7 +51,7 @@ const NotFound = () => {
   useEffect(() => {
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
     // Log 404 visit (fire-and-forget)
-    supabase.from("custom_404_log").insert({
+    (supabase as any).from("custom_404_log").insert({
       url_accessed: location.pathname + location.search,
       referrer: document.referrer || null,
       user_agent: navigator.userAgent,
