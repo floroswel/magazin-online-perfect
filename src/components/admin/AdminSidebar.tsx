@@ -317,6 +317,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "🏢 Validare CUI/CIF (ANAF)", path: "/admin/settings/cui-validation" },
           { label: "📦 Pachete de Produse", path: "/admin/settings/bundles" },
           { label: "💰 Liste de Prețuri", path: "/admin/settings/price-lists" },
+          { label: "🔗 Linii de Produse", path: "/admin/settings/product-lines" },
         ],
       },
       {
