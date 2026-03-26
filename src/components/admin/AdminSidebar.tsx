@@ -70,6 +70,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Import/Export", path: "/admin/products/import-export" },
           { label: "Actualizare în masă", path: "/admin/products/bulk-update" },
           { label: "SEO produse", path: "/admin/products/seo" },
+          { label: "📦 Pachete (Bundles)", path: "/admin/products/bundles" },
         ],
       },
       {
