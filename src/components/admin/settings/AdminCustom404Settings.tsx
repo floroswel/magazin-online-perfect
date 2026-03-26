@@ -123,8 +123,8 @@ export default function AdminCustom404Settings() {
 
   async function loadStats() {
     setStatsLoading(true);
-    const { data } = await supabase.from("custom_404_stats" as any).select("*").limit(200);
-    setStats((data as any) || []);
+    const { data } = await (supabase as any).from("custom_404_stats").select("*").limit(200);
+    setStats((data || []) as LogStat[]);
     setStatsLoading(false);
   }
 
