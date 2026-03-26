@@ -6204,6 +6204,197 @@ export type Database = {
           },
         ]
       }
+      smartbill_invoices: {
+        Row: {
+          created_at: string
+          document_type: string
+          error_message: string | null
+          generated_at: string
+          id: string
+          invoice_number: string
+          invoice_series: string
+          issued_at: string | null
+          order_id: string
+          pdf_cached_path: string | null
+          smartbill_url: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          document_type?: string
+          error_message?: string | null
+          generated_at?: string
+          id?: string
+          invoice_number?: string
+          invoice_series?: string
+          issued_at?: string | null
+          order_id: string
+          pdf_cached_path?: string | null
+          smartbill_url?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          document_type?: string
+          error_message?: string | null
+          generated_at?: string
+          id?: string
+          invoice_number?: string
+          invoice_series?: string
+          issued_at?: string | null
+          order_id?: string
+          pdf_cached_path?: string | null
+          smartbill_url?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "smartbill_invoices_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      smartbill_settings: {
+        Row: {
+          auto_generate: boolean
+          auto_generate_on_status: string
+          auto_sync_stocks: boolean
+          cif: string
+          currency: string
+          default_meas_unit: string
+          default_tax_name: string
+          default_tax_percentage: number
+          document_type: string
+          email: string
+          enabled: boolean
+          generate_invoices_enabled: boolean
+          id: string
+          include_shipping: boolean
+          invoice_series: string
+          order_reference_template: string
+          product_identifier: string
+          sandbox: boolean
+          save_client_to_db: boolean
+          save_products_to_db: boolean
+          send_email_to_client: boolean
+          series_proforma: string
+          shipping_product_name: string
+          sync_frequency: string
+          sync_stocks_enabled: boolean
+          token: string
+          unknown_products_action: string
+          updated_at: string
+          warehouse_name: string | null
+        }
+        Insert: {
+          auto_generate?: boolean
+          auto_generate_on_status?: string
+          auto_sync_stocks?: boolean
+          cif?: string
+          currency?: string
+          default_meas_unit?: string
+          default_tax_name?: string
+          default_tax_percentage?: number
+          document_type?: string
+          email?: string
+          enabled?: boolean
+          generate_invoices_enabled?: boolean
+          id?: string
+          include_shipping?: boolean
+          invoice_series?: string
+          order_reference_template?: string
+          product_identifier?: string
+          sandbox?: boolean
+          save_client_to_db?: boolean
+          save_products_to_db?: boolean
+          send_email_to_client?: boolean
+          series_proforma?: string
+          shipping_product_name?: string
+          sync_frequency?: string
+          sync_stocks_enabled?: boolean
+          token?: string
+          unknown_products_action?: string
+          updated_at?: string
+          warehouse_name?: string | null
+        }
+        Update: {
+          auto_generate?: boolean
+          auto_generate_on_status?: string
+          auto_sync_stocks?: boolean
+          cif?: string
+          currency?: string
+          default_meas_unit?: string
+          default_tax_name?: string
+          default_tax_percentage?: number
+          document_type?: string
+          email?: string
+          enabled?: boolean
+          generate_invoices_enabled?: boolean
+          id?: string
+          include_shipping?: boolean
+          invoice_series?: string
+          order_reference_template?: string
+          product_identifier?: string
+          sandbox?: boolean
+          save_client_to_db?: boolean
+          save_products_to_db?: boolean
+          send_email_to_client?: boolean
+          series_proforma?: string
+          shipping_product_name?: string
+          sync_frequency?: string
+          sync_stocks_enabled?: boolean
+          token?: string
+          unknown_products_action?: string
+          updated_at?: string
+          warehouse_name?: string | null
+        }
+        Relationships: []
+      }
+      smartbill_stock_sync_log: {
+        Row: {
+          details: Json | null
+          errors_count: number
+          finished_at: string | null
+          id: string
+          products_not_found: number
+          products_processed: number
+          products_updated: number
+          started_at: string
+          status: string
+          sync_type: string
+        }
+        Insert: {
+          details?: Json | null
+          errors_count?: number
+          finished_at?: string | null
+          id?: string
+          products_not_found?: number
+          products_processed?: number
+          products_updated?: number
+          started_at?: string
+          status?: string
+          sync_type?: string
+        }
+        Update: {
+          details?: Json | null
+          errors_count?: number
+          finished_at?: string | null
+          id?: string
+          products_not_found?: number
+          products_processed?: number
+          products_updated?: number
+          started_at?: string
+          status?: string
+          sync_type?: string
+        }
+        Relationships: []
+      }
       smartbill_sync_log: {
         Row: {
           action: string
