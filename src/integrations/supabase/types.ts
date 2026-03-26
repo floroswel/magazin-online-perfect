@@ -6006,39 +6006,183 @@ export type Database = {
           },
         ]
       }
+      return_form_settings: {
+        Row: {
+          allow_bank_refund: boolean
+          allow_different_product_exchange: boolean
+          allow_multiple_returns_per_order: boolean
+          allow_order_cancellation: boolean
+          allow_partial_returns: boolean
+          allow_same_product_exchange: boolean
+          auto_approve: boolean
+          courier_pickup: string
+          email_approved_body: string
+          email_approved_subject: string
+          email_created_body: string
+          email_created_subject: string
+          email_rejected_body: string
+          email_rejected_subject: string
+          enabled: boolean
+          exchange_shipping_cost: number
+          footer_link_text: string
+          id: string
+          notify_on_approved: boolean
+          notify_on_created: boolean
+          notify_on_rejected: boolean
+          return_reasons: Json
+          return_shipping_cost: number
+          return_window_days: number
+          returnable_category_ids: Json | null
+          returnable_products: string
+          show_footer_link: boolean
+          updated_at: string
+        }
+        Insert: {
+          allow_bank_refund?: boolean
+          allow_different_product_exchange?: boolean
+          allow_multiple_returns_per_order?: boolean
+          allow_order_cancellation?: boolean
+          allow_partial_returns?: boolean
+          allow_same_product_exchange?: boolean
+          auto_approve?: boolean
+          courier_pickup?: string
+          email_approved_body?: string
+          email_approved_subject?: string
+          email_created_body?: string
+          email_created_subject?: string
+          email_rejected_body?: string
+          email_rejected_subject?: string
+          enabled?: boolean
+          exchange_shipping_cost?: number
+          footer_link_text?: string
+          id?: string
+          notify_on_approved?: boolean
+          notify_on_created?: boolean
+          notify_on_rejected?: boolean
+          return_reasons?: Json
+          return_shipping_cost?: number
+          return_window_days?: number
+          returnable_category_ids?: Json | null
+          returnable_products?: string
+          show_footer_link?: boolean
+          updated_at?: string
+        }
+        Update: {
+          allow_bank_refund?: boolean
+          allow_different_product_exchange?: boolean
+          allow_multiple_returns_per_order?: boolean
+          allow_order_cancellation?: boolean
+          allow_partial_returns?: boolean
+          allow_same_product_exchange?: boolean
+          auto_approve?: boolean
+          courier_pickup?: string
+          email_approved_body?: string
+          email_approved_subject?: string
+          email_created_body?: string
+          email_created_subject?: string
+          email_rejected_body?: string
+          email_rejected_subject?: string
+          enabled?: boolean
+          exchange_shipping_cost?: number
+          footer_link_text?: string
+          id?: string
+          notify_on_approved?: boolean
+          notify_on_created?: boolean
+          notify_on_rejected?: boolean
+          return_reasons?: Json
+          return_shipping_cost?: number
+          return_window_days?: number
+          returnable_category_ids?: Json | null
+          returnable_products?: string
+          show_footer_link?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      return_request_images: {
+        Row: {
+          created_at: string
+          file_size: number | null
+          id: string
+          original_filename: string | null
+          public_url: string
+          return_item_id: string | null
+          return_request_id: string
+          storage_path: string
+        }
+        Insert: {
+          created_at?: string
+          file_size?: number | null
+          id?: string
+          original_filename?: string | null
+          public_url: string
+          return_item_id?: string | null
+          return_request_id: string
+          storage_path: string
+        }
+        Update: {
+          created_at?: string
+          file_size?: number | null
+          id?: string
+          original_filename?: string | null
+          public_url?: string
+          return_item_id?: string | null
+          return_request_id?: string
+          storage_path?: string
+        }
+        Relationships: []
+      }
       return_request_items: {
         Row: {
           created_at: string
           exchange_product_id: string | null
+          exchange_quantity: number | null
           exchange_variant_id: string | null
           id: string
           order_item_id: string | null
           product_id: string | null
           product_name: string
           quantity: number
+          return_reason_id: string | null
+          return_reason_text: string | null
           return_request_id: string
+          total_value: number | null
+          unit_price: number | null
+          variant_id: string | null
         }
         Insert: {
           created_at?: string
           exchange_product_id?: string | null
+          exchange_quantity?: number | null
           exchange_variant_id?: string | null
           id?: string
           order_item_id?: string | null
           product_id?: string | null
           product_name?: string
           quantity?: number
+          return_reason_id?: string | null
+          return_reason_text?: string | null
           return_request_id: string
+          total_value?: number | null
+          unit_price?: number | null
+          variant_id?: string | null
         }
         Update: {
           created_at?: string
           exchange_product_id?: string | null
+          exchange_quantity?: number | null
           exchange_variant_id?: string | null
           id?: string
           order_item_id?: string | null
           product_id?: string | null
           product_name?: string
           quantity?: number
+          return_reason_id?: string | null
+          return_reason_text?: string | null
           return_request_id?: string
+          total_value?: number | null
+          unit_price?: number | null
+          variant_id?: string | null
         }
         Relationships: [
           {
@@ -6064,9 +6208,38 @@ export type Database = {
           },
         ]
       }
+      return_request_notes: {
+        Row: {
+          admin_user_id: string
+          created_at: string
+          id: string
+          note_text: string
+          return_request_id: string
+        }
+        Insert: {
+          admin_user_id: string
+          created_at?: string
+          id?: string
+          note_text: string
+          return_request_id: string
+        }
+        Update: {
+          admin_user_id?: string
+          created_at?: string
+          id?: string
+          note_text?: string
+          return_request_id?: string
+        }
+        Relationships: []
+      }
       returns: {
         Row: {
           admin_notes: string | null
+          auto_approved: boolean | null
+          bank_account_holder: string | null
+          bank_iban: string | null
+          bank_name: string | null
+          courier_pickup_by: string | null
           created_at: string
           customer_id: string | null
           details: string | null
@@ -6075,9 +6248,14 @@ export type Database = {
           items: Json
           order_id: string
           photos: string[] | null
+          pickup_address: string | null
+          preferred_pickup_date: string | null
           reason: string
           refund_amount: number | null
+          refund_method: string | null
+          rejection_reason: string | null
           resolution: string | null
+          return_shipping_cost_calculated: number | null
           rma_number: string | null
           status: string
           tracking_number: string | null
@@ -6087,6 +6265,11 @@ export type Database = {
         }
         Insert: {
           admin_notes?: string | null
+          auto_approved?: boolean | null
+          bank_account_holder?: string | null
+          bank_iban?: string | null
+          bank_name?: string | null
+          courier_pickup_by?: string | null
           created_at?: string
           customer_id?: string | null
           details?: string | null
@@ -6095,9 +6278,14 @@ export type Database = {
           items?: Json
           order_id: string
           photos?: string[] | null
+          pickup_address?: string | null
+          preferred_pickup_date?: string | null
           reason: string
           refund_amount?: number | null
+          refund_method?: string | null
+          rejection_reason?: string | null
           resolution?: string | null
+          return_shipping_cost_calculated?: number | null
           rma_number?: string | null
           status?: string
           tracking_number?: string | null
@@ -6107,6 +6295,11 @@ export type Database = {
         }
         Update: {
           admin_notes?: string | null
+          auto_approved?: boolean | null
+          bank_account_holder?: string | null
+          bank_iban?: string | null
+          bank_name?: string | null
+          courier_pickup_by?: string | null
           created_at?: string
           customer_id?: string | null
           details?: string | null
@@ -6115,9 +6308,14 @@ export type Database = {
           items?: Json
           order_id?: string
           photos?: string[] | null
+          pickup_address?: string | null
+          preferred_pickup_date?: string | null
           reason?: string
           refund_amount?: number | null
+          refund_method?: string | null
+          rejection_reason?: string | null
           resolution?: string | null
+          return_shipping_cost_calculated?: number | null
           rma_number?: string | null
           status?: string
           tracking_number?: string | null
