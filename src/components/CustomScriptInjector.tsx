@@ -69,7 +69,7 @@ export default function CustomScriptInjector() {
       } else if (s.script_type === "html") {
         const wrapper = document.createElement("div");
         wrapper.setAttribute("data-custom-script", s.id);
-        wrapper.innerHTML = s.content;
+        wrapper.innerHTML = DOMPurify.sanitize(s.content, { ADD_TAGS: ['iframe'], ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'] });
         if (s.location === "body_start") {
           document.body.insertBefore(wrapper, document.body.firstChild);
         } else {
