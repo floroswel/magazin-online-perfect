@@ -4001,6 +4001,77 @@ export type Database = {
           },
         ]
       }
+      product_line_items: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          product_line_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          product_line_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          product_line_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_line_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: true
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_line_items_product_line_id_fkey"
+            columns: ["product_line_id"]
+            isOneToOne: false
+            referencedRelation: "product_lines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_lines: {
+        Row: {
+          created_at: string
+          description: string | null
+          grouping_attribute_id: string | null
+          id: string
+          internal_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          grouping_attribute_id?: string | null
+          id?: string
+          internal_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          grouping_attribute_id?: string | null
+          id?: string
+          internal_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_lines_grouping_attribute_id_fkey"
+            columns: ["grouping_attribute_id"]
+            isOneToOne: false
+            referencedRelation: "product_attributes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_questions: {
         Row: {
           answer: string | null
