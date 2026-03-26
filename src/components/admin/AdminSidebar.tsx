@@ -72,6 +72,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "SEO produse", path: "/admin/products/seo" },
           { label: "📦 Pachete (Bundles)", path: "/admin/products/bundles" },
           { label: "🔗 Linii de Produse", path: "/admin/products/lines" },
+          { label: "✏️ Câmpuri Personalizare", path: "/admin/products/customization" },
         ],
       },
       {
@@ -318,6 +319,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "📦 Pachete de Produse", path: "/admin/settings/bundles" },
           { label: "💰 Liste de Prețuri", path: "/admin/settings/price-lists" },
           { label: "🔗 Linii de Produse", path: "/admin/settings/product-lines" },
+          { label: "✏️ Personalizare Comandă", path: "/admin/settings/customization" },
         ],
       },
       {

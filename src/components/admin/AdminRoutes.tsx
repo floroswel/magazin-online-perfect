@@ -150,6 +150,8 @@ const AdminPriceLists = lazy(() => import("./stock/AdminPriceLists"));
 const AdminPriceListSettings = lazy(() => import("./settings/AdminPriceListSettings"));
 const AdminProductLines = lazy(() => import("./products/AdminProductLines"));
 const AdminProductLineSettings = lazy(() => import("./settings/AdminProductLineSettings"));
+const AdminCustomizationFields = lazy(() => import("./products/AdminCustomizationFields"));
+const AdminCustomizationSettings = lazy(() => import("./settings/AdminCustomizationSettings"));
 const AdminPriceAlerts = lazy(() => import("./marketing/AdminPriceAlerts"));
 const AdminSocialProofSettings = lazy(() => import("./marketing/AdminSocialProofSettings"));
 const AdminLiveChatSettings = lazy(() => import("./marketing/AdminLiveChatSettings"));
@@ -208,6 +210,7 @@ export default function AdminRoutes() {
         <Route path="products/seo" element={<AdminProductSEO />} />
         <Route path="products/bundles" element={<AdminBundleList />} />
         <Route path="products/lines" element={<AdminProductLines />} />
+        <Route path="products/customization" element={<AdminCustomizationFields />} />
 
         {/* ═══════════ STOC & DEPOZIT ═══════════ */}
         <Route path="stock" element={<AdminStockOverview />} />
@@ -397,6 +400,7 @@ export default function AdminRoutes() {
         <Route path="settings/bundles" element={<AdminBundleSettings />} />
         <Route path="settings/price-lists" element={<AdminPriceListSettings />} />
         <Route path="settings/product-lines" element={<AdminProductLineSettings />} />
+        <Route path="settings/customization" element={<AdminCustomizationSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />
