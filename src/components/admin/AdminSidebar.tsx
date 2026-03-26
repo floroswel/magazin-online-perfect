@@ -71,6 +71,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Actualizare în masă", path: "/admin/products/bulk-update" },
           { label: "SEO produse", path: "/admin/products/seo" },
           { label: "📦 Pachete (Bundles)", path: "/admin/products/bundles" },
+          { label: "🔗 Linii de Produse", path: "/admin/products/lines" },
         ],
       },
       {
