@@ -193,6 +193,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "🏦 TBI Bank", path: "/admin/payments/tbi" },
           { label: "💳 PayPo BNPL", path: "/admin/payments/paypo" },
           { label: "🏦 Transfer Bancar", path: "/admin/payments/bank-transfer" },
+          { label: "💳 NETOPIA Payments", path: "/admin/payments/netopia" },
           { label: "Decontări", path: "/admin/payments/settlements" },
           { label: "Reconciliere", path: "/admin/payments/reconciliation" },
         ],
