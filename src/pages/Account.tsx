@@ -227,6 +227,9 @@ export default function Account() {
             <TabsTrigger value="addresses"><MapPin className="h-4 w-4 mr-1" /> Adrese</TabsTrigger>
             <TabsTrigger value="loyalty"><Award className="h-4 w-4 mr-1" /> Fidelitate</TabsTrigger>
             <TabsTrigger value="affiliate"><Users className="h-4 w-4 mr-1" /> Afiliere</TabsTrigger>
+            <TabsTrigger value="referral"><Share2 className="h-4 w-4 mr-1" /> Recomandă</TabsTrigger>
+            <TabsTrigger value="wishlists"><Heart className="h-4 w-4 mr-1" /> Wishlist</TabsTrigger>
+            <TabsTrigger value="giftcards"><Gift className="h-4 w-4 mr-1" /> Card cadou</TabsTrigger>
             <TabsTrigger value="profile"><UserIcon className="h-4 w-4 mr-1" /> Profil</TabsTrigger>
             <TabsTrigger value="preferences"><Settings className="h-4 w-4 mr-1" /> Preferințe</TabsTrigger>
           </TabsList>
