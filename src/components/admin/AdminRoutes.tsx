@@ -152,6 +152,9 @@ const AdminPOSSettings = lazy(() => import("./settings/AdminPOSSettings"));
 const AdminDropshippingSettings = lazy(() => import("./settings/AdminDropshippingSettings"));
 const AdminMultiStoreSettings = lazy(() => import("./settings/AdminMultiStoreSettings"));
 const AdminCustomerPortalSettings = lazy(() => import("./settings/AdminCustomerPortalSettings"));
+const AdminTrafficAnalytics = lazy(() => import("./reports/AdminTrafficAnalytics"));
+const AdminCartbot = lazy(() => import("./marketing/AdminCartbot"));
+const AdminCuiValidation = lazy(() => import("./settings/AdminCuiValidation"));
 
 export default function AdminRoutes() {
   return (
