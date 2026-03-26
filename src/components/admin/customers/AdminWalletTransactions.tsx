@@ -55,9 +55,9 @@ export default function AdminWalletTransactions() {
   const { data: transactions = [], isLoading } = useQuery({
     queryKey: ["admin-wallet-transactions", search, typeFilter, statusFilter],
     queryFn: async () => {
-      let q = supabase
+      let q = (supabase
         .from("wallet_transactions" as any)
-        .select("*, wallet:customer_wallets!wallet_id(customer_id)")
+        .select("*") as any)
         .order("created_at", { ascending: false })
         .limit(200);
 
