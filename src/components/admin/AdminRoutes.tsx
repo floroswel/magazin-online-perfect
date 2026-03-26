@@ -395,7 +395,11 @@ export default function AdminRoutes() {
         <Route path="users/audit" element={<AdminAuditLog />} />
 
         {/* ═══════════ APLICAȚII ═══════════ */}
-        <Route path="modules/ai-generator" element={<AdminAIGenerator />} />
+        <Route path="modules/ai-generator" element={<AdminAIGeneratorHub />} />
+        <Route path="modules/ai-generator/settings" element={<AdminAIGeneratorSettings />} />
+        <Route path="modules/ai-generator/approvals" element={<AdminAIPendingApprovals />} />
+        <Route path="modules/ai-generator/bulk" element={<AdminAIBulkJobs />} />
+        <Route path="modules/ai-generator/usage" element={<AdminAIUsageStats />} />
         <Route path="modules/logs" element={<AdminLogs />} />
       </Routes>
     </Suspense>

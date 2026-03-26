@@ -328,7 +328,11 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
       {
         label: "Aplicații", icon: Puzzle,
         children: [
-          { label: "Generator AI", path: "/admin/modules/ai-generator" },
+          { label: "🤖 Generator AI", path: "/admin/modules/ai-generator" },
+          { label: "⚙️ Setări AI", path: "/admin/modules/ai-generator/settings" },
+          { label: "⏳ Aprobări AI", path: "/admin/modules/ai-generator/approvals" },
+          { label: "📦 Bulk AI", path: "/admin/modules/ai-generator/bulk" },
+          { label: "📊 Utilizare AI", path: "/admin/modules/ai-generator/usage" },
           { label: "Logs & health", path: "/admin/modules/logs" },
         ],
       },
