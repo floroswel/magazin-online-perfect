@@ -58,7 +58,7 @@ const NotFound = () => {
     }).then(() => {});
 
     // Load settings
-    supabase.from("custom_404_settings").select("*").limit(1).single().then(({ data }) => {
+    (supabase as any).from("custom_404_settings").select("*").limit(1).single().then(({ data }: any) => {
       if (data) {
         const s = {
           ...data,
