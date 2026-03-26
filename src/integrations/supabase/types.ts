@@ -4833,6 +4833,119 @@ export type Database = {
           },
         ]
       }
+      purchase_order_items: {
+        Row: {
+          acquisition_cost_net: number | null
+          created_at: string
+          ean: string | null
+          id: string
+          new_sale_price: number | null
+          product_id: string | null
+          product_name_snapshot: string | null
+          purchase_order_id: string
+          quantity_ordered: number
+          quantity_received: number
+          sku: string | null
+          updated_at: string
+          variant_id: string | null
+        }
+        Insert: {
+          acquisition_cost_net?: number | null
+          created_at?: string
+          ean?: string | null
+          id?: string
+          new_sale_price?: number | null
+          product_id?: string | null
+          product_name_snapshot?: string | null
+          purchase_order_id: string
+          quantity_ordered?: number
+          quantity_received?: number
+          sku?: string | null
+          updated_at?: string
+          variant_id?: string | null
+        }
+        Update: {
+          acquisition_cost_net?: number | null
+          created_at?: string
+          ean?: string | null
+          id?: string
+          new_sale_price?: number | null
+          product_id?: string | null
+          product_name_snapshot?: string | null
+          purchase_order_id?: string
+          quantity_ordered?: number
+          quantity_received?: number
+          sku?: string | null
+          updated_at?: string
+          variant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_order_items_purchase_order_id_fkey"
+            columns: ["purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_orders: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          internal_note: string | null
+          status: string
+          supplier_id: string | null
+          supplier_name_snapshot: string | null
+          total_acquisition_cost: number | null
+          type: string
+          updated_at: string
+          warehouse_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          internal_note?: string | null
+          status?: string
+          supplier_id?: string | null
+          supplier_name_snapshot?: string | null
+          total_acquisition_cost?: number | null
+          type?: string
+          updated_at?: string
+          warehouse_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          internal_note?: string | null
+          status?: string
+          supplier_id?: string | null
+          supplier_name_snapshot?: string | null
+          total_acquisition_cost?: number | null
+          type?: string
+          updated_at?: string
+          warehouse_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_orders_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       push_campaigns: {
         Row: {
           body: string
@@ -5858,6 +5971,60 @@ export type Database = {
           },
         ]
       }
+      stock_reception_log: {
+        Row: {
+          id: string
+          new_stock: number | null
+          previous_stock: number | null
+          product_id: string | null
+          purchase_order_id: string | null
+          quantity_added: number
+          received_at: string
+          received_by: string | null
+          variant_id: string | null
+          warehouse_id: string | null
+        }
+        Insert: {
+          id?: string
+          new_stock?: number | null
+          previous_stock?: number | null
+          product_id?: string | null
+          purchase_order_id?: string | null
+          quantity_added?: number
+          received_at?: string
+          received_by?: string | null
+          variant_id?: string | null
+          warehouse_id?: string | null
+        }
+        Update: {
+          id?: string
+          new_stock?: number | null
+          previous_stock?: number | null
+          product_id?: string | null
+          purchase_order_id?: string | null
+          quantity_added?: number
+          received_at?: string
+          received_by?: string | null
+          variant_id?: string | null
+          warehouse_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_reception_log_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_reception_log_purchase_order_id_fkey"
+            columns: ["purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stock_reservations: {
         Row: {
           created_at: string
@@ -6088,6 +6255,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      suppliers: {
+        Row: {
+          address: string | null
+          contact_person: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          contact_person?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          contact_person?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       support_tickets: {
         Row: {

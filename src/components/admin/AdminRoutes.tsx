@@ -152,6 +152,9 @@ const AdminProductLines = lazy(() => import("./products/AdminProductLines"));
 const AdminProductLineSettings = lazy(() => import("./settings/AdminProductLineSettings"));
 const AdminCustomizationFields = lazy(() => import("./products/AdminCustomizationFields"));
 const AdminCustomizationSettings = lazy(() => import("./settings/AdminCustomizationSettings"));
+const AdminSupplierManager = lazy(() => import("./stock/AdminSupplierManager"));
+const AdminPurchaseOrders = lazy(() => import("./stock/AdminPurchaseOrders"));
+const AdminStockManagerSettings = lazy(() => import("./settings/AdminStockManagerSettings"));
 const AdminPriceAlerts = lazy(() => import("./marketing/AdminPriceAlerts"));
 const AdminSocialProofSettings = lazy(() => import("./marketing/AdminSocialProofSettings"));
 const AdminLiveChatSettings = lazy(() => import("./marketing/AdminLiveChatSettings"));
@@ -218,6 +221,8 @@ export default function AdminRoutes() {
         <Route path="stock/warehouses" element={<AdminWarehouses />} />
         <Route path="stock/transfers" element={<AdminStockTransfers />} />
         <Route path="stock/movements" element={<AdminStockMovements />} />
+        <Route path="stock/suppliers" element={<AdminSupplierManager />} />
+        <Route path="stock/purchase-orders" element={<AdminPurchaseOrders />} />
         <Route path="stock/adjustments" element={<AdminStockAdjustments />} />
         <Route path="stock/inventory" element={<AdminInventory />} />
         <Route path="stock/nir" element={<AdminNIR />} />
@@ -401,6 +406,7 @@ export default function AdminRoutes() {
         <Route path="settings/price-lists" element={<AdminPriceListSettings />} />
         <Route path="settings/product-lines" element={<AdminProductLineSettings />} />
         <Route path="settings/customization" element={<AdminCustomizationSettings />} />
+        <Route path="settings/stock-manager" element={<AdminStockManagerSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />

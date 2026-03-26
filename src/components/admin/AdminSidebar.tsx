@@ -92,6 +92,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Picking list", path: "/admin/stock/picking" },
           { label: "Alerte stoc", path: "/admin/stock/alerts" },
           { label: "Furnizori", path: "/admin/stock/suppliers" },
+          { label: "📋 Comenzi Furnizor", path: "/admin/stock/purchase-orders" },
           { label: "Aprovizionare", path: "/admin/stock/reorder" },
           { label: "💰 Liste de Prețuri", path: "/admin/stock/price-lists" },
         ],
@@ -320,6 +321,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "💰 Liste de Prețuri", path: "/admin/settings/price-lists" },
           { label: "🔗 Linii de Produse", path: "/admin/settings/product-lines" },
           { label: "✏️ Personalizare Comandă", path: "/admin/settings/customization" },
+          { label: "📋 Manager Stocuri", path: "/admin/settings/stock-manager" },
         ],
       },
       {
