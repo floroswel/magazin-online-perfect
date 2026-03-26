@@ -6017,6 +6017,320 @@ export type Database = {
         }
         Relationships: []
       }
+      sameday_awbs: {
+        Row: {
+          awb_number: string | null
+          awb_payment: number
+          cash_on_delivery: number
+          created_at: string
+          generated_at: string
+          id: string
+          insured_value: number
+          order_id: string
+          package_count: number
+          package_type: number
+          parcel_numbers: Json | null
+          pdf_cached_path: string | null
+          pickup_point_id: number | null
+          recipient_address: string | null
+          recipient_city: string | null
+          recipient_county: string | null
+          recipient_name: string | null
+          recipient_phone: string | null
+          service_id: number | null
+          status: string
+          third_party_pickup: boolean
+          total_weight: number
+          updated_at: string
+        }
+        Insert: {
+          awb_number?: string | null
+          awb_payment?: number
+          cash_on_delivery?: number
+          created_at?: string
+          generated_at?: string
+          id?: string
+          insured_value?: number
+          order_id: string
+          package_count?: number
+          package_type?: number
+          parcel_numbers?: Json | null
+          pdf_cached_path?: string | null
+          pickup_point_id?: number | null
+          recipient_address?: string | null
+          recipient_city?: string | null
+          recipient_county?: string | null
+          recipient_name?: string | null
+          recipient_phone?: string | null
+          service_id?: number | null
+          status?: string
+          third_party_pickup?: boolean
+          total_weight?: number
+          updated_at?: string
+        }
+        Update: {
+          awb_number?: string | null
+          awb_payment?: number
+          cash_on_delivery?: number
+          created_at?: string
+          generated_at?: string
+          id?: string
+          insured_value?: number
+          order_id?: string
+          package_count?: number
+          package_type?: number
+          parcel_numbers?: Json | null
+          pdf_cached_path?: string | null
+          pickup_point_id?: number | null
+          recipient_address?: string | null
+          recipient_city?: string | null
+          recipient_county?: string | null
+          recipient_name?: string | null
+          recipient_phone?: string | null
+          service_id?: number | null
+          status?: string
+          third_party_pickup?: boolean
+          total_weight?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sameday_awbs_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sameday_cities: {
+        Row: {
+          county_id: number | null
+          county_name: string | null
+          extra_km: number | null
+          fetched_at: string
+          id: number
+          name: string
+          postal_code: string | null
+          sameday_delivery_agency: string | null
+          sameday_pickup_agency: string | null
+          village: string | null
+        }
+        Insert: {
+          county_id?: number | null
+          county_name?: string | null
+          extra_km?: number | null
+          fetched_at?: string
+          id: number
+          name: string
+          postal_code?: string | null
+          sameday_delivery_agency?: string | null
+          sameday_pickup_agency?: string | null
+          village?: string | null
+        }
+        Update: {
+          county_id?: number | null
+          county_name?: string | null
+          extra_km?: number | null
+          fetched_at?: string
+          id?: number
+          name?: string
+          postal_code?: string | null
+          sameday_delivery_agency?: string | null
+          sameday_pickup_agency?: string | null
+          village?: string | null
+        }
+        Relationships: []
+      }
+      sameday_city_mappings: {
+        Row: {
+          created_at: string
+          id: string
+          platform_city_name: string
+          platform_county_name: string | null
+          sameday_city_id: number | null
+          sameday_county_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          platform_city_name: string
+          platform_county_name?: string | null
+          sameday_city_id?: number | null
+          sameday_county_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          platform_city_name?: string
+          platform_county_name?: string | null
+          sameday_city_id?: number | null
+          sameday_county_id?: number | null
+        }
+        Relationships: []
+      }
+      sameday_counties: {
+        Row: {
+          code: string | null
+          fetched_at: string
+          id: number
+          name: string
+        }
+        Insert: {
+          code?: string | null
+          fetched_at?: string
+          id: number
+          name: string
+        }
+        Update: {
+          code?: string | null
+          fetched_at?: string
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
+      sameday_pickup_points: {
+        Row: {
+          address: string | null
+          alias: string | null
+          city_id: number | null
+          city_name: string | null
+          contact_persons: Json | null
+          county_code: string | null
+          county_id: number | null
+          county_name: string | null
+          fetched_at: string
+          id: number
+          is_default: boolean
+          status: boolean
+        }
+        Insert: {
+          address?: string | null
+          alias?: string | null
+          city_id?: number | null
+          city_name?: string | null
+          contact_persons?: Json | null
+          county_code?: string | null
+          county_id?: number | null
+          county_name?: string | null
+          fetched_at?: string
+          id: number
+          is_default?: boolean
+          status?: boolean
+        }
+        Update: {
+          address?: string | null
+          alias?: string | null
+          city_id?: number | null
+          city_name?: string | null
+          contact_persons?: Json | null
+          county_code?: string | null
+          county_id?: number | null
+          county_name?: string | null
+          fetched_at?: string
+          id?: number
+          is_default?: boolean
+          status?: boolean
+        }
+        Relationships: []
+      }
+      sameday_services: {
+        Row: {
+          delivery_type_id: number | null
+          delivery_type_name: string | null
+          fetched_at: string
+          id: number
+          is_default: boolean
+          name: string
+          optional_taxes: Json | null
+          service_code: string | null
+        }
+        Insert: {
+          delivery_type_id?: number | null
+          delivery_type_name?: string | null
+          fetched_at?: string
+          id: number
+          is_default?: boolean
+          name: string
+          optional_taxes?: Json | null
+          service_code?: string | null
+        }
+        Update: {
+          delivery_type_id?: number | null
+          delivery_type_name?: string | null
+          fetched_at?: string
+          id?: number
+          is_default?: boolean
+          name?: string
+          optional_taxes?: Json | null
+          service_code?: string | null
+        }
+        Relationships: []
+      }
+      sameday_settings: {
+        Row: {
+          auth_token: string | null
+          auto_generate: boolean
+          auto_generate_on_status: string
+          default_awb_payment: number
+          default_contact_person_id: number | null
+          default_package_type: number
+          default_pickup_point_id: number | null
+          default_service_id: number | null
+          default_weight: number
+          enabled: boolean
+          id: string
+          password: string
+          production_api_url: string
+          sandbox_mode: boolean
+          send_tracking_email: boolean
+          token_expires_at: string | null
+          updated_at: string
+          username: string
+        }
+        Insert: {
+          auth_token?: string | null
+          auto_generate?: boolean
+          auto_generate_on_status?: string
+          default_awb_payment?: number
+          default_contact_person_id?: number | null
+          default_package_type?: number
+          default_pickup_point_id?: number | null
+          default_service_id?: number | null
+          default_weight?: number
+          enabled?: boolean
+          id?: string
+          password?: string
+          production_api_url?: string
+          sandbox_mode?: boolean
+          send_tracking_email?: boolean
+          token_expires_at?: string | null
+          updated_at?: string
+          username?: string
+        }
+        Update: {
+          auth_token?: string | null
+          auto_generate?: boolean
+          auto_generate_on_status?: string
+          default_awb_payment?: number
+          default_contact_person_id?: number | null
+          default_package_type?: number
+          default_pickup_point_id?: number | null
+          default_service_id?: number | null
+          default_weight?: number
+          enabled?: boolean
+          id?: string
+          password?: string
+          production_api_url?: string
+          sandbox_mode?: boolean
+          send_tracking_email?: boolean
+          token_expires_at?: string | null
+          updated_at?: string
+          username?: string
+        }
+        Relationships: []
+      }
       scheduled_imports: {
         Row: {
           created_at: string
