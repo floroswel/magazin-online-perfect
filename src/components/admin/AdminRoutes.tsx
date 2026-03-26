@@ -313,6 +313,7 @@ export default function AdminRoutes() {
         <Route path="payments/reconciliation" element={<AdminReconciliation />} />
         <Route path="payments/tbi" element={<AdminTBISettings />} />
         <Route path="payments/paypo" element={<AdminPayPoSettings />} />
+        <Route path="payments/bank-transfer" element={<AdminBankTransferSettings />} />
 
         {/* ═══════════ LIVRARE ═══════════ */}
         <Route path="shipping/carriers" element={<AdminCarriers />} />
