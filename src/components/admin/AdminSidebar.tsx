@@ -145,6 +145,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Teste A/B", path: "/admin/marketing/ab-tests" },
           { label: "Rapoarte marketing", path: "/admin/marketing/reports" },
           { label: "📊 Integrări marketing", path: "/admin/marketing/integrations" },
+          { label: "🤖 Cartbot (AI Coș)", path: "/admin/marketing/cartbot" },
           { label: "🎯 Retargetare & Win-Back", path: "/admin/marketing/retargeting" },
         ],
       },
@@ -277,6 +278,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Financiar", path: "/admin/reports/financial" },
           { label: "Rapoarte custom", path: "/admin/reports/custom" },
           { label: "Export rapoarte", path: "/admin/reports/export" },
+          { label: "📊 Analitice trafic", path: "/admin/reports/traffic" },
         ],
       },
     ],
@@ -309,6 +311,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "🚚 Dropshipping", path: "/admin/settings/dropshipping" },
           { label: "🌍 Multi-Store & Limbi", path: "/admin/settings/multi-store" },
           { label: "👤 Portal client", path: "/admin/settings/customer-portal" },
+          { label: "🏢 Validare CUI/CIF (ANAF)", path: "/admin/settings/cui-validation" },
         ],
       },
       {

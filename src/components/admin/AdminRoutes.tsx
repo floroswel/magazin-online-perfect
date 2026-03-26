@@ -152,6 +152,9 @@ const AdminPOSSettings = lazy(() => import("./settings/AdminPOSSettings"));
 const AdminDropshippingSettings = lazy(() => import("./settings/AdminDropshippingSettings"));
 const AdminMultiStoreSettings = lazy(() => import("./settings/AdminMultiStoreSettings"));
 const AdminCustomerPortalSettings = lazy(() => import("./settings/AdminCustomerPortalSettings"));
+const AdminTrafficAnalytics = lazy(() => import("./reports/AdminTrafficAnalytics"));
+const AdminCartbot = lazy(() => import("./marketing/AdminCartbot"));
+const AdminCuiValidation = lazy(() => import("./settings/AdminCuiValidation"));
 
 export default function AdminRoutes() {
   return (
@@ -255,6 +258,7 @@ export default function AdminRoutes() {
         <Route path="marketing/live-chat" element={<AdminLiveChatSettings />} />
         <Route path="marketing/subscription-boxes" element={<AdminSubscriptionBoxes />} />
         <Route path="marketing/integrations" element={<AdminMarketingIntegrations />} />
+        <Route path="marketing/cartbot" element={<AdminCartbot />} />
         <Route path="marketing/retargeting" element={<AdminRetargeting />} />
 
         {/* ═══════════ CONȚINUT ═══════════ */}
@@ -349,6 +353,7 @@ export default function AdminRoutes() {
         <Route path="reports/financial" element={<AdminFinancialReports />} />
         <Route path="reports/custom" element={<AdminCustomReport />} />
         <Route path="reports/export" element={<AdminExportReports />} />
+        <Route path="reports/traffic" element={<AdminTrafficAnalytics />} />
 
         {/* ═══════════ SETĂRI ═══════════ */}
         <Route path="settings/general" element={<AdminGeneralSettings />} />
@@ -374,6 +379,7 @@ export default function AdminRoutes() {
         <Route path="settings/dropshipping" element={<AdminDropshippingSettings />} />
         <Route path="settings/multi-store" element={<AdminMultiStoreSettings />} />
         <Route path="settings/customer-portal" element={<AdminCustomerPortalSettings />} />
+        <Route path="settings/cui-validation" element={<AdminCuiValidation />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />
