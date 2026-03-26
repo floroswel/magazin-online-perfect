@@ -46,6 +46,8 @@ const AdminAbandonedCarts = lazy(() => import("./customers/AdminAbandonedCarts")
 const AdminBlacklist = lazy(() => import("./customers/AdminBlacklist"));
 const AdminCustomScripts = lazy(() => import("./content/AdminCustomScripts"));
 const AdminAffiliates = lazy(() => import("./marketing/AdminAffiliates"));
+const AdminGiftCards = lazy(() => import("./marketing/AdminGiftCards"));
+const AdminReferrals = lazy(() => import("./marketing/AdminReferrals"));
 const AdminBrands = lazy(() => import("./products/AdminBrands"));
 const AdminReviews = lazy(() => import("./products/AdminReviews"));
 const AdminCmsPages = lazy(() => import("./content/AdminCmsPages"));
