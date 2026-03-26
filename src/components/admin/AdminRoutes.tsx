@@ -144,6 +144,8 @@ const AdminSmartBillSettings = lazy(() => import("./settings/AdminSmartBillSetti
 const AdminPerformance = lazy(() => import("./settings/AdminPerformance"));
 const AdminBackInStock = lazy(() => import("./marketing/AdminBackInStock"));
 const AdminBundles = lazy(() => import("./marketing/AdminBundles"));
+const AdminBundleList = lazy(() => import("./products/AdminBundleList"));
+const AdminBundleSettings = lazy(() => import("./settings/AdminBundleSettings"));
 const AdminPriceAlerts = lazy(() => import("./marketing/AdminPriceAlerts"));
 const AdminSocialProofSettings = lazy(() => import("./marketing/AdminSocialProofSettings"));
 const AdminLiveChatSettings = lazy(() => import("./marketing/AdminLiveChatSettings"));
