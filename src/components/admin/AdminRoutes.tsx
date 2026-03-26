@@ -222,6 +222,7 @@ export default function AdminRoutes() {
         <Route path="stock/alerts" element={<AdminStockAlerts />} />
         <Route path="stock/suppliers" element={<AdminSuppliers />} />
         <Route path="stock/reorder" element={<AdminReorder />} />
+        <Route path="stock/price-lists" element={<AdminPriceLists />} />
 
         {/* ═══════════ CLIENȚI / CRM ═══════════ */}
         <Route path="customers" element={<AdminCustomers />} />
