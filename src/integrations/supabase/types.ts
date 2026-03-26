@@ -782,6 +782,36 @@ export type Database = {
           },
         ]
       }
+      chat_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          role: string
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          role?: string
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          role?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       cms_pages: {
         Row: {
           body_html: string | null
@@ -1715,6 +1745,95 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      gift_card_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          gift_card_id: string
+          id: string
+          order_id: string | null
+          type: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          gift_card_id: string
+          id?: string
+          order_id?: string | null
+          type?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          gift_card_id?: string
+          id?: string
+          order_id?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gift_card_transactions_gift_card_id_fkey"
+            columns: ["gift_card_id"]
+            isOneToOne: false
+            referencedRelation: "gift_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gift_cards: {
+        Row: {
+          code: string
+          created_at: string
+          currency: string
+          current_balance: number
+          expires_at: string | null
+          id: string
+          initial_balance: number
+          message: string | null
+          purchaser_user_id: string | null
+          recipient_email: string | null
+          recipient_name: string | null
+          redeemed_at: string | null
+          redeemed_by: string | null
+          status: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          currency?: string
+          current_balance?: number
+          expires_at?: string | null
+          id?: string
+          initial_balance?: number
+          message?: string | null
+          purchaser_user_id?: string | null
+          recipient_email?: string | null
+          recipient_name?: string | null
+          redeemed_at?: string | null
+          redeemed_by?: string | null
+          status?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          currency?: string
+          current_balance?: number
+          expires_at?: string | null
+          id?: string
+          initial_balance?: number
+          message?: string | null
+          purchaser_user_id?: string | null
+          recipient_email?: string | null
+          recipient_name?: string | null
+          redeemed_at?: string | null
+          redeemed_by?: string | null
+          status?: string
+        }
+        Relationships: []
       }
       group_prices: {
         Row: {
@@ -3113,6 +3232,47 @@ export type Database = {
           },
         ]
       }
+      price_alerts: {
+        Row: {
+          created_at: string
+          id: string
+          notified: boolean | null
+          notified_at: string | null
+          original_price: number
+          product_id: string
+          target_price: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notified?: boolean | null
+          notified_at?: string | null
+          original_price: number
+          product_id: string
+          target_price?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notified?: boolean | null
+          notified_at?: string | null
+          original_price?: number
+          product_id?: string
+          target_price?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_alerts_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       price_lists: {
         Row: {
           code: string
@@ -4249,6 +4409,60 @@ export type Database = {
           },
         ]
       }
+      referrals: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          order_id: string | null
+          referral_code: string
+          referred_coupon_id: string | null
+          referred_email: string | null
+          referred_reward_type: string | null
+          referred_reward_value: number | null
+          referred_user_id: string | null
+          referrer_coupon_id: string | null
+          referrer_reward_type: string | null
+          referrer_reward_value: number | null
+          referrer_user_id: string
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          referral_code: string
+          referred_coupon_id?: string | null
+          referred_email?: string | null
+          referred_reward_type?: string | null
+          referred_reward_value?: number | null
+          referred_user_id?: string | null
+          referrer_coupon_id?: string | null
+          referrer_reward_type?: string | null
+          referrer_reward_value?: number | null
+          referrer_user_id: string
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          referral_code?: string
+          referred_coupon_id?: string | null
+          referred_email?: string | null
+          referred_reward_type?: string | null
+          referred_reward_value?: number | null
+          referred_user_id?: string | null
+          referrer_coupon_id?: string | null
+          referrer_reward_type?: string | null
+          referrer_reward_value?: number | null
+          referrer_user_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
       restock_notifications: {
         Row: {
           created_at: string
@@ -4804,6 +5018,47 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      social_proof_events: {
+        Row: {
+          buyer_city: string | null
+          buyer_first_name: string | null
+          created_at: string
+          event_type: string
+          id: string
+          product_id: string | null
+          product_image: string | null
+          product_name: string
+        }
+        Insert: {
+          buyer_city?: string | null
+          buyer_first_name?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          product_id?: string | null
+          product_image?: string | null
+          product_name: string
+        }
+        Update: {
+          buyer_city?: string | null
+          buyer_first_name?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          product_id?: string | null
+          product_image?: string | null
+          product_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_proof_events_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       staff_metadata: {
         Row: {
@@ -5724,6 +5979,72 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      wishlist_items: {
+        Row: {
+          added_at: string
+          id: string
+          price_at_add: number | null
+          product_id: string
+          wishlist_id: string
+        }
+        Insert: {
+          added_at?: string
+          id?: string
+          price_at_add?: number | null
+          product_id: string
+          wishlist_id: string
+        }
+        Update: {
+          added_at?: string
+          id?: string
+          price_at_add?: number | null
+          product_id?: string
+          wishlist_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wishlist_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wishlist_items_wishlist_id_fkey"
+            columns: ["wishlist_id"]
+            isOneToOne: false
+            referencedRelation: "wishlists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wishlists: {
+        Row: {
+          created_at: string
+          id: string
+          is_public: boolean | null
+          name: string
+          share_token: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_public?: boolean | null
+          name?: string
+          share_token?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_public?: boolean | null
+          name?: string
+          share_token?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {
