@@ -278,6 +278,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Financiar", path: "/admin/reports/financial" },
           { label: "Rapoarte custom", path: "/admin/reports/custom" },
           { label: "Export rapoarte", path: "/admin/reports/export" },
+          { label: "📊 Analitice trafic", path: "/admin/reports/traffic" },
         ],
       },
     ],
