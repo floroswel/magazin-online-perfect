@@ -323,6 +323,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "🔗 Linii de Produse", path: "/admin/settings/product-lines" },
           { label: "✏️ Personalizare Comandă", path: "/admin/settings/customization" },
           { label: "📋 Manager Stocuri", path: "/admin/settings/stock-manager" },
+          { label: "💰 Portofel Virtual", path: "/admin/settings/wallet" },
         ],
       },
       {
