@@ -202,6 +202,7 @@ export default function AdminRoutes() {
         <Route path="products/import-export" element={<AdminImportExport />} />
         <Route path="products/bulk-update" element={<AdminBulkUpdate />} />
         <Route path="products/seo" element={<AdminProductSEO />} />
+        <Route path="products/bundles" element={<AdminBundleList />} />
 
         {/* ═══════════ STOC & DEPOZIT ═══════════ */}
         <Route path="stock" element={<AdminStockOverview />} />
