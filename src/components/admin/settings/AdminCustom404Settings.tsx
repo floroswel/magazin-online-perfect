@@ -132,7 +132,7 @@ export default function AdminCustom404Settings() {
     if (!settings) return;
     setSaving(true);
     const { id, ...rest } = settings;
-    const { error } = await supabase.from("custom_404_settings").update({ ...rest, updated_at: new Date().toISOString() } as any).eq("id", id);
+    const { error } = await (supabase as any).from("custom_404_settings").update({ ...rest, updated_at: new Date().toISOString() }).eq("id", id);
     setSaving(false);
     if (error) {
       toast({ title: "Eroare la salvare", description: error.message, variant: "destructive" });
