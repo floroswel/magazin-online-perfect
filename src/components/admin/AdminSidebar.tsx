@@ -319,6 +319,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "📦 Pachete de Produse", path: "/admin/settings/bundles" },
           { label: "💰 Liste de Prețuri", path: "/admin/settings/price-lists" },
           { label: "🔗 Linii de Produse", path: "/admin/settings/product-lines" },
+          { label: "✏️ Personalizare Comandă", path: "/admin/settings/customization" },
         ],
       },
       {

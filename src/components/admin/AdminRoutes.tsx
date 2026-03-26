@@ -400,6 +400,7 @@ export default function AdminRoutes() {
         <Route path="settings/bundles" element={<AdminBundleSettings />} />
         <Route path="settings/price-lists" element={<AdminPriceListSettings />} />
         <Route path="settings/product-lines" element={<AdminProductLineSettings />} />
+        <Route path="settings/customization" element={<AdminCustomizationSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />
