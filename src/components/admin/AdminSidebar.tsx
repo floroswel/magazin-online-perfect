@@ -191,6 +191,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Rate & Installments", path: "/admin/payments/installments" },
           { label: "Mokka (Config)", path: "/admin/payments/mokka" },
           { label: "🏦 TBI Bank", path: "/admin/payments/tbi" },
+          { label: "💳 PayPo BNPL", path: "/admin/payments/paypo" },
           { label: "Decontări", path: "/admin/payments/settlements" },
           { label: "Reconciliere", path: "/admin/payments/reconciliation" },
         ],

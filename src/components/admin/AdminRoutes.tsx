@@ -158,6 +158,7 @@ const AdminStockManagerSettings = lazy(() => import("./settings/AdminStockManage
 const AdminWalletSettings = lazy(() => import("./settings/AdminWalletSettings"));
 const AdminWalletTransactions = lazy(() => import("./customers/AdminWalletTransactions"));
 const AdminTBISettings = lazy(() => import("./payments/AdminTBISettings"));
+const AdminPayPoSettings = lazy(() => import("./payments/AdminPayPoSettings"));
 const AdminPriceAlerts = lazy(() => import("./marketing/AdminPriceAlerts"));
 const AdminSocialProofSettings = lazy(() => import("./marketing/AdminSocialProofSettings"));
 const AdminLiveChatSettings = lazy(() => import("./marketing/AdminLiveChatSettings"));
@@ -310,6 +311,7 @@ export default function AdminRoutes() {
         <Route path="payments/settlements" element={<AdminSettlements />} />
         <Route path="payments/reconciliation" element={<AdminReconciliation />} />
         <Route path="payments/tbi" element={<AdminTBISettings />} />
+        <Route path="payments/paypo" element={<AdminPayPoSettings />} />
 
         {/* ═══════════ LIVRARE ═══════════ */}
         <Route path="shipping/carriers" element={<AdminCarriers />} />

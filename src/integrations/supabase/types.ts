@@ -3716,6 +3716,180 @@ export type Database = {
           },
         ]
       }
+      paypo_oauth_tokens: {
+        Row: {
+          access_token: string
+          created_at: string
+          environment: string
+          expires_at: string
+          id: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string
+          environment?: string
+          expires_at: string
+          id?: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          environment?: string
+          expires_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      paypo_refunds: {
+        Row: {
+          amount_bani: number
+          created_at: string
+          id: string
+          order_id: string | null
+          paypo_transaction_id: string
+          reference_refund_id: string | null
+          return_id: string | null
+          status: string
+        }
+        Insert: {
+          amount_bani?: number
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          paypo_transaction_id: string
+          reference_refund_id?: string | null
+          return_id?: string | null
+          status?: string
+        }
+        Update: {
+          amount_bani?: number
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          paypo_transaction_id?: string
+          reference_refund_id?: string | null
+          return_id?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      paypo_settings: {
+        Row: {
+          allowed_delivery_ids: Json | null
+          allowed_ips: string | null
+          checkout_display_name: string
+          client_id: string | null
+          client_secret: string | null
+          condition_categories: Json | null
+          condition_countries: Json | null
+          condition_customer_groups: Json | null
+          currency: string
+          delivery_restriction: string
+          demo_mode: boolean
+          enabled: boolean
+          id: string
+          limit_by_customer_type: boolean
+          limit_individual_pct: number | null
+          limit_legal_pct: number | null
+          max_order_value: number
+          min_order_value: number
+          show_footer_icon: boolean
+          show_snippet: boolean
+          updated_at: string
+        }
+        Insert: {
+          allowed_delivery_ids?: Json | null
+          allowed_ips?: string | null
+          checkout_display_name?: string
+          client_id?: string | null
+          client_secret?: string | null
+          condition_categories?: Json | null
+          condition_countries?: Json | null
+          condition_customer_groups?: Json | null
+          currency?: string
+          delivery_restriction?: string
+          demo_mode?: boolean
+          enabled?: boolean
+          id?: string
+          limit_by_customer_type?: boolean
+          limit_individual_pct?: number | null
+          limit_legal_pct?: number | null
+          max_order_value?: number
+          min_order_value?: number
+          show_footer_icon?: boolean
+          show_snippet?: boolean
+          updated_at?: string
+        }
+        Update: {
+          allowed_delivery_ids?: Json | null
+          allowed_ips?: string | null
+          checkout_display_name?: string
+          client_id?: string | null
+          client_secret?: string | null
+          condition_categories?: Json | null
+          condition_countries?: Json | null
+          condition_customer_groups?: Json | null
+          currency?: string
+          delivery_restriction?: string
+          demo_mode?: boolean
+          enabled?: boolean
+          id?: string
+          limit_by_customer_type?: boolean
+          limit_individual_pct?: number | null
+          limit_legal_pct?: number | null
+          max_order_value?: number
+          min_order_value?: number
+          show_footer_icon?: boolean
+          show_snippet?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      paypo_transactions: {
+        Row: {
+          amount_bani: number
+          created_at: string
+          hmac_verified: boolean
+          id: string
+          last_notification_at: string | null
+          order_id: string | null
+          paypo_reference_id: string | null
+          paypo_transaction_id: string | null
+          redirect_url: string | null
+          settlement_status: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount_bani?: number
+          created_at?: string
+          hmac_verified?: boolean
+          id?: string
+          last_notification_at?: string | null
+          order_id?: string | null
+          paypo_reference_id?: string | null
+          paypo_transaction_id?: string | null
+          redirect_url?: string | null
+          settlement_status?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_bani?: number
+          created_at?: string
+          hmac_verified?: boolean
+          id?: string
+          last_notification_at?: string | null
+          order_id?: string | null
+          paypo_reference_id?: string | null
+          paypo_transaction_id?: string | null
+          redirect_url?: string | null
+          settlement_status?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       price_alerts: {
         Row: {
           created_at: string
