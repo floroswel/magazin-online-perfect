@@ -91,6 +91,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Alerte stoc", path: "/admin/stock/alerts" },
           { label: "Furnizori", path: "/admin/stock/suppliers" },
           { label: "Aprovizionare", path: "/admin/stock/reorder" },
+          { label: "💰 Liste de Prețuri", path: "/admin/stock/price-lists" },
         ],
       },
     ],
