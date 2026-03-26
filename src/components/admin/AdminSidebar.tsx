@@ -329,6 +329,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "📋 Manager Stocuri", path: "/admin/settings/stock-manager" },
           { label: "💰 Portofel Virtual", path: "/admin/settings/wallet" },
           { label: "🔄 360° Slider", path: "/admin/settings/360-slider" },
+          { label: "🚫 Pagină 404 Custom", path: "/admin/settings/custom-404" },
         ],
       },
       {
