@@ -142,6 +142,16 @@ const AdminReturnSettings = lazy(() => import("./settings/AdminReturnSettings"))
 const AdminInvoiceSettings = lazy(() => import("./settings/AdminInvoiceSettings"));
 const AdminSmartBillSettings = lazy(() => import("./settings/AdminSmartBillSettings"));
 const AdminPerformance = lazy(() => import("./settings/AdminPerformance"));
+const AdminBackInStock = lazy(() => import("./marketing/AdminBackInStock"));
+const AdminBundles = lazy(() => import("./marketing/AdminBundles"));
+const AdminPriceAlerts = lazy(() => import("./marketing/AdminPriceAlerts"));
+const AdminSocialProofSettings = lazy(() => import("./marketing/AdminSocialProofSettings"));
+const AdminLiveChatSettings = lazy(() => import("./marketing/AdminLiveChatSettings"));
+const AdminSubscriptionBoxes = lazy(() => import("./marketing/AdminSubscriptionBoxes"));
+const AdminPOSSettings = lazy(() => import("./settings/AdminPOSSettings"));
+const AdminDropshippingSettings = lazy(() => import("./settings/AdminDropshippingSettings"));
+const AdminMultiStoreSettings = lazy(() => import("./settings/AdminMultiStoreSettings"));
+const AdminCustomerPortalSettings = lazy(() => import("./settings/AdminCustomerPortalSettings"));
 
 export default function AdminRoutes() {
   return (
