@@ -406,6 +406,7 @@ export default function AdminRoutes() {
         <Route path="settings/price-lists" element={<AdminPriceListSettings />} />
         <Route path="settings/product-lines" element={<AdminProductLineSettings />} />
         <Route path="settings/customization" element={<AdminCustomizationSettings />} />
+        <Route path="settings/stock-manager" element={<AdminStockManagerSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />

@@ -321,6 +321,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "💰 Liste de Prețuri", path: "/admin/settings/price-lists" },
           { label: "🔗 Linii de Produse", path: "/admin/settings/product-lines" },
           { label: "✏️ Personalizare Comandă", path: "/admin/settings/customization" },
+          { label: "📋 Manager Stocuri", path: "/admin/settings/stock-manager" },
         ],
       },
       {
