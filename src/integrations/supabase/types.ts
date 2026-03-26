@@ -4583,6 +4583,101 @@ export type Database = {
         }
         Relationships: []
       }
+      product_360_frames: {
+        Row: {
+          created_at: string
+          file_size: number
+          frame_number: number
+          height: number | null
+          id: string
+          original_filename: string | null
+          product_id: string
+          public_url: string
+          slider_id: string
+          storage_path: string
+          width: number | null
+        }
+        Insert: {
+          created_at?: string
+          file_size?: number
+          frame_number?: number
+          height?: number | null
+          id?: string
+          original_filename?: string | null
+          product_id: string
+          public_url: string
+          slider_id: string
+          storage_path: string
+          width?: number | null
+        }
+        Update: {
+          created_at?: string
+          file_size?: number
+          frame_number?: number
+          height?: number | null
+          id?: string
+          original_filename?: string | null
+          product_id?: string
+          public_url?: string
+          slider_id?: string
+          storage_path?: string
+          width?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_360_frames_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_360_frames_slider_id_fkey"
+            columns: ["slider_id"]
+            isOneToOne: false
+            referencedRelation: "product_360_sliders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_360_sliders: {
+        Row: {
+          auto_rotate: boolean | null
+          created_at: string
+          frame_count: number
+          id: string
+          product_id: string
+          rotation_speed: number | null
+          updated_at: string
+        }
+        Insert: {
+          auto_rotate?: boolean | null
+          created_at?: string
+          frame_count?: number
+          id?: string
+          product_id: string
+          rotation_speed?: number | null
+          updated_at?: string
+        }
+        Update: {
+          auto_rotate?: boolean | null
+          created_at?: string
+          frame_count?: number
+          id?: string
+          product_id?: string
+          rotation_speed?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_360_sliders_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: true
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_attributes: {
         Row: {
           created_at: string | null
@@ -6517,6 +6612,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      slider_360_settings: {
+        Row: {
+          auto_rotate_default: boolean
+          default_frame_count: number
+          enabled: boolean
+          id: string
+          rotation_speed_default: number
+          show_360_badge: boolean
+          show_controls: boolean
+          updated_at: string
+        }
+        Insert: {
+          auto_rotate_default?: boolean
+          default_frame_count?: number
+          enabled?: boolean
+          id?: string
+          rotation_speed_default?: number
+          show_360_badge?: boolean
+          show_controls?: boolean
+          updated_at?: string
+        }
+        Update: {
+          auto_rotate_default?: boolean
+          default_frame_count?: number
+          enabled?: boolean
+          id?: string
+          rotation_speed_default?: number
+          show_360_badge?: boolean
+          show_controls?: boolean
+          updated_at?: string
+        }
+        Relationships: []
       }
       smartbill_invoices: {
         Row: {

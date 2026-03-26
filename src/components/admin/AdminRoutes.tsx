@@ -178,6 +178,7 @@ const AdminAIPendingApprovals = lazy(() => import("./ai/AdminAIPendingApprovals"
 const AdminAIBulkJobs = lazy(() => import("./ai/AdminAIBulkJobs"));
 const AdminAIUsageStats = lazy(() => import("./ai/AdminAIUsageStats"));
 const AdminSamedaySettings = lazy(() => import("./shipping/AdminSamedaySettings"));
+const Admin360SliderSettings = lazy(() => import("./settings/Admin360SliderSettings"));
 
 export default function AdminRoutes() {
   return (
@@ -420,6 +421,7 @@ export default function AdminRoutes() {
         <Route path="settings/customization" element={<AdminCustomizationSettings />} />
         <Route path="settings/stock-manager" element={<AdminStockManagerSettings />} />
         <Route path="settings/wallet" element={<AdminWalletSettings />} />
+        <Route path="settings/360-slider" element={<Admin360SliderSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />
