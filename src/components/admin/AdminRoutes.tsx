@@ -370,6 +370,10 @@ export default function AdminRoutes() {
         <Route path="settings/invoices" element={<AdminInvoiceSettings />} />
         <Route path="settings/smartbill" element={<AdminSmartBillSettings />} />
         <Route path="settings/performance" element={<AdminPerformance />} />
+        <Route path="settings/pos" element={<AdminPOSSettings />} />
+        <Route path="settings/dropshipping" element={<AdminDropshippingSettings />} />
+        <Route path="settings/multi-store" element={<AdminMultiStoreSettings />} />
+        <Route path="settings/customer-portal" element={<AdminCustomerPortalSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />
