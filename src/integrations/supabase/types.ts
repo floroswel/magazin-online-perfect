@@ -1657,6 +1657,84 @@ export type Database = {
         }
         Relationships: []
       }
+      customization_field_products: {
+        Row: {
+          created_at: string
+          field_id: string
+          id: string
+          product_id: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          field_id: string
+          id?: string
+          product_id: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          field_id?: string
+          id?: string
+          product_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customization_field_products_field_id_fkey"
+            columns: ["field_id"]
+            isOneToOne: false
+            referencedRelation: "customization_fields"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customization_field_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customization_fields: {
+        Row: {
+          created_at: string
+          display_name: string
+          field_type: string
+          hint_text: string | null
+          id: string
+          internal_name: string
+          is_required: boolean
+          location: string
+          settings: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          field_type?: string
+          hint_text?: string | null
+          id?: string
+          internal_name: string
+          is_required?: boolean
+          location?: string
+          settings?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          field_type?: string
+          hint_text?: string | null
+          id?: string
+          internal_name?: string
+          is_required?: boolean
+          location?: string
+          settings?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       dynamic_categories: {
         Row: {
           created_at: string
@@ -3014,6 +3092,70 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      order_customization_values: {
+        Row: {
+          created_at: string
+          field_id: string | null
+          id: string
+          order_id: string | null
+          order_item_id: string | null
+          product_id: string | null
+          value_boolean: boolean | null
+          value_files: Json | null
+          value_list_option: string | null
+          value_numeric: number | null
+          value_text: string | null
+        }
+        Insert: {
+          created_at?: string
+          field_id?: string | null
+          id?: string
+          order_id?: string | null
+          order_item_id?: string | null
+          product_id?: string | null
+          value_boolean?: boolean | null
+          value_files?: Json | null
+          value_list_option?: string | null
+          value_numeric?: number | null
+          value_text?: string | null
+        }
+        Update: {
+          created_at?: string
+          field_id?: string | null
+          id?: string
+          order_id?: string | null
+          order_item_id?: string | null
+          product_id?: string | null
+          value_boolean?: boolean | null
+          value_files?: Json | null
+          value_list_option?: string | null
+          value_numeric?: number | null
+          value_text?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_customization_values_field_id_fkey"
+            columns: ["field_id"]
+            isOneToOne: false
+            referencedRelation: "customization_fields"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_customization_values_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_customization_values_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       order_items: {
         Row: {
