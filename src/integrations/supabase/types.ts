@@ -3582,6 +3582,87 @@ export type Database = {
           },
         ]
       }
+      price_list_groups: {
+        Row: {
+          created_at: string
+          customer_group_id: string
+          id: string
+          price_list_id: string
+        }
+        Insert: {
+          created_at?: string
+          customer_group_id: string
+          id?: string
+          price_list_id: string
+        }
+        Update: {
+          created_at?: string
+          customer_group_id?: string
+          id?: string
+          price_list_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_list_groups_customer_group_id_fkey"
+            columns: ["customer_group_id"]
+            isOneToOne: false
+            referencedRelation: "customer_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "price_list_groups_price_list_id_fkey"
+            columns: ["price_list_id"]
+            isOneToOne: false
+            referencedRelation: "price_lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      price_list_items: {
+        Row: {
+          created_at: string
+          id: string
+          preferential_price: number
+          price_list_id: string
+          product_id: string
+          sku: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          preferential_price?: number
+          price_list_id: string
+          product_id: string
+          sku?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          preferential_price?: number
+          price_list_id?: string
+          product_id?: string
+          sku?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_list_items_price_list_id_fkey"
+            columns: ["price_list_id"]
+            isOneToOne: false
+            referencedRelation: "price_lists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "price_list_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       price_lists: {
         Row: {
           code: string
