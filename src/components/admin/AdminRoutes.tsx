@@ -178,6 +178,7 @@ const AdminAIPendingApprovals = lazy(() => import("./ai/AdminAIPendingApprovals"
 const AdminAIBulkJobs = lazy(() => import("./ai/AdminAIBulkJobs"));
 const AdminAIUsageStats = lazy(() => import("./ai/AdminAIUsageStats"));
 const AdminSamedaySettings = lazy(() => import("./shipping/AdminSamedaySettings"));
+const Admin360SliderSettings = lazy(() => import("./settings/Admin360SliderSettings"));
 
 export default function AdminRoutes() {
   return (
