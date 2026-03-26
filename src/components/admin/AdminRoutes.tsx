@@ -158,6 +158,7 @@ const AdminStockManagerSettings = lazy(() => import("./settings/AdminStockManage
 const AdminWalletSettings = lazy(() => import("./settings/AdminWalletSettings"));
 const AdminWalletTransactions = lazy(() => import("./customers/AdminWalletTransactions"));
 const AdminTBISettings = lazy(() => import("./payments/AdminTBISettings"));
+const AdminPayPoSettings = lazy(() => import("./payments/AdminPayPoSettings"));
 const AdminPriceAlerts = lazy(() => import("./marketing/AdminPriceAlerts"));
 const AdminSocialProofSettings = lazy(() => import("./marketing/AdminSocialProofSettings"));
 const AdminLiveChatSettings = lazy(() => import("./marketing/AdminLiveChatSettings"));
