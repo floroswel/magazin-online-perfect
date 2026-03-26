@@ -81,7 +81,7 @@ export default function AdminBackInStock() {
                           {product?.stock || 0} buc
                         </Badge>
                       </TableCell>
-                      <TableCell><Badge variant="secondary">{items.length} persoane</Badge></TableCell>
+                      <TableCell><Badge variant="secondary">{(items as any[]).length} persoane</Badge></TableCell>
                       <TableCell>
                         {(product?.stock || 0) > 0 && (
                           <Button size="sm" onClick={() => sendNotifications(pid)}>

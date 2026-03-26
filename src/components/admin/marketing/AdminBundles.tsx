@@ -34,17 +34,21 @@ export default function AdminBundles() {
     },
   });
 
+  const saveBundles = async (updated: any[]) => {
+    await supabase.from("app_settings").upsert({ key: "product_bundles_list", value_json: updated as any, updated_at: new Date().toISOString() }, { onConflict: "key" });
+    queryClient.invalidateQueries({ queryKey: ["admin-bundles"] });
+  };
+
   const createBundle = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("product_bundles").insert({
-        name: form.name, slug: form.slug || form.name.toLowerCase().replace(/\s+/g, "-"),
+      const newBundle = {
+        id: crypto.randomUUID(), name: form.name, slug: form.slug || form.name.toLowerCase().replace(/\s+/g, "-"),
         price_mode: form.price_mode, fixed_price: form.fixed_price, discount_percent: form.discount_percent,
-        is_active: form.is_active,
-      });
-      if (error) throw error;
+        is_active: form.is_active, created_at: new Date().toISOString(), product_bundle_items: [],
+      };
+      await saveBundles([...bundles, newBundle]);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-bundles"] });
       setDialogOpen(false);
       setForm({ name: "", slug: "", price_mode: "fixed", fixed_price: 0, discount_percent: 10, is_active: true });
       toast.success("Bundle creat!");
@@ -53,15 +57,12 @@ export default function AdminBundles() {
   });
 
   const toggleActive = async (id: string, active: boolean) => {
-    await supabase.from("product_bundles").update({ is_active: !active }).eq("id", id);
-    queryClient.invalidateQueries({ queryKey: ["admin-bundles"] });
+    await saveBundles(bundles.map((b: any) => b.id === id ? { ...b, is_active: !active } : b));
     toast.success(active ? "Bundle dezactivat" : "Bundle activat");
   };
 
   const deleteBundle = async (id: string) => {
-    await supabase.from("product_bundle_items").delete().eq("bundle_id", id);
-    await supabase.from("product_bundles").delete().eq("id", id);
-    queryClient.invalidateQueries({ queryKey: ["admin-bundles"] });
+    await saveBundles(bundles.filter((b: any) => b.id !== id));
     toast.success("Bundle șters!");
   };
 
