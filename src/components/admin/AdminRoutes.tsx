@@ -177,6 +177,7 @@ const AdminAIGeneratorSettings = lazy(() => import("./ai/AdminAIGeneratorSetting
 const AdminAIPendingApprovals = lazy(() => import("./ai/AdminAIPendingApprovals"));
 const AdminAIBulkJobs = lazy(() => import("./ai/AdminAIBulkJobs"));
 const AdminAIUsageStats = lazy(() => import("./ai/AdminAIUsageStats"));
+const AdminSamedaySettings = lazy(() => import("./shipping/AdminSamedaySettings"));
 
 export default function AdminRoutes() {
   return (
