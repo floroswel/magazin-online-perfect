@@ -475,20 +475,58 @@ export default function AdminReturns() {
                     </div>
                   </div>
 
-                  <div>
-                    <Label>Rezoluție</Label>
-                    <Select value={editResolution} onValueChange={setEditResolution}>
-                      <SelectTrigger><SelectValue placeholder="Selectează rezoluția" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="refund">Rambursare integrală</SelectItem>
-                        <SelectItem value="partial_refund">Rambursare parțială</SelectItem>
-                        <SelectItem value="replacement">Înlocuire produs</SelectItem>
-                        <SelectItem value="repair">Reparație</SelectItem>
-                        <SelectItem value="credit">Credit magazin</SelectItem>
-                        <SelectItem value="rejected">Respins</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                   <div>
+                     <Label>Rezoluție</Label>
+                     <Select value={editResolution} onValueChange={setEditResolution}>
+                       <SelectTrigger><SelectValue placeholder="Selectează rezoluția" /></SelectTrigger>
+                       <SelectContent>
+                         <SelectItem value="refund">Rambursare integrală</SelectItem>
+                         <SelectItem value="partial_refund">Rambursare parțială</SelectItem>
+                         <SelectItem value="exchange">🔄 Schimb produs (exchange)</SelectItem>
+                         <SelectItem value="replacement">Înlocuire produs (identic)</SelectItem>
+                         <SelectItem value="repair">Reparație</SelectItem>
+                         <SelectItem value="credit">Credit magazin</SelectItem>
+                         <SelectItem value="rejected">Respins</SelectItem>
+                       </SelectContent>
+                     </Select>
+                   </div>
+
+                   {/* Exchange product details */}
+                   {(editResolution === "exchange" || detail.type === "exchange") && (
+                     <div className="border border-indigo-500/30 rounded-lg p-4 space-y-2 bg-indigo-500/5">
+                       <p className="font-medium text-foreground text-sm flex items-center gap-2">
+                         <ArrowLeftRight className="w-4 h-4 text-indigo-400" /> Detalii Schimb Produs
+                       </p>
+                       <p className="text-xs text-muted-foreground">
+                         Clientul va primi produsul de schimb după recepționarea celui returnat.
+                         Diferența de preț (dacă există) va fi gestionată automat.
+                       </p>
+                       {detail.return_items && detail.return_items.length > 0 && (
+                         <div className="space-y-2 pt-1">
+                           {detail.return_items.map((ri: any) => (
+                             <div key={ri.id} className="bg-muted/30 rounded p-2 text-sm">
+                               <div className="flex items-center justify-between">
+                                 <span className="font-medium">{ri.product_name} × {ri.quantity}</span>
+                                 {ri.exchange_product_id ? (
+                                   <Badge className="bg-indigo-500/20 text-indigo-400 border-indigo-500/30">
+                                     <ArrowLeftRight className="w-3 h-3 mr-1" /> Produs schimb selectat
+                                   </Badge>
+                                 ) : (
+                                   <Badge variant="outline" className="text-xs">Niciun produs schimb</Badge>
+                                 )}
+                               </div>
+                               {ri.exchange_product_name && (
+                                 <p className="text-xs text-muted-foreground mt-1">
+                                   ➜ Schimb cu: <span className="font-medium text-foreground">{ri.exchange_product_name}</span>
+                                   {ri.exchange_variant && <span> ({ri.exchange_variant})</span>}
+                                 </p>
+                               )}
+                             </div>
+                           ))}
+                         </div>
+                       )}
+                     </div>
+                   )}
 
                   <div>
                     <Label>Note admin</Label>

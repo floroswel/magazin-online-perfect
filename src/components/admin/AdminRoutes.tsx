@@ -352,6 +352,7 @@ export default function AdminRoutes() {
         <Route path="reports/financial" element={<AdminFinancialReports />} />
         <Route path="reports/custom" element={<AdminCustomReport />} />
         <Route path="reports/export" element={<AdminExportReports />} />
+        <Route path="reports/traffic" element={<AdminTrafficAnalytics />} />
 
         {/* ═══════════ SETĂRI ═══════════ */}
         <Route path="settings/general" element={<AdminGeneralSettings />} />
