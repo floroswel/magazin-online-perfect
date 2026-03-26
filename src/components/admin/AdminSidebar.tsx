@@ -92,6 +92,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Picking list", path: "/admin/stock/picking" },
           { label: "Alerte stoc", path: "/admin/stock/alerts" },
           { label: "Furnizori", path: "/admin/stock/suppliers" },
+          { label: "📋 Comenzi Furnizor", path: "/admin/stock/purchase-orders" },
           { label: "Aprovizionare", path: "/admin/stock/reorder" },
           { label: "💰 Liste de Prețuri", path: "/admin/stock/price-lists" },
         ],
