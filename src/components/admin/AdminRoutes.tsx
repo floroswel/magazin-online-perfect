@@ -142,6 +142,16 @@ const AdminReturnSettings = lazy(() => import("./settings/AdminReturnSettings"))
 const AdminInvoiceSettings = lazy(() => import("./settings/AdminInvoiceSettings"));
 const AdminSmartBillSettings = lazy(() => import("./settings/AdminSmartBillSettings"));
 const AdminPerformance = lazy(() => import("./settings/AdminPerformance"));
+const AdminBackInStock = lazy(() => import("./marketing/AdminBackInStock"));
+const AdminBundles = lazy(() => import("./marketing/AdminBundles"));
+const AdminPriceAlerts = lazy(() => import("./marketing/AdminPriceAlerts"));
+const AdminSocialProofSettings = lazy(() => import("./marketing/AdminSocialProofSettings"));
+const AdminLiveChatSettings = lazy(() => import("./marketing/AdminLiveChatSettings"));
+const AdminSubscriptionBoxes = lazy(() => import("./marketing/AdminSubscriptionBoxes"));
+const AdminPOSSettings = lazy(() => import("./settings/AdminPOSSettings"));
+const AdminDropshippingSettings = lazy(() => import("./settings/AdminDropshippingSettings"));
+const AdminMultiStoreSettings = lazy(() => import("./settings/AdminMultiStoreSettings"));
+const AdminCustomerPortalSettings = lazy(() => import("./settings/AdminCustomerPortalSettings"));
 
 export default function AdminRoutes() {
   return (
@@ -238,6 +248,12 @@ export default function AdminRoutes() {
         <Route path="marketing/recommendations" element={<AdminRecommendations />} />
         <Route path="marketing/ab-tests" element={<AdminABTests />} />
         <Route path="marketing/reports" element={<AdminReportPage type="marketing" title="Rapoarte Marketing" description="Conversie campanii, utilizare vouchere, ROI per canal." />} />
+        <Route path="marketing/back-in-stock" element={<AdminBackInStock />} />
+        <Route path="marketing/bundles" element={<AdminBundles />} />
+        <Route path="marketing/price-alerts" element={<AdminPriceAlerts />} />
+        <Route path="marketing/social-proof" element={<AdminSocialProofSettings />} />
+        <Route path="marketing/live-chat" element={<AdminLiveChatSettings />} />
+        <Route path="marketing/subscription-boxes" element={<AdminSubscriptionBoxes />} />
         <Route path="marketing/integrations" element={<AdminMarketingIntegrations />} />
         <Route path="marketing/retargeting" element={<AdminRetargeting />} />
 
@@ -354,6 +370,10 @@ export default function AdminRoutes() {
         <Route path="settings/invoices" element={<AdminInvoiceSettings />} />
         <Route path="settings/smartbill" element={<AdminSmartBillSettings />} />
         <Route path="settings/performance" element={<AdminPerformance />} />
+        <Route path="settings/pos" element={<AdminPOSSettings />} />
+        <Route path="settings/dropshipping" element={<AdminDropshippingSettings />} />
+        <Route path="settings/multi-store" element={<AdminMultiStoreSettings />} />
+        <Route path="settings/customer-portal" element={<AdminCustomerPortalSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />
