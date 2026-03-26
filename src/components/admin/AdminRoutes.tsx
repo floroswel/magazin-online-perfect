@@ -309,6 +309,7 @@ export default function AdminRoutes() {
         <Route path="payments/mokka" element={<AdminMokkaSettings />} />
         <Route path="payments/settlements" element={<AdminSettlements />} />
         <Route path="payments/reconciliation" element={<AdminReconciliation />} />
+        <Route path="payments/tbi" element={<AdminTBISettings />} />
 
         {/* ═══════════ LIVRARE ═══════════ */}
         <Route path="shipping/carriers" element={<AdminCarriers />} />
