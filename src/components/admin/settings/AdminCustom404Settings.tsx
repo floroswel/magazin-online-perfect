@@ -109,14 +109,14 @@ export default function AdminCustom404Settings() {
   }, []);
 
   async function loadSettings() {
-    const { data } = await supabase.from("custom_404_settings").select("*").limit(1).single();
+    const { data } = await (supabase as any).from("custom_404_settings").select("*").limit(1).single();
     if (data) {
       setSettings({
         ...data,
-        buttons: Array.isArray(data.buttons) ? data.buttons as unknown as ButtonConfig[] : JSON.parse(data.buttons as string),
-        recommended_product_ids: data.recommended_product_ids as string[] | null,
-        category_ids: data.category_ids as string[] | null,
-      });
+        buttons: Array.isArray(data.buttons) ? data.buttons : JSON.parse(data.buttons),
+        recommended_product_ids: data.recommended_product_ids || null,
+        category_ids: data.category_ids || null,
+      } as Settings404);
     }
     setLoading(false);
   }
