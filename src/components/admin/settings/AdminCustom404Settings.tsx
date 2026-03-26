@@ -165,7 +165,7 @@ export default function AdminCustom404Settings() {
   }
 
   async function exportCsv() {
-    const { data } = await supabase.from("custom_404_stats" as any).select("*").limit(1000);
+    const { data } = await (supabase as any).from("custom_404_stats").select("*").limit(1000);
     if (!data || !data.length) return;
     const rows = data as LogStat[];
     const csv = ["URL,Vizite,Prima accesare,Ultima accesare,Referreri unici"]
