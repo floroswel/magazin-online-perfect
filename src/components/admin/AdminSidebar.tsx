@@ -305,6 +305,10 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Badge-uri legale footer", path: "/admin/settings/footer-badges" },
           { label: "Setări footer", path: "/admin/settings/footer" },
           { label: "⚡ Performanță", path: "/admin/settings/performance" },
+          { label: "🖥️ POS (Point of Sale)", path: "/admin/settings/pos" },
+          { label: "🚚 Dropshipping", path: "/admin/settings/dropshipping" },
+          { label: "🌍 Multi-Store & Limbi", path: "/admin/settings/multi-store" },
+          { label: "👤 Portal client", path: "/admin/settings/customer-portal" },
         ],
       },
       {
