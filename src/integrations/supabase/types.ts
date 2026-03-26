@@ -1671,6 +1671,129 @@ export type Database = {
         }
         Relationships: []
       }
+      custom_404_log: {
+        Row: {
+          accessed_at: string
+          id: string
+          ip_hash: string | null
+          referrer: string | null
+          url_accessed: string
+          user_agent: string | null
+        }
+        Insert: {
+          accessed_at?: string
+          id?: string
+          ip_hash?: string | null
+          referrer?: string | null
+          url_accessed: string
+          user_agent?: string | null
+        }
+        Update: {
+          accessed_at?: string
+          id?: string
+          ip_hash?: string | null
+          referrer?: string | null
+          url_accessed?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      custom_404_settings: {
+        Row: {
+          background_color: string | null
+          background_image_url: string | null
+          buttons: Json
+          categories_title: string
+          category_ids: Json | null
+          enabled: boolean
+          id: string
+          image_alignment: string
+          image_max_width: string
+          image_url: string | null
+          meta_title: string
+          recommended_count: number
+          recommended_product_ids: Json | null
+          recommended_section_title: string
+          recommended_show_add_to_cart: boolean
+          recommended_show_price: boolean
+          recommended_source: string
+          search_placeholder: string
+          show_categories: boolean
+          show_recommended_products: boolean
+          show_search: boolean
+          subtitle_color: string
+          subtitle_font_size: number
+          subtitle_text: string
+          title_bold: boolean
+          title_color: string
+          title_font_size: number
+          title_text: string
+          updated_at: string
+        }
+        Insert: {
+          background_color?: string | null
+          background_image_url?: string | null
+          buttons?: Json
+          categories_title?: string
+          category_ids?: Json | null
+          enabled?: boolean
+          id?: string
+          image_alignment?: string
+          image_max_width?: string
+          image_url?: string | null
+          meta_title?: string
+          recommended_count?: number
+          recommended_product_ids?: Json | null
+          recommended_section_title?: string
+          recommended_show_add_to_cart?: boolean
+          recommended_show_price?: boolean
+          recommended_source?: string
+          search_placeholder?: string
+          show_categories?: boolean
+          show_recommended_products?: boolean
+          show_search?: boolean
+          subtitle_color?: string
+          subtitle_font_size?: number
+          subtitle_text?: string
+          title_bold?: boolean
+          title_color?: string
+          title_font_size?: number
+          title_text?: string
+          updated_at?: string
+        }
+        Update: {
+          background_color?: string | null
+          background_image_url?: string | null
+          buttons?: Json
+          categories_title?: string
+          category_ids?: Json | null
+          enabled?: boolean
+          id?: string
+          image_alignment?: string
+          image_max_width?: string
+          image_url?: string | null
+          meta_title?: string
+          recommended_count?: number
+          recommended_product_ids?: Json | null
+          recommended_section_title?: string
+          recommended_show_add_to_cart?: boolean
+          recommended_show_price?: boolean
+          recommended_source?: string
+          search_placeholder?: string
+          show_categories?: boolean
+          show_recommended_products?: boolean
+          show_search?: boolean
+          subtitle_color?: string
+          subtitle_font_size?: number
+          subtitle_text?: string
+          title_bold?: boolean
+          title_color?: string
+          title_font_size?: number
+          title_text?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       custom_scripts: {
         Row: {
           content: string
@@ -8281,7 +8404,16 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      custom_404_stats: {
+        Row: {
+          first_seen: string | null
+          last_seen: string | null
+          referrer_count: number | null
+          url_accessed: string | null
+          visit_count: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       count_dynamic_category_products: {

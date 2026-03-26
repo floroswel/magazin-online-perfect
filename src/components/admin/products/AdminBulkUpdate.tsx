@@ -21,7 +21,7 @@ export default function AdminBulkUpdate() {
 
   useEffect(() => {
     Promise.all([
-      supabase.from("products").select("id,name,price,stock,category_id,brand_id,brands(name)").order("name").limit(500),
+      (supabase as any).from("products").select("id,name,price,stock,category_id,brand_id,brands(name)").order("name").limit(500),
       supabase.from("categories").select("id,name"),
     ]).then(([p, c]) => {
       setProducts(p.data || []);
@@ -60,7 +60,7 @@ export default function AdminBulkUpdate() {
 
     toast({ title: `${ids.length} produse actualizate` });
     setSelected(new Set());
-    const { data } = await supabase.from("products").select("id,name,price,stock,category_id,brand_id,brands(name)").order("name").limit(500);
+    const { data } = await (supabase as any).from("products").select("id,name,price,stock,category_id,brand_id,brands(name)").order("name").limit(500);
     setProducts(data || []);
   };
 

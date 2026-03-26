@@ -55,7 +55,7 @@ export default function ProductDetail() {
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const { data: prod } = await supabase.from("products").select("*, brands(name)").eq("slug", slug).single();
+      const { data: prod } = await (supabase as any).from("products").select("*, brands(name)").eq("slug", slug).single();
       if (!prod) { setLoading(false); return; }
       setProduct(prod);
 
