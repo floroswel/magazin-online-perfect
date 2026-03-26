@@ -562,6 +562,11 @@ export default function Account() {
             <GiftCardTab />
           </TabsContent>
 
+          {/* WALLET TAB */}
+          <TabsContent value="wallet" className="mt-4">
+            <WalletTab />
+          </TabsContent>
+
           {/* PREFERENCES TAB */}
           <TabsContent value="preferences" className="mt-4 space-y-4">
             <Card>
