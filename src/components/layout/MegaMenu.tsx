@@ -77,9 +77,9 @@ export default function MegaMenu() {
               >
                 <Link
                   to={catLink}
-                  className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-foreground hover:text-primary rounded-md hover:bg-muted transition-colors whitespace-nowrap"
+                  className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-foreground hover:text-primary border-b-2 border-transparent hover:border-primary transition-all whitespace-nowrap"
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="h-4 w-4 text-primary" />
                   {cat.name}
                   {children.length > 0 && <ChevronRight className="h-3 w-3 ml-0.5 opacity-50" />}
                 </Link>
