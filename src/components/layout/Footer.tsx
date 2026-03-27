@@ -151,8 +151,8 @@ export default function Footer() {
                 </Button>
               </div>
               <label className="flex items-start gap-2 cursor-pointer">
-                <input type="checkbox" checked={gdprConsent} onChange={e => setGdprConsent(e.target.checked)} className="mt-0.5 rounded-sm border-secondary-foreground/30" />
-                <span className="text-[11px] text-secondary-foreground/40">Sunt de acord să primesc emailuri.</span>
+                <input type="checkbox" checked={gdprConsent} onChange={e => setGdprConsent(e.target.checked)} className="mt-0.5 rounded-sm border-border" />
+                <span className="text-[11px] text-muted-foreground">Sunt de acord să primesc emailuri.</span>
               </label>
             </form>
             <div className="mt-6 space-y-2 text-sm text-secondary-foreground/50">
