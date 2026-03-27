@@ -140,13 +140,13 @@ export default function Footer() {
 
           {/* Newsletter */}
           <div>
-            <h4 className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-5">Newsletter</h4>
-            <p className="text-sm text-muted-foreground mb-4">Primește -10% la prima comandă și noutăți despre colecții.</p>
+            <h4 className="text-xs font-bold tracking-wide uppercase text-primary-foreground/60 mb-5">Newsletter</h4>
+            <p className="text-sm text-primary-foreground/70 mb-4">Primește -10% la prima comandă și noutăți despre colecții.</p>
             <form onSubmit={handleSubscribe} className="space-y-3">
               <div className="flex">
                 <Input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}
-                  className="bg-transparent border-border text-foreground placeholder:text-muted-foreground rounded-md flex-1" required />
-                <Button type="submit" size="icon" disabled={loading} className="shrink-0 bg-primary hover:bg-primary/80 text-primary-foreground rounded-md w-10">
+                  className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 rounded-l-lg rounded-r-none flex-1" required />
+                <Button type="submit" size="icon" disabled={loading} className="shrink-0 bg-accent hover:bg-accent/90 text-accent-foreground rounded-r-lg rounded-l-none w-10">
                   <Mail className="w-4 h-4" />
                 </Button>
               </div>
