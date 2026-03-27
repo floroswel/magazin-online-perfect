@@ -18,7 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
 
-import SubscriptionOption from "@/components/products/SubscriptionOption";
+
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
@@ -315,10 +315,6 @@ export default function ProductDetail() {
               </Button>
             </div>
 
-            {/* Subscription option */}
-            {activeStock > 0 && (
-              <SubscriptionOption product={product} quantity={qty} selectedVariant={selectedVariant} hasVariants={hasVariants} />
-            )}
 
             {/* Stock status */}
             {(() => {

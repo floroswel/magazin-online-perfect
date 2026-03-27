@@ -43,7 +43,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Anulate", path: "/admin/orders/cancelled" },
           { label: "Comenzi marketplace", path: "/admin/orders/marketplace" },
           { label: "Comenzi B2B", path: "/admin/orders/b2b" },
-          { label: "Comenzi recurente", path: "/admin/orders/recurring" },
+          
           { label: "Comenzi cu probleme", path: "/admin/orders/issues" },
           { label: "Facturi & documente", path: "/admin/orders/invoices" },
           { label: "Retururi (RMA)", path: "/admin/orders/returns" },
@@ -147,7 +147,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "💰 Alerte de preț", path: "/admin/marketing/price-alerts" },
           { label: "👁️ Social Proof", path: "/admin/marketing/social-proof" },
           { label: "💬 Live Chat & AI", path: "/admin/marketing/live-chat" },
-          { label: "📦 Cutii abonament", path: "/admin/marketing/subscription-boxes" },
+          
           { label: "Recomandări produse", path: "/admin/marketing/recommendations" },
           { label: "Teste A/B", path: "/admin/marketing/ab-tests" },
           { label: "Rapoarte marketing", path: "/admin/marketing/reports" },

@@ -31,7 +31,7 @@ import Affiliates from "./pages/Affiliates";
 import RecoverCart from "./pages/RecoverCart";
 import Unsubscribe from "./pages/Unsubscribe";
 import Personalizare from "./pages/Personalizare";
-import Abonament from "./pages/Abonament";
+
 import CorporateGifting from "./pages/CorporateGifting";
 import QuizParfum from "./pages/QuizParfum";
 import IngrijireLumanari from "./pages/IngrijireLumanari";
@@ -95,7 +95,7 @@ const App = () => (
               <Route path="/livrare-internationala" element={<ErrorBoundary><LivrareInternationala /></ErrorBoundary>} />
               <Route path="/comenzi-bulk-evenimente" element={<ErrorBoundary><ComenziEvenimente /></ErrorBoundary>} />
               <Route path="/personalizare" element={<ErrorBoundary><Personalizare /></ErrorBoundary>} />
-              <Route path="/abonament" element={<ErrorBoundary><Abonament /></ErrorBoundary>} />
+              
               <Route path="/corporate-gifting" element={<ErrorBoundary><CorporateGifting /></ErrorBoundary>} />
               <Route path="/quiz-parfum" element={<ErrorBoundary><QuizParfum /></ErrorBoundary>} />
               <Route path="/ingrijire-lumanari" element={<ErrorBoundary><IngrijireLumanari /></ErrorBoundary>} />

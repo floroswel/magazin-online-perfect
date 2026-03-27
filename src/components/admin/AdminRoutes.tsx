@@ -96,7 +96,7 @@ const AdminIntegrationConfig = lazy(() => import("./integrations/AdminIntegratio
 // Smart components (batch 2 — all remaining)
 const AdminMarketplaceOrders = lazy(() => import("./orders/AdminMarketplaceOrders"));
 const AdminB2BOrders = lazy(() => import("./orders/AdminB2BOrders"));
-const AdminRecurringOrders = lazy(() => import("./orders/AdminRecurringOrders"));
+
 const AdminIssueOrders = lazy(() => import("./orders/AdminIssueOrders"));
 const AdminAttributeSets = lazy(() => import("./products/AdminAttributeSets"));
 const AdminSpecs = lazy(() => import("./products/AdminSpecs"));
@@ -165,7 +165,7 @@ const AdminPriceAlerts = lazy(() => import("./marketing/AdminPriceAlerts"));
 const AdminSocialProofSettings = lazy(() => import("./marketing/AdminSocialProofSettings"));
 const AdminLiveChatSettings = lazy(() => import("./marketing/AdminLiveChatSettings"));
 const AdminChatBot = lazy(() => import("./customers/AdminChatBot"));
-const AdminSubscriptionBoxes = lazy(() => import("./marketing/AdminSubscriptionBoxes"));
+
 const AdminPOSSettings = lazy(() => import("./settings/AdminPOSSettings"));
 const AdminDropshippingSettings = lazy(() => import("./settings/AdminDropshippingSettings"));
 const AdminMultiStoreSettings = lazy(() => import("./settings/AdminMultiStoreSettings"));
@@ -197,7 +197,7 @@ export default function AdminRoutes() {
         <Route path="orders/cancelled" element={<AdminFilteredOrders status="cancelled" title="Anulate" description="Comenzi anulate." />} />
         <Route path="orders/marketplace" element={<AdminMarketplaceOrders />} />
         <Route path="orders/b2b" element={<AdminB2BOrders />} />
-        <Route path="orders/recurring" element={<AdminRecurringOrders />} />
+        
         <Route path="orders/issues" element={<AdminIssueOrders />} />
         <Route path="orders/invoices" element={<AdminInvoices />} />
         <Route path="orders/returns" element={<AdminReturns />} />
@@ -290,7 +290,7 @@ export default function AdminRoutes() {
         <Route path="marketing/social-proof" element={<AdminSocialProofSettings />} />
         <Route path="marketing/live-chat" element={<AdminLiveChatSettings />} />
         <Route path="support/chatbot" element={<AdminChatBot />} />
-        <Route path="marketing/subscription-boxes" element={<AdminSubscriptionBoxes />} />
+        
         <Route path="marketing/integrations" element={<AdminMarketingIntegrations />} />
         <Route path="marketing/cartbot" element={<AdminCartbot />} />
         <Route path="marketing/retargeting" element={<AdminRetargeting />} />
