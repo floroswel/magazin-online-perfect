@@ -48,7 +48,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50">
       {/* Announcement bar */}
-      <div className="bg-accent text-accent-foreground">
+      <div className="bg-primary text-primary-foreground">
         <div className="container flex items-center justify-center py-1.5 px-4">
           <p className="text-[10px] md:text-xs font-bold text-center tracking-wide">
             🚛 Livrare gratuită pentru comenzi peste 200 RON · Handmade în România
