@@ -58,10 +58,10 @@ export default function Header() {
 
       {/* Main header */}
       <div className={`transition-all duration-300 ${scrolled ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-background"} border-b border-border`}>
-        <div className="container flex items-center justify-between py-4">
+        <div className="container flex items-center justify-between py-3 md:py-4">
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
-            <h1 className="font-serif text-2xl md:text-3xl font-semibold tracking-[0.08em] text-foreground">
+            <h1 className="font-serif text-xl md:text-3xl font-semibold tracking-[0.08em] text-foreground">
               VENTUZA
             </h1>
           </Link>
