@@ -31,13 +31,20 @@ export default function HeroSlider() {
       <section className="emag-gradient text-white">
         <div className="container py-10 md:py-16">
           <div className="max-w-2xl">
-            <h1 className="text-3xl md:text-5xl font-bold mb-4">Cele mai bune oferte sunt aici! 🔥</h1>
-            <p className="text-lg text-white/80 mb-6">Descoperă mii de produse la prețuri imbatabile. Livrare rapidă în toată România.</p>
-            <Link to="/catalog">
-              <Button size="lg" className="font-semibold text-base bg-primary hover:bg-primary/90 text-primary-foreground">
-                Vezi toate produsele
-              </Button>
-            </Link>
+            <h1 className="text-3xl md:text-5xl font-bold mb-4">Lumânări handmade din ceară de soia 🕯️</h1>
+            <p className="text-lg text-white/80 mb-6">Create manual cu dragoste în România. Arome naturale, design unic și posibilitate de personalizare.</p>
+            <div className="flex flex-wrap gap-3">
+              <Link to="/catalog">
+                <Button size="lg" className="font-semibold text-base bg-primary hover:bg-primary/90 text-primary-foreground">
+                  Descoperă colecția
+                </Button>
+              </Link>
+              <Link to="/personalizare">
+                <Button size="lg" variant="outline" className="font-semibold text-base border-white/40 text-white hover:bg-white/10">
+                  Personalizează 🎨
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>

@@ -53,7 +53,7 @@ export default function CategoryGrid() {
 
   return (
     <section className="container py-8">
-      <h2 className="text-2xl font-bold text-foreground mb-6">Cumpără pe categorii</h2>
+      <h2 className="text-2xl font-bold text-foreground mb-6">Explorează colecțiile</h2>
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
         {categories.map(cat => {
           const Icon = iconMap[cat.icon || ""] || Package;
