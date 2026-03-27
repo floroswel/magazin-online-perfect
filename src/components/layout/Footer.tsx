@@ -95,21 +95,21 @@ export default function Footer() {
   const copyrightText = texts.copyright.replace("{year}", String(new Date().getFullYear()));
 
   return (
-    <footer className="bg-card text-foreground mt-auto">
+    <footer className="bg-primary text-primary-foreground mt-auto">
       {/* Divider */}
-      <div className="ventuza-divider" />
+      <div className="h-1 bg-accent" />
 
       <div className="container py-10 md:py-16 px-5">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
           {/* Brand */}
           <div>
-            <h3 className="font-serif text-2xl font-bold tracking-[0.1em] mb-4 text-primary">{texts.col1_title || "VENTUZA"}</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed mb-6">{texts.col1_description}</p>
+            <h3 className="font-serif text-2xl font-extrabold tracking-tight mb-4 text-primary-foreground">{texts.col1_title || "VENTUZA"}</h3>
+            <p className="text-sm text-primary-foreground/70 leading-relaxed mb-6">{texts.col1_description}</p>
             {socialLinks.length > 0 && (
               <div className="flex gap-3">
                 {socialLinks.map((link, i) => (
                   <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
-                    className="w-9 h-9 border border-border hover:border-primary hover:text-primary flex items-center justify-center transition-colors"
+                    className="w-9 h-9 border border-primary-foreground/30 hover:border-accent hover:text-accent flex items-center justify-center transition-colors rounded"
                     aria-label={link.platform}>
                     <SocialIcon icon={link.icon} className="w-4 h-4" />
                   </a>
@@ -120,42 +120,42 @@ export default function Footer() {
 
           {/* Col 2 */}
           <div>
-            <h4 className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-5">{texts.col2_title}</h4>
+            <h4 className="text-xs font-bold tracking-wide uppercase text-primary-foreground/60 mb-5">{texts.col2_title}</h4>
             <ul className="space-y-3">
               {col2Links.map((l, i) => (
-                <li key={i}><Link to={l.url} className="text-sm text-muted-foreground hover:text-primary transition-colors">{l.label}</Link></li>
+                <li key={i}><Link to={l.url} className="text-sm text-primary-foreground/80 hover:text-accent transition-colors">{l.label}</Link></li>
               ))}
             </ul>
           </div>
 
           {/* Col 3 */}
           <div>
-            <h4 className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-5">{texts.col3_title}</h4>
+            <h4 className="text-xs font-bold tracking-wide uppercase text-primary-foreground/60 mb-5">{texts.col3_title}</h4>
             <ul className="space-y-3">
               {col3Links.map((l, i) => (
-                <li key={i}><Link to={l.url} className="text-sm text-muted-foreground hover:text-primary transition-colors">{l.label}</Link></li>
+                <li key={i}><Link to={l.url} className="text-sm text-primary-foreground/80 hover:text-accent transition-colors">{l.label}</Link></li>
               ))}
             </ul>
           </div>
 
           {/* Newsletter */}
           <div>
-            <h4 className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-5">Newsletter</h4>
-            <p className="text-sm text-muted-foreground mb-4">Primește -10% la prima comandă și noutăți despre colecții.</p>
+            <h4 className="text-xs font-bold tracking-wide uppercase text-primary-foreground/60 mb-5">Newsletter</h4>
+            <p className="text-sm text-primary-foreground/70 mb-4">Primește -10% la prima comandă și noutăți despre colecții.</p>
             <form onSubmit={handleSubscribe} className="space-y-3">
               <div className="flex">
                 <Input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}
-                  className="bg-transparent border-border text-foreground placeholder:text-muted-foreground rounded-md flex-1" required />
-                <Button type="submit" size="icon" disabled={loading} className="shrink-0 bg-primary hover:bg-primary/80 text-primary-foreground rounded-md w-10">
+                  className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 rounded-l-lg rounded-r-none flex-1" required />
+                <Button type="submit" size="icon" disabled={loading} className="shrink-0 bg-accent hover:bg-accent/90 text-accent-foreground rounded-r-lg rounded-l-none w-10">
                   <Mail className="w-4 h-4" />
                 </Button>
               </div>
               <label className="flex items-start gap-2 cursor-pointer">
                 <input type="checkbox" checked={gdprConsent} onChange={e => setGdprConsent(e.target.checked)} className="mt-0.5 rounded-sm border-border" />
-                <span className="text-[11px] text-muted-foreground">Sunt de acord să primesc emailuri.</span>
+                <span className="text-[11px] text-primary-foreground/60">Sunt de acord să primesc emailuri.</span>
               </label>
             </form>
-            <div className="mt-6 space-y-2 text-sm text-muted-foreground">
+            <div className="mt-6 space-y-2 text-sm text-primary-foreground/70">
               {texts.col4_show_phone && texts.col4_phone && (
                 <p className="flex items-center gap-2"><Phone className="w-3 h-3" /> {texts.col4_phone}</p>
               )}
@@ -173,11 +173,11 @@ export default function Footer() {
         </div>
 
         {/* Legal badges */}
-        <div className="border-t border-border mt-12 pt-8">
+        <div className="border-t border-primary-foreground/20 mt-12 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-muted-foreground">{copyrightText}</p>
+            <p className="text-xs text-primary-foreground/60">{copyrightText}</p>
             {texts.show_made_in && (
-              <p className="text-xs text-muted-foreground tracking-wide">Handmade cu dragoste în România 🇷🇴</p>
+              <p className="text-xs text-primary-foreground/60">Handmade cu dragoste în România 🇷🇴</p>
             )}
             <div className="flex items-center gap-4">
               <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer" className="opacity-50 hover:opacity-80 transition-opacity">

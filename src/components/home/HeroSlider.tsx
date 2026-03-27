@@ -27,26 +27,26 @@ export default function HeroSlider() {
 
   if (banners.length === 0) {
     return (
-      <section className="relative overflow-hidden ventuza-gradient-dark">
-        <div className="container py-12 md:py-32 lg:py-40 px-5">
+      <section className="relative overflow-hidden bg-primary">
+        <div className="container py-10 md:py-24 lg:py-32 px-5">
           <div className="max-w-2xl">
-            <p className="text-[10px] md:text-xs tracking-[0.25em] uppercase text-primary mb-3 md:mb-6 font-semibold">
-              Colecție artizanală VENTUZA
-            </p>
-            <h2 className="font-serif text-3xl md:text-6xl lg:text-7xl font-bold leading-[1.1] mb-4 md:mb-6 text-foreground">
-              Lumânări handmade pentru seri cu atmosferă
+            <span className="inline-block bg-accent text-accent-foreground text-xs font-bold px-3 py-1 rounded mb-4">
+              NOU ÎN MAGAZIN
+            </span>
+            <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 md:mb-6 text-primary-foreground">
+              Lumânări artizanale din ceară naturală
             </h2>
-            <p className="text-sm md:text-lg text-muted-foreground mb-6 md:mb-10 max-w-md leading-relaxed">
-              Create manual în România din ceară naturală, cu arome fine și opțiuni de personalizare premium.
+            <p className="text-sm md:text-lg text-primary-foreground/80 mb-6 md:mb-8 max-w-lg leading-relaxed">
+              Handmade în România. Arome premium, personalizare completă și livrare rapidă.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Link to="/catalog" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground rounded-md px-8 md:px-10 text-xs tracking-[0.12em] uppercase font-semibold h-11 md:h-12">
-                  Descoperă colecția
+                <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground font-bold rounded-lg px-8 md:px-10 text-sm h-12 shadow-lg">
+                  Cumpără acum
                 </Button>
               </Link>
               <Link to="/personalizare" className="w-full sm:w-auto">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto border-primary/40 text-primary hover:bg-primary/10 rounded-md px-8 md:px-10 text-xs tracking-[0.12em] uppercase font-semibold h-11 md:h-12">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 font-bold rounded-lg px-8 md:px-10 text-sm h-12">
                   Personalizează
                 </Button>
               </Link>
