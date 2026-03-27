@@ -51,10 +51,10 @@ export default function Index() {
     { icon: "clock", text: "Preparare manuală 3-5 zile" },
   ]);
   const [sections, setSections] = useState<HomepageSections>({
-    featured_title: "Produse recomandate", flash_title: "Oferte Flash",
-    bestsellers_title: "Cele mai vândute", show_featured: true, show_flash: true,
-    show_bestsellers: true, show_brands: true, show_recently_viewed: true,
-    show_blog: true, show_mokka: true,
+    featured_title: "Lumânări recomandate", flash_title: "Oferte Flash",
+    bestsellers_title: "Cele mai iubite", show_featured: true, show_flash: true,
+    show_bestsellers: true, show_brands: false, show_recently_viewed: true,
+    show_blog: false, show_mokka: false,
   });
 
   useEffect(() => {
