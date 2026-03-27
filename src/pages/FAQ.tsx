@@ -56,7 +56,7 @@ const sections = [
 export default function FAQ() {
   return (
     <Layout>
-      <SeoHead title="FAQ — Întrebări Frecvente | VENTUZA" description="Răspunsuri la cele mai frecvente întrebări despre lumânările VENTUZA: livrare, personalizare, plăți, retururi și abonamente." />
+      <FAQSeo />
       <div className="container py-8 max-w-3xl">
         <h1 className="text-3xl font-bold text-foreground mb-2">Întrebări Frecvente</h1>
         <p className="text-muted-foreground mb-8">Ai o întrebare? Probabil găsești răspunsul aici. Dacă nu, <Link to="/page/contact" className="text-primary hover:underline">contactează-ne</Link>.</p>
