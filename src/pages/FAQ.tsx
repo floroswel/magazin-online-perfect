@@ -1,7 +1,7 @@
 import Layout from "@/components/layout/Layout";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Link } from "react-router-dom";
-import SeoHead from "@/components/SeoHead";
+import { useEffect } from "react";
 
 const sections = [
   {
