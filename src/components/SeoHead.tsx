@@ -15,7 +15,7 @@ interface SeoSettings {
 }
 
 const defaults: SeoSettings = {
-  site_title: "MegaShop",
+  site_title: "VENTUZA",
   site_description: "",
   og_image: "/pwa-512x512.png",
   google_verification: "",
