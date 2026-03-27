@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Smartphone, Laptop, Tv, Refrigerator, Home, Shirt, Dumbbell, Gamepad2, Package, Zap
-} from "lucide-react";
+import { Flame, Sparkles, Gift, Paintbrush, Wrench, Package, Zap } from "lucide-react";
 
 const iconMap: Record<string, React.ElementType> = {
-  Smartphone, Laptop, Tv, Refrigerator, Home, Shirt, Dumbbell, Gamepad2
+  Flame, Sparkles, Gift, Paintbrush, Wrench,
+  "🕯️": Flame, "✨": Sparkles, "🎁": Gift, "🎨": Paintbrush, "🔧": Wrench,
 };
 
 interface Cat {
