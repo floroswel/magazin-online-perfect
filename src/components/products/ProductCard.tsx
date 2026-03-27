@@ -54,8 +54,8 @@ function ProductCardInner({ product, eager = false }: Props & { eager?: boolean 
 
   return (
     <Link to={`/product/${product.slug}`} onMouseEnter={() => prefetchProduct(product.slug)} className="group">
-      <div className="h-full flex flex-col">
-        <div className="relative aspect-[3/4] overflow-hidden bg-muted rounded-lg mb-2 md:mb-3">
+      <div className="h-full flex flex-col bg-card rounded-lg border border-border shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
+        <div className="relative aspect-[3/4] overflow-hidden bg-muted">
           {discount > 0 && (
             <span className="absolute top-2 left-2 bg-destructive text-destructive-foreground text-[11px] font-bold px-2 py-0.5 z-10 rounded">
               -{discount}%
