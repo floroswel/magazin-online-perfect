@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
-import MokkaOrangePrice from "@/components/mokka/MokkaOrangePrice";
+
 import SubscriptionOption from "@/components/products/SubscriptionOption";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/hooks/useCart";
