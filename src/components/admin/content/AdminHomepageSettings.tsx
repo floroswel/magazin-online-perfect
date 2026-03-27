@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Save, Plus, Trash2, GripVertical, Store, LayoutDashboard, Type, Eye } from "lucide-react";
+import { Save, Plus, Trash2, GripVertical, Store, LayoutDashboard, Type, Eye, MoveUp, MoveDown, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface TrustBarItem { icon: string; text: string; link: string }
@@ -16,11 +16,29 @@ interface StoreBranding {
   name: string; emoji: string; tagline: string;
   phone: string; email: string; copyright: string;
 }
-interface HomepageSections {
-  featured_title: string; flash_title: string; bestsellers_title: string;
-  show_featured: boolean; show_flash: boolean; show_bestsellers: boolean;
-  show_brands: boolean; show_recently_viewed: boolean; show_blog: boolean; show_mokka: boolean;
+
+export interface HomepageSection {
+  key: string;
+  label: string;
+  visible: boolean;
+  title?: string;
 }
+
+const DEFAULT_SECTIONS: HomepageSection[] = [
+  { key: "hero", label: "Hero Slider", visible: true },
+  { key: "personalizare", label: "Secțiune Personalizare", visible: true },
+  { key: "scent_quiz", label: "Quiz Parfum", visible: true },
+  { key: "featured", label: "Produse Recomandate", visible: true, title: "Selecția Noastră" },
+  { key: "flash", label: "Oferte Flash / Limitate", visible: true, title: "Oferte Limitate" },
+  { key: "social_proof", label: "Social Proof Ticker", visible: true },
+  { key: "bestsellers", label: "Cele Mai Iubite (Bestsellers)", visible: true, title: "Cele Mai Iubite" },
+  { key: "why_ventuza", label: "De Ce VENTUZA", visible: true },
+  { key: "process", label: "Procesul Nostru", visible: true },
+  { key: "testimonials", label: "Testimoniale", visible: true },
+  { key: "recently_viewed", label: "Produse Vizualizate Recent", visible: true },
+  { key: "newsletter", label: "Newsletter / Reducere", visible: true },
+  { key: "trust_strip", label: "Bara de Trust (Footer)", visible: true },
+];
 
 const iconOptions = [
   { value: "phone", label: "📞 Telefon" },
@@ -41,12 +59,7 @@ export default function AdminHomepageSettings() {
   const [branding, setBranding] = useState<StoreBranding>({
     name: "VENTUZA", emoji: "🕯️", tagline: "", phone: "", email: "", copyright: "",
   });
-  const [sections, setSections] = useState<HomepageSections>({
-    featured_title: "Produse recomandate", flash_title: "Oferte Flash",
-    bestsellers_title: "Cele mai vândute", show_featured: true, show_flash: true,
-    show_bestsellers: true, show_brands: true, show_recently_viewed: true,
-    show_blog: true, show_mokka: true,
-  });
+  const [sections, setSections] = useState<HomepageSection[]>(DEFAULT_SECTIONS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -54,7 +67,7 @@ export default function AdminHomepageSettings() {
     supabase
       .from("app_settings")
       .select("key, value_json")
-      .in("key", ["header_trust_bar", "homepage_benefits", "store_branding", "homepage_sections"])
+      .in("key", ["header_trust_bar", "homepage_benefits", "store_branding", "homepage_section_order"])
       .then(({ data }) => {
         data?.forEach((row) => {
           const val = row.value_json;
@@ -68,8 +81,16 @@ export default function AdminHomepageSettings() {
             case "store_branding":
               if (val && typeof val === "object" && !Array.isArray(val)) setBranding(val as unknown as StoreBranding);
               break;
-            case "homepage_sections":
-              if (val && typeof val === "object" && !Array.isArray(val)) setSections(val as unknown as HomepageSections);
+            case "homepage_section_order":
+              if (Array.isArray(val)) {
+                const saved = val as unknown as HomepageSection[];
+                // Merge with defaults to pick up any new sections
+                const merged = DEFAULT_SECTIONS.map(def => {
+                  const found = saved.find(s => s.key === def.key);
+                  return found ? { ...def, ...found } : def;
+                });
+                setSections(merged);
+              }
               break;
           }
         });
@@ -83,7 +104,6 @@ export default function AdminHomepageSettings() {
       .update({ value_json: value as any })
       .eq("key", key);
     if (error) {
-      // Try upsert
       await supabase.from("app_settings").upsert({ key, value_json: value as any });
     }
   };
@@ -94,13 +114,33 @@ export default function AdminHomepageSettings() {
       saveSetting("header_trust_bar", trustBar),
       saveSetting("homepage_benefits", benefits),
       saveSetting("store_branding", branding),
-      saveSetting("homepage_sections", sections),
+      saveSetting("homepage_section_order", sections),
     ]);
     toast.success("Setări homepage salvate!");
     setSaving(false);
   };
 
-  if (loading) return <div className="text-center py-12 text-muted-foreground">Se încarcă...</div>;
+  const moveSection = (idx: number, dir: -1 | 1) => {
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= sections.length) return;
+    const arr = [...sections];
+    [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
+    setSections(arr);
+  };
+
+  const toggleSection = (idx: number) => {
+    const arr = [...sections];
+    arr[idx] = { ...arr[idx], visible: !arr[idx].visible };
+    setSections(arr);
+  };
+
+  const updateSectionTitle = (idx: number, title: string) => {
+    const arr = [...sections];
+    arr[idx] = { ...arr[idx], title };
+    setSections(arr);
+  };
+
+  if (loading) return <div className="flex items-center justify-center py-12 text-muted-foreground"><Loader2 className="w-5 h-5 animate-spin mr-2" />Se încarcă...</div>;
 
   return (
     <div className="space-y-6">
@@ -110,7 +150,7 @@ export default function AdminHomepageSettings() {
           <p className="text-sm text-muted-foreground">Editează tot ce apare pe pagina principală și în header</p>
         </div>
         <Button onClick={handleSave} disabled={saving}>
-          <Save className="w-4 h-4 mr-2" />
+          {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
           {saving ? "Se salvează..." : "Salvează tot"}
         </Button>
       </div>
@@ -151,6 +191,44 @@ export default function AdminHomepageSettings() {
             <Label>Tagline (descriere scurtă footer)</Label>
             <Textarea value={branding.tagline} onChange={(e) => setBranding({ ...branding, tagline: e.target.value })} rows={2} />
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Homepage Section Order & Visibility */}
+      <Card className="border-border bg-card">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Eye className="w-5 h-5 text-primary" /> Secțiuni Homepage — Ordine & Vizibilitate
+          </CardTitle>
+          <p className="text-xs text-muted-foreground">Folosește săgețile pentru a schimba ordinea. Toggle-ul activează/dezactivează secțiunea.</p>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {sections.map((section, idx) => (
+            <div key={section.key} className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${section.visible ? "bg-muted/30 border-border" : "bg-muted/10 border-border/50 opacity-60"}`}>
+              <GripVertical className="w-4 h-4 text-muted-foreground shrink-0" />
+              <span className="text-xs font-mono text-muted-foreground w-5">{idx + 1}</span>
+              <Switch checked={section.visible} onCheckedChange={() => toggleSection(idx)} />
+              <div className="flex-1 min-w-0">
+                <span className="text-sm font-medium text-foreground">{section.label}</span>
+                {section.title !== undefined && (
+                  <Input
+                    className="mt-1 h-7 text-xs"
+                    placeholder="Titlu secțiune personalizat"
+                    value={section.title || ""}
+                    onChange={(e) => updateSectionTitle(idx, e.target.value)}
+                  />
+                )}
+              </div>
+              <div className="flex items-center gap-1 shrink-0">
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => moveSection(idx, -1)} disabled={idx === 0}>
+                  <MoveUp className="w-3 h-3" />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => moveSection(idx, 1)} disabled={idx === sections.length - 1}>
+                  <MoveDown className="w-3 h-3" />
+                </Button>
+              </div>
+            </div>
+          ))}
         </CardContent>
       </Card>
 
@@ -224,43 +302,6 @@ export default function AdminHomepageSettings() {
             </div>
           ))}
           {benefits.length === 0 && <p className="text-sm text-muted-foreground text-center py-4">Niciun element.</p>}
-        </CardContent>
-      </Card>
-
-      {/* Section Titles & Visibility */}
-      <Card className="border-border bg-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Eye className="w-5 h-5 text-primary" /> Secțiuni Homepage
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {[
-            { key: "show_featured" as const, titleKey: "featured_title" as const, label: "Produse recomandate" },
-            { key: "show_flash" as const, titleKey: "flash_title" as const, label: "Oferte Flash" },
-            { key: "show_bestsellers" as const, titleKey: "bestsellers_title" as const, label: "Cele mai vândute" },
-          ].map((s) => (
-            <div key={s.key} className="flex items-center gap-4 p-3 rounded-lg bg-muted/50">
-              <Switch checked={sections[s.key]} onCheckedChange={(v) => setSections({ ...sections, [s.key]: v })} />
-              <div className="flex-1">
-                <Label className="text-sm font-medium">{s.label}</Label>
-                <Input className="mt-1" value={sections[s.titleKey]} placeholder="Titlu secțiune"
-                  onChange={(e) => setSections({ ...sections, [s.titleKey]: e.target.value })}
-                />
-              </div>
-            </div>
-          ))}
-          {[
-            { key: "show_brands" as const, label: "Carusel Mărci" },
-            { key: "show_recently_viewed" as const, label: "Produse vizualizate recent" },
-            { key: "show_blog" as const, label: "Blog Preview" },
-            { key: "show_mokka" as const, label: "Banner Mokka" },
-          ].map((s) => (
-            <div key={s.key} className="flex items-center gap-4 p-3 rounded-lg bg-muted/50">
-              <Switch checked={sections[s.key]} onCheckedChange={(v) => setSections({ ...sections, [s.key]: v })} />
-              <Label className="text-sm font-medium">{s.label}</Label>
-            </div>
-          ))}
         </CardContent>
       </Card>
     </div>
