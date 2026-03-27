@@ -90,6 +90,10 @@ const App = () => (
               <Route path="/page/:slug" element={<ErrorBoundary><CmsPage /></ErrorBoundary>} />
               <Route path="/install" element={<ErrorBoundary><Install /></ErrorBoundary>} />
               <Route path="/afilieri" element={<ErrorBoundary><Affiliates /></ErrorBoundary>} />
+              <Route path="/faq" element={<ErrorBoundary><FAQ /></ErrorBoundary>} />
+              <Route path="/tracking" element={<ErrorBoundary><Tracking /></ErrorBoundary>} />
+              <Route path="/livrare-internationala" element={<ErrorBoundary><LivrareInternationala /></ErrorBoundary>} />
+              <Route path="/comenzi-bulk-evenimente" element={<ErrorBoundary><ComenziEvenimente /></ErrorBoundary>} />
               <Route path="/unsubscribe" element={<ErrorBoundary><Unsubscribe /></ErrorBoundary>} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<NotFound />} />
