@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { Package, Truck, CheckCircle, Clock, AlertCircle } from "lucide-react";
-import SeoHead from "@/components/SeoHead";
+import { useEffect } from "react";
 
 const statusSteps = [
   { key: "pending", label: "Comandă plasată", icon: Clock },
