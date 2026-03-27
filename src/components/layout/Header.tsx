@@ -164,8 +164,9 @@ export default function Header() {
             <nav className="space-y-1 mb-4">
               <Link to="/catalog" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-foreground border-b border-border/50">Colecții</Link>
               <Link to="/personalizare" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-foreground border-b border-border/50">Personalizare</Link>
-              <Link to="/abonament" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-foreground border-b border-border/50">Abonament</Link>
               <Link to="/povestea-noastra" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-foreground border-b border-border/50">Povestea Noastră</Link>
+              {isAdmin && <Link to="/admin" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-primary border-b border-border/50">Admin Panel</Link>}
+              {user && <button onClick={() => { signOut(); setMobileMenu(false); }} className="block py-2.5 text-sm tracking-wide uppercase text-muted-foreground border-b border-border/50 w-full text-left">Deconectare</button>}
             </nav>
             <ul className="space-y-1">
               {mobileCategories.filter(c => !c.parent_id).map(cat => {
