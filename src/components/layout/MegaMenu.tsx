@@ -67,6 +67,7 @@ export default function MegaMenu() {
           {parents.map(cat => {
             const Icon = iconMap[cat.icon || ""] || Package;
             const children = getChildren(cat.id);
+            const catLink = cat.slug.includes("personalizat") ? "/personalizare" : `/catalog?category=${cat.slug}`;
             return (
               <li
                 key={cat.slug}
@@ -75,7 +76,7 @@ export default function MegaMenu() {
                 onMouseLeave={() => setHoveredCat(null)}
               >
                 <Link
-                  to={`/catalog?category=${cat.slug}`}
+                  to={catLink}
                   className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-foreground hover:text-primary rounded-md hover:bg-muted transition-colors whitespace-nowrap"
                 >
                   <Icon className="h-4 w-4" />

@@ -167,7 +167,7 @@ export default function Header() {
                   <li key={cat.slug}>
                     <div className="flex items-center">
                       <Link
-                        to={`/catalog?category=${cat.slug}`}
+                        to={cat.slug.includes("personalizat") ? "/personalizare" : `/catalog?category=${cat.slug}`}
                         onClick={() => setMobileMenu(false)}
                         className="flex-1 px-2 py-2 text-sm text-muted-foreground hover:text-foreground"
                       >
