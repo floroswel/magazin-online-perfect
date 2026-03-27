@@ -246,12 +246,12 @@ export default function Catalog() {
 
   return (
     <Layout>
-      <div className="container py-6">
+       <div className="container py-10">
         {/* Breadcrumbs */}
         {breadcrumbs.length > 0 && (
-          <nav className="flex items-center gap-1 text-sm text-muted-foreground mb-4 flex-wrap" aria-label="Breadcrumb">
+          <nav className="flex items-center gap-1 text-xs tracking-wide uppercase text-muted-foreground mb-8 flex-wrap" aria-label="Breadcrumb">
             <Link to="/" className="flex items-center gap-1 hover:text-primary transition-colors">
-              <Home className="h-3.5 w-3.5" /> Acasă
+              <Home className="h-3 w-3" /> Acasă
             </Link>
             {breadcrumbs.map((bc, i) => (
               <span key={bc.id} className="flex items-center gap-1">
