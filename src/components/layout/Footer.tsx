@@ -208,11 +208,6 @@ export default function Footer() {
             {texts.show_made_in && (
               <p className="text-xs text-primary-foreground/60">Handmade cu dragoste în România 🇷🇴</p>
             )}
-            <div className="flex items-center gap-4">
-              <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer" className="opacity-50 hover:opacity-80 transition-opacity">
-                <img src="/images/eu-sol.png" alt="ANPC SAL" className="h-8 object-contain" loading="lazy" />
-              </a>
-            </div>
           </div>
         </div>
       </div>
