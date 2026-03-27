@@ -2,91 +2,89 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    /* VENTUZA ELECTRO — Dark + Neon Cyan/Magenta */
-    --background: 230 25% 7%;
-    --foreground: 200 20% 92%;
+    /* VENTUZA BLUE — Dark Noir + Facebook Blue */
+    --background: 220 20% 7%;
+    --foreground: 40 20% 92%;
 
-    --card: 230 20% 10%;
-    --card-foreground: 200 20% 92%;
+    --card: 220 18% 10%;
+    --card-foreground: 40 20% 92%;
 
-    --popover: 230 20% 10%;
-    --popover-foreground: 200 20% 92%;
+    --popover: 220 18% 10%;
+    --popover-foreground: 40 20% 92%;
 
-    --primary: 185 100% 50%;
-    --primary-foreground: 230 25% 7%;
+    --primary: 220 70% 50%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 230 20% 14%;
-    --secondary-foreground: 200 20% 88%;
+    --secondary: 220 18% 14%;
+    --secondary-foreground: 40 20% 88%;
 
-    --muted: 230 15% 15%;
-    --muted-foreground: 210 10% 55%;
+    --muted: 220 15% 15%;
+    --muted-foreground: 220 10% 55%;
 
-    --accent: 320 90% 60%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 40 60% 55%;
+    --accent-foreground: 220 20% 7%;
 
     --destructive: 0 80% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 230 15% 18%;
-    --input: 230 15% 18%;
-    --ring: 185 100% 50%;
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 220 70% 50%;
 
     --radius: 0.5rem;
 
-    /* Electro brand tokens */
-    --ventuza-noir: 230 25% 5%;
-    --ventuza-charcoal: 230 20% 12%;
-    --ventuza-gold: 185 100% 50%;
-    --ventuza-gold-light: 185 80% 60%;
-    --ventuza-cream: 230 15% 15%;
-    --ventuza-warm: 230 12% 18%;
-    --ventuza-blush: 320 90% 60%;
-    --ventuza-neon-magenta: 320 90% 60%;
-    --ventuza-neon-cyan: 185 100% 50%;
+    /* Brand tokens */
+    --ventuza-noir: 220 20% 5%;
+    --ventuza-charcoal: 220 18% 12%;
+    --ventuza-gold: 40 60% 55%;
+    --ventuza-gold-light: 40 50% 65%;
+    --ventuza-cream: 40 30% 92%;
+    --ventuza-warm: 30 20% 18%;
+    --ventuza-blush: 350 50% 65%;
 
     /* Sidebar (admin) */
-    --sidebar-background: 230 25% 8%;
-    --sidebar-foreground: 210 15% 65%;
-    --sidebar-primary: 185 100% 50%;
-    --sidebar-primary-foreground: 230 25% 7%;
-    --sidebar-accent: 230 20% 16%;
-    --sidebar-accent-foreground: 200 20% 90%;
-    --sidebar-border: 230 15% 16%;
-    --sidebar-ring: 185 100% 50%;
+    --sidebar-background: 220 20% 8%;
+    --sidebar-foreground: 220 15% 65%;
+    --sidebar-primary: 220 70% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 18% 16%;
+    --sidebar-accent-foreground: 40 20% 90%;
+    --sidebar-border: 220 15% 16%;
+    --sidebar-ring: 220 70% 50%;
   }
 
   .dark:not(.admin-panel) {
-    --background: 230 30% 4%;
-    --foreground: 200 20% 94%;
+    --background: 220 25% 4%;
+    --foreground: 40 20% 94%;
 
-    --card: 230 25% 7%;
-    --card-foreground: 200 20% 94%;
+    --card: 220 20% 7%;
+    --card-foreground: 40 20% 94%;
 
-    --popover: 230 25% 7%;
-    --popover-foreground: 200 20% 94%;
+    --popover: 220 20% 7%;
+    --popover-foreground: 40 20% 94%;
 
-    --primary: 185 100% 55%;
-    --primary-foreground: 230 25% 5%;
+    --primary: 220 70% 55%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 230 20% 12%;
-    --secondary-foreground: 200 20% 90%;
+    --secondary: 220 18% 12%;
+    --secondary-foreground: 40 20% 90%;
 
-    --muted: 230 15% 10%;
-    --muted-foreground: 210 10% 50%;
+    --muted: 220 15% 10%;
+    --muted-foreground: 220 10% 50%;
 
-    --accent: 320 90% 65%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 40 60% 60%;
+    --accent-foreground: 220 20% 7%;
 
     --destructive: 0 80% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 230 15% 14%;
-    --input: 230 15% 14%;
-    --ring: 185 100% 55%;
+    --border: 220 15% 14%;
+    --input: 220 15% 14%;
+    --ring: 220 70% 55%;
   }
 
   /* ADMIN PANEL — clean neutral */
@@ -144,15 +142,14 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'DM Sans', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Orbitron', 'Inter', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-family: 'Playfair Display', 'DM Sans', serif;
+    letter-spacing: 0.02em;
   }
 
   ::-webkit-scrollbar {
@@ -172,40 +169,28 @@
 }
 
 @layer utilities {
-  /* Electro gradients */
+  /* Premium gradients */
   .ventuza-gradient-dark {
     background: linear-gradient(180deg, hsl(var(--ventuza-noir)), hsl(var(--ventuza-charcoal)));
   }
 
   .ventuza-gradient-gold {
-    background: linear-gradient(135deg, hsl(var(--ventuza-neon-cyan)), hsl(var(--ventuza-neon-magenta)));
+    background: linear-gradient(135deg, hsl(var(--ventuza-gold)), hsl(var(--ventuza-gold-light)));
   }
 
   .ventuza-gradient-warm {
     background: linear-gradient(180deg, hsl(var(--ventuza-charcoal)), hsl(var(--ventuza-noir)));
   }
 
-  /* Neon text glow */
+  /* Gold accent text */
   .text-gold {
-    color: hsl(var(--ventuza-neon-cyan));
-    text-shadow: 0 0 20px hsl(var(--ventuza-neon-cyan) / 0.5), 0 0 40px hsl(var(--ventuza-neon-cyan) / 0.2);
-  }
-
-  .text-neon-magenta {
-    color: hsl(var(--ventuza-neon-magenta));
-    text-shadow: 0 0 20px hsl(var(--ventuza-neon-magenta) / 0.5), 0 0 40px hsl(var(--ventuza-neon-magenta) / 0.2);
-  }
-
-  /* Neon glow border */
-  .neon-border {
-    border: 1px solid hsl(var(--ventuza-neon-cyan) / 0.3);
-    box-shadow: 0 0 15px hsl(var(--ventuza-neon-cyan) / 0.1), inset 0 0 15px hsl(var(--ventuza-neon-cyan) / 0.05);
+    color: hsl(var(--ventuza-gold));
   }
 
   /* Elegant separator */
   .ventuza-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--ventuza-neon-cyan) / 0.4), hsl(var(--ventuza-neon-magenta) / 0.4), transparent);
+    background: linear-gradient(90deg, transparent, hsl(var(--ventuza-gold) / 0.4), transparent);
   }
 
   /* Marquee animation */
@@ -216,16 +201,6 @@
 
   .animate-marquee {
     animation: marquee 30s linear infinite;
-  }
-
-  /* Neon pulse */
-  @keyframes neon-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-  }
-
-  .animate-neon-pulse {
-    animation: neon-pulse 2s ease-in-out infinite;
   }
 
   /* Admin scrollbar */
