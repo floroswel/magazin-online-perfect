@@ -152,7 +152,7 @@ export default function Footer() {
               </div>
               <label className="flex items-start gap-2 cursor-pointer">
                 <input type="checkbox" checked={gdprConsent} onChange={e => setGdprConsent(e.target.checked)} className="mt-0.5 rounded-sm border-border" />
-                <span className="text-[11px] text-muted-foreground">Sunt de acord să primesc emailuri.</span>
+                <span className="text-[11px] text-primary-foreground/60">Sunt de acord să primesc emailuri.</span>
               </label>
             </form>
             <div className="mt-6 space-y-2 text-sm text-muted-foreground">
