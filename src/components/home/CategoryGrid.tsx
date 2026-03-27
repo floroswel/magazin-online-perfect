@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Flame, Sparkles, Gift, Paintbrush, Package, Zap } from "lucide-react";
+import { isCandleCollection } from "@/lib/candleCatalog";
 
 const iconMap: Record<string, React.ElementType> = {
   Flame, Sparkles, Gift, Paintbrush,
@@ -16,8 +17,27 @@ export default function CategoryGrid() {
   const [dynCategories, setDynCategories] = useState<DynCat[]>([]);
 
   useEffect(() => {
-    supabase.from("categories").select("id, name, slug, icon, image_url, display_order, visible").is("parent_id", null).eq("visible", true).order("display_order").order("name").then(({ data }) => setCategories((data as Cat[]) || []));
-    supabase.from("dynamic_categories").select("id, name, slug, icon, image_url, display_order").eq("visible", true).order("display_order").then(({ data }) => setDynCategories((data || []) as unknown as DynCat[]));
+    supabase
+      .from("categories")
+      .select("id, name, slug, icon, image_url, display_order, visible")
+      .is("parent_id", null)
+      .eq("visible", true)
+      .order("display_order")
+      .order("name")
+      .then(({ data }) => {
+        const filtered = ((data as Cat[]) || []).filter((cat) => isCandleCollection(cat));
+        setCategories(filtered);
+      });
+
+    supabase
+      .from("dynamic_categories")
+      .select("id, name, slug, icon, image_url, display_order")
+      .eq("visible", true)
+      .order("display_order")
+      .then(({ data }) => {
+        const filtered = ((data || []) as unknown as DynCat[]).filter((cat) => isCandleCollection(cat));
+        setDynCategories(filtered);
+      });
   }, []);
 
   if (categories.length === 0 && dynCategories.length === 0) return null;
@@ -26,7 +46,7 @@ export default function CategoryGrid() {
     <section className="container py-16 md:py-20">
       <div className="text-center mb-12">
         <p className="text-xs tracking-[0.3em] uppercase text-primary mb-3 font-medium">Colecții</p>
-        <h2 className="font-serif text-3xl md:text-4xl font-medium text-foreground">Explorează Lumânările Noastre</h2>
+        <h2 className="font-serif text-3xl md:text-4xl font-medium text-foreground">Explorează Colecțiile de Lumânări</h2>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
         {categories.map(cat => {
