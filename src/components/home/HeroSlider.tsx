@@ -116,7 +116,7 @@ export default function HeroSlider() {
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
-                className={`transition-all ${i === current ? "w-8 h-[2px] bg-ventuza-gold" : "w-4 h-[2px] bg-secondary-foreground/30"}`}
+                className={`transition-all ${i === current ? "w-8 h-[2px] bg-primary shadow-[0_0_8px_hsl(185_100%_50%/0.5)]" : "w-4 h-[2px] bg-foreground/30"}`}
               />
             ))}
           </div>
