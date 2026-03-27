@@ -200,14 +200,9 @@ export default function Footer() {
         {/* Legal badges */}
         <div className="border-t border-primary-foreground/20 mt-12 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
-              <p className="text-xs text-primary-foreground/60">{copyrightText}</p>
-              {/* Footer scripts rendered inline next to copyright */}
-              <div ref={footerScriptsRef} className="flex items-center gap-2 [&_a]:text-[10px] [&_a]:text-primary-foreground/50 [&_a]:hover:text-primary-foreground/80 [&_a]:transition-colors [&_img]:h-5 [&_img]:object-contain [&_img]:opacity-60 [&_img]:hover:opacity-90 [&_span]:text-[10px] [&_span]:text-primary-foreground/50 [&_p]:text-[10px] [&_p]:text-primary-foreground/50 [&_div]:flex [&_div]:items-center [&_div]:gap-2" />
-            </div>
-            {texts.show_made_in && (
-              <p className="text-xs text-primary-foreground/60">Handmade cu dragoste în România 🇷🇴</p>
-            )}
+            <p className="text-xs text-primary-foreground/60">{copyrightText}</p>
+            {/* Footer scripts rendered inline */}
+            <div ref={footerScriptsRef} className="flex items-center gap-2 [&_a]:text-[10px] [&_a]:text-primary-foreground/50 [&_a]:hover:text-primary-foreground/80 [&_a]:transition-colors [&_img]:h-5 [&_img]:object-contain [&_img]:opacity-60 [&_img]:hover:opacity-90 [&_span]:text-[10px] [&_span]:text-primary-foreground/50 [&_p]:text-[10px] [&_p]:text-primary-foreground/50 [&_div]:flex [&_div]:items-center [&_div]:gap-2" />
           </div>
         </div>
       </div>
