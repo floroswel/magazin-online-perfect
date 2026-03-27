@@ -133,7 +133,7 @@ export default function Footer() {
             <h4 className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-5">{texts.col3_title}</h4>
             <ul className="space-y-3">
               {col3Links.map((l, i) => (
-                <li key={i}><Link to={l.url} className="text-sm text-secondary-foreground/60 hover:text-ventuza-gold transition-colors">{l.label}</Link></li>
+                <li key={i}><Link to={l.url} className="text-sm text-muted-foreground hover:text-primary transition-colors">{l.label}</Link></li>
               ))}
             </ul>
           </div>
