@@ -290,7 +290,7 @@ export default function AdminRoutes() {
         <Route path="marketing/social-proof" element={<AdminSocialProofSettings />} />
         <Route path="marketing/live-chat" element={<AdminLiveChatSettings />} />
         <Route path="support/chatbot" element={<AdminChatBot />} />
-        <Route path="marketing/subscription-boxes" element={<AdminSubscriptionBoxes />} />
+        
         <Route path="marketing/integrations" element={<AdminMarketingIntegrations />} />
         <Route path="marketing/cartbot" element={<AdminCartbot />} />
         <Route path="marketing/retargeting" element={<AdminRetargeting />} />
