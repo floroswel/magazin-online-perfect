@@ -95,9 +95,9 @@ export default function Footer() {
   const copyrightText = texts.copyright.replace("{year}", String(new Date().getFullYear()));
 
   return (
-    <footer className="bg-primary text-primary-foreground mt-auto">
+    <footer className="bg-[hsl(220,30%,15%)] text-white mt-auto">
       {/* Divider */}
-      <div className="h-1 bg-accent" />
+      <div className="h-1 bg-primary" />
 
       <div className="container py-10 md:py-16 px-5">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
