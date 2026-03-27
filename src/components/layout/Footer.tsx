@@ -173,11 +173,11 @@ export default function Footer() {
         </div>
 
         {/* Legal badges */}
-        <div className="border-t border-border mt-12 pt-8">
+        <div className="border-t border-primary-foreground/20 mt-12 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-muted-foreground">{copyrightText}</p>
+            <p className="text-xs text-primary-foreground/60">{copyrightText}</p>
             {texts.show_made_in && (
-              <p className="text-xs text-muted-foreground tracking-wide">Handmade cu dragoste în România 🇷🇴</p>
+              <p className="text-xs text-primary-foreground/60">Handmade cu dragoste în România 🇷🇴</p>
             )}
             <div className="flex items-center gap-4">
               <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer" className="opacity-50 hover:opacity-80 transition-opacity">

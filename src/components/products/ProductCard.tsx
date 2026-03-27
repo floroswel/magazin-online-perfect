@@ -55,14 +55,14 @@ function ProductCardInner({ product, eager = false }: Props & { eager?: boolean 
   return (
     <Link to={`/product/${product.slug}`} onMouseEnter={() => prefetchProduct(product.slug)} className="group">
       <div className="h-full flex flex-col">
-        <div className="relative aspect-[3/4] overflow-hidden bg-card rounded-md mb-2 md:mb-4 border border-border">
+        <div className="relative aspect-[3/4] overflow-hidden bg-muted rounded-lg mb-2 md:mb-3">
           {discount > 0 && (
-            <span className="absolute top-3 left-3 bg-accent text-accent-foreground text-[10px] tracking-wider uppercase font-bold px-2.5 py-1 z-10 rounded">
+            <span className="absolute top-2 left-2 bg-destructive text-destructive-foreground text-[11px] font-bold px-2 py-0.5 z-10 rounded">
               -{discount}%
             </span>
           )}
           {promotion && !pricingDiscount && (
-            <span className="absolute top-3 right-3 text-[10px] tracking-wider uppercase font-medium px-2.5 py-1 z-10 text-primary-foreground"
+            <span className="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 z-10 rounded text-primary-foreground"
               style={{ backgroundColor: promotion.badgeColor }}>
               {promotion.badgeText}
             </span>
@@ -74,21 +74,18 @@ function ProductCardInner({ product, eager = false }: Props & { eager?: boolean 
             height={800}
             loading={eager ? "eager" : "lazy"}
             decoding={eager ? "sync" : "async"}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
-          <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors duration-300" />
           <Button
             onClick={handleAddToCart}
-            className="absolute bottom-3 left-3 right-3 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 bg-primary text-primary-foreground hover:bg-primary/80 rounded-md text-xs tracking-wider uppercase font-bold h-10"
+            className="absolute bottom-3 left-3 right-3 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg text-xs font-bold h-10 shadow-lg"
           >
             <ShoppingCart className="h-3.5 w-3.5 mr-2" />
             Adaugă în coș
           </Button>
         </div>
         <div className="flex-1 flex flex-col">
-          <h3 className="font-sans font-semibold text-xs md:text-sm text-foreground mb-1 md:mb-1.5 leading-snug line-clamp-2 uppercase tracking-wide">
-            {product.name}
-          </h3>
+          <h3 className="font-sans font-semibold text-xs md:text-sm text-foreground mb-1 leading-snug line-clamp-2">{product.name}</h3>
           <div className="flex items-baseline gap-2 mt-auto">
             <span className={`text-sm font-medium ${promoDiscount ? "text-destructive" : "text-foreground"}`}>
               {format(effectivePrice)}

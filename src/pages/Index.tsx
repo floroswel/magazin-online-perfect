@@ -93,13 +93,13 @@ export default function Index() {
 
       {/* Featured products */}
       {sections.show_featured && (
-        <section className="container py-10 md:py-20 px-4">
-          <div className="flex items-end justify-between mb-6 md:mb-10">
+        <section className="container py-8 md:py-14 px-4">
+          <div className="flex items-end justify-between mb-5 md:mb-8">
             <div>
-              <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-primary mb-1.5 md:mb-2 font-bold">⚡ Curated</p>
-              <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground uppercase">{sections.featured_title}</h2>
+              <h2 className="font-serif text-xl md:text-2xl font-extrabold text-foreground">{sections.featured_title}</h2>
+              <div className="w-12 h-1 bg-primary rounded mt-2" />
             </div>
-            <Link to="/catalog" className="text-xs md:text-sm text-primary hover:text-primary/80 font-medium flex items-center gap-1 tracking-wide transition-colors whitespace-nowrap">
+            <Link to="/catalog" className="text-xs md:text-sm text-primary hover:underline font-semibold flex items-center gap-1">
               Vezi toate <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
             </Link>
           </div>
