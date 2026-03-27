@@ -580,7 +580,7 @@ export default function AdminCustomScripts() {
             {warnings.length > 0 && (
               <div className="space-y-1">
                 {warnings.map((w, i) => (
-                  <div key={i} className="bg-yellow-500/10 border border-yellow-500/30 rounded px-3 py-2 text-xs text-yellow-700 dark:text-yellow-300 flex items-start gap-2">
+                  <div key={i} className="bg-destructive/5 border border-destructive/20 rounded px-3 py-2 text-xs text-destructive flex items-start gap-2">
                     <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" />{w}
                   </div>
                 ))}
