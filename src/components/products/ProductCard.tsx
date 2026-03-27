@@ -86,7 +86,7 @@ function ProductCardInner({ product, eager = false }: Props & { eager?: boolean 
           </Button>
         </div>
         <div className="flex-1 flex flex-col">
-          <h3 className="font-medium text-xs md:text-sm text-foreground mb-1 md:mb-1.5 leading-snug line-clamp-2">
+          <h3 className="font-sans font-semibold text-xs md:text-sm text-foreground mb-1 md:mb-1.5 leading-snug line-clamp-2 uppercase tracking-wide">
             {product.name}
           </h3>
           <div className="flex items-baseline gap-2 mt-auto">
