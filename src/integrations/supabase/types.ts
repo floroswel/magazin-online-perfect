@@ -739,6 +739,38 @@ export type Database = {
         }
         Relationships: []
       }
+      back_in_stock_notifications: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          notified_at: string | null
+          product_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          notified_at?: string | null
+          product_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          notified_at?: string | null
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "back_in_stock_notifications_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bank_accounts: {
         Row: {
           account_holder: string
@@ -1187,6 +1219,48 @@ export type Database = {
           enabled?: boolean
           id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      candle_subscription_plans: {
+        Row: {
+          active: boolean
+          candles_per_month: number
+          color_choice: boolean
+          created_at: string
+          description: string | null
+          extra_discount_pct: number
+          features: Json | null
+          id: string
+          name: string
+          price_ron: number
+          scent_choice: boolean
+        }
+        Insert: {
+          active?: boolean
+          candles_per_month?: number
+          color_choice?: boolean
+          created_at?: string
+          description?: string | null
+          extra_discount_pct?: number
+          features?: Json | null
+          id?: string
+          name: string
+          price_ron: number
+          scent_choice?: boolean
+        }
+        Update: {
+          active?: boolean
+          candles_per_month?: number
+          color_choice?: boolean
+          created_at?: string
+          description?: string | null
+          extra_discount_pct?: number
+          features?: Json | null
+          id?: string
+          name?: string
+          price_ron?: number
+          scent_choice?: boolean
         }
         Relationships: []
       }
@@ -1691,6 +1765,57 @@ export type Database = {
           updated_at?: string | null
           version?: string | null
           webhooks_provided?: string[] | null
+        }
+        Relationships: []
+      }
+      corporate_gift_requests: {
+        Row: {
+          admin_notes: string | null
+          budget_range: string | null
+          company_name: string
+          contact_person: string
+          created_at: string
+          desired_delivery_date: string | null
+          email: string
+          id: string
+          message: string | null
+          personalization_details: string | null
+          phone: string
+          status: string
+          units_needed: number
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          budget_range?: string | null
+          company_name: string
+          contact_person: string
+          created_at?: string
+          desired_delivery_date?: string | null
+          email: string
+          id?: string
+          message?: string | null
+          personalization_details?: string | null
+          phone: string
+          status?: string
+          units_needed?: number
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          budget_range?: string | null
+          company_name?: string
+          contact_person?: string
+          created_at?: string
+          desired_delivery_date?: string | null
+          email?: string
+          id?: string
+          message?: string | null
+          personalization_details?: string | null
+          phone?: string
+          status?: string
+          units_needed?: number
+          updated_at?: string
         }
         Relationships: []
       }
@@ -7013,6 +7138,44 @@ export type Database = {
           username?: string
         }
         Relationships: []
+      }
+      scent_quiz_results: {
+        Row: {
+          answers: Json
+          created_at: string
+          id: string
+          purchased_product_id: string | null
+          recommended_products: Json | null
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          purchased_product_id?: string | null
+          recommended_products?: Json | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          purchased_product_id?: string | null
+          recommended_products?: Json | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scent_quiz_results_purchased_product_id_fkey"
+            columns: ["purchased_product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       scheduled_imports: {
         Row: {

@@ -12,6 +12,15 @@ import BestSellers from "@/components/home/BestSellers";
 import BrandCarousel from "@/components/home/BrandCarousel";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
 import BlogPreview from "@/components/home/BlogPreview";
+import PersonalizareSection from "@/components/home/PersonalizareSection";
+import ScentQuiz from "@/components/home/ScentQuiz";
+import SubscriptionSection from "@/components/home/SubscriptionSection";
+import CorporateGiftingSection from "@/components/home/CorporateGiftingSection";
+import ProcessSection from "@/components/home/ProcessSection";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
+import SocialProofTicker from "@/components/home/SocialProofTicker";
+import TrustFooterStrip from "@/components/home/TrustFooterStrip";
+import NewsletterDiscount from "@/components/home/NewsletterDiscount";
 import { supabase } from "@/integrations/supabase/client";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
 import { useStoreBranding } from "@/hooks/useStoreBranding";
@@ -99,6 +108,9 @@ export default function Index() {
 
       <CategoryGrid />
 
+      <PersonalizareSection />
+      <ScentQuiz />
+
       {/* Featured products */}
       {sections.show_featured && (
         <section className="container py-8">
@@ -123,11 +135,22 @@ export default function Index() {
       )}
 
       {sections.show_flash && <FlashDeals title={sections.flash_title} />}
+      <SocialProofTicker />
       {sections.show_mokka && <MokkaBanner />}
       {sections.show_bestsellers && <BestSellers title={sections.bestsellers_title} />}
+
+      <ProcessSection />
+      <SubscriptionSection />
+      <CorporateGiftingSection />
+      <TestimonialsSection />
+
       {sections.show_brands && <BrandCarousel />}
       {sections.show_recently_viewed && <RecentlyViewed />}
+
+      <NewsletterDiscount />
+
       {sections.show_blog && <BlogPreview />}
+      <TrustFooterStrip />
 
       {/* Schema.org JSON-LD */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({
