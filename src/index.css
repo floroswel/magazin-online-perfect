@@ -47,14 +47,14 @@
     --ventuza-blush: 0 84% 50%;
 
     /* Sidebar (admin) */
-    --sidebar-background: 215 90% 25%;
-    --sidebar-foreground: 215 20% 80%;
-    --sidebar-primary: 42 95% 52%;
-    --sidebar-primary-foreground: 215 25% 10%;
-    --sidebar-accent: 215 80% 32%;
+    --sidebar-background: 220 50% 18%;
+    --sidebar-foreground: 220 20% 80%;
+    --sidebar-primary: 44 100% 50%;
+    --sidebar-primary-foreground: 220 15% 10%;
+    --sidebar-accent: 220 50% 26%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 215 70% 30%;
-    --sidebar-ring: 42 95% 52%;
+    --sidebar-border: 220 40% 24%;
+    --sidebar-ring: 44 100% 50%;
   }
 
   .dark:not(.admin-panel) {
