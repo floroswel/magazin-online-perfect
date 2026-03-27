@@ -169,40 +169,28 @@
 }
 
 @layer utilities {
-  /* Electro gradients */
+  /* Premium gradients */
   .ventuza-gradient-dark {
     background: linear-gradient(180deg, hsl(var(--ventuza-noir)), hsl(var(--ventuza-charcoal)));
   }
 
   .ventuza-gradient-gold {
-    background: linear-gradient(135deg, hsl(var(--ventuza-neon-cyan)), hsl(var(--ventuza-neon-magenta)));
+    background: linear-gradient(135deg, hsl(var(--ventuza-gold)), hsl(var(--ventuza-gold-light)));
   }
 
   .ventuza-gradient-warm {
     background: linear-gradient(180deg, hsl(var(--ventuza-charcoal)), hsl(var(--ventuza-noir)));
   }
 
-  /* Neon text glow */
+  /* Gold accent text */
   .text-gold {
-    color: hsl(var(--ventuza-neon-cyan));
-    text-shadow: 0 0 20px hsl(var(--ventuza-neon-cyan) / 0.5), 0 0 40px hsl(var(--ventuza-neon-cyan) / 0.2);
-  }
-
-  .text-neon-magenta {
-    color: hsl(var(--ventuza-neon-magenta));
-    text-shadow: 0 0 20px hsl(var(--ventuza-neon-magenta) / 0.5), 0 0 40px hsl(var(--ventuza-neon-magenta) / 0.2);
-  }
-
-  /* Neon glow border */
-  .neon-border {
-    border: 1px solid hsl(var(--ventuza-neon-cyan) / 0.3);
-    box-shadow: 0 0 15px hsl(var(--ventuza-neon-cyan) / 0.1), inset 0 0 15px hsl(var(--ventuza-neon-cyan) / 0.05);
+    color: hsl(var(--ventuza-gold));
   }
 
   /* Elegant separator */
   .ventuza-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--ventuza-neon-cyan) / 0.4), hsl(var(--ventuza-neon-magenta) / 0.4), transparent);
+    background: linear-gradient(90deg, transparent, hsl(var(--ventuza-gold) / 0.4), transparent);
   }
 
   /* Marquee animation */
@@ -213,16 +201,6 @@
 
   .animate-marquee {
     animation: marquee 30s linear infinite;
-  }
-
-  /* Neon pulse */
-  @keyframes neon-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-  }
-
-  .animate-neon-pulse {
-    animation: neon-pulse 2s ease-in-out infinite;
   }
 
   /* Admin scrollbar */
