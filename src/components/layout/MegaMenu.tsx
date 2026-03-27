@@ -61,9 +61,9 @@ export default function MegaMenu() {
   const getChildren = (parentId: string) => navCategories.filter(c => c.parent_id === parentId);
 
   return (
-    <nav className="bg-card border-b shadow-sm relative">
+    <nav className="bg-white border-b-2 border-primary/20 shadow-sm relative">
       <div className="container">
-        <ul className="hidden md:flex items-center gap-0.5 py-1 overflow-x-auto">
+        <ul className="hidden md:flex items-center gap-0 py-0 overflow-x-auto">
           {parents.map(cat => {
             const Icon = iconMap[cat.icon || ""] || Package;
             const children = getChildren(cat.id);
@@ -77,9 +77,9 @@ export default function MegaMenu() {
               >
                 <Link
                   to={catLink}
-                  className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-foreground hover:text-primary rounded-md hover:bg-muted transition-colors whitespace-nowrap"
+                  className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-foreground hover:text-primary border-b-2 border-transparent hover:border-primary transition-all whitespace-nowrap"
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="h-4 w-4 text-primary" />
                   {cat.name}
                   {children.length > 0 && <ChevronRight className="h-3 w-3 ml-0.5 opacity-50" />}
                 </Link>
@@ -103,7 +103,7 @@ export default function MegaMenu() {
             <li key={`dyn-${dcat.slug}`}>
               <Link
                 to={`/catalog?smart=${dcat.slug}`}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-foreground hover:text-primary rounded-md hover:bg-muted transition-colors whitespace-nowrap"
+                className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-foreground hover:text-primary border-b-2 border-transparent hover:border-primary transition-all whitespace-nowrap"
               >
                 {dcat.icon ? <span className="text-base">{dcat.icon}</span> : <Zap className="h-4 w-4 text-primary" />}
                 {dcat.name}

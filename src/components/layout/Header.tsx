@@ -46,7 +46,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="sticky top-0 z-50 shadow-lg">
       {/* Announcement bar */}
       <div className="bg-primary text-primary-foreground">
         <div className="container flex items-center justify-center py-1.5 px-4">
@@ -57,24 +57,24 @@ export default function Header() {
       </div>
 
       {/* Main header */}
-      <div className={`transition-all duration-300 bg-card border-b border-border ${scrolled ? "shadow-md" : ""}`}>
+      <div className={`transition-all duration-300 bg-white border-b-2 border-border ${scrolled ? "shadow-md" : ""}`}>
         <div className="container flex items-center justify-between py-3 md:py-4 px-4">
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
-            <h1 className="font-serif text-xl md:text-2xl font-extrabold tracking-tight text-primary">
+            <h1 className="font-serif text-xl md:text-2xl font-extrabold tracking-tight text-primary drop-shadow-sm">
               VENTUZA
             </h1>
           </Link>
 
           {/* Desktop nav links */}
-          <nav className="hidden lg:flex items-center gap-8">
-            <Link to="/catalog" className="text-sm tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors">
+          <nav className="hidden lg:flex items-center gap-6">
+            <Link to="/catalog" className="text-sm font-semibold tracking-wide uppercase text-foreground hover:text-primary transition-colors">
               Colecții
             </Link>
-            <Link to="/personalizare" className="text-sm tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/personalizare" className="text-sm font-semibold tracking-wide uppercase text-foreground hover:text-primary transition-colors">
               Personalizare
             </Link>
-            <Link to="/povestea-noastra" className="text-sm tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/povestea-noastra" className="text-sm font-semibold tracking-wide uppercase text-foreground hover:text-primary transition-colors">
               Povestea Noastră
             </Link>
           </nav>
