@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import heroImage from "@/assets/hero-candles.jpg";
 
 export default function HeroSlider() {
   const [banners, setBanners] = useState<Tables<"banners">[]>([]);
