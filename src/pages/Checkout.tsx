@@ -304,7 +304,7 @@ export default function Checkout() {
   return (
     <Layout>
       <div className="container py-6 max-w-4xl">
-        <h1 className="text-2xl font-bold mb-6">Finalizare comandă</h1>
+        <h1 className="font-serif text-3xl font-medium mb-8">Finalizare Comandă</h1>
 
         {!user && (
           <Card className="mb-4">

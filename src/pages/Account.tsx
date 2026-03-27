@@ -196,8 +196,8 @@ export default function Account() {
       <div className="container py-6 max-w-4xl">
         {/* Personalized greeting */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold">Bună, {profile?.full_name?.split(" ")[0] || "acolo"}! 👋</h1>
-          <p className="text-sm text-muted-foreground">Gestionează contul, comenzile și preferințele tale.</p>
+          <h1 className="font-serif text-3xl font-medium">Bună, {profile?.full_name?.split(" ")[0] || "acolo"}</h1>
+          <p className="text-sm text-muted-foreground mt-1">Gestionează contul, comenzile și preferințele tale.</p>
         </div>
 
         {/* Quick stats */}

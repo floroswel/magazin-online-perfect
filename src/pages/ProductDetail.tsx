@@ -228,7 +228,7 @@ export default function ProductDetail() {
             </div>
 
             <div className="flex items-baseline gap-3">
-              <span className={`text-3xl font-bold ${promoDiscount ? "text-destructive" : "text-primary"}`}>{format(finalPrice)}</span>
+              <span className={`font-serif text-3xl font-medium ${promoDiscount ? "text-destructive" : "text-foreground"}`}>{format(finalPrice)}</span>
               {showOriginal && showOriginal > finalPrice && (
                 <>
                   <span className="text-lg text-muted-foreground line-through">{format(showOriginal)}</span>
