@@ -559,7 +559,7 @@ export default function AdminOrders() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((order: any) => {
+                {paginatedOrders.map((order: any) => {
                   const addr = order.shipping_address as any;
                   const isExpanded = expandedRow === order.id;
                   const oTags = (orderTagMap.get(order.id) || []).map((tid: string) => allTags.find((t: any) => t.id === tid)).filter(Boolean);
