@@ -371,7 +371,7 @@ export default function ProductDetail() {
                         </Button>
                       </div>
                     ) : (
-                      <p className="text-sm text-green-600 dark:text-green-400">✓ Vei primi un email când produsul revine în stoc.</p>
+                      <p className="text-sm text-primary">✓ Vei primi un email când produsul revine în stoc.</p>
                     )}
                   </div>
                 );
