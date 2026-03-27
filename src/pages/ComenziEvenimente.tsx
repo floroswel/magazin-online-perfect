@@ -1,142 +1,107 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Heart, Users, Building2, PartyPopper, CheckCircle, ArrowRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const eventTypes = [
-  { icon: Heart, label: "Nuntă", desc: "Lumânări personalizate cu numele mirilor și data evenimentului" },
-  { icon: Users, label: "Botez", desc: "Lumânări de botez cu numele copilului, ambalaj special" },
-  { icon: Building2, label: "Corporate", desc: "Lumânări cu logo-ul firmei pentru cadouri corporate sau teambuilding" },
-  { icon: PartyPopper, label: "Aniversare", desc: "Seturi cadou personalizate cu mesaj special" },
-];
-
-const processSteps = [
-  { step: "1", title: "Comandă", desc: "Completezi formularul cu detaliile evenimentului" },
-  { step: "2", title: "Confirmare", desc: "Te contactăm în 24h cu oferta personalizată" },
-  { step: "3", title: "Producție", desc: "Realizăm lumânările în atelierul nostru (5-10 zile)" },
-  { step: "4", title: "Livrare", desc: "Livrăm la adresa evenimentului sau unde dorești" },
-];
-
 export default function ComenziEvenimente() {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", event_type: "", quantity: "", date: "", details: "" });
-  const [sent, setSent] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", phone: "", eventType: "", quantity: "", message: "" });
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Cererea ta a fost trimisă! Te vom contacta în 24 de ore.");
-    setSent(true);
+    if (!form.name || !form.email || !form.eventType || !form.quantity) {
+      toast.error("Completează toate câmpurile obligatorii");
+      return;
+    }
+    await supabase.from("admin_notifications").insert({
+      type: "event_inquiry",
+      title: `Cerere evenimente: ${form.eventType} — ${form.quantity} buc`,
+      message: `${form.name} (${form.email}, ${form.phone}): ${form.message}`,
+      link: null,
+    });
+    toast.success("Cererea a fost trimisă!");
+    setSubmitted(true);
   };
-
-  useEffect(() => { document.title = "Lumânări pentru Evenimente | VENTUZA"; }, []);
 
   return (
     <Layout>
-      <div className="container py-8 max-w-4xl">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Lumânări pentru Evenimente Speciale</h1>
-          <p className="text-muted-foreground max-w-xl mx-auto">
-            Adaugă un element memorabil evenimentelor tale cu lumânări VENTUZA personalizate. Comandă minimă: 10 bucăți.
-          </p>
+      <section className="bg-secondary text-secondary-foreground py-16 md:py-20">
+        <div className="container max-w-3xl text-center">
+          <p className="text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-4 font-medium">Evenimente</p>
+          <h1 className="font-serif text-4xl font-medium mb-4">Lumânări pentru Evenimente</h1>
+          <p className="text-secondary-foreground/60">Nuntă · Botez · Corporate · Aniversare</p>
         </div>
+      </section>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {eventTypes.map((et, i) => (
-            <Card key={i} className="hover:shadow-md transition-shadow">
-              <CardContent className="pt-6 text-center">
-                <et.icon className="h-8 w-8 text-primary mx-auto mb-2" />
-                <h3 className="font-semibold text-sm">{et.label}</h3>
-                <p className="text-xs text-muted-foreground mt-1">{et.desc}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-4 mb-8">
-          <Card className="bg-primary/5">
-            <CardContent className="pt-6 text-center">
-              <CheckCircle className="h-6 w-6 text-primary mx-auto mb-2" />
-              <h3 className="font-semibold text-sm">Personalizare Logo</h3>
-              <p className="text-xs text-muted-foreground">Etichetă cu logo-ul tău sau textul dorit</p>
-            </CardContent>
-          </Card>
-          <Card className="bg-primary/5">
-            <CardContent className="pt-6 text-center">
-              <CheckCircle className="h-6 w-6 text-primary mx-auto mb-2" />
-              <h3 className="font-semibold text-sm">Cantități Mari</h3>
-              <p className="text-xs text-muted-foreground">De la 10 buc, cu discount progresiv</p>
-            </CardContent>
-          </Card>
-          <Card className="bg-primary/5">
-            <CardContent className="pt-6 text-center">
-              <CheckCircle className="h-6 w-6 text-primary mx-auto mb-2" />
-              <h3 className="font-semibold text-sm">Termene Flexibile</h3>
-              <p className="text-xs text-muted-foreground">Producție 5-10 zile, urgențe disponibile</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="flex items-center justify-center gap-2 mb-8">
-          {processSteps.map((s, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <div className="flex items-center gap-2 bg-card border rounded-lg px-4 py-3">
-                <span className="text-primary font-bold text-lg">{s.step}</span>
-                <div>
-                  <p className="font-semibold text-xs">{s.title}</p>
-                  <p className="text-[10px] text-muted-foreground hidden md:block">{s.desc}</p>
-                </div>
-              </div>
-              {i < processSteps.length - 1 && <ArrowRight className="h-4 w-4 text-muted-foreground hidden md:block" />}
+      <div className="container py-16 max-w-3xl">
+        <div className="grid md:grid-cols-2 gap-12 mb-16">
+          <div>
+            <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">De ce VENTUZA</p>
+            <h2 className="font-serif text-2xl font-medium text-foreground mb-6">Momente Speciale, Lumânări Unice</h2>
+            <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
+              <p>Fiecare eveniment merită o atingere personală. Creăm lumânări handmade pentru momentele care contează — de la nunți elegante la botezuri emoționante.</p>
+              <p>Oferim personalizare completă: logo, text, parfum și culoare la alegere. Minimum 10 bucăți, termen de producție 7-14 zile.</p>
             </div>
-          ))}
-        </div>
+            <div className="mt-8 space-y-3">
+              {["Personalizare completă", "Minim 10 bucăți", "Termen flexibil 7-14 zile", "Ambalaj premium inclus", "Factură fiscală"].map((f, i) => (
+                <div key={i} className="flex items-center gap-2 text-sm">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                  <span className="text-foreground">{f}</span>
+                </div>
+              ))}
+            </div>
+          </div>
 
-        <Card className="max-w-lg mx-auto">
-          <CardContent className="pt-6">
-            <h2 className="text-xl font-semibold mb-4 text-center">Solicită Ofertă</h2>
-            {sent ? (
-              <div className="text-center py-8">
-                <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-3" />
-                <p className="font-semibold">Cererea ta a fost trimisă!</p>
-                <p className="text-sm text-muted-foreground mt-1">Te vom contacta în maximum 24 de ore cu oferta personalizată.</p>
+          <div>
+            {submitted ? (
+              <div className="border border-border p-8 text-center">
+                <h3 className="font-serif text-xl font-medium text-foreground mb-3">Mulțumim!</h3>
+                <p className="text-sm text-muted-foreground">Vom reveni cu o ofertă personalizată în 24-48 de ore.</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div><Label>Nume complet</Label><Input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} /></div>
-                  <div><Label>Email</Label><Input type="email" required value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} /></div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div><Label>Telefon</Label><Input required value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} /></div>
-                  <div>
-                    <Label>Tip eveniment</Label>
-                    <Select value={form.event_type} onValueChange={v => setForm({ ...form, event_type: v })}>
-                      <SelectTrigger><SelectValue placeholder="Alege..." /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="nunta">Nuntă</SelectItem>
-                        <SelectItem value="botez">Botez</SelectItem>
-                        <SelectItem value="corporate">Corporate</SelectItem>
-                        <SelectItem value="aniversare">Aniversare</SelectItem>
-                        <SelectItem value="altul">Altul</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div><Label>Cantitate estimată</Label><Input type="number" min="10" placeholder="min. 10 buc" value={form.quantity} onChange={e => setForm({ ...form, quantity: e.target.value })} /></div>
-                  <div><Label>Data evenimentului</Label><Input type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} /></div>
-                </div>
-                <div><Label>Detalii suplimentare</Label><Textarea placeholder="Descrie ce ai în minte: parfum, culoare, text, ambalaj..." value={form.details} onChange={e => setForm({ ...form, details: e.target.value })} /></div>
-                <Button type="submit" className="w-full">Trimite Cererea</Button>
+              <form onSubmit={handleSubmit} className="border border-border p-8 space-y-4">
+                <h3 className="font-serif text-lg font-medium text-foreground mb-2">Solicită Ofertă</h3>
+                <Input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Nume complet *" className="rounded-none" required />
+                <Input value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} placeholder="Email *" type="email" className="rounded-none" required />
+                <Input value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} placeholder="Telefon" className="rounded-none" />
+                <Select value={form.eventType} onValueChange={v => setForm(p => ({ ...p, eventType: v }))}>
+                  <SelectTrigger className="rounded-none"><SelectValue placeholder="Tip eveniment *" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="nunta">Nuntă</SelectItem>
+                    <SelectItem value="botez">Botez</SelectItem>
+                    <SelectItem value="corporate">Corporate</SelectItem>
+                    <SelectItem value="aniversare">Aniversare</SelectItem>
+                    <SelectItem value="altul">Altul</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Input value={form.quantity} onChange={e => setForm(p => ({ ...p, quantity: e.target.value }))} placeholder="Cantitate estimată *" className="rounded-none" required />
+                <Textarea value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} placeholder="Detalii suplimentare (parfum, culoare, text...)" className="rounded-none" rows={3} />
+                <Button type="submit" className="w-full rounded-none h-11 text-xs tracking-wider uppercase bg-primary text-primary-foreground">
+                  Trimite Cererea
+                </Button>
               </form>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
+
+        <div className="ventuza-divider mb-12" />
+
+        <div className="text-center">
+          <p className="text-xs tracking-[0.3em] uppercase text-primary mb-3 font-medium">Proces</p>
+          <h2 className="font-serif text-2xl font-medium text-foreground mb-10">Cum Funcționează</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {["Solicită Ofertă", "Confirmare Design", "Producție Manuală", "Livrare Eveniment"].map((step, i) => (
+              <div key={i} className="text-center">
+                <span className="font-serif text-3xl font-light text-primary/30 block mb-3">0{i + 1}</span>
+                <p className="text-sm font-medium text-foreground">{step}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </Layout>
   );
