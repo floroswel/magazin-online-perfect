@@ -250,9 +250,9 @@ export default function ProductDetail() {
 
             {/* Bundle savings badge */}
             {isBundle && bundleSavings > 0 && (
-              <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 flex items-center gap-2">
-                <Badge className="bg-green-600 text-white">-{bundleSavingsPercent}%</Badge>
-                <span className="text-sm font-medium text-green-600 dark:text-green-400">
+              <div className="bg-primary/10 border border-primary/20 p-3 flex items-center gap-2">
+                <Badge className="bg-primary text-primary-foreground">-{bundleSavingsPercent}%</Badge>
+                <span className="text-sm font-medium text-primary">
                   Economisești {format(bundleSavings)} cumpărând pachetul!
                 </span>
               </div>
