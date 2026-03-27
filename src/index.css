@@ -16,8 +16,8 @@
     --popover: 40 25% 99%;
     --popover-foreground: 30 10% 12%;
 
-    --primary: 36 60% 42%;
-    --primary-foreground: 40 25% 97%;
+    --primary: 220 70% 50%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 30 8% 16%;
     --secondary-foreground: 40 20% 95%;
@@ -25,23 +25,23 @@
     --muted: 35 15% 93%;
     --muted-foreground: 30 8% 48%;
 
-    --accent: 36 45% 50%;
-    --accent-foreground: 40 25% 99%;
+    --accent: 220 60% 55%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62% 45%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 35 12% 88%;
     --input: 35 12% 88%;
-    --ring: 36 60% 42%;
+    --ring: 220 70% 50%;
 
     --radius: 0.25rem;
 
     /* Premium brand tokens */
     --ventuza-noir: 30 10% 10%;
     --ventuza-charcoal: 30 8% 16%;
-    --ventuza-gold: 36 60% 42%;
-    --ventuza-gold-light: 36 55% 55%;
+    --ventuza-gold: 220 70% 50%;
+    --ventuza-gold-light: 220 60% 60%;
     --ventuza-cream: 40 30% 95%;
     --ventuza-warm: 35 20% 90%;
     --ventuza-blush: 20 30% 92%;
@@ -49,12 +49,12 @@
     /* Sidebar (admin) */
     --sidebar-background: 30 8% 12%;
     --sidebar-foreground: 35 15% 75%;
-    --sidebar-primary: 36 60% 42%;
+    --sidebar-primary: 220 70% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 30 8% 20%;
     --sidebar-accent-foreground: 35 15% 90%;
     --sidebar-border: 30 8% 18%;
-    --sidebar-ring: 36 60% 42%;
+    --sidebar-ring: 220 70% 50%;
   }
 
   .dark:not(.admin-panel) {
@@ -67,8 +67,8 @@
     --popover: 30 10% 9%;
     --popover-foreground: 35 15% 90%;
 
-    --primary: 36 55% 50%;
-    --primary-foreground: 30 10% 6%;
+    --primary: 220 65% 55%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 30 8% 18%;
     --secondary-foreground: 35 15% 90%;
@@ -76,15 +76,15 @@
     --muted: 30 8% 14%;
     --muted-foreground: 30 8% 55%;
 
-    --accent: 36 50% 45%;
-    --accent-foreground: 30 10% 6%;
+    --accent: 220 55% 50%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 55% 42%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 30 8% 18%;
     --input: 30 8% 18%;
-    --ring: 36 55% 50%;
+    --ring: 220 65% 55%;
   }
 
   /* ADMIN PANEL — clean neutral */

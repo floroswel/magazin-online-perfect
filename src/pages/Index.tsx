@@ -5,14 +5,11 @@ import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
 import HeroSlider from "@/components/home/HeroSlider";
 import { ProductCardSkeleton } from "@/components/ui/skeletons";
-import CategoryGrid from "@/components/home/CategoryGrid";
 import FlashDeals from "@/components/home/FlashDeals";
 import BestSellers from "@/components/home/BestSellers";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
 import PersonalizareSection from "@/components/home/PersonalizareSection";
 import ScentQuiz from "@/components/home/ScentQuiz";
-import SubscriptionSection from "@/components/home/SubscriptionSection";
-import CorporateGiftingSection from "@/components/home/CorporateGiftingSection";
 import ProcessSection from "@/components/home/ProcessSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import SocialProofTicker from "@/components/home/SocialProofTicker";
@@ -90,8 +87,6 @@ export default function Index() {
       )}
       <HeroSlider />
 
-      <CategoryGrid />
-
       <PersonalizareSection />
 
       <ScentQuiz />
@@ -129,10 +124,6 @@ export default function Index() {
       {sections.show_bestsellers && <BestSellers title={sections.bestsellers_title} />}
 
       <ProcessSection />
-
-      <SubscriptionSection />
-
-      <CorporateGiftingSection />
 
       <TestimonialsSection />
 
