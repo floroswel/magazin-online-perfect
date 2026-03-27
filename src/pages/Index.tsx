@@ -12,8 +12,6 @@ import PersonalizareSection from "@/components/home/PersonalizareSection";
 import ScentQuiz from "@/components/home/ScentQuiz";
 import ProcessSection from "@/components/home/ProcessSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
-import ProcessSection from "@/components/home/ProcessSection";
-import TestimonialsSection from "@/components/home/TestimonialsSection";
 import SocialProofTicker from "@/components/home/SocialProofTicker";
 import TrustFooterStrip from "@/components/home/TrustFooterStrip";
 import NewsletterDiscount from "@/components/home/NewsletterDiscount";
