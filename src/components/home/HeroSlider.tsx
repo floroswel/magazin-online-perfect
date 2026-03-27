@@ -27,20 +27,20 @@ export default function HeroSlider() {
 
   if (banners.length === 0) {
     return (
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-[hsl(220,70%,35%)]">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 right-10 w-72 h-72 bg-accent rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary-foreground rounded-full blur-3xl" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary to-[hsl(220,80%,35%)]">
+        <div className="absolute inset-0 opacity-[0.07]">
+          <div className="absolute top-10 right-10 w-72 h-72 bg-white rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl" />
         </div>
         <div className="container relative py-12 md:py-24 lg:py-32 px-5">
           <div className="max-w-2xl">
             <span className="inline-block bg-accent text-accent-foreground text-xs font-bold px-4 py-1.5 rounded-full mb-4 shadow-md">
               🔥 NOU ÎN MAGAZIN
             </span>
-            <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 md:mb-6 text-primary-foreground drop-shadow-sm">
+            <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 md:mb-6 text-white drop-shadow-sm">
               Lumânări artizanale din ceară naturală
             </h2>
-            <p className="text-sm md:text-lg text-primary-foreground/85 mb-6 md:mb-8 max-w-lg leading-relaxed">
+            <p className="text-sm md:text-lg text-white/85 mb-6 md:mb-8 max-w-lg leading-relaxed">
               Handmade în România. Arome premium, personalizare completă și livrare rapidă.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
@@ -50,7 +50,7 @@ export default function HeroSlider() {
                 </Button>
               </Link>
               <Link to="/personalizare" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto bg-primary-foreground hover:bg-primary-foreground/90 text-primary font-bold rounded-lg px-8 md:px-10 text-sm h-12 shadow-md">
+                <Button size="lg" className="w-full sm:w-auto bg-white hover:bg-white/90 text-primary font-bold rounded-lg px-8 md:px-10 text-sm h-12 shadow-md">
                   Personalizează
                 </Button>
               </Link>
