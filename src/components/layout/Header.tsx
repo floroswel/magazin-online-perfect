@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, Heart, User, Menu, X, LogOut, GitCompare, Shield, Sun, Moon, ChevronDown } from "lucide-react";
+import { Search, ShoppingCart, Heart, User, Menu, X, GitCompare, Shield, Sun, Moon, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -49,8 +49,8 @@ export default function Header() {
     <header className="sticky top-0 z-50">
       {/* Announcement bar */}
       <div className="bg-secondary text-secondary-foreground">
-        <div className="container flex items-center justify-center py-2">
-          <p className="text-xs tracking-[0.15em] uppercase font-light">
+        <div className="container flex items-center justify-center py-2 px-4">
+          <p className="text-[10px] md:text-xs tracking-[0.15em] uppercase font-light text-center">
             Livrare gratuită pentru comenzi peste 200 RON · Handmade în România
           </p>
         </div>
@@ -58,7 +58,7 @@ export default function Header() {
 
       {/* Main header */}
       <div className={`transition-all duration-300 ${scrolled ? "bg-background/95 backdrop-blur-md shadow-sm" : "bg-background"} border-b border-border`}>
-        <div className="container flex items-center justify-between py-3 md:py-4">
+        <div className="container flex items-center justify-between py-3 md:py-4 px-4">
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
             <h1 className="font-serif text-xl md:text-3xl font-semibold tracking-[0.08em] text-foreground">
@@ -74,29 +74,26 @@ export default function Header() {
             <Link to="/personalizare" className="text-sm tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors">
               Personalizare
             </Link>
-            <Link to="/abonament" className="text-sm tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors">
-              Abonament
-            </Link>
             <Link to="/povestea-noastra" className="text-sm tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors">
               Povestea Noastră
             </Link>
           </nav>
 
-          {/* Search + Actions */}
+          {/* Actions */}
           <div className="flex items-center gap-0.5 md:gap-1">
             <div className="hidden md:block w-56 lg:w-64">
               <SearchAutocomplete className="" />
             </div>
 
-            <Button variant="ghost" size="icon" className="h-8 w-8 md:h-9 md:w-9 text-foreground/70 hover:text-foreground" onClick={toggleDarkMode} aria-label={isDark ? "Mod luminos" : "Mod întunecat"}>
+            <Button variant="ghost" size="icon" className="hidden sm:inline-flex h-8 w-8 text-foreground/70 hover:text-foreground" onClick={toggleDarkMode} aria-label={isDark ? "Mod luminos" : "Mod întunecat"}>
               {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
-            <span className="hidden sm:inline-flex"><LocaleSwitcher /></span>
+            <span className="hidden md:inline-flex"><LocaleSwitcher /></span>
 
             {user ? (
               <>
-                <Link to="/compare" className="relative">
-                  <Button variant="ghost" size="icon" className="text-foreground/70 hover:text-foreground">
+                <Link to="/compare" className="relative hidden sm:inline-flex">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground/70 hover:text-foreground">
                     <GitCompare className="h-4 w-4" />
                     {comparisonItems.length > 0 && (
                       <Badge className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 text-[10px] bg-primary text-primary-foreground rounded-full">
@@ -106,12 +103,12 @@ export default function Header() {
                   </Button>
                 </Link>
                 <Link to="/favorites">
-                  <Button variant="ghost" size="icon" className="text-foreground/70 hover:text-foreground">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground/70 hover:text-foreground">
                     <Heart className="h-4 w-4" />
                   </Button>
                 </Link>
                 <Link to="/cart" className="relative">
-                  <Button variant="ghost" size="icon" className="text-foreground/70 hover:text-foreground">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground/70 hover:text-foreground">
                     <ShoppingCart className="h-4 w-4" />
                     {totalItems > 0 && (
                       <Badge className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 text-[10px] bg-primary text-primary-foreground rounded-full">
@@ -120,30 +117,20 @@ export default function Header() {
                     )}
                   </Button>
                 </Link>
-                {isAdmin && (
-                  <Link to="/admin">
-                    <Button variant="ghost" size="icon" className="text-foreground/70 hover:text-foreground">
-                      <Shield className="h-4 w-4" />
-                    </Button>
-                  </Link>
-                )}
                 <Link to="/account">
-                  <Button variant="ghost" size="icon" className="text-foreground/70 hover:text-foreground">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground/70 hover:text-foreground">
                     <User className="h-4 w-4" />
                   </Button>
                 </Link>
-                <Button variant="ghost" size="icon" className="text-foreground/70 hover:text-foreground" onClick={signOut}>
-                  <LogOut className="h-4 w-4" />
-                </Button>
               </>
             ) : (
               <Link to="/auth">
-                <Button size="sm" className="font-medium text-xs tracking-wide uppercase bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-none px-5">
+                <Button size="sm" className="font-medium text-xs tracking-wide uppercase bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-none px-4 md:px-5">
                   Cont
                 </Button>
               </Link>
             )}
-            <Button variant="ghost" size="icon" className="lg:hidden text-foreground" onClick={() => setMobileMenu(!mobileMenu)}>
+            <Button variant="ghost" size="icon" className="lg:hidden h-8 w-8 text-foreground" onClick={() => setMobileMenu(!mobileMenu)}>
               {mobileMenu ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
@@ -155,7 +142,7 @@ export default function Header() {
       {/* Mobile menu */}
       {mobileMenu && (
         <div className="lg:hidden bg-background border-b border-border">
-          <div className="container py-4">
+          <div className="container py-4 px-4">
             <form onSubmit={handleSearch} className="mb-4">
               <div className="relative">
                 <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Caută lumânări..." className="pr-10 rounded-none border-foreground/20" />
@@ -167,8 +154,10 @@ export default function Header() {
             <nav className="space-y-1 mb-4">
               <Link to="/catalog" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-foreground border-b border-border/50">Colecții</Link>
               <Link to="/personalizare" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-foreground border-b border-border/50">Personalizare</Link>
-              <Link to="/abonament" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-foreground border-b border-border/50">Abonament</Link>
               <Link to="/povestea-noastra" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-foreground border-b border-border/50">Povestea Noastră</Link>
+              <Link to="/compare" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-foreground border-b border-border/50">Comparare</Link>
+              {isAdmin && <Link to="/admin" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-primary border-b border-border/50">Admin Panel</Link>}
+              {user && <button onClick={() => { signOut(); setMobileMenu(false); }} className="block py-2.5 text-sm tracking-wide uppercase text-muted-foreground border-b border-border/50 w-full text-left">Deconectare</button>}
             </nav>
             <ul className="space-y-1">
               {mobileCategories.filter(c => !c.parent_id).map(cat => {

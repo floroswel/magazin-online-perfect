@@ -64,7 +64,6 @@ export default function Footer() {
     { label: "Lumânări Decorative", url: "/catalog?category=decorative", active: true },
     { label: "Seturi Cadou", url: "/catalog?category=seturi-cadou", active: true },
     { label: "Personalizare", url: "/personalizare", active: true },
-    { label: "Abonament", url: "/abonament", active: true },
   ];
 
   const col3Links = texts.col3_links.length > 0 ? texts.col3_links.filter(l => l.active) : [
