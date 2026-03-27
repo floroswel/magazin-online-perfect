@@ -678,6 +678,8 @@ export default function AdminOrders() {
               </div>
             </div>
           )}
+        </CardContent>
+      </Card>
 
       {/* Tag assignment dialog */}
       <Dialog open={!!showTagDialog} onOpenChange={() => setShowTagDialog(null)}>
