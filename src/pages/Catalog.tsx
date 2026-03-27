@@ -246,12 +246,12 @@ export default function Catalog() {
 
   return (
     <Layout>
-      <div className="container py-6">
+       <div className="container py-10">
         {/* Breadcrumbs */}
         {breadcrumbs.length > 0 && (
-          <nav className="flex items-center gap-1 text-sm text-muted-foreground mb-4 flex-wrap" aria-label="Breadcrumb">
+          <nav className="flex items-center gap-1 text-xs tracking-wide uppercase text-muted-foreground mb-8 flex-wrap" aria-label="Breadcrumb">
             <Link to="/" className="flex items-center gap-1 hover:text-primary transition-colors">
-              <Home className="h-3.5 w-3.5" /> Acasă
+              <Home className="h-3 w-3" /> Acasă
             </Link>
             {breadcrumbs.map((bc, i) => (
               <span key={bc.id} className="flex items-center gap-1">
@@ -274,7 +274,7 @@ export default function Catalog() {
                 <img src={currentCategory.image_url} alt={currentCategory.name} className="w-16 h-16 rounded-lg object-cover border" />
               )}
               <div>
-                <h1 className="text-2xl font-bold text-foreground">{currentCategory.name}</h1>
+                <h1 className="font-serif text-3xl font-medium text-foreground">{currentCategory.name}</h1>
                 {currentCategory.description && (
                   <div className="text-sm text-muted-foreground mt-1 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: currentCategory.description }} />
                 )}
@@ -297,7 +297,7 @@ export default function Catalog() {
               <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 mt-4">
                 {subcategories.map(sub => (
                   <Link key={sub.id} to={`/catalog?category=${sub.slug}`}
-                    className="flex flex-col items-center gap-2 p-3 rounded-xl bg-card border border-border hover:border-primary hover:shadow-md transition-all">
+                    className="flex flex-col items-center gap-2 p-4 bg-card border border-border hover:border-primary transition-all">
                     {sub.image_url ? (
                       <img src={sub.image_url} alt={sub.name} className="w-10 h-10 rounded-full object-cover" />
                     ) : (
@@ -315,8 +315,8 @@ export default function Catalog() {
         {!currentCategory && (
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-foreground">
-                {searchQuery ? `Rezultate pentru "${searchQuery}"` : smartCategory?.name || "Toate produsele"}
+              <h1 className="font-serif text-3xl font-medium text-foreground">
+                {searchQuery ? `Rezultate pentru "${searchQuery}"` : smartCategory?.name || "Toate Lumânările"}
               </h1>
               <p className="text-sm text-muted-foreground mt-1">{totalCount} produse găsite</p>
             </div>

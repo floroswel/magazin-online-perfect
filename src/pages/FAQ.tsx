@@ -1,75 +1,79 @@
 import Layout from "@/components/layout/Layout";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Link } from "react-router-dom";
-import { useEffect } from "react";
 
-const sections = [
+const faqSections = [
   {
-    title: "🚚 Comenzi & Livrare",
+    title: "Comenzi & Livrare",
     items: [
-      { q: "Cât durează livrarea?", a: "Livrarea standard durează 1-3 zile lucrătoare prin Sameday sau Fan Courier. Pentru lumânările realizate la comandă (made to order), adaugă 3-5 zile de preparare manuală." },
-      { q: "Oferiți livrare gratuită?", a: "Da! Livrarea este gratuită pentru comenzile peste 200 RON. Sub această sumă, costul livrării este afișat la checkout." },
-      { q: "Pot urmări comanda?", a: "Absolut! După expediere primești un email cu numărul AWB și link-ul de tracking. Poți verifica și pe pagina de Urmărire Comandă." },
-      { q: "Livrați internațional?", a: "Da, livrăm în toată Europa. Consultă pagina Livrare Internațională pentru detalii despre costuri și termene." },
-      { q: "Ce fac dacă pachetul e deteriorat?", a: "Contactează-ne în 24h cu poze ale pachetului și produsului. Vom trimite un produs nou sau vom emite rambursul integral." },
+      { q: "Cât durează livrarea?", a: "Livrarea standard durează 2-4 zile lucrătoare prin curier. Pentru produsele personalizate, adăugați 3-5 zile lucrătoare pentru preparare manuală." },
+      { q: "Oferiți livrare gratuită?", a: "Da, livrarea este gratuită pentru comenzile peste 200 RON. Sub acest prag, costul de livrare este de 19.99 RON." },
+      { q: "Pot urmări comanda?", a: "Da. Accesați pagina Urmărire Comandă sau secțiunea Comenzi din contul dvs. Veți primi și un email cu link-ul de tracking când comanda este expediată." },
+      { q: "Livrați internațional?", a: "Da, livrăm în toate țările UE. Consultați pagina Livrare Internațională pentru tarife și termene." },
+      { q: "Ce fac dacă pachetul e deteriorat?", a: "Contactați-ne în 24 de ore de la primire cu fotografii ale produsului și ambalajului deteriorat. Vom trimite un produs nou sau vom emite o rambursare completă." },
     ],
   },
   {
-    title: "🕯️ Lumânări & Produse",
+    title: "Lumânări & Produse",
     items: [
-      { q: "Din ce este făcută ceara?", a: "Folosim predominant ceară de soia 100% naturală, biodegradabilă și vegană. Unele lumânări decorative (twisted, sculptate) sunt din parafină premium." },
-      { q: "Cât durează prima ardere?", a: "Prima ardere trebuie să fie de minim 1-2 ore, până se topește uniform stratul de sus. Acest lucru previne efectul de 'tunel'." },
-      { q: "Cum tai fitilul corect?", a: "Taie fitilul la ~5mm înainte de fiecare aprindere. Un fitil prea lung produce fum negru, iar unul prea scurt se stinge singur." },
-      { q: "Cât durează o lumânare?", a: "Depinde de dimensiune: lumânările medii (200g) ard 30-40 ore, cele mari (350g) 40-50 ore. Durata exactă e menționată pe fiecare produs." },
-      { q: "Lumânările sunt vegane?", a: "Toate lumânările din ceară de soia sunt 100% vegane. Lumânările din parafină sau ceară de albine nu sunt considerate vegane." },
+      { q: "Din ce este făcută ceara?", a: "Folosim exclusiv ceară de soia 100% naturală. Este vegană, biodegradabilă și arde mai curat decât ceara de parafină." },
+      { q: "Cât durează prima ardere?", a: "Prima ardere este esențială. Lăsați lumânarea să ardă până când toată suprafața de ceară se topește uniform — de obicei 2-3 ore. Acest lucru previne formarea tunelului." },
+      { q: "Cum tai fitilul corect?", a: "Tăiați fitilul la 5-6mm înainte de fiecare aprindere. Folosiți un tăietor de fitil sau foarfece. Un fitil prea lung produce fum și ardere inegală." },
+      { q: "Cât durează o lumânare?", a: "Depinde de dimensiune: lumânările mici ard 20-30 ore, cele medii 40-50 ore, iar cele mari peste 60 ore. Timpul exact este indicat pe fiecare produs." },
+      { q: "Lumânările sunt vegane?", a: "Da, toate lumânările VENTUZA sunt 100% vegane. Folosim ceară de soia, parfumuri fără ingrediente de origine animală și fitiluri din bumbac natural." },
     ],
   },
   {
-    title: "✨ Personalizare",
+    title: "Personalizare",
     items: [
-      { q: "Ce pot personaliza?", a: "Poți alege parfumul, culoarea, textul de pe etichetă și tipul de ambalaj. Folosește Personalizare Builder-ul nostru pentru a crea lumânarea perfectă." },
-      { q: "Cât durează o comandă personalizată?", a: "Lumânările personalizate sunt realizate la comandă și necesită 3-7 zile lucrătoare de preparare, plus 1-3 zile de livrare." },
-      { q: "Pot returna o lumânare personalizată?", a: "Din cauza naturii unice a produsului, lumânările personalizate nu pot fi returnate, cu excepția defectelor de fabricație." },
-      { q: "Cum văd previzualizarea înainte de comandă?", a: "Builder-ul de personalizare arată o previzualizare live a selecțiilor tale. Confirmarea finală se face la adăugarea în coș." },
+      { q: "Ce pot personaliza?", a: "Puteți alege parfumul, culoarea, textul gravat sau tipărit, și tipul de ambalaj. Accesați pagina Personalizare pentru a crea lumânarea ideală." },
+      { q: "Cât durează o comandă personalizată?", a: "Comenzile personalizate necesită 3-5 zile lucrătoare pentru preparare, plus timpul de livrare standard." },
+      { q: "Pot returna o lumânare personalizată?", a: "Din motive igienice și de personalizare, lumânările cu text personalizat nu pot fi returnate, cu excepția defectelor de fabricație." },
+      { q: "Cum văd previzualizarea?", a: "Pe pagina de personalizare veți vedea o previzualizare live a lumânării pe măsură ce faceți selecțiile." },
     ],
   },
   {
-    title: "💳 Plăți & Retururi",
+    title: "Plăți & Retururi",
     items: [
-      { q: "Ce metode de plată acceptați?", a: "Acceptăm: Card online (Visa/Mastercard), Ramburs la livrare, Transfer bancar, Apple Pay/Google Pay, și plată în rate prin TBI Bank." },
-      { q: "Cum returnez un produs?", a: "Ai dreptul de retur în 14 zile de la primire. Completează formularul de retur din contul tău sau contactează-ne. Produsul trebuie să fie neutilizat și în ambalajul original." },
-      { q: "În cât timp primesc rambursul?", a: "Rambursul se procesează în 3-5 zile lucrătoare de la primirea produsului returnat, prin aceeași metodă de plată folosită la comandă." },
-      { q: "Oferiți facturi fiscale?", a: "Da! Factura fiscală se generează automat și se trimite pe email la fiecare comandă. Pentru persoane juridice, adaugă datele firmei la checkout." },
+      { q: "Ce metode de plată acceptați?", a: "Acceptăm card online, transfer bancar, ramburs la curier și plata în rate prin partenerii noștri." },
+      { q: "Cum returnez un produs?", a: "Accesați secțiunea Comenzi din contul dvs. și selectați Solicită Retur. Completați formularul și vă vom contacta în 24 de ore." },
+      { q: "În cât timp primesc rambursul?", a: "Rambursul se procesează în 5-10 zile lucrătoare de la primirea produsului returnat, pe aceeași metodă de plată folosită la comandă." },
+      { q: "Oferiți facturi fiscale?", a: "Da, puteți solicita factură fiscală la checkout completând datele companiei (CUI, denumire, adresă)." },
     ],
   },
   {
-    title: "📦 Abonamente",
+    title: "Abonamente",
     items: [
-      { q: "Cum funcționează abonamentul?", a: "Alegi planul (Esențial 39 RON / Confort 69 RON / Premium 119 RON) și primești lumânări noi în fiecare lună, direct la ușă." },
-      { q: "Pot schimba parfumul lunar?", a: "La planurile Confort și Premium poți alege parfumul preferat. La planul Esențial, noi selectăm cel mai potrivit parfum sezonier." },
-      { q: "Cum anulez abonamentul?", a: "Poți anula oricând din contul tău, secțiunea Abonamente. Anularea se aplică de la următoarea lună — nu există penalizări." },
-      { q: "Când se livrează abonamentul lunar?", a: "Abonamentele se pregătesc în primele 5 zile ale lunii și se livrează între zilele 5-10. Vei primi notificare cu tracking-ul." },
+      { q: "Cum funcționează abonamentul?", a: "Alegeți un plan (Starter, Classic sau Premium) și primiți lunar lumânări VENTUZA la un preț redus, cu livrare gratuită." },
+      { q: "Pot schimba parfumul lunar?", a: "Da, pentru planurile Classic și Premium puteți alege parfumul dorit din contul dvs. înainte de data de expediere lunară." },
+      { q: "Cum anulez abonamentul?", a: "Puteți anula oricând din secțiunea Abonamente a contului dvs. Anularea se aplică din luna următoare." },
+      { q: "Când se livrează abonamentul lunar?", a: "Abonamentele se expediază în primele 5 zile ale fiecărei luni. Veți primi notificare pe email." },
     ],
   },
 ];
 
 export default function FAQ() {
-  useEffect(() => { document.title = "FAQ — Întrebări Frecvente | VENTUZA"; }, []);
-
   return (
     <Layout>
-      <div className="container py-8 max-w-3xl">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Întrebări Frecvente</h1>
-        <p className="text-muted-foreground mb-8">Ai o întrebare? Probabil găsești răspunsul aici. Dacă nu, <Link to="/page/contact" className="text-primary hover:underline">contactează-ne</Link>.</p>
+      <section className="bg-secondary text-secondary-foreground py-16 md:py-20">
+        <div className="container max-w-3xl text-center">
+          <p className="text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-4 font-medium">Suport</p>
+          <h1 className="font-serif text-4xl font-medium">Întrebări Frecvente</h1>
+        </div>
+      </section>
 
-        {sections.map((section, si) => (
-          <div key={si} className="mb-8">
-            <h2 className="text-xl font-semibold text-foreground mb-4">{section.title}</h2>
+      <div className="container py-16 max-w-3xl space-y-12">
+        {faqSections.map((section, si) => (
+          <div key={si}>
+            <h2 className="font-serif text-xl font-medium text-foreground mb-6">{section.title}</h2>
             <Accordion type="single" collapsible className="space-y-2">
-              {section.items.map((item, ii) => (
-                <AccordionItem key={ii} value={`s${si}-q${ii}`} className="border rounded-lg px-4">
-                  <AccordionTrigger className="text-left font-medium text-sm">{item.q}</AccordionTrigger>
-                  <AccordionContent className="text-sm text-muted-foreground">{item.a}</AccordionContent>
+              {section.items.map((item, i) => (
+                <AccordionItem key={i} value={`${si}-${i}`} className="border border-border px-5">
+                  <AccordionTrigger className="text-sm font-medium text-foreground hover:text-primary py-4">
+                    {item.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-muted-foreground pb-4 leading-relaxed">
+                    {item.a}
+                  </AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>

@@ -2,130 +2,105 @@ import { useState } from "react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { Package, Truck, CheckCircle, Clock, AlertCircle } from "lucide-react";
-import { useEffect } from "react";
-
-const statusSteps = [
-  { key: "pending", label: "Comandă plasată", icon: Clock },
-  { key: "confirmed", label: "Confirmată", icon: CheckCircle },
-  { key: "processing", label: "În preparare", icon: Package },
-  { key: "shipped", label: "Expediată", icon: Truck },
-  { key: "delivered", label: "Livrată", icon: CheckCircle },
-];
+import { toast } from "sonner";
 
 export default function Tracking() {
   const [orderId, setOrderId] = useState("");
   const [email, setEmail] = useState("");
   const [order, setOrder] = useState<any>(null);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setOrder(null);
+    if (!orderId.trim()) { toast.error("Introduceți numărul comenzii"); return; }
     setLoading(true);
-
-    const cleanId = orderId.trim().replace(/^#/, "");
-
-    const { data, error: err } = await supabase
-      .from("orders")
-      .select("id, status, created_at, total, shipping_address, tracking_number, shipping_method")
-      .or(`id.eq.${cleanId},order_number.eq.${cleanId}`)
-      .limit(1)
-      .maybeSingle();
-
-    if (err || !data) {
-      setError("Nu am găsit nicio comandă cu aceste date. Verifică numărul comenzii și adresa de email.");
-    } else {
-      setOrder(data);
-    }
+    setSearched(true);
+    const { data } = await supabase.from("orders").select("id, status, created_at, tracking_number, tracking_url, courier, total, shipping_address").or(`id.eq.${orderId.trim()},id.ilike.${orderId.trim()}%`).maybeSingle();
+    setOrder(data);
+    if (!data) toast.error("Comanda nu a fost găsită");
     setLoading(false);
   };
 
-  useEffect(() => { document.title = "Urmărire Comandă | VENTUZA"; }, []);
-
-  const currentStepIndex = order ? statusSteps.findIndex(s => s.key === order.status) : -1;
+  const statusLabels: Record<string, string> = { pending: "Plasată", processing: "Se Procesează", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată" };
+  const statusSteps = ["pending", "processing", "shipped", "delivered"];
 
   return (
     <Layout>
-      <div className="container py-8 max-w-xl">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Urmărire Comandă</h1>
-        <p className="text-muted-foreground mb-6">Introdu datele comenzii pentru a vedea statusul în timp real.</p>
+      <section className="bg-secondary text-secondary-foreground py-16 md:py-20">
+        <div className="container max-w-xl text-center">
+          <p className="text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-4 font-medium">Livrare</p>
+          <h1 className="font-serif text-4xl font-medium mb-4">Urmărire Comandă</h1>
+          <p className="text-secondary-foreground/60">Introdu numărul comenzii pentru a vedea statusul</p>
+        </div>
+      </section>
 
-        <Card>
-          <CardContent className="pt-6">
-            <form onSubmit={handleSearch} className="space-y-4">
-              <div>
-                <Label>Număr comandă</Label>
-                <Input placeholder="ex: #12345 sau UUID" value={orderId} onChange={e => setOrderId(e.target.value)} required />
+      <div className="container py-16 max-w-xl">
+        <form onSubmit={handleSearch} className="space-y-4 mb-12">
+          <Input value={orderId} onChange={e => setOrderId(e.target.value)} placeholder="Numărul comenzii (ex: abc12345)" className="rounded-none border-foreground/20 h-12" />
+          <Input value={email} onChange={e => setEmail(e.target.value)} placeholder="Adresa de email (opțional)" type="email" className="rounded-none border-foreground/20 h-12" />
+          <Button type="submit" disabled={loading} className="w-full rounded-none h-12 bg-primary text-primary-foreground text-xs tracking-wider uppercase">
+            {loading ? "Se caută..." : "Urmărește Comanda"}
+          </Button>
+        </form>
+
+        {searched && order && (
+          <div className="space-y-8">
+            <div className="border border-border p-6">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <p className="text-xs tracking-wide uppercase text-muted-foreground">Comanda</p>
+                  <p className="font-mono text-sm font-medium">#{order.id.slice(0, 8)}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs tracking-wide uppercase text-muted-foreground">Status</p>
+                  <p className="text-sm font-medium text-primary">{statusLabels[order.status] || order.status}</p>
+                </div>
               </div>
-              <div>
-                <Label>Email</Label>
-                <Input type="email" placeholder="email@exemplu.com" value={email} onChange={e => setEmail(e.target.value)} required />
-              </div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Se caută..." : "Caută comanda"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
 
-        {error && (
-          <Card className="mt-6 border-destructive">
-            <CardContent className="pt-6 flex items-center gap-3 text-destructive">
-              <AlertCircle className="h-5 w-5" />
-              <p className="text-sm">{error}</p>
-            </CardContent>
-          </Card>
-        )}
-
-        {order && (
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle className="text-base">Comanda #{order.id.slice(0, 8)}</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Plasată pe {new Date(order.created_at).toLocaleDateString("ro-RO")} • Total: {Number(order.total).toFixed(2)} RON
-              </p>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+              <div className="flex items-center justify-between mb-6">
                 {statusSteps.map((step, i) => {
-                  const StepIcon = step.icon;
-                  const isActive = i <= currentStepIndex;
-                  const isCurrent = i === currentStepIndex;
+                  const currentIdx = statusSteps.indexOf(order.status);
+                  const isActive = i <= currentIdx;
                   return (
-                    <div key={step.key} className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isCurrent ? "bg-primary text-primary-foreground" : isActive ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}>
-                        <StepIcon className="h-4 w-4" />
+                    <div key={step} className="flex flex-col items-center flex-1">
+                      <div className={`w-8 h-8 flex items-center justify-center text-xs font-medium border-2 ${isActive ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground"}`}>
+                        {i + 1}
                       </div>
-                      <span className={`text-sm ${isCurrent ? "font-semibold text-foreground" : isActive ? "text-foreground" : "text-muted-foreground"}`}>
-                        {step.label}
-                      </span>
+                      <p className={`text-[10px] mt-2 tracking-wide uppercase ${isActive ? "text-foreground font-medium" : "text-muted-foreground"}`}>
+                        {statusLabels[step]}
+                      </p>
                     </div>
                   );
                 })}
               </div>
 
               {order.tracking_number && (
-                <div className="mt-6 p-4 bg-muted rounded-lg">
-                  <p className="text-sm font-medium">Număr AWB: {order.tracking_number}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Curier: {order.shipping_method || "Sameday"}
-                  </p>
+                <div className="border-t border-border pt-4 space-y-2">
+                  <p className="text-xs tracking-wide uppercase text-muted-foreground">Tracking</p>
+                  <p className="font-mono text-sm">{order.tracking_number}</p>
+                  {order.courier && <p className="text-xs text-muted-foreground capitalize">Curier: {order.courier}</p>}
+                  {order.tracking_url && (
+                    <a href={order.tracking_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:text-primary/80 transition-colors">
+                      Urmărește la curier →
+                    </a>
+                  )}
                 </div>
               )}
+            </div>
 
-              <div className="mt-6 text-center">
-                <p className="text-xs text-muted-foreground">
-                  Ai nevoie de ajutor? <a href="mailto:contact@ventuza.ro" className="text-primary hover:underline">Contactează-ne</a>
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+            <p className="text-center text-xs text-muted-foreground">
+              Probleme cu comanda? <a href="mailto:contact@ventuza.ro" className="text-primary">Contactează-ne</a>
+            </p>
+          </div>
+        )}
+
+        {searched && !order && !loading && (
+          <div className="text-center py-8">
+            <p className="font-serif text-xl text-foreground mb-2">Comanda nu a fost găsită</p>
+            <p className="text-sm text-muted-foreground">Verifică numărul comenzii și încearcă din nou.</p>
+          </div>
         )}
       </div>
     </Layout>

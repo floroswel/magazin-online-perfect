@@ -96,10 +96,11 @@ export default function Auth() {
 
   return (
     <Layout>
-      <div className="container py-16 flex justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">{branding.emoji} {branding.name}</CardTitle>
+      <div className="container py-20 flex justify-center">
+        <Card className="w-full max-w-md border-border">
+          <CardHeader className="text-center pb-2">
+            <p className="font-serif text-3xl font-medium tracking-wide text-foreground">VENTUZA</p>
+            <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mt-1">Contul Tău</p>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="login">
