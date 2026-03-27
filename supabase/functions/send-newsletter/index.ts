@@ -73,19 +73,19 @@ serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "MegaShop Newsletter <onboarding@resend.dev>",
+          from: "VENTUZA Newsletter <onboarding@resend.dev>",
           to: batch,
           subject,
           html: `
             <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">
               <div style="background:#cc0000;padding:24px;text-align:center">
-                <h1 style="color:#fff;margin:0;font-size:22px">🛒 MegaShop Newsletter</h1>
+                <h1 style="color:#fff;margin:0;font-size:22px">🛒 VENTUZA Newsletter</h1>
               </div>
               <div style="padding:24px">
                 ${content}
               </div>
               <div style="padding:16px;background:#f5f5f5;text-align:center;font-size:12px;color:#999">
-                <p>Ai primit acest email pentru că ești abonat la newsletterul MegaShop.</p>
+                <p>Ai primit acest email pentru că ești abonat la newsletterul VENTUZA.</p>
               </div>
             </div>`,
         }),

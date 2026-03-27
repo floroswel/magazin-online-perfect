@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Cookie } from "lucide-react";
 
-const COOKIE_KEY = "megashop_cookie_consent";
+const COOKIE_KEY = "ventuza_cookie_consent";
 
 type CookiePrefs = {
   necessary: boolean;

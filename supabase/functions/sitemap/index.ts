@@ -13,7 +13,7 @@ Deno.serve(async (req) => {
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
   const supabase = createClient(supabaseUrl, serviceKey);
 
-  const baseUrl = req.headers.get("origin") || "https://megashop.ro";
+  const baseUrl = req.headers.get("origin") || "https://ventuza.ro";
   const url = new URL(req.url);
   const page = url.searchParams.get("page");
 

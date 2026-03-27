@@ -31,7 +31,7 @@ serve(async (req) => {
     if (error || !invoice) throw new Error("Invoice not found");
 
     // Fetch store branding
-    let storeName = "MegaShop";
+    let storeName = "VENTUZA";
     try {
       const { data: branding } = await supabase
         .from("app_settings")
