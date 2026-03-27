@@ -27,31 +27,26 @@ export default function HeroSlider() {
 
   if (banners.length === 0) {
     return (
-      <section className="relative bg-background overflow-hidden">
-        {/* Neon ambient glow */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-accent/10 rounded-full blur-[100px]" />
-        </div>
-        <div className="container relative z-10 py-12 md:py-32 lg:py-40 px-5">
+      <section className="relative overflow-hidden ventuza-gradient-dark">
+        <div className="container py-12 md:py-32 lg:py-40 px-5">
           <div className="max-w-2xl">
-            <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-primary mb-3 md:mb-6 font-semibold animate-neon-pulse">⚡ Artă · Lumină · Energie</p>
-            <h2 className="font-serif text-3xl md:text-6xl lg:text-7xl font-bold leading-[1.1] mb-4 md:mb-6 uppercase">
-              Lumânări<br />
-              <span className="text-gold">electrice</span><br />
-              din ceară naturală
+            <p className="text-[10px] md:text-xs tracking-[0.25em] uppercase text-primary mb-3 md:mb-6 font-semibold">
+              Colecție artizanală VENTUZA
+            </p>
+            <h2 className="font-serif text-3xl md:text-6xl lg:text-7xl font-bold leading-[1.1] mb-4 md:mb-6 text-foreground">
+              Lumânări handmade pentru seri cu atmosferă
             </h2>
             <p className="text-sm md:text-lg text-muted-foreground mb-6 md:mb-10 max-w-md leading-relaxed">
-              Create manual cu dragoste în România. Arome naturale, design unic și posibilitate de personalizare completă.
+              Create manual în România din ceară naturală, cu arome fine și opțiuni de personalizare premium.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
               <Link to="/catalog" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/80 text-primary-foreground rounded-md px-8 md:px-10 text-xs tracking-[0.15em] uppercase font-bold h-11 md:h-12 shadow-[0_0_20px_hsl(185_100%_50%/0.3)]">
-                  Descoperă Colecția
+                <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground rounded-md px-8 md:px-10 text-xs tracking-[0.12em] uppercase font-semibold h-11 md:h-12">
+                  Descoperă colecția
                 </Button>
               </Link>
               <Link to="/personalizare" className="w-full sm:w-auto">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto border-primary/40 text-primary hover:bg-primary/10 rounded-md px-8 md:px-10 text-xs tracking-[0.15em] uppercase font-bold h-11 md:h-12">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto border-primary/40 text-primary hover:bg-primary/10 rounded-md px-8 md:px-10 text-xs tracking-[0.12em] uppercase font-semibold h-11 md:h-12">
                   Personalizează
                 </Button>
               </Link>
