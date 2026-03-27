@@ -61,9 +61,9 @@ export default function MegaMenu() {
   const getChildren = (parentId: string) => navCategories.filter(c => c.parent_id === parentId);
 
   return (
-    <nav className="bg-card border-b shadow-sm relative">
+    <nav className="bg-white border-b-2 border-primary/20 shadow-sm relative">
       <div className="container">
-        <ul className="hidden md:flex items-center gap-0.5 py-1 overflow-x-auto">
+        <ul className="hidden md:flex items-center gap-0 py-0 overflow-x-auto">
           {parents.map(cat => {
             const Icon = iconMap[cat.icon || ""] || Package;
             const children = getChildren(cat.id);
