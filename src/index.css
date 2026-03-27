@@ -6,57 +6,55 @@
 
 @layer base {
   :root {
-    /* VENTUZA ELECTRO — Dark + Neon Cyan/Magenta */
-    --background: 230 25% 7%;
-    --foreground: 200 20% 92%;
+    /* VENTUZA BLUE — Dark Noir + Facebook Blue */
+    --background: 220 20% 7%;
+    --foreground: 40 20% 92%;
 
-    --card: 230 20% 10%;
-    --card-foreground: 200 20% 92%;
+    --card: 220 18% 10%;
+    --card-foreground: 40 20% 92%;
 
-    --popover: 230 20% 10%;
-    --popover-foreground: 200 20% 92%;
+    --popover: 220 18% 10%;
+    --popover-foreground: 40 20% 92%;
 
-    --primary: 185 100% 50%;
-    --primary-foreground: 230 25% 7%;
+    --primary: 220 70% 50%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 230 20% 14%;
-    --secondary-foreground: 200 20% 88%;
+    --secondary: 220 18% 14%;
+    --secondary-foreground: 40 20% 88%;
 
-    --muted: 230 15% 15%;
-    --muted-foreground: 210 10% 55%;
+    --muted: 220 15% 15%;
+    --muted-foreground: 220 10% 55%;
 
-    --accent: 320 90% 60%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 40 60% 55%;
+    --accent-foreground: 220 20% 7%;
 
     --destructive: 0 80% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 230 15% 18%;
-    --input: 230 15% 18%;
-    --ring: 185 100% 50%;
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 220 70% 50%;
 
     --radius: 0.5rem;
 
-    /* Electro brand tokens */
-    --ventuza-noir: 230 25% 5%;
-    --ventuza-charcoal: 230 20% 12%;
-    --ventuza-gold: 185 100% 50%;
-    --ventuza-gold-light: 185 80% 60%;
-    --ventuza-cream: 230 15% 15%;
-    --ventuza-warm: 230 12% 18%;
-    --ventuza-blush: 320 90% 60%;
-    --ventuza-neon-magenta: 320 90% 60%;
-    --ventuza-neon-cyan: 185 100% 50%;
+    /* Brand tokens */
+    --ventuza-noir: 220 20% 5%;
+    --ventuza-charcoal: 220 18% 12%;
+    --ventuza-gold: 40 60% 55%;
+    --ventuza-gold-light: 40 50% 65%;
+    --ventuza-cream: 40 30% 92%;
+    --ventuza-warm: 30 20% 18%;
+    --ventuza-blush: 350 50% 65%;
 
     /* Sidebar (admin) */
-    --sidebar-background: 230 25% 8%;
-    --sidebar-foreground: 210 15% 65%;
-    --sidebar-primary: 185 100% 50%;
-    --sidebar-primary-foreground: 230 25% 7%;
-    --sidebar-accent: 230 20% 16%;
-    --sidebar-accent-foreground: 200 20% 90%;
-    --sidebar-border: 230 15% 16%;
-    --sidebar-ring: 185 100% 50%;
+    --sidebar-background: 220 20% 8%;
+    --sidebar-foreground: 220 15% 65%;
+    --sidebar-primary: 220 70% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 18% 16%;
+    --sidebar-accent-foreground: 40 20% 90%;
+    --sidebar-border: 220 15% 16%;
+    --sidebar-ring: 220 70% 50%;
   }
 
   .dark:not(.admin-panel) {
