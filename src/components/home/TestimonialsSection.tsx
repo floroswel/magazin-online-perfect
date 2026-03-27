@@ -7,13 +7,13 @@ export default function TestimonialsSection() {
   const [reviews, setReviews] = useState<any[]>([]);
 
   useEffect(() => {
-    supabase
+    (supabase as any)
       .from("reviews")
       .select("*, products(name, image_url)")
       .eq("status", "approved")
       .order("created_at", { ascending: false })
       .limit(6)
-      .then(({ data }) => setReviews(data || []));
+      .then(({ data }: any) => setReviews(data || []));
   }, []);
 
   if (reviews.length === 0) return null;
