@@ -5,7 +5,7 @@ type CookiePrefs = { necessary: boolean; analytics: boolean; marketing: boolean 
 
 function getCookieConsent(): CookiePrefs | null {
   try {
-    const raw = localStorage.getItem("megashop_cookie_consent");
+    const raw = localStorage.getItem("ventuza_cookie_consent");
     return raw ? JSON.parse(raw) : null;
   } catch { return null; }
 }
