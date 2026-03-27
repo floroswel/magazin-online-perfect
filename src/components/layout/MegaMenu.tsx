@@ -41,14 +41,18 @@ export default function MegaMenu() {
       .eq("visible", true)
       .order("display_order")
       .order("name")
-      .then(({ data }) => setCategories(((data as Cat[]) || []).filter((cat) => isCandleCollection(cat)));
+      .then(({ data }) =>
+        setCategories(((data as Cat[]) || []).filter((cat) => isCandleCollection(cat)))
+      );
 
     supabase
       .from("dynamic_categories")
       .select("id, name, slug, icon, display_order")
       .eq("visible", true)
       .order("display_order")
-      .then(({ data }) => setDynCategories((((data || []) as unknown as DynCat[]).filter((cat) => isCandleCollection(cat))));
+      .then(({ data }) =>
+        setDynCategories(((data || []) as unknown as DynCat[]).filter((cat) => isCandleCollection(cat)))
+      );
   }, []);
 
   // Only show categories marked as show_in_nav
