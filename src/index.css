@@ -54,7 +54,7 @@
     --sidebar-accent: 30 8% 20%;
     --sidebar-accent-foreground: 35 15% 90%;
     --sidebar-border: 30 8% 18%;
-    --sidebar-ring: 36 60% 42%;
+    --sidebar-ring: 220 70% 50%;
   }
 
   .dark:not(.admin-panel) {
