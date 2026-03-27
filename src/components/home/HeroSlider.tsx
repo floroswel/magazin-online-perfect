@@ -28,22 +28,28 @@ export default function HeroSlider() {
 
   if (banners.length === 0) {
     return (
-      <section className="relative overflow-hidden bg-gradient-to-br from-[hsl(220,85%,48%)] via-[hsl(220,80%,40%)] to-[hsl(220,75%,30%)]">
-        {/* Decorative shapes */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-20 -right-20 w-96 h-96 bg-white/5 rounded-full" />
-          <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-white/5 rounded-full" />
-          <div className="absolute top-1/2 right-1/4 w-64 h-64 bg-accent/10 rounded-full blur-2xl" />
-        </div>
-        <div className="container relative py-14 md:py-28 lg:py-36 px-5">
-          <div className="max-w-2xl">
+      <section className="relative overflow-hidden">
+        {/* Background image */}
+        <img
+          src={heroImage}
+          alt="Lumânări artizanale VENTUZA"
+          className="absolute inset-0 w-full h-full object-cover"
+          loading="eager"
+          fetchPriority="high"
+          width={1920}
+          height={800}
+        />
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
+        <div className="container relative py-16 md:py-32 lg:py-40 px-5">
+          <div className="max-w-xl">
             <span className="inline-block bg-accent text-accent-foreground text-xs font-bold px-4 py-1.5 rounded-full mb-5 shadow-lg">
               🔥 NOU ÎN MAGAZIN
             </span>
-            <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-5 md:mb-7 text-white">
+            <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-5 md:mb-7 text-white drop-shadow-lg">
               Lumânări artizanale din ceară naturală
             </h2>
-            <p className="text-base md:text-lg text-white/90 mb-7 md:mb-9 max-w-lg leading-relaxed font-medium">
+            <p className="text-base md:text-lg text-white/90 mb-7 md:mb-9 max-w-lg leading-relaxed font-medium drop-shadow">
               Handmade în România. Arome premium, personalizare completă și livrare rapidă.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">

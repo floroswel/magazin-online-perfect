@@ -124,6 +124,8 @@ export default function Index() {
 
       {sections.show_bestsellers && <BestSellers title={sections.bestsellers_title} />}
 
+      <WhyVentuza />
+
       <ProcessSection />
 
       <TestimonialsSection />
