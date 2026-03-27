@@ -18,13 +18,13 @@ export default function TestimonialsSection() {
   if (reviews.length === 0) return null;
 
   return (
-    <section className="container py-20 md:py-28">
-      <div className="text-center mb-16">
-        <p className="text-xs tracking-[0.3em] uppercase text-primary mb-3 font-medium">Recenzii</p>
-        <h2 className="font-serif text-3xl md:text-4xl font-medium text-foreground">Ce Spun Clienții</h2>
+    <section className="container py-12 md:py-28 px-4">
+      <div className="text-center mb-8 md:mb-16">
+        <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-primary mb-2 md:mb-3 font-medium">Recenzii</p>
+        <h2 className="font-serif text-2xl md:text-4xl font-medium text-foreground">Ce Spun Clienții</h2>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto">
         {reviews.map((r) => (
           <div key={r.id} className="text-center p-6">
             <div className="flex justify-center mb-4">

@@ -58,10 +58,10 @@ export default function ScentQuiz() {
 
   if (answers.length === questions.length) {
     return (
-      <section className="container py-20">
-        <div className="text-center mb-10">
-          <p className="text-xs tracking-[0.3em] uppercase text-primary mb-3 font-medium">Recomandări</p>
-          <h2 className="font-serif text-3xl font-medium text-foreground">Parfumul Tău Perfect</h2>
+      <section className="container py-12 md:py-20 px-4">
+        <div className="text-center mb-8 md:mb-10">
+          <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-primary mb-2 md:mb-3 font-medium">Recomandări</p>
+          <h2 className="font-serif text-2xl md:text-3xl font-medium text-foreground">Parfumul Tău Perfect</h2>
           <p className="text-muted-foreground mt-2">Pe baza preferințelor tale, iată selecția noastră:</p>
         </div>
         {loading ? (
@@ -81,11 +81,11 @@ export default function ScentQuiz() {
   const current = questions[step];
 
   return (
-    <section className="container py-20">
-      <div className="text-center mb-10">
-        <p className="text-xs tracking-[0.3em] uppercase text-primary mb-3 font-medium">Quiz Parfum</p>
-        <h2 className="font-serif text-3xl font-medium text-foreground">Găsește Parfumul Tău</h2>
-        <p className="text-muted-foreground mt-2">3 întrebări · Recomandări personalizate</p>
+    <section className="container py-12 md:py-20 px-4">
+      <div className="text-center mb-8 md:mb-10">
+        <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-primary mb-2 md:mb-3 font-medium">Quiz Parfum</p>
+        <h2 className="font-serif text-2xl md:text-3xl font-medium text-foreground">Găsește Parfumul Tău</h2>
+        <p className="text-sm md:text-base text-muted-foreground mt-2">3 întrebări · Recomandări personalizate</p>
       </div>
 
       <div className="max-w-md mx-auto">
