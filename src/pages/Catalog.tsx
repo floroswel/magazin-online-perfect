@@ -297,7 +297,7 @@ export default function Catalog() {
               <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 mt-4">
                 {subcategories.map(sub => (
                   <Link key={sub.id} to={`/catalog?category=${sub.slug}`}
-                    className="flex flex-col items-center gap-2 p-3 rounded-xl bg-card border border-border hover:border-primary hover:shadow-md transition-all">
+                    className="flex flex-col items-center gap-2 p-4 bg-card border border-border hover:border-primary transition-all">
                     {sub.image_url ? (
                       <img src={sub.image_url} alt={sub.name} className="w-10 h-10 rounded-full object-cover" />
                     ) : (
