@@ -247,7 +247,6 @@ export default function ProductDetail() {
             )}
 
             <VariantSelector productId={product.id} basePrice={product.price} lowStockThreshold={product.low_stock_threshold || 5} onVariantSelect={setSelectedVariant} onHasVariants={setHasVariants} />
-            <VariantSelector productId={product.id} basePrice={product.price} lowStockThreshold={product.low_stock_threshold || 5} onVariantSelect={setSelectedVariant} onHasVariants={setHasVariants} />
 
             {/* Bundle savings badge */}
             {isBundle && bundleSavings > 0 && (
