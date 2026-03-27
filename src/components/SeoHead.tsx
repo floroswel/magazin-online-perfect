@@ -79,7 +79,7 @@ export default function SeoHead() {
   const orgSchema = safeJsonLd({
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: seo.site_title || "MegaShop",
+    name: seo.site_title || "VENTUZA",
     url: seo.canonical_url || window.location.origin,
     logo: (seo.canonical_url || window.location.origin) + "/pwa-512x512.png",
   });
