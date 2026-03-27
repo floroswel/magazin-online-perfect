@@ -327,7 +327,7 @@ export default function ProductDetail() {
                 return <p className="text-sm font-medium text-primary">✓ În stoc</p>;
               } else if (activeStock > 0) {
                 return (
-                  <p className="text-sm font-medium text-orange-600 dark:text-orange-400 animate-pulse">
+                  <p className="text-sm font-medium text-accent animate-pulse">
                     ⚡ Stoc limitat — mai {activeStock === 1 ? "este 1 bucată" : `sunt ${activeStock} bucăți`}
                   </p>
                 );
