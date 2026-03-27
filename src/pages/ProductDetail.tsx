@@ -246,7 +246,7 @@ export default function ProductDetail() {
               </div>
             )}
 
-            <MokkaOrangePrice price={finalPrice} months={3} />
+            <VariantSelector productId={product.id} basePrice={product.price} lowStockThreshold={product.low_stock_threshold || 5} onVariantSelect={setSelectedVariant} onHasVariants={setHasVariants} />
             <VariantSelector productId={product.id} basePrice={product.price} lowStockThreshold={product.low_stock_threshold || 5} onVariantSelect={setSelectedVariant} onHasVariants={setHasVariants} />
 
             {/* Bundle savings badge */}
