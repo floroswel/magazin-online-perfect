@@ -29,7 +29,6 @@ export default function LivrareInternationala() {
   return (
     <Layout>
       <div className="container py-8 max-w-4xl">
-      <div className="container py-8 max-w-4xl">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
             <Globe className="h-8 w-8 text-primary" />
