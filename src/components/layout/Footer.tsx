@@ -145,8 +145,8 @@ export default function Footer() {
             <form onSubmit={handleSubscribe} className="space-y-3">
               <div className="flex">
                 <Input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}
-                  className="bg-transparent border-secondary-foreground/20 text-secondary-foreground placeholder:text-secondary-foreground/30 rounded-none flex-1" required />
-                <Button type="submit" size="icon" disabled={loading} className="shrink-0 bg-ventuza-gold hover:bg-ventuza-gold-light text-secondary rounded-none w-10">
+                  className="bg-transparent border-border text-foreground placeholder:text-muted-foreground rounded-md flex-1" required />
+                <Button type="submit" size="icon" disabled={loading} className="shrink-0 bg-primary hover:bg-primary/80 text-primary-foreground rounded-md w-10">
                   <Mail className="w-4 h-4" />
                 </Button>
               </div>
