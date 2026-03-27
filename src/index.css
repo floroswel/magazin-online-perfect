@@ -6,24 +6,24 @@
 
 @layer base {
   :root {
-    /* VENTUZA BLUE — Light White + Facebook Blue */
-    --background: 0 0% 100%;
-    --foreground: 220 20% 14%;
+    /* VENTUZA BLUE — Dark Noir + Facebook Blue + Cream accents */
+    --background: 220 20% 7%;
+    --foreground: 40 20% 92%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 20% 14%;
+    --card: 220 18% 10%;
+    --card-foreground: 40 20% 92%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 14%;
+    --popover: 220 18% 10%;
+    --popover-foreground: 40 20% 92%;
 
     --primary: 220 70% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 94%;
-    --secondary-foreground: 220 20% 14%;
+    --secondary: 220 18% 14%;
+    --secondary-foreground: 40 20% 88%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 10% 46%;
+    --muted: 220 15% 15%;
+    --muted-foreground: 220 10% 55%;
 
     --accent: 40 60% 55%;
     --accent-foreground: 220 20% 7%;
@@ -31,19 +31,19 @@
     --destructive: 0 80% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 88%;
-    --input: 220 13% 88%;
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
     --ring: 220 70% 50%;
 
     --radius: 0.5rem;
 
     /* Brand tokens */
-    --ventuza-noir: 220 20% 14%;
-    --ventuza-charcoal: 220 14% 94%;
+    --ventuza-noir: 220 20% 5%;
+    --ventuza-charcoal: 220 18% 12%;
     --ventuza-gold: 40 60% 55%;
     --ventuza-gold-light: 40 50% 65%;
-    --ventuza-cream: 40 30% 97%;
-    --ventuza-warm: 220 14% 96%;
+    --ventuza-cream: 40 30% 92%;
+    --ventuza-warm: 30 20% 18%;
     --ventuza-blush: 350 50% 65%;
 
     /* Sidebar (admin) */
