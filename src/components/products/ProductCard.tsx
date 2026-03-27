@@ -79,7 +79,7 @@ function ProductCardInner({ product, eager = false }: Props & { eager?: boolean 
           <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors duration-300" />
           <Button
             onClick={handleAddToCart}
-            className="absolute bottom-3 left-3 right-3 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 bg-foreground text-background hover:bg-foreground/90 rounded-none text-xs tracking-wider uppercase font-medium h-10"
+            className="absolute bottom-3 left-3 right-3 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 bg-primary text-primary-foreground hover:bg-primary/80 rounded-md text-xs tracking-wider uppercase font-bold h-10 shadow-[0_0_15px_hsl(185_100%_50%/0.3)]"
           >
             <ShoppingCart className="h-3.5 w-3.5 mr-2" />
             Adaugă în coș
