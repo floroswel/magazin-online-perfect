@@ -48,10 +48,10 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50">
       {/* Announcement bar */}
-      <div className="bg-secondary text-secondary-foreground">
+      <div className="bg-card border-b border-border">
         <div className="container flex items-center justify-center py-2 px-4">
-          <p className="text-[10px] md:text-xs tracking-[0.15em] uppercase font-light text-center">
-            Livrare gratuită pentru comenzi peste 200 RON · Handmade în România
+          <p className="text-[10px] md:text-xs tracking-[0.15em] uppercase font-medium text-center text-primary">
+            ⚡ Livrare gratuită pentru comenzi peste 200 RON · Handmade în România ⚡
           </p>
         </div>
       </div>
