@@ -95,7 +95,7 @@ export default function Footer() {
   const copyrightText = texts.copyright.replace("{year}", String(new Date().getFullYear()));
 
   return (
-    <footer className="bg-secondary text-secondary-foreground mt-auto">
+    <footer className="bg-card text-foreground mt-auto">
       {/* Divider */}
       <div className="ventuza-divider" />
 
@@ -103,13 +103,13 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
           {/* Brand */}
           <div>
-            <h3 className="font-serif text-2xl font-semibold tracking-[0.08em] mb-4 text-ventuza-gold">{texts.col1_title || "VENTUZA"}</h3>
-            <p className="text-sm text-secondary-foreground/60 leading-relaxed mb-6">{texts.col1_description}</p>
+            <h3 className="font-serif text-2xl font-bold tracking-[0.1em] mb-4 text-primary" style={{ textShadow: '0 0 20px hsl(185 100% 50% / 0.3)' }}>{texts.col1_title || "VENTUZA"}</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-6">{texts.col1_description}</p>
             {socialLinks.length > 0 && (
               <div className="flex gap-3">
                 {socialLinks.map((link, i) => (
                   <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
-                    className="w-9 h-9 border border-secondary-foreground/20 hover:border-ventuza-gold hover:text-ventuza-gold flex items-center justify-center transition-colors"
+                    className="w-9 h-9 border border-border hover:border-primary hover:text-primary flex items-center justify-center transition-colors"
                     aria-label={link.platform}>
                     <SocialIcon icon={link.icon} className="w-4 h-4" />
                   </a>
@@ -120,42 +120,42 @@ export default function Footer() {
 
           {/* Col 2 */}
           <div>
-            <h4 className="text-xs font-medium tracking-[0.2em] uppercase text-secondary-foreground/40 mb-5">{texts.col2_title}</h4>
+            <h4 className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-5">{texts.col2_title}</h4>
             <ul className="space-y-3">
               {col2Links.map((l, i) => (
-                <li key={i}><Link to={l.url} className="text-sm text-secondary-foreground/60 hover:text-ventuza-gold transition-colors">{l.label}</Link></li>
+                <li key={i}><Link to={l.url} className="text-sm text-muted-foreground hover:text-primary transition-colors">{l.label}</Link></li>
               ))}
             </ul>
           </div>
 
           {/* Col 3 */}
           <div>
-            <h4 className="text-xs font-medium tracking-[0.2em] uppercase text-secondary-foreground/40 mb-5">{texts.col3_title}</h4>
+            <h4 className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-5">{texts.col3_title}</h4>
             <ul className="space-y-3">
               {col3Links.map((l, i) => (
-                <li key={i}><Link to={l.url} className="text-sm text-secondary-foreground/60 hover:text-ventuza-gold transition-colors">{l.label}</Link></li>
+                <li key={i}><Link to={l.url} className="text-sm text-muted-foreground hover:text-primary transition-colors">{l.label}</Link></li>
               ))}
             </ul>
           </div>
 
           {/* Newsletter */}
           <div>
-            <h4 className="text-xs font-medium tracking-[0.2em] uppercase text-secondary-foreground/40 mb-5">Newsletter</h4>
-            <p className="text-sm text-secondary-foreground/60 mb-4">Primește -10% la prima comandă și noutăți despre colecții.</p>
+            <h4 className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-5">Newsletter</h4>
+            <p className="text-sm text-muted-foreground mb-4">Primește -10% la prima comandă și noutăți despre colecții.</p>
             <form onSubmit={handleSubscribe} className="space-y-3">
               <div className="flex">
                 <Input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}
-                  className="bg-transparent border-secondary-foreground/20 text-secondary-foreground placeholder:text-secondary-foreground/30 rounded-none flex-1" required />
-                <Button type="submit" size="icon" disabled={loading} className="shrink-0 bg-ventuza-gold hover:bg-ventuza-gold-light text-secondary rounded-none w-10">
+                  className="bg-transparent border-border text-foreground placeholder:text-muted-foreground rounded-md flex-1" required />
+                <Button type="submit" size="icon" disabled={loading} className="shrink-0 bg-primary hover:bg-primary/80 text-primary-foreground rounded-md w-10">
                   <Mail className="w-4 h-4" />
                 </Button>
               </div>
               <label className="flex items-start gap-2 cursor-pointer">
-                <input type="checkbox" checked={gdprConsent} onChange={e => setGdprConsent(e.target.checked)} className="mt-0.5 rounded-sm border-secondary-foreground/30" />
-                <span className="text-[11px] text-secondary-foreground/40">Sunt de acord să primesc emailuri.</span>
+                <input type="checkbox" checked={gdprConsent} onChange={e => setGdprConsent(e.target.checked)} className="mt-0.5 rounded-sm border-border" />
+                <span className="text-[11px] text-muted-foreground">Sunt de acord să primesc emailuri.</span>
               </label>
             </form>
-            <div className="mt-6 space-y-2 text-sm text-secondary-foreground/50">
+            <div className="mt-6 space-y-2 text-sm text-muted-foreground">
               {texts.col4_show_phone && texts.col4_phone && (
                 <p className="flex items-center gap-2"><Phone className="w-3 h-3" /> {texts.col4_phone}</p>
               )}
@@ -173,11 +173,11 @@ export default function Footer() {
         </div>
 
         {/* Legal badges */}
-        <div className="border-t border-secondary-foreground/10 mt-12 pt-8">
+        <div className="border-t border-border mt-12 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-secondary-foreground/40">{copyrightText}</p>
+            <p className="text-xs text-muted-foreground">{copyrightText}</p>
             {texts.show_made_in && (
-              <p className="text-xs text-secondary-foreground/40 tracking-wide">Handmade cu dragoste în România 🇷🇴</p>
+              <p className="text-xs text-muted-foreground tracking-wide">Handmade cu dragoste în România 🇷🇴</p>
             )}
             <div className="flex items-center gap-4">
               <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer" className="opacity-50 hover:opacity-80 transition-opacity">

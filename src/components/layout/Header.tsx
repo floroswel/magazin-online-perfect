@@ -48,10 +48,10 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50">
       {/* Announcement bar */}
-      <div className="bg-secondary text-secondary-foreground">
+      <div className="bg-card border-b border-border">
         <div className="container flex items-center justify-center py-2 px-4">
-          <p className="text-[10px] md:text-xs tracking-[0.15em] uppercase font-light text-center">
-            Livrare gratuită pentru comenzi peste 200 RON · Handmade în România
+          <p className="text-[10px] md:text-xs tracking-[0.15em] uppercase font-medium text-center text-primary">
+            ⚡ Livrare gratuită pentru comenzi peste 200 RON · Handmade în România ⚡
           </p>
         </div>
       </div>
@@ -61,7 +61,7 @@ export default function Header() {
         <div className="container flex items-center justify-between py-3 md:py-4 px-4">
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
-            <h1 className="font-serif text-xl md:text-3xl font-semibold tracking-[0.08em] text-foreground">
+            <h1 className="font-serif text-xl md:text-2xl font-bold tracking-[0.1em] text-primary" style={{ textShadow: '0 0 20px hsl(185 100% 50% / 0.3)' }}>
               VENTUZA
             </h1>
           </Link>

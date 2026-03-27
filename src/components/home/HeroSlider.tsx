@@ -27,35 +27,36 @@ export default function HeroSlider() {
 
   if (banners.length === 0) {
     return (
-      <section className="relative bg-secondary text-secondary-foreground overflow-hidden">
+      <section className="relative bg-background overflow-hidden">
+        {/* Neon ambient glow */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-accent/10 rounded-full blur-[100px]" />
+        </div>
         <div className="container relative z-10 py-12 md:py-32 lg:py-40 px-5">
           <div className="max-w-2xl">
-            <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-3 md:mb-6 font-medium">Artă · Parfum · Lumină</p>
-            <h2 className="font-serif text-3xl md:text-6xl lg:text-7xl font-medium leading-[1.1] mb-4 md:mb-6">
+            <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-primary mb-3 md:mb-6 font-semibold animate-neon-pulse">⚡ Artă · Lumină · Energie</p>
+            <h2 className="font-serif text-3xl md:text-6xl lg:text-7xl font-bold leading-[1.1] mb-4 md:mb-6 uppercase">
               Lumânări<br />
-              <span className="italic text-ventuza-gold">handmade</span><br />
+              <span className="text-gold">electrice</span><br />
               din ceară naturală
             </h2>
-            <p className="text-sm md:text-lg text-secondary-foreground/60 mb-6 md:mb-10 max-w-md leading-relaxed">
+            <p className="text-sm md:text-lg text-muted-foreground mb-6 md:mb-10 max-w-md leading-relaxed">
               Create manual cu dragoste în România. Arome naturale, design unic și posibilitate de personalizare completă.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
               <Link to="/catalog" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto bg-ventuza-gold hover:bg-ventuza-gold-light text-secondary rounded-none px-8 md:px-10 text-xs tracking-[0.15em] uppercase font-medium h-11 md:h-12">
+                <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/80 text-primary-foreground rounded-md px-8 md:px-10 text-xs tracking-[0.15em] uppercase font-bold h-11 md:h-12 shadow-[0_0_20px_hsl(185_100%_50%/0.3)]">
                   Descoperă Colecția
                 </Button>
               </Link>
               <Link to="/personalizare" className="w-full sm:w-auto">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto border-secondary-foreground/30 text-secondary-foreground hover:bg-secondary-foreground/5 rounded-none px-8 md:px-10 text-xs tracking-[0.15em] uppercase font-medium h-11 md:h-12">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto border-primary/40 text-primary hover:bg-primary/10 rounded-md px-8 md:px-10 text-xs tracking-[0.15em] uppercase font-bold h-11 md:h-12">
                   Personalizează
                 </Button>
               </Link>
             </div>
           </div>
-        </div>
-        {/* Decorative elements */}
-        <div className="absolute right-0 top-0 w-1/3 h-full opacity-10">
-          <div className="w-full h-full" style={{ background: "radial-gradient(ellipse at center, hsl(36 60% 42% / 0.4), transparent)" }} />
         </div>
       </section>
     );
@@ -115,7 +116,7 @@ export default function HeroSlider() {
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
-                className={`transition-all ${i === current ? "w-8 h-[2px] bg-ventuza-gold" : "w-4 h-[2px] bg-secondary-foreground/30"}`}
+                className={`transition-all ${i === current ? "w-8 h-[2px] bg-primary shadow-[0_0_8px_hsl(185_100%_50%/0.5)]" : "w-4 h-[2px] bg-foreground/30"}`}
               />
             ))}
           </div>
