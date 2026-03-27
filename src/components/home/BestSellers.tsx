@@ -4,13 +4,34 @@ import { ArrowRight } from "lucide-react";
 import ProductCard from "@/components/products/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import { isCandleCollection } from "@/lib/candleCatalog";
 
 export default function BestSellers({ title = "Cele Mai Iubite" }: { title?: string }) {
   const [products, setProducts] = useState<Tables<"products">[]>([]);
 
   useEffect(() => {
-    supabase.from("products").select("*").order("review_count", { ascending: false }).limit(8)
-      .then(({ data }) => setProducts(data || []));
+    supabase
+      .from("categories")
+      .select("id, name, slug")
+      .eq("visible", true)
+      .then(({ data: cats }) => {
+        const ids = ((cats || []) as Array<{ id: string; name: string; slug: string }>).filter((cat) =>
+          isCandleCollection(cat)
+        ).map((cat) => cat.id);
+
+        if (ids.length === 0) {
+          setProducts([]);
+          return;
+        }
+
+        supabase
+          .from("products")
+          .select("*")
+          .in("category_id", ids)
+          .order("review_count", { ascending: false })
+          .limit(8)
+          .then(({ data }) => setProducts(data || []));
+      });
   }, []);
 
   if (products.length === 0) return null;

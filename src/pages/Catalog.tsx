@@ -11,6 +11,7 @@ import ProductCard from "@/components/products/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrency } from "@/hooks/useCurrency";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
+import { isCandleCollection } from "@/lib/candleCatalog";
 
 interface Cat {
   id: string;
@@ -34,6 +35,8 @@ export default function Catalog() {
 
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<Cat[]>([]);
+  const [allowedCategoryIds, setAllowedCategoryIds] = useState<string[]>([]);
+  const [categoriesLoaded, setCategoriesLoaded] = useState(false);
   const [brands, setBrands] = useState<any[]>([]);
   const [smartCategory, setSmartCategory] = useState<{ id: string; name: string; description: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,7 +53,18 @@ export default function Catalog() {
   const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
-    supabase.from("categories").select("id, name, slug, icon, parent_id, description, image_url, banner_image, banner_link, visible, display_order").order("display_order").order("name").then(({ data }) => setCategories((data as Cat[]) || []));
+    supabase
+      .from("categories")
+      .select("id, name, slug, icon, parent_id, description, image_url, banner_image, banner_link, visible, display_order")
+      .order("display_order")
+      .order("name")
+      .then(({ data }) => {
+        const filtered = ((data as Cat[]) || []).filter((cat) => isCandleCollection(cat));
+        setCategories(filtered);
+        setAllowedCategoryIds(filtered.map((cat) => cat.id));
+        setCategoriesLoaded(true);
+      });
+
     supabase.from("brands").select("*").order("name").then(({ data }) => setBrands(data || []));
     supabase.from("products").select("price").order("price", { ascending: false }).limit(1).then(({ data }) => {
       if (data && data.length > 0 && data[0].price) {
@@ -64,7 +78,7 @@ export default function Catalog() {
   useEffect(() => {
     if (smartSlug) {
       supabase.from("dynamic_categories").select("id, name, description").eq("slug", smartSlug).eq("visible", true).maybeSingle()
-        .then(({ data }) => setSmartCategory(data as any));
+        .then(({ data }) => setSmartCategory(data && isCandleCollection(data as any) ? (data as any) : null));
     } else { setSmartCategory(null); }
   }, [smartSlug]);
 
@@ -94,7 +108,15 @@ export default function Catalog() {
 
   useEffect(() => {
     async function load() {
+      if (!categoriesLoaded) return;
       setLoading(true);
+
+      if (allowedCategoryIds.length === 0) {
+        setProducts([]);
+        setTotalCount(0);
+        setLoading(false);
+        return;
+      }
 
       if (smartSlug && smartCategory) {
         const { data: matchedIds } = await supabase.rpc("get_dynamic_category_products", {
@@ -102,14 +124,14 @@ export default function Catalog() {
         });
         const ids = (matchedIds || []).map((r: any) => r.product_id);
         if (ids.length === 0) { setProducts([]); setTotalCount(0); setLoading(false); return; }
-        const { data: prods } = await supabase.from("products").select("*").in("id", ids);
+        const { data: prods } = await supabase.from("products").select("*").in("id", ids).in("category_id", allowedCategoryIds);
         setProducts(prods || []);
         setTotalCount(ids.length < perPage ? (currentPage - 1) * perPage + ids.length : (currentPage + 1) * perPage);
         setLoading(false);
         return;
       }
 
-      let query = supabase.from("products").select("*", { count: "exact" });
+      let query = supabase.from("products").select("*", { count: "exact" }).in("category_id", allowedCategoryIds);
 
       if (categorySlug && currentCategory) {
         // Include products from subcategories too
@@ -150,7 +172,7 @@ export default function Catalog() {
       setLoading(false);
     }
     load();
-  }, [categorySlug, searchQuery, smartSlug, smartCategory, sort, priceRange, selectedBrands, inStockOnly, selectedRatings, categories, currentPage, perPage]);
+  }, [categorySlug, searchQuery, smartSlug, smartCategory, sort, priceRange, selectedBrands, inStockOnly, selectedRatings, categories, currentPage, perPage, categoriesLoaded, allowedCategoryIds]);
 
   // Dynamic SEO meta tags for categories
   useEffect(() => {
