@@ -70,18 +70,6 @@ export default {
           warm: "hsl(var(--ventuza-warm))",
           blush: "hsl(var(--ventuza-blush))",
         },
-        // Legacy aliases for admin compatibility
-        emag: {
-          blue: "hsl(var(--ventuza-noir))",
-          "blue-light": "hsl(var(--ventuza-charcoal))",
-          orange: "hsl(var(--ventuza-gold))",
-          yellow: "hsl(var(--ventuza-gold-light))",
-          dark: "hsl(var(--ventuza-noir))",
-        },
-        mokka: {
-          DEFAULT: "hsl(var(--ventuza-gold))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
       },
       borderRadius: {
         lg: "var(--radius)",

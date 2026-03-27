@@ -93,7 +93,7 @@ export default function Compare() {
                 {comparisonItems.map(p => (
                   <TableCell key={p.id}>
                     <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-emag-yellow text-emag-yellow" />
+                      <Star className="h-4 w-4 fill-primary text-primary" />
                       <span>{p.rating}</span>
                       <span className="text-xs text-muted-foreground">({p.review_count})</span>
                     </div>

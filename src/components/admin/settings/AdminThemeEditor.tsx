@@ -160,9 +160,6 @@ export default function AdminThemeEditor() {
   --input: ${hexToHsl(c.border)};
   --ring: ${hexToHsl(c.primary)};
   --radius: ${b.borderRadius / 16}rem;
-  --emag-blue: ${hexToHsl(c.secondary)};
-  --emag-blue-light: ${hexToHsl(c.secondary)};
-  --emag-orange: ${hexToHsl(c.primary)};
 }
 body { font-family: '${t.fontFamily}', system-ui, sans-serif; font-size: ${t.baseFontSize}px; line-height: ${t.lineHeight}; }
 h1, h2, h3, h4, h5, h6 { font-family: '${t.fontFamilyHeadings}', system-ui, sans-serif; }

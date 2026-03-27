@@ -310,7 +310,7 @@ export default function ProductDetail() {
               <Button
                 variant="outline" size="lg"
                 onClick={() => product && addToComparison(product.id)}
-                className={isInComparison(product.id) ? "border-emag-blue text-emag-blue" : ""}
+                className={isInComparison(product.id) ? "border-primary text-primary" : ""}
               >
                 <GitCompare className="h-5 w-5" />
               </Button>
