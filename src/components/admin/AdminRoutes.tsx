@@ -164,6 +164,7 @@ const AdminNetopiaSettings = lazy(() => import("./payments/AdminNetopiaSettings"
 const AdminPriceAlerts = lazy(() => import("./marketing/AdminPriceAlerts"));
 const AdminSocialProofSettings = lazy(() => import("./marketing/AdminSocialProofSettings"));
 const AdminLiveChatSettings = lazy(() => import("./marketing/AdminLiveChatSettings"));
+const AdminChatBot = lazy(() => import("./customers/AdminChatBot"));
 const AdminSubscriptionBoxes = lazy(() => import("./marketing/AdminSubscriptionBoxes"));
 const AdminPOSSettings = lazy(() => import("./settings/AdminPOSSettings"));
 const AdminDropshippingSettings = lazy(() => import("./settings/AdminDropshippingSettings"));
