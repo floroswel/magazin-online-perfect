@@ -45,10 +45,10 @@ export default function Index() {
   const [featured, setFeatured] = useState<Tables<"products">[]>([]);
   const [loading, setLoading] = useState(true);
   const [benefits, setBenefits] = useState<BenefitItem[]>([
+    { icon: "gift", text: "Ambalaj cadou gratuit" },
     { icon: "truck", text: "Livrare gratuită peste 200 lei" },
-    { icon: "shield", text: "Garanție 2 ani" },
-    { icon: "rotate", text: "Returnare în 30 zile" },
-    { icon: "zap", text: "Oferte flash zilnice" },
+    { icon: "heart", text: "100% ceară de soia naturală" },
+    { icon: "clock", text: "Preparare manuală 3-5 zile" },
   ]);
   const [sections, setSections] = useState<HomepageSections>({
     featured_title: "Produse recomandate", flash_title: "Oferte Flash",
