@@ -95,7 +95,7 @@ export default function Footer() {
   const copyrightText = texts.copyright.replace("{year}", String(new Date().getFullYear()));
 
   return (
-    <footer className="bg-secondary text-secondary-foreground mt-auto">
+    <footer className="bg-card text-foreground mt-auto">
       {/* Divider */}
       <div className="ventuza-divider" />
 
