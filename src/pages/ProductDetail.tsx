@@ -60,7 +60,7 @@ export default function ProductDetail() {
       setProduct(prod);
 
       // Set page SEO meta
-      document.title = prod.meta_title || `${prod.name} | MegaShop`;
+      document.title = prod.meta_title || `${prod.name} | VENTUZA`;
       const setMeta = (name: string, content: string, attr = "name") => {
         let el = document.querySelector(`meta[${attr}="${name}"]`);
         if (!el) { el = document.createElement("meta"); el.setAttribute(attr, name); document.head.appendChild(el); }

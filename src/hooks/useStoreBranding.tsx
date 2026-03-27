@@ -11,12 +11,12 @@ export interface StoreBranding {
 }
 
 const DEFAULTS: StoreBranding = {
-  name: "MegaShop",
-  emoji: "🛒",
-  tagline: "Cel mai mare magazin online din România cu mii de produse la prețuri imbatabile.",
-  phone: "0800 123 456",
-  email: "contact@megashop.ro",
-  copyright: `© ${new Date().getFullYear()} MegaShop. Toate drepturile rezervate.`,
+  name: "VENTUZA",
+  emoji: "🕯️",
+  tagline: "Lumânări handmade din ceară de soia, create cu dragoste în România.",
+  phone: "",
+  email: "contact@ventuza.ro",
+  copyright: `© ${new Date().getFullYear()} VENTUZA. Toate drepturile rezervate.`,
 };
 
 const StoreBrandingContext = createContext<StoreBranding>(DEFAULTS);

@@ -155,15 +155,15 @@ export default function Catalog() {
   // Dynamic SEO meta tags for categories
   useEffect(() => {
     if (currentCategory) {
-      document.title = (currentCategory as any).meta_title || `${currentCategory.name} | MegaShop`;
-      const desc = (currentCategory as any).meta_description || `Cumpără ${currentCategory.name} online la prețuri avantajoase.`;
+      document.title = (currentCategory as any).meta_title || `${currentCategory.name} | VENTUZA`;
+      const desc = (currentCategory as any).meta_description || `Cumpără ${currentCategory.name} online de la VENTUZA.`;
       let metaDesc = document.querySelector('meta[name="description"]');
       if (!metaDesc) { metaDesc = document.createElement("meta"); metaDesc.setAttribute("name", "description"); document.head.appendChild(metaDesc); }
       metaDesc.setAttribute("content", desc);
     } else if (searchQuery) {
-      document.title = `Căutare: ${searchQuery} | MegaShop`;
+      document.title = `Căutare: ${searchQuery} | VENTUZA`;
     } else {
-      document.title = "Catalog | MegaShop";
+      document.title = "Catalog | VENTUZA";
     }
   }, [currentCategory, searchQuery]);
 
