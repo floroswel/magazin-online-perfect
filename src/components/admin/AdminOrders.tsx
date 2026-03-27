@@ -93,11 +93,26 @@ export default function AdminOrders() {
       const { data, error } = await supabase
         .from("orders")
         .select("*, order_items(*, products(name, image_url, slug, sku))")
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(1000);
       if (error) throw error;
       return data;
     },
   });
+
+  // Realtime subscription for new orders
+  useEffect(() => {
+    const channel = supabase
+      .channel('admin-orders-realtime')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, () => {
+        queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, () => {
+        queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [queryClient]);
 
   const { data: allTags = [] } = useQuery({
     queryKey: ["order-tags"],
