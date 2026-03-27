@@ -90,8 +90,6 @@ export default function Index() {
       )}
       <HeroSlider />
 
-      <CategoryGrid />
-
       <PersonalizareSection />
 
       <ScentQuiz />
