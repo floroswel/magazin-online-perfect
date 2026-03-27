@@ -14,6 +14,7 @@ import ProcessSection from "@/components/home/ProcessSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import SocialProofTicker from "@/components/home/SocialProofTicker";
 import TrustFooterStrip from "@/components/home/TrustFooterStrip";
+import WhyVentuza from "@/components/home/WhyVentuza";
 import NewsletterDiscount from "@/components/home/NewsletterDiscount";
 import { supabase } from "@/integrations/supabase/client";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
