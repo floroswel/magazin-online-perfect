@@ -201,7 +201,7 @@ export default function Footer() {
         <div className="border-t border-primary-foreground/20 mt-12 pt-8">
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
             <p className="text-xs text-primary-foreground/60">{copyrightText}</p>
-            <div ref={footerScriptsRef} className="flex items-center gap-2 [&_a]:text-[10px] [&_a]:text-primary-foreground/50 [&_a]:hover:text-primary-foreground/80 [&_a]:transition-colors [&_img]:h-5 [&_img]:object-contain [&_img]:opacity-60 [&_img]:hover:opacity-90 [&_span]:text-[10px] [&_span]:text-primary-foreground/50 [&_p]:text-[10px] [&_p]:text-primary-foreground/50 [&_div]:flex [&_div]:items-center [&_div]:gap-2" />
+            <div ref={footerScriptsRef} className="inline-flex flex-row flex-wrap items-center gap-2 [&_a]:inline-flex [&_a]:text-[10px] [&_a]:text-primary-foreground/50 [&_a]:hover:text-primary-foreground/80 [&_a]:transition-colors [&_img]:h-5 [&_img]:!w-auto [&_img]:object-contain [&_img]:opacity-60 [&_img]:hover:opacity-90 [&_span]:text-[10px] [&_span]:text-primary-foreground/50 [&_p]:text-[10px] [&_p]:text-primary-foreground/50 [&_div]:contents" />
           </div>
         </div>
       </div>
