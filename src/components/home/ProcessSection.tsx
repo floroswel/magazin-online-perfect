@@ -1,23 +1,26 @@
 const steps = [
-  { icon: "🌿", title: "Ingrediente naturale selectate", desc: "Ceară de soia 100%, parfumuri premium, fitiluri bumbac" },
-  { icon: "✋", title: "Preparare manuală cu grijă", desc: "Fiecare lumânare turnată și parfumată manual de echipa VENTUZA" },
-  { icon: "🎁", title: "Ambalare cu dragoste", desc: "Împachetată cu atenție, gata să ajungă la tine sau cel drag" },
+  { number: "01", title: "Ingrediente Selectate", desc: "Ceară de soia 100%, uleiuri esențiale premium și fitiluri din bumbac natural" },
+  { number: "02", title: "Preparare Manuală", desc: "Fiecare lumânare este turnată și parfumată manual de echipa noastră" },
+  { number: "03", title: "Ambalare cu Grijă", desc: "Împachetată cu atenție în materiale sustenabile, gata să ajungă la tine" },
 ];
 
 export default function ProcessSection() {
   return (
-    <section className="container py-12">
-      <h2 className="text-2xl font-bold text-foreground text-center mb-8">De la mâinile noastre la casa ta</h2>
-      <div className="grid md:grid-cols-3 gap-8">
-        {steps.map((s, i) => (
-          <div key={i} className="text-center">
-            <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center text-3xl mb-4">
-              {s.icon}
+    <section className="bg-secondary text-secondary-foreground py-20 md:py-28">
+      <div className="container">
+        <div className="text-center mb-16">
+          <p className="text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-3 font-medium">Procesul Nostru</p>
+          <h2 className="font-serif text-3xl md:text-4xl font-medium">De la Mâinile Noastre la Casa Ta</h2>
+        </div>
+        <div className="grid md:grid-cols-3 gap-12 md:gap-16 max-w-4xl mx-auto">
+          {steps.map((s, i) => (
+            <div key={i} className="text-center">
+              <span className="font-serif text-5xl font-light text-ventuza-gold/30 block mb-4">{s.number}</span>
+              <h3 className="font-serif text-xl font-medium mb-3">{s.title}</h3>
+              <p className="text-sm text-secondary-foreground/60 leading-relaxed">{s.desc}</p>
             </div>
-            <h3 className="font-semibold text-foreground mb-2">{s.title}</h3>
-            <p className="text-sm text-muted-foreground">{s.desc}</p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -1,66 +1,62 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 
 const steps = [
-  { icon: "🕯️", title: "Alege produsul", desc: "PASUL 1" },
-  { icon: "🌸", title: "Parfum preferat", desc: "PASUL 2" },
-  { icon: "🎨", title: "Culoare dorită", desc: "PASUL 3" },
-  { icon: "✍️", title: "Text personal", desc: "PASUL 4" },
+  { number: "01", title: "Alege produsul", desc: "Lumânare, set sau recipient" },
+  { number: "02", title: "Parfumul tău", desc: "Din peste 30 de arome" },
+  { number: "03", title: "Culoare dorită", desc: "Paleta completă disponibilă" },
+  { number: "04", title: "Mesaj personal", desc: "Text gravat sau tipărit" },
 ];
 
 const previews = [
-  { title: "Lumânare Botez Personalizată", text: 'Albă + Text "Bine ai venit, Sofia! 12.03.2025"', cta: "Personalizează similar" },
-  { title: "Set Cadou Romantic", text: "Roz + Parfum Trandafir + Cutie cadou lux", cta: "Creează setul tău" },
-  { title: "Lumânare Nuntă", text: 'Crem + Text "Elena & Mihai ❤️ 15.06.2025"', cta: "Comandă pentru evenimentul tău" },
+  { title: "Lumânare Botez", desc: "Ceară albă · Text personalizat cu nume și dată", occasion: "Botez" },
+  { title: "Set Cadou Romantic", desc: "3 lumânări · Parfum trandafir · Cutie premium", occasion: "Cadou" },
+  { title: "Lumânare Nuntă", desc: "Ceară crem · Inițialele mirilor · Ambalaj lux", occasion: "Nuntă" },
 ];
 
 export default function PersonalizareSection() {
   return (
-    <section className="bg-primary/5 border-y border-primary/10 py-12">
+    <section className="py-20 md:py-28 bg-muted/30">
       <div className="container">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-foreground">✨ Creează Lumânarea Ta Perfectă</h2>
-          <p className="text-muted-foreground mt-2 max-w-xl mx-auto">
-            Alege parfumul, culoarea și mesajul — realizăm manual pentru tine
+        <div className="text-center mb-16">
+          <p className="text-xs tracking-[0.3em] uppercase text-primary mb-3 font-medium">Atelier de Personalizare</p>
+          <h2 className="font-serif text-3xl md:text-4xl font-medium text-foreground mb-4">Creează Lumânarea Ta Perfectă</h2>
+          <p className="text-muted-foreground max-w-lg mx-auto">
+            Alege parfumul, culoarea și mesajul — realizăm manual, special pentru tine
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-16 max-w-3xl mx-auto">
           {steps.map((s, i) => (
-            <div key={i} className="text-center">
-              <div className="w-16 h-16 mx-auto rounded-full bg-primary/10 flex items-center justify-center text-2xl mb-2">
-                {s.icon}
-              </div>
-              <p className="text-xs font-semibold text-primary uppercase tracking-wider">{s.desc}</p>
-              <p className="text-sm font-medium text-foreground mt-1">{s.title}</p>
-              {i < steps.length - 1 && (
-                <span className="hidden md:inline-block text-muted-foreground text-lg absolute translate-x-full">→</span>
-              )}
+            <div key={i} className="text-center group">
+              <span className="font-serif text-3xl font-light text-primary/40 group-hover:text-primary transition-colors block mb-2">{s.number}</span>
+              <h3 className="font-serif text-base font-medium text-foreground mb-1">{s.title}</h3>
+              <p className="text-xs text-muted-foreground">{s.desc}</p>
             </div>
           ))}
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4 mb-8">
+        <div className="grid md:grid-cols-3 gap-6 mb-12">
           {previews.map((p, i) => (
-            <Card key={i} className="overflow-hidden hover:shadow-lg transition-shadow">
-              <CardContent className="p-5">
-                <h3 className="font-semibold text-foreground mb-2">{p.title}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{p.text}</p>
-                <Link to="/personalizare">
-                  <Button variant="outline" size="sm" className="w-full">{p.cta}</Button>
-                </Link>
-              </CardContent>
-            </Card>
+            <div key={i} className="group p-8 border border-border hover:border-primary transition-all duration-300 bg-card">
+              <span className="text-[10px] tracking-[0.2em] uppercase text-primary font-medium">{p.occasion}</span>
+              <h3 className="font-serif text-lg font-medium text-foreground mt-2 mb-3">{p.title}</h3>
+              <p className="text-sm text-muted-foreground mb-6">{p.desc}</p>
+              <Link to="/personalizare" className="text-xs tracking-wide uppercase text-primary hover:text-primary/80 font-medium transition-colors">
+                Personalizează similar →
+              </Link>
+            </div>
           ))}
         </div>
 
         <div className="text-center">
           <Link to="/personalizare">
-            <Button size="lg" className="font-semibold text-base">🎨 Începe Personalizarea</Button>
+            <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-none px-12 text-xs tracking-[0.15em] uppercase font-medium h-12">
+              Începe Personalizarea
+            </Button>
           </Link>
-          <p className="text-xs text-muted-foreground mt-3">
-            Fiecare lumânare este realizată manual în 3-5 zile lucrătoare · Satisfacție garantată ✓
+          <p className="text-xs text-muted-foreground mt-4 tracking-wide">
+            Preparare manuală în 3-5 zile lucrătoare · Satisfacție garantată
           </p>
         </div>
       </div>

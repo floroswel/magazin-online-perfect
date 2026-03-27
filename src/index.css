@@ -2,97 +2,92 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
 
 @layer base {
   :root {
-    /* STOREFRONT — Blue header, white content, orange accents */
-    --background: 210 20% 97%;
-    --foreground: 220 20% 14%;
+    /* VENTUZA ULTRA-PREMIUM — Noir + Warm Gold */
+    --background: 40 20% 97%;
+    --foreground: 30 10% 12%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 20% 14%;
+    --card: 40 25% 99%;
+    --card-foreground: 30 10% 12%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 14%;
+    --popover: 40 25% 99%;
+    --popover-foreground: 30 10% 12%;
 
-    --primary: 27 92% 53%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 36 60% 42%;
+    --primary-foreground: 40 25% 97%;
 
-    --secondary: 216 70% 28%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 30 8% 16%;
+    --secondary-foreground: 40 20% 95%;
 
-    --muted: 210 14% 93%;
-    --muted-foreground: 220 10% 46%;
+    --muted: 35 15% 93%;
+    --muted-foreground: 30 8% 48%;
 
-    --accent: 27 92% 53%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 72% 50%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 220 13% 88%;
-    --input: 220 13% 88%;
-    --ring: 27 92% 53%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 216 70% 28%;
-    --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 27 92% 53%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 216 60% 35%;
-    --sidebar-accent-foreground: 210 20% 95%;
-    --sidebar-border: 216 50% 22%;
-    --sidebar-ring: 27 92% 53%;
-
-    /* Brand colors */
-    --emag-blue: 216 70% 28%;
-    --emag-blue-light: 216 60% 35%;
-    --emag-orange: 27 92% 53%;
-    --emag-yellow: 40 96% 56%;
-    --emag-dark: 220 30% 12%;
-
-    --mokka: 27 100% 50%;
-    --mokka-foreground: 0 0% 100%;
-  }
-
-  /* STOREFRONT DARK MODE */
-  .dark:not(.admin-panel) {
-    --background: 220 25% 10%;
-    --foreground: 210 20% 90%;
-
-    --card: 220 25% 13%;
-    --card-foreground: 210 20% 90%;
-
-    --popover: 220 25% 13%;
-    --popover-foreground: 210 20% 90%;
-
-    --primary: 27 92% 53%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 216 60% 35%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 220 20% 18%;
-    --muted-foreground: 220 10% 60%;
-
-    --accent: 27 92% 53%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 36 45% 50%;
+    --accent-foreground: 40 25% 99%;
 
     --destructive: 0 62% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 22%;
-    --input: 220 15% 22%;
-    --ring: 27 92% 53%;
+    --border: 35 12% 88%;
+    --input: 35 12% 88%;
+    --ring: 36 60% 42%;
 
-    --emag-blue: 216 60% 35%;
-    --emag-blue-light: 216 50% 40%;
-    --emag-dark: 220 30% 8%;
+    --radius: 0.25rem;
+
+    /* Premium brand tokens */
+    --ventuza-noir: 30 10% 10%;
+    --ventuza-charcoal: 30 8% 16%;
+    --ventuza-gold: 36 60% 42%;
+    --ventuza-gold-light: 36 55% 55%;
+    --ventuza-cream: 40 30% 95%;
+    --ventuza-warm: 35 20% 90%;
+    --ventuza-blush: 20 30% 92%;
+
+    /* Sidebar (admin) */
+    --sidebar-background: 30 8% 12%;
+    --sidebar-foreground: 35 15% 75%;
+    --sidebar-primary: 36 60% 42%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 30 8% 20%;
+    --sidebar-accent-foreground: 35 15% 90%;
+    --sidebar-border: 30 8% 18%;
+    --sidebar-ring: 36 60% 42%;
   }
 
-  /* ADMIN PANEL — navy sidebar + white content */
+  .dark:not(.admin-panel) {
+    --background: 30 10% 6%;
+    --foreground: 35 15% 90%;
+
+    --card: 30 10% 9%;
+    --card-foreground: 35 15% 90%;
+
+    --popover: 30 10% 9%;
+    --popover-foreground: 35 15% 90%;
+
+    --primary: 36 55% 50%;
+    --primary-foreground: 30 10% 6%;
+
+    --secondary: 30 8% 18%;
+    --secondary-foreground: 35 15% 90%;
+
+    --muted: 30 8% 14%;
+    --muted-foreground: 30 8% 55%;
+
+    --accent: 36 50% 45%;
+    --accent-foreground: 30 10% 6%;
+
+    --destructive: 0 55% 42%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 30 8% 18%;
+    --input: 30 8% 18%;
+    --ring: 36 55% 50%;
+  }
+
+  /* ADMIN PANEL — clean neutral */
   .admin-panel {
     --background: 210 20% 96%;
     --foreground: 220 20% 14%;
@@ -123,25 +118,18 @@
     --ring: 220 70% 50%;
   }
 
-  /* Admin sidebar stays dark navy */
   .admin-sidebar {
     --background: 222 47% 16%;
     --foreground: 210 15% 70%;
-
     --card: 222 47% 16%;
     --card-foreground: 210 15% 70%;
-
     --primary: 210 100% 65%;
     --primary-foreground: 210 100% 75%;
-
     --muted: 222 35% 22%;
     --muted-foreground: 210 15% 60%;
-
     --accent: 222 35% 22%;
     --accent-foreground: 0 0% 100%;
-
     --border: 222 30% 24%;
-
     --sidebar-dim: 210 15% 55%;
     --sidebar-hover: 210 15% 80%;
   }
@@ -154,20 +142,25 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Scrollbar styling */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
   ::-webkit-scrollbar-track {
-    background: hsl(var(--background));
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
     background: hsl(var(--border));
-    border-radius: 3px;
+    border-radius: 10px;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--muted-foreground));
@@ -175,37 +168,64 @@
 }
 
 @layer utilities {
+  /* Premium gradients */
+  .ventuza-gradient-dark {
+    background: linear-gradient(180deg, hsl(var(--ventuza-noir)), hsl(var(--ventuza-charcoal)));
+  }
+
+  .ventuza-gradient-gold {
+    background: linear-gradient(135deg, hsl(var(--ventuza-gold)), hsl(var(--ventuza-gold-light)));
+  }
+
+  .ventuza-gradient-warm {
+    background: linear-gradient(180deg, hsl(var(--ventuza-cream)), hsl(var(--ventuza-warm)));
+  }
+
+  /* Legacy aliases for admin compatibility */
   .emag-header-gradient {
-    background: linear-gradient(180deg, hsl(var(--emag-blue)), hsl(var(--emag-blue-light)));
+    background: linear-gradient(180deg, hsl(var(--ventuza-noir)), hsl(var(--ventuza-charcoal)));
   }
 
   .emag-gradient {
-    background: linear-gradient(180deg, hsl(var(--emag-blue)), hsl(var(--emag-blue-light)));
+    background: linear-gradient(180deg, hsl(var(--ventuza-noir)), hsl(var(--ventuza-charcoal)));
   }
 
   .emag-trust-bar {
-    background: hsl(var(--emag-blue-light));
+    background: hsl(var(--ventuza-charcoal));
   }
 
-  /* Admin scrollbar — light */
+  /* Gold text */
+  .text-gold {
+    color: hsl(var(--ventuza-gold));
+  }
+
+  /* Elegant separator */
+  .ventuza-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--ventuza-gold) / 0.3), transparent);
+  }
+
+  /* Marquee animation */
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
+  }
+
+  /* Admin scrollbar */
   .admin-panel ::-webkit-scrollbar-track {
     background: hsl(210 20% 96%);
   }
   .admin-panel ::-webkit-scrollbar-thumb {
     background: hsl(220 13% 80%);
   }
-  .admin-panel ::-webkit-scrollbar-thumb:hover {
-    background: hsl(220 13% 65%);
-  }
-
-  /* Admin sidebar scrollbar — dark */
   .admin-sidebar ::-webkit-scrollbar-track {
     background: hsl(222 47% 16%);
   }
   .admin-sidebar ::-webkit-scrollbar-thumb {
     background: hsl(222 30% 30%);
-  }
-  .admin-sidebar ::-webkit-scrollbar-thumb:hover {
-    background: hsl(222 30% 40%);
   }
 }

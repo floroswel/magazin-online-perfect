@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        serif: ["'Playfair Display'", "Georgia", "serif"],
+        sans: ["'DM Sans'", "system-ui", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -57,16 +61,26 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        ventuza: {
+          noir: "hsl(var(--ventuza-noir))",
+          charcoal: "hsl(var(--ventuza-charcoal))",
+          gold: "hsl(var(--ventuza-gold))",
+          "gold-light": "hsl(var(--ventuza-gold-light))",
+          cream: "hsl(var(--ventuza-cream))",
+          warm: "hsl(var(--ventuza-warm))",
+          blush: "hsl(var(--ventuza-blush))",
+        },
+        // Legacy aliases for admin compatibility
         emag: {
-          blue: "hsl(var(--emag-blue))",
-          "blue-light": "hsl(var(--emag-blue-light))",
-          orange: "hsl(var(--emag-orange))",
-          yellow: "hsl(var(--emag-yellow))",
-          dark: "hsl(var(--emag-dark))",
+          blue: "hsl(var(--ventuza-noir))",
+          "blue-light": "hsl(var(--ventuza-charcoal))",
+          orange: "hsl(var(--ventuza-gold))",
+          yellow: "hsl(var(--ventuza-gold-light))",
+          dark: "hsl(var(--ventuza-noir))",
         },
         mokka: {
-          DEFAULT: "hsl(var(--mokka))",
-          foreground: "hsl(var(--mokka-foreground))",
+          DEFAULT: "hsl(var(--ventuza-gold))",
+          foreground: "hsl(var(--primary-foreground))",
         },
       },
       borderRadius: {
@@ -113,14 +127,23 @@ export default {
           "70%": { transform: "scale(0.95)" },
           "100%": { transform: "scale(1)", opacity: "1" },
         },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fade-in 0.3s ease-out",
+        "fade-in": "fade-in 0.4s ease-out",
         "fade-out": "fade-out 0.25s ease-in",
         "scale-in": "scale-in 0.2s ease-out",
         "scale-out": "scale-out 0.2s ease-in",
+        shimmer: "shimmer 2s linear infinite",
+      },
+      letterSpacing: {
+        luxury: "0.2em",
+        wide: "0.15em",
       },
     },
   },

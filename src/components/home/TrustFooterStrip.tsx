@@ -1,22 +1,21 @@
 const items = [
-  { icon: "🌿", text: "Ceară naturală" },
-  { icon: "✋", text: "100% Handmade în România" },
-  { icon: "🔒", text: "Plăți securizate" },
-  { icon: "🚚", text: "Livrare gratuită >200 RON" },
-  { icon: "↩️", text: "Retur 14 zile" },
-  { icon: "💬", text: "Suport 24/7" },
+  "Ceară 100% Naturală",
+  "Handmade în România",
+  "Plăți Securizate",
+  "Livrare Gratuită > 200 RON",
+  "Retur 14 Zile",
+  "Suport Dedicat",
 ];
 
 export default function TrustFooterStrip() {
   return (
-    <section className="bg-card border-t py-4">
+    <section className="border-t border-border py-6">
       <div className="container">
-        <div className="flex flex-wrap justify-center gap-6">
+        <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
           {items.map((item, i) => (
-            <div key={i} className="flex items-center gap-1.5 text-sm text-foreground">
-              <span>{item.icon}</span>
-              <span className="font-medium">{item.text}</span>
-            </div>
+            <span key={i} className="text-xs tracking-wide text-muted-foreground uppercase">
+              {item}
+            </span>
           ))}
         </div>
       </div>
