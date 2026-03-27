@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Mail, Gift } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -32,37 +33,48 @@ export default function NewsletterDiscount() {
 
   if (done) {
     return (
-      <section className="bg-secondary text-secondary-foreground py-16">
+      <section className="bg-primary text-primary-foreground py-16">
         <div className="container text-center">
-          <h2 className="font-serif text-2xl font-medium mb-2">Mulțumim!</h2>
-          <p className="text-secondary-foreground/60">Codul tău <span className="font-medium text-ventuza-gold tracking-wider">VENTUZA10</span> a fost trimis pe email.</p>
+          <h2 className="font-serif text-2xl font-bold mb-2">Mulțumim!</h2>
+          <p className="text-primary-foreground/80">Codul tău <span className="font-bold tracking-wider bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm">VENTUZA10</span> a fost trimis pe email.</p>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="bg-secondary text-secondary-foreground py-12 md:py-20">
-      <div className="container max-w-lg text-center px-5">
-        <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-3 md:mb-4 font-medium">Ofertă Exclusivă</p>
-        <h2 className="font-serif text-2xl md:text-3xl font-medium mb-2 md:mb-3">-10% la Prima Comandă</h2>
-        <p className="text-sm md:text-base text-secondary-foreground/60 mb-6 md:mb-8">
-          Înscrie-te la newsletter și primești codul de reducere instant
-        </p>
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row max-w-sm mx-auto gap-2 sm:gap-0">
-          <Input
-            type="email"
-            placeholder="Adresa ta de email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="flex-1 bg-transparent border-secondary-foreground/20 text-secondary-foreground placeholder:text-secondary-foreground/30 rounded-none"
-            required
-          />
-          <Button type="submit" disabled={loading} className="bg-ventuza-gold hover:bg-ventuza-gold-light text-secondary rounded-none px-6 text-xs tracking-wide uppercase font-medium">
-            Vreau -10%
-          </Button>
-        </form>
-        <p className="text-[11px] text-secondary-foreground/30 mt-4 tracking-wide">Fără spam. Dezabonare oricând.</p>
+    <section className="bg-primary text-primary-foreground py-14 md:py-20 relative overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/3" />
+      
+      <div className="container relative px-5">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mx-auto mb-6">
+            <Gift className="h-7 w-7 text-accent" />
+          </div>
+          <h2 className="font-serif text-2xl md:text-4xl font-extrabold mb-3">-10% la Prima Comandă</h2>
+          <p className="text-sm md:text-base text-primary-foreground/80 mb-8 max-w-md mx-auto">
+            Înscrie-te la newsletter și primești codul de reducere instant pe email
+          </p>
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row max-w-md mx-auto gap-3">
+            <div className="relative flex-1">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="email"
+                placeholder="Adresa ta de email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="pl-10 bg-white text-foreground border-0 rounded-lg h-12"
+                required
+              />
+            </div>
+            <Button type="submit" disabled={loading} className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-lg px-8 h-12 text-sm font-bold shadow-lg">
+              Vreau -10%
+            </Button>
+          </form>
+          <p className="text-[11px] text-primary-foreground/50 mt-4 tracking-wide">Fără spam. Dezabonare oricând.</p>
+        </div>
       </div>
     </section>
   );
