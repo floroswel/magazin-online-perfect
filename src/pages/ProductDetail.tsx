@@ -203,24 +203,24 @@ export default function ProductDetail() {
   return (
     <Layout>
       <div className="container py-6">
-        <Link to="/catalog" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-4">
-          <ArrowLeft className="h-4 w-4" /> Înapoi la catalog
+        <Link to="/catalog" className="inline-flex items-center gap-1 text-xs tracking-wide uppercase text-muted-foreground hover:text-primary mb-6 transition-colors">
+          <ArrowLeft className="h-3 w-3" /> Înapoi la colecție
         </Link>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-12">
           <ProductImageGallery
             mainImage={activeImage || "/placeholder.svg"}
             images={product.images}
             alt={imageAlts[activeImage] || product.name}
           />
 
-          <div className="space-y-4">
+          <div className="space-y-5">
             {product.status === "draft" && <Badge variant="secondary">Ciornă</Badge>}
-            <h1 className="text-2xl font-bold text-foreground">{product.name}</h1>
+            <h1 className="font-serif text-3xl md:text-4xl font-medium text-foreground leading-tight">{product.name}</h1>
             <div className="flex items-center gap-2">
               <div className="flex">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className={`h-4 w-4 ${i < Math.round(product.rating || 0) ? "fill-emag-yellow text-emag-yellow" : "text-muted"}`} />
+                  <Star key={i} className={`h-4 w-4 ${i < Math.round(product.rating || 0) ? "fill-primary text-primary" : "text-border"}`} />
                 ))}
               </div>
               <span className="text-sm text-muted-foreground">({product.review_count} recenzii)</span>
