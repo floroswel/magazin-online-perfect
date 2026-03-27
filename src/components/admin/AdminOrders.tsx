@@ -226,6 +226,12 @@ export default function AdminOrders() {
     return result;
   }, [orders, filterStatus, filterPayment, filterTag, dateFrom, dateTo, minValue, maxValue, search, sortKey, sortDir, orderTagMap]);
 
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const paginatedOrders = filtered.slice(page * pageSize, (page + 1) * pageSize);
+
+  // Reset page when filters change
+  useEffect(() => { setPage(0); }, [filterStatus, filterPayment, filterTag, dateFrom, dateTo, minValue, maxValue, search]);
+
   const kpis = {
     total: orders.length,
     pending: orders.filter((o: any) => o.status === "pending").length,
