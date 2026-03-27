@@ -74,9 +74,6 @@ export default function Header() {
             <Link to="/personalizare" className="text-sm tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors">
               Personalizare
             </Link>
-            <Link to="/abonament" className="text-sm tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors">
-              Abonament
-            </Link>
             <Link to="/povestea-noastra" className="text-sm tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors">
               Povestea Noastră
             </Link>
