@@ -96,8 +96,8 @@ export default function Index() {
         <section className="container py-10 md:py-20 px-4">
           <div className="flex items-end justify-between mb-6 md:mb-10">
             <div>
-              <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-primary mb-1.5 md:mb-2 font-medium">Curated</p>
-              <h2 className="font-serif text-2xl md:text-3xl font-medium text-foreground">{sections.featured_title}</h2>
+              <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-primary mb-1.5 md:mb-2 font-bold">⚡ Curated</p>
+              <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground uppercase">{sections.featured_title}</h2>
             </div>
             <Link to="/catalog" className="text-xs md:text-sm text-primary hover:text-primary/80 font-medium flex items-center gap-1 tracking-wide transition-colors whitespace-nowrap">
               Vezi toate <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
