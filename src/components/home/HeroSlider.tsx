@@ -27,30 +27,32 @@ export default function HeroSlider() {
 
   if (banners.length === 0) {
     return (
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary to-[hsl(220,80%,35%)]">
-        <div className="absolute inset-0 opacity-[0.07]">
-          <div className="absolute top-10 right-10 w-72 h-72 bg-white rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-[hsl(220,85%,48%)] via-[hsl(220,80%,40%)] to-[hsl(220,75%,30%)]">
+        {/* Decorative shapes */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-20 -right-20 w-96 h-96 bg-white/5 rounded-full" />
+          <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-white/5 rounded-full" />
+          <div className="absolute top-1/2 right-1/4 w-64 h-64 bg-accent/10 rounded-full blur-2xl" />
         </div>
-        <div className="container relative py-12 md:py-24 lg:py-32 px-5">
+        <div className="container relative py-14 md:py-28 lg:py-36 px-5">
           <div className="max-w-2xl">
-            <span className="inline-block bg-accent text-accent-foreground text-xs font-bold px-4 py-1.5 rounded-full mb-4 shadow-md">
+            <span className="inline-block bg-accent text-accent-foreground text-xs font-bold px-4 py-1.5 rounded-full mb-5 shadow-lg">
               🔥 NOU ÎN MAGAZIN
             </span>
-            <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 md:mb-6 text-white drop-shadow-sm">
+            <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-5 md:mb-7 text-white">
               Lumânări artizanale din ceară naturală
             </h2>
-            <p className="text-sm md:text-lg text-white/85 mb-6 md:mb-8 max-w-lg leading-relaxed">
+            <p className="text-base md:text-lg text-white/90 mb-7 md:mb-9 max-w-lg leading-relaxed font-medium">
               Handmade în România. Arome premium, personalizare completă și livrare rapidă.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Link to="/catalog" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground font-extrabold rounded-lg px-8 md:px-12 text-sm h-12 shadow-lg hover:shadow-xl transition-all">
+                <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground font-extrabold rounded-lg px-10 md:px-14 text-sm h-13 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-0.5">
                   Cumpără acum
                 </Button>
               </Link>
               <Link to="/personalizare" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto bg-white hover:bg-white/90 text-primary font-bold rounded-lg px-8 md:px-10 text-sm h-12 shadow-md">
+                <Button size="lg" className="w-full sm:w-auto bg-white hover:bg-white/95 text-primary font-bold rounded-lg px-8 md:px-12 text-sm h-13 shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
                   Personalizează
                 </Button>
               </Link>

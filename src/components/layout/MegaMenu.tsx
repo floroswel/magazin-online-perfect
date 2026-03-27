@@ -103,7 +103,7 @@ export default function MegaMenu() {
             <li key={`dyn-${dcat.slug}`}>
               <Link
                 to={`/catalog?smart=${dcat.slug}`}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-foreground hover:text-primary rounded-md hover:bg-muted transition-colors whitespace-nowrap"
+                className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-foreground hover:text-primary border-b-2 border-transparent hover:border-primary transition-all whitespace-nowrap"
               >
                 {dcat.icon ? <span className="text-base">{dcat.icon}</span> : <Zap className="h-4 w-4 text-primary" />}
                 {dcat.name}

@@ -6,84 +6,85 @@
 
 @layer base {
   :root {
-    /* VENTUZA — eMAG exact brand colors */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 20%;
+    /* VENTUZA — Blue commerce, high visibility */
+    --background: 220 20% 95%;
+    --foreground: 220 30% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 20%;
+    --card-foreground: 220 30% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 20%;
+    --popover-foreground: 220 30% 10%;
 
     --primary: 220 88% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 40% 96%;
-    --secondary-foreground: 220 88% 35%;
+    --secondary: 220 30% 92%;
+    --secondary-foreground: 220 40% 25%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 0 0% 40%;
+    --muted: 220 15% 92%;
+    --muted-foreground: 220 10% 35%;
 
-    --accent: 345 100% 40%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 44 100% 50%;
+    --accent-foreground: 220 30% 10%;
 
-    --destructive: 345 100% 40%;
+    --destructive: 0 72% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 88%;
-    --input: 0 0% 88%;
+    --border: 220 15% 82%;
+    --input: 220 15% 85%;
     --ring: 220 88% 45%;
 
     --radius: 0.5rem;
 
     /* Brand tokens */
-    --ventuza-noir: 0 0% 20%;
-    --ventuza-charcoal: 0 0% 96%;
+    --ventuza-noir: 220 30% 10%;
+    --ventuza-charcoal: 220 15% 92%;
     --ventuza-gold: 44 100% 50%;
     --ventuza-gold-light: 44 95% 60%;
-    --ventuza-cream: 0 0% 98%;
-    --ventuza-warm: 0 0% 97%;
-    --ventuza-blush: 345 100% 40%;
+    --ventuza-cream: 220 20% 97%;
+    --ventuza-warm: 220 15% 94%;
+    --ventuza-blush: 0 72% 48%;
 
     /* Sidebar (admin) */
     --sidebar-background: 220 50% 18%;
     --sidebar-foreground: 220 20% 80%;
-    --sidebar-primary: 220 88% 45%;
+    --sidebar-primary: 220 88% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 220 50% 26%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 220 40% 24%;
-    --sidebar-ring: 220 88% 45%;
+    --sidebar-ring: 220 88% 50%;
   }
 
+  /* Force same light theme even in dark mode for storefront */
   .dark:not(.admin-panel) {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 20%;
+    --background: 220 20% 95%;
+    --foreground: 220 30% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 20%;
+    --card-foreground: 220 30% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 20%;
+    --popover-foreground: 220 30% 10%;
 
     --primary: 220 88% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 40% 96%;
-    --secondary-foreground: 220 88% 35%;
+    --secondary: 220 30% 92%;
+    --secondary-foreground: 220 40% 25%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 0 0% 40%;
+    --muted: 220 15% 92%;
+    --muted-foreground: 220 10% 35%;
 
-    --accent: 345 100% 40%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 44 100% 50%;
+    --accent-foreground: 220 30% 10%;
 
-    --destructive: 345 100% 40%;
+    --destructive: 0 72% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 88%;
-    --input: 0 0% 88%;
+    --border: 220 15% 82%;
+    --input: 220 15% 85%;
     --ring: 220 88% 45%;
   }
 

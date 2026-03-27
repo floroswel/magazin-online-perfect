@@ -67,14 +67,14 @@ export default function Header() {
           </Link>
 
           {/* Desktop nav links */}
-          <nav className="hidden lg:flex items-center gap-8">
-            <Link to="/catalog" className="text-sm tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors">
+          <nav className="hidden lg:flex items-center gap-6">
+            <Link to="/catalog" className="text-sm font-semibold tracking-wide uppercase text-foreground hover:text-primary transition-colors">
               Colecții
             </Link>
-            <Link to="/personalizare" className="text-sm tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/personalizare" className="text-sm font-semibold tracking-wide uppercase text-foreground hover:text-primary transition-colors">
               Personalizare
             </Link>
-            <Link to="/povestea-noastra" className="text-sm tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/povestea-noastra" className="text-sm font-semibold tracking-wide uppercase text-foreground hover:text-primary transition-colors">
               Povestea Noastră
             </Link>
           </nav>
