@@ -31,7 +31,7 @@ import Affiliates from "./pages/Affiliates";
 import RecoverCart from "./pages/RecoverCart";
 import Unsubscribe from "./pages/Unsubscribe";
 import Personalizare from "./pages/Personalizare";
-import Abonament from "./pages/Abonament";
+
 import CorporateGifting from "./pages/CorporateGifting";
 import QuizParfum from "./pages/QuizParfum";
 import IngrijireLumanari from "./pages/IngrijireLumanari";
