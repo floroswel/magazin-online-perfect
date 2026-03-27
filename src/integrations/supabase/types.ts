@@ -7364,6 +7364,138 @@ export type Database = {
           },
         ]
       }
+      site_banners: {
+        Row: {
+          banner_type: string
+          content: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          scheduled_from: string | null
+          scheduled_until: string | null
+          settings_json: Json
+          sort_order: number
+          title: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          banner_type?: string
+          content?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          scheduled_from?: string | null
+          scheduled_until?: string | null
+          settings_json?: Json
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          banner_type?: string
+          content?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          scheduled_from?: string | null
+          scheduled_until?: string | null
+          settings_json?: Json
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      site_layout_settings: {
+        Row: {
+          id: string
+          setting_key: string
+          updated_at: string
+          updated_by: string | null
+          value_json: Json
+        }
+        Insert: {
+          id?: string
+          setting_key: string
+          updated_at?: string
+          updated_by?: string | null
+          value_json?: Json
+        }
+        Update: {
+          id?: string
+          setting_key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value_json?: Json
+        }
+        Relationships: []
+      }
+      site_theme_settings: {
+        Row: {
+          id: string
+          setting_key: string
+          updated_at: string
+          updated_by: string | null
+          value_json: Json
+        }
+        Insert: {
+          id?: string
+          setting_key: string
+          updated_at?: string
+          updated_by?: string | null
+          value_json?: Json
+        }
+        Update: {
+          id?: string
+          setting_key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value_json?: Json
+        }
+        Relationships: []
+      }
+      site_visibility_settings: {
+        Row: {
+          category: string
+          element_key: string
+          id: string
+          is_active: boolean
+          label: string
+          path_label: string | null
+          scheduled_from: string | null
+          scheduled_until: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          category?: string
+          element_key: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          path_label?: string | null
+          scheduled_from?: string | null
+          scheduled_until?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          category?: string
+          element_key?: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          path_label?: string | null
+          scheduled_from?: string | null
+          scheduled_until?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       slider_360_settings: {
         Row: {
           auto_rotate_default: boolean

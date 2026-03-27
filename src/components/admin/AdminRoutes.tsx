@@ -181,6 +181,7 @@ const AdminAIUsageStats = lazy(() => import("./ai/AdminAIUsageStats"));
 const AdminSamedaySettings = lazy(() => import("./shipping/AdminSamedaySettings"));
 const Admin360SliderSettings = lazy(() => import("./settings/Admin360SliderSettings"));
 const AdminCustom404Settings = lazy(() => import("./settings/AdminCustom404Settings"));
+const AdminControlCenter = lazy(() => import("./control/AdminControlCenter"));
 
 export default function AdminRoutes() {
   return (
@@ -442,6 +443,7 @@ export default function AdminRoutes() {
         <Route path="modules/ai-generator/bulk" element={<AdminAIBulkJobs />} />
         <Route path="modules/ai-generator/usage" element={<AdminAIUsageStats />} />
         <Route path="modules/logs" element={<AdminLogs />} />
+        <Route path="control" element={<AdminControlCenter />} />
       </Routes>
     </Suspense>
   );
