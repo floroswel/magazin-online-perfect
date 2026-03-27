@@ -58,33 +58,33 @@
   }
 
   .dark:not(.admin-panel) {
-    --background: 230 30% 4%;
-    --foreground: 200 20% 94%;
+    --background: 220 25% 4%;
+    --foreground: 40 20% 94%;
 
-    --card: 230 25% 7%;
-    --card-foreground: 200 20% 94%;
+    --card: 220 20% 7%;
+    --card-foreground: 40 20% 94%;
 
-    --popover: 230 25% 7%;
-    --popover-foreground: 200 20% 94%;
+    --popover: 220 20% 7%;
+    --popover-foreground: 40 20% 94%;
 
-    --primary: 185 100% 55%;
-    --primary-foreground: 230 25% 5%;
+    --primary: 220 70% 55%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 230 20% 12%;
-    --secondary-foreground: 200 20% 90%;
+    --secondary: 220 18% 12%;
+    --secondary-foreground: 40 20% 90%;
 
-    --muted: 230 15% 10%;
-    --muted-foreground: 210 10% 50%;
+    --muted: 220 15% 10%;
+    --muted-foreground: 220 10% 50%;
 
-    --accent: 320 90% 65%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 40 60% 60%;
+    --accent-foreground: 220 20% 7%;
 
     --destructive: 0 80% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 230 15% 14%;
-    --input: 230 15% 14%;
-    --ring: 185 100% 55%;
+    --border: 220 15% 14%;
+    --input: 220 15% 14%;
+    --ring: 220 70% 55%;
   }
 
   /* ADMIN PANEL — clean neutral */
