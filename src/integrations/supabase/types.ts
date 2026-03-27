@@ -1314,6 +1314,202 @@ export type Database = {
         }
         Relationships: []
       }
+      chatbot_actions_log: {
+        Row: {
+          action_type: string
+          created_at: string
+          id: string
+          order_id: string | null
+          result: string
+          session_id: string | null
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          result?: string
+          session_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          result?: string
+          session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chatbot_actions_log_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chatbot_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chatbot_faq: {
+        Row: {
+          active: boolean
+          answer: string
+          category: string
+          created_at: string
+          id: string
+          question: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          answer: string
+          category?: string
+          created_at?: string
+          id?: string
+          question: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          answer?: string
+          category?: string
+          created_at?: string
+          id?: string
+          question?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      chatbot_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          role: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          role?: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          role?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chatbot_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chatbot_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chatbot_sessions: {
+        Row: {
+          created_at: string
+          customer_email: string | null
+          customer_id: string | null
+          ended_at: string | null
+          escalated_to_ticket_id: string | null
+          id: string
+          messages_count: number
+          orders_actioned: Json | null
+          satisfaction_rating: number | null
+          started_at: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          customer_email?: string | null
+          customer_id?: string | null
+          ended_at?: string | null
+          escalated_to_ticket_id?: string | null
+          id?: string
+          messages_count?: number
+          orders_actioned?: Json | null
+          satisfaction_rating?: number | null
+          started_at?: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          customer_email?: string | null
+          customer_id?: string | null
+          ended_at?: string | null
+          escalated_to_ticket_id?: string | null
+          id?: string
+          messages_count?: number
+          orders_actioned?: Json | null
+          satisfaction_rating?: number | null
+          started_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      chatbot_settings: {
+        Row: {
+          assistant_name: string
+          auto_escalate_after_messages: number
+          avatar_url: string | null
+          enabled: boolean
+          escalate_keywords: string
+          escalate_on_negative_sentiment: boolean
+          features_enabled: Json
+          id: string
+          offline_message: string
+          schedule_hours: Json
+          schedule_type: string
+          updated_at: string
+          welcome_message: string
+          widget_color: string
+        }
+        Insert: {
+          assistant_name?: string
+          auto_escalate_after_messages?: number
+          avatar_url?: string | null
+          enabled?: boolean
+          escalate_keywords?: string
+          escalate_on_negative_sentiment?: boolean
+          features_enabled?: Json
+          id?: string
+          offline_message?: string
+          schedule_hours?: Json
+          schedule_type?: string
+          updated_at?: string
+          welcome_message?: string
+          widget_color?: string
+        }
+        Update: {
+          assistant_name?: string
+          auto_escalate_after_messages?: number
+          avatar_url?: string | null
+          enabled?: boolean
+          escalate_keywords?: string
+          escalate_on_negative_sentiment?: boolean
+          features_enabled?: Json
+          id?: string
+          offline_message?: string
+          schedule_hours?: Json
+          schedule_type?: string
+          updated_at?: string
+          welcome_message?: string
+          widget_color?: string
+        }
+        Relationships: []
+      }
       cms_pages: {
         Row: {
           body_html: string | null

@@ -164,6 +164,7 @@ const AdminNetopiaSettings = lazy(() => import("./payments/AdminNetopiaSettings"
 const AdminPriceAlerts = lazy(() => import("./marketing/AdminPriceAlerts"));
 const AdminSocialProofSettings = lazy(() => import("./marketing/AdminSocialProofSettings"));
 const AdminLiveChatSettings = lazy(() => import("./marketing/AdminLiveChatSettings"));
+const AdminChatBot = lazy(() => import("./customers/AdminChatBot"));
 const AdminSubscriptionBoxes = lazy(() => import("./marketing/AdminSubscriptionBoxes"));
 const AdminPOSSettings = lazy(() => import("./settings/AdminPOSSettings"));
 const AdminDropshippingSettings = lazy(() => import("./settings/AdminDropshippingSettings"));
@@ -288,6 +289,7 @@ export default function AdminRoutes() {
         <Route path="marketing/price-alerts" element={<AdminPriceAlerts />} />
         <Route path="marketing/social-proof" element={<AdminSocialProofSettings />} />
         <Route path="marketing/live-chat" element={<AdminLiveChatSettings />} />
+        <Route path="support/chatbot" element={<AdminChatBot />} />
         <Route path="marketing/subscription-boxes" element={<AdminSubscriptionBoxes />} />
         <Route path="marketing/integrations" element={<AdminMarketingIntegrations />} />
         <Route path="marketing/cartbot" element={<AdminCartbot />} />

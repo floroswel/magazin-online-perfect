@@ -118,6 +118,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Blacklist", path: "/admin/customers/blacklist" },
           { label: "Coșuri abandonate", path: "/admin/customers/abandoned" },
           { label: "Tichete suport", path: "/admin/customers/tickets" },
+          { label: "🤖 ChatBot AI", path: "/admin/support/chatbot" },
           { label: "GDPR & date", path: "/admin/customers/gdpr" },
           { label: "💰 Tranzacții Wallet", path: "/admin/customers/wallet" },
           { label: "Import clienți", path: "/admin/customers/import" },
