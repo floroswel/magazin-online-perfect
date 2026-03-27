@@ -43,7 +43,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Anulate", path: "/admin/orders/cancelled" },
           { label: "Comenzi marketplace", path: "/admin/orders/marketplace" },
           { label: "Comenzi B2B", path: "/admin/orders/b2b" },
-          { label: "Comenzi recurente", path: "/admin/orders/recurring" },
+          
           { label: "Comenzi cu probleme", path: "/admin/orders/issues" },
           { label: "Facturi & documente", path: "/admin/orders/invoices" },
           { label: "Retururi (RMA)", path: "/admin/orders/returns" },

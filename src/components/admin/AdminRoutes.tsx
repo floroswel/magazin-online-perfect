@@ -197,7 +197,7 @@ export default function AdminRoutes() {
         <Route path="orders/cancelled" element={<AdminFilteredOrders status="cancelled" title="Anulate" description="Comenzi anulate." />} />
         <Route path="orders/marketplace" element={<AdminMarketplaceOrders />} />
         <Route path="orders/b2b" element={<AdminB2BOrders />} />
-        <Route path="orders/recurring" element={<AdminRecurringOrders />} />
+        
         <Route path="orders/issues" element={<AdminIssueOrders />} />
         <Route path="orders/invoices" element={<AdminInvoices />} />
         <Route path="orders/returns" element={<AdminReturns />} />

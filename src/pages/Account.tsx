@@ -378,11 +378,6 @@ export default function Account() {
             <CustomerInvoicesList userId={user.id} />
           </TabsContent>
 
-          {/* SUBSCRIPTIONS TAB */}
-          <TabsContent value="subscriptions" className="mt-4">
-            <h2 className="font-semibold mb-3 flex items-center gap-2"><RefreshCw className="h-4 w-4" /> Abonamentele mele</h2>
-            <MySubscriptions />
-          </TabsContent>
 
           {/* ADDRESSES TAB */}
           <TabsContent value="addresses" className="mt-4 space-y-3">
