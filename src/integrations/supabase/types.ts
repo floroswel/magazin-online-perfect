@@ -1994,34 +1994,105 @@ export type Database = {
         Row: {
           content: string
           created_at: string
+          created_by_admin_id: string | null
+          external_async: boolean | null
+          external_crossorigin: string | null
+          external_custom_attributes: Json | null
+          external_defer: boolean | null
+          external_type: string | null
+          external_url: string | null
           id: string
+          inline_content: string | null
+          internal_note: string | null
+          internal_reference: string | null
           is_active: boolean | null
           location: string
           name: string
+          pages: Json | null
           script_type: string
+          sort_order: number | null
           updated_at: string
         }
         Insert: {
           content?: string
           created_at?: string
+          created_by_admin_id?: string | null
+          external_async?: boolean | null
+          external_crossorigin?: string | null
+          external_custom_attributes?: Json | null
+          external_defer?: boolean | null
+          external_type?: string | null
+          external_url?: string | null
           id?: string
+          inline_content?: string | null
+          internal_note?: string | null
+          internal_reference?: string | null
           is_active?: boolean | null
           location?: string
           name: string
+          pages?: Json | null
           script_type?: string
+          sort_order?: number | null
           updated_at?: string
         }
         Update: {
           content?: string
           created_at?: string
+          created_by_admin_id?: string | null
+          external_async?: boolean | null
+          external_crossorigin?: string | null
+          external_custom_attributes?: Json | null
+          external_defer?: boolean | null
+          external_type?: string | null
+          external_url?: string | null
           id?: string
+          inline_content?: string | null
+          internal_note?: string | null
+          internal_reference?: string | null
           is_active?: boolean | null
           location?: string
           name?: string
+          pages?: Json | null
           script_type?: string
+          sort_order?: number | null
           updated_at?: string
         }
         Relationships: []
+      }
+      custom_scripts_audit_log: {
+        Row: {
+          action: string
+          admin_user_id: string | null
+          changes: Json | null
+          created_at: string | null
+          id: string
+          script_id: string | null
+        }
+        Insert: {
+          action: string
+          admin_user_id?: string | null
+          changes?: Json | null
+          created_at?: string | null
+          id?: string
+          script_id?: string | null
+        }
+        Update: {
+          action?: string
+          admin_user_id?: string | null
+          changes?: Json | null
+          created_at?: string | null
+          id?: string
+          script_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_scripts_audit_log_script_id_fkey"
+            columns: ["script_id"]
+            isOneToOne: false
+            referencedRelation: "custom_scripts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       customer_blacklist: {
         Row: {
