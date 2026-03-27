@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrency } from "@/hooks/useCurrency";
+import { isCandleProductLike } from "@/lib/candleCatalog";
 
 interface Suggestion {
   id: string;
@@ -63,7 +64,7 @@ export default function SearchAutocomplete({ className }: { className?: string }
         result_limit: 6,
       });
       if (!error && data) {
-        setSuggestions(data as Suggestion[]);
+        setSuggestions((data as Suggestion[]).filter((item) => isCandleProductLike(item)));
       } else {
         setSuggestions([]);
       }
@@ -94,8 +95,8 @@ export default function SearchAutocomplete({ className }: { className?: string }
             value={query}
             onChange={(e) => search(e.target.value)}
             onFocus={() => suggestions.length > 0 && setOpen(true)}
-            placeholder="Caută produse..."
-            className="w-full pr-16 bg-white border-none h-11 rounded-lg text-foreground placeholder:text-muted-foreground"
+            placeholder="Caută lumânări..."
+            className="w-full pr-16 bg-card border-none h-11 rounded-lg text-foreground placeholder:text-muted-foreground"
           />
           {query && (
             <Button
@@ -131,7 +132,7 @@ export default function SearchAutocomplete({ className }: { className?: string }
                   <img
                     src={s.image_url || "/placeholder.svg"}
                     alt={s.name}
-                    className="w-10 h-10 object-contain rounded bg-white flex-shrink-0"
+                    className="w-10 h-10 object-contain rounded bg-muted flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <p

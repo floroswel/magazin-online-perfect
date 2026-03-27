@@ -4,6 +4,7 @@ import { ArrowRight, Clock } from "lucide-react";
 import ProductCard from "@/components/products/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import { isCandleCollection } from "@/lib/candleCatalog";
 
 function useCountdown() {
   const [time, setTime] = useState({ h: 0, m: 0, s: 0 });
@@ -26,8 +27,29 @@ export default function FlashDeals({ title = "Oferte Limitate" }: { title?: stri
   const countdown = useCountdown();
 
   useEffect(() => {
-    supabase.from("products").select("*").not("old_price", "is", null).order("created_at", { ascending: false }).limit(4)
-      .then(({ data }) => setDeals(data || []));
+    supabase
+      .from("categories")
+      .select("id, name, slug")
+      .eq("visible", true)
+      .then(({ data: cats }) => {
+        const ids = ((cats || []) as Array<{ id: string; name: string; slug: string }>).filter((cat) =>
+          isCandleCollection(cat)
+        ).map((cat) => cat.id);
+
+        if (ids.length === 0) {
+          setDeals([]);
+          return;
+        }
+
+        supabase
+          .from("products")
+          .select("*")
+          .in("category_id", ids)
+          .not("old_price", "is", null)
+          .order("created_at", { ascending: false })
+          .limit(4)
+          .then(({ data }) => setDeals(data || []));
+      });
   }, []);
 
   if (deals.length === 0) return null;

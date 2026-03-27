@@ -13,6 +13,7 @@ import MegaMenu from "./MegaMenu";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { supabase } from "@/integrations/supabase/client";
 import { useDarkMode } from "@/hooks/useDarkMode";
+import { isCandleCollection } from "@/lib/candleCatalog";
 
 export default function Header() {
   const { user, signOut } = useAuth();
@@ -35,7 +36,7 @@ export default function Header() {
 
   useEffect(() => {
     supabase.from("categories").select("id, name, slug, parent_id, show_in_nav").eq("visible", true).order("display_order").order("name").then(({ data }) => {
-      setMobileCategories((data as any[]) || []);
+      setMobileCategories((((data as any[]) || []).filter((cat) => isCandleCollection(cat)) as any[]) || []);
     });
   }, []);
 

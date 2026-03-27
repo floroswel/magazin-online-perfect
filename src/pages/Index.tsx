@@ -20,6 +20,7 @@ import TrustFooterStrip from "@/components/home/TrustFooterStrip";
 import NewsletterDiscount from "@/components/home/NewsletterDiscount";
 import { supabase } from "@/integrations/supabase/client";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
+import { isCandleCollection } from "@/lib/candleCatalog";
 import { useStoreBranding } from "@/hooks/useStoreBranding";
 import { useCustomerGroups } from "@/hooks/useCustomerGroups";
 import type { Tables } from "@/integrations/supabase/types";
@@ -43,8 +44,33 @@ export default function Index() {
   });
 
   useEffect(() => {
-    supabase.from("products").select("*").eq("featured", true).limit(8)
-      .then(({ data }) => { setFeatured(data || []); setLoading(false); });
+    supabase
+      .from("categories")
+      .select("id, name, slug")
+      .eq("visible", true)
+      .then(({ data: cats }) => {
+        const candleCategoryIds = ((cats || []) as Array<{ id: string; name: string; slug: string }>).filter((cat) =>
+          isCandleCollection(cat)
+        ).map((cat) => cat.id);
+
+        if (candleCategoryIds.length === 0) {
+          setFeatured([]);
+          setLoading(false);
+          return;
+        }
+
+        supabase
+          .from("products")
+          .select("*")
+          .eq("featured", true)
+          .in("category_id", candleCategoryIds)
+          .limit(8)
+          .then(({ data }) => {
+            setFeatured(data || []);
+            setLoading(false);
+          });
+      });
+
     supabase.from("app_settings").select("key, value_json")
       .in("key", ["homepage_sections"])
       .then(({ data }) => {
