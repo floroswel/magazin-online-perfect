@@ -103,8 +103,8 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
           {/* Brand */}
           <div>
-            <h3 className="font-serif text-2xl font-bold tracking-[0.1em] mb-4 text-primary">{texts.col1_title || "VENTUZA"}</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed mb-6">{texts.col1_description}</p>
+            <h3 className="font-serif text-2xl font-extrabold tracking-tight mb-4 text-primary-foreground">{texts.col1_title || "VENTUZA"}</h3>
+            <p className="text-sm text-primary-foreground/70 leading-relaxed mb-6">{texts.col1_description}</p>
             {socialLinks.length > 0 && (
               <div className="flex gap-3">
                 {socialLinks.map((link, i) => (
