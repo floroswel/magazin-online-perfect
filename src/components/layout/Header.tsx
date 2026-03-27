@@ -46,7 +46,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="sticky top-0 z-50 shadow-lg">
       {/* Announcement bar */}
       <div className="bg-primary text-primary-foreground">
         <div className="container flex items-center justify-center py-1.5 px-4">
@@ -57,11 +57,11 @@ export default function Header() {
       </div>
 
       {/* Main header */}
-      <div className={`transition-all duration-300 bg-card border-b border-border ${scrolled ? "shadow-md" : ""}`}>
+      <div className={`transition-all duration-300 bg-white border-b-2 border-border ${scrolled ? "shadow-md" : ""}`}>
         <div className="container flex items-center justify-between py-3 md:py-4 px-4">
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
-            <h1 className="font-serif text-xl md:text-2xl font-extrabold tracking-tight text-primary">
+            <h1 className="font-serif text-xl md:text-2xl font-extrabold tracking-tight text-primary drop-shadow-sm">
               VENTUZA
             </h1>
           </Link>
