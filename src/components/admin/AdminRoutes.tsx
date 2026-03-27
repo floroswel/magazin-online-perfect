@@ -181,6 +181,7 @@ const AdminAIUsageStats = lazy(() => import("./ai/AdminAIUsageStats"));
 const AdminSamedaySettings = lazy(() => import("./shipping/AdminSamedaySettings"));
 const Admin360SliderSettings = lazy(() => import("./settings/Admin360SliderSettings"));
 const AdminCustom404Settings = lazy(() => import("./settings/AdminCustom404Settings"));
+const AdminControlCenter = lazy(() => import("./control/AdminControlCenter"));
 
 export default function AdminRoutes() {
   return (
