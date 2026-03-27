@@ -660,14 +660,24 @@ export default function AdminOrders() {
                     </>
                   );
                 })}
-                {filtered.length === 0 && (
+                {paginatedOrders.length === 0 && (
                   <TableRow><TableCell colSpan={11} className="text-center py-8 text-muted-foreground">Nicio comandă găsită.</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>
           )}
-        </CardContent>
-      </Card>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between px-4 py-3 border-t">
+              <p className="text-xs text-muted-foreground">{filtered.length} comenzi · Pagina {page + 1} din {totalPages}</p>
+              <div className="flex gap-1">
+                <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setPage(0)} disabled={page === 0}>«</Button>
+                <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setPage(p => p - 1)} disabled={page === 0}>‹</Button>
+                <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setPage(p => p + 1)} disabled={page >= totalPages - 1}>›</Button>
+                <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setPage(totalPages - 1)} disabled={page >= totalPages - 1}>»</Button>
+              </div>
+            </div>
+          )}
 
       {/* Tag assignment dialog */}
       <Dialog open={!!showTagDialog} onOpenChange={() => setShowTagDialog(null)}>
