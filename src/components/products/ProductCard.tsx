@@ -55,7 +55,7 @@ function ProductCardInner({ product, eager = false }: Props & { eager?: boolean 
   return (
     <Link to={`/product/${product.slug}`} onMouseEnter={() => prefetchProduct(product.slug)} className="group">
       <div className="h-full flex flex-col">
-        <div className="relative aspect-[3/4] overflow-hidden bg-card rounded-md mb-2 md:mb-4 neon-border">
+        <div className="relative aspect-[3/4] overflow-hidden bg-card rounded-md mb-2 md:mb-4 border border-border">
           {discount > 0 && (
             <span className="absolute top-3 left-3 bg-accent text-accent-foreground text-[10px] tracking-wider uppercase font-bold px-2.5 py-1 z-10 rounded">
               -{discount}%
@@ -79,7 +79,7 @@ function ProductCardInner({ product, eager = false }: Props & { eager?: boolean 
           <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors duration-300" />
           <Button
             onClick={handleAddToCart}
-            className="absolute bottom-3 left-3 right-3 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 bg-primary text-primary-foreground hover:bg-primary/80 rounded-md text-xs tracking-wider uppercase font-bold h-10 shadow-[0_0_15px_hsl(185_100%_50%/0.3)]"
+            className="absolute bottom-3 left-3 right-3 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 bg-primary text-primary-foreground hover:bg-primary/80 rounded-md text-xs tracking-wider uppercase font-bold h-10"
           >
             <ShoppingCart className="h-3.5 w-3.5 mr-2" />
             Adaugă în coș

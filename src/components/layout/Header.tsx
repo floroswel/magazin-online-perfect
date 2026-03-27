@@ -61,7 +61,7 @@ export default function Header() {
         <div className="container flex items-center justify-between py-3 md:py-4 px-4">
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
-            <h1 className="font-serif text-xl md:text-2xl font-bold tracking-[0.1em] text-primary" style={{ textShadow: '0 0 20px hsl(185 100% 50% / 0.3)' }}>
+            <h1 className="font-serif text-xl md:text-2xl font-bold tracking-[0.1em] text-primary">
               VENTUZA
             </h1>
           </Link>
