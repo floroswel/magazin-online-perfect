@@ -155,7 +155,7 @@ export default function Footer() {
                 <span className="text-[11px] text-muted-foreground">Sunt de acord să primesc emailuri.</span>
               </label>
             </form>
-            <div className="mt-6 space-y-2 text-sm text-secondary-foreground/50">
+            <div className="mt-6 space-y-2 text-sm text-muted-foreground">
               {texts.col4_show_phone && texts.col4_phone && (
                 <p className="flex items-center gap-2"><Phone className="w-3 h-3" /> {texts.col4_phone}</p>
               )}
