@@ -181,18 +181,6 @@
     background: linear-gradient(180deg, hsl(var(--ventuza-cream)), hsl(var(--ventuza-warm)));
   }
 
-  /* Legacy aliases for admin compatibility */
-  .emag-header-gradient {
-    background: linear-gradient(180deg, hsl(var(--ventuza-noir)), hsl(var(--ventuza-charcoal)));
-  }
-
-  .emag-gradient {
-    background: linear-gradient(180deg, hsl(var(--ventuza-noir)), hsl(var(--ventuza-charcoal)));
-  }
-
-  .emag-trust-bar {
-    background: hsl(var(--ventuza-charcoal));
-  }
 
   /* Gold text */
   .text-gold {

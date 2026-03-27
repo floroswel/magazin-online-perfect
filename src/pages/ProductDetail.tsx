@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
-import MokkaOrangePrice from "@/components/mokka/MokkaOrangePrice";
+
 import SubscriptionOption from "@/components/products/SubscriptionOption";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/hooks/useCart";
@@ -239,21 +239,20 @@ export default function ProductDetail() {
             {promoDiscount && (
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge className="bg-destructive text-destructive-foreground">{promoDiscount.badgeText}</Badge>
-                <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                <span className="text-sm font-medium text-primary">
                   Economisești {format(promoDiscount.savings)}
                 </span>
                 {promoDiscount.endsAt && <CountdownTimer endsAt={promoDiscount.endsAt} />}
               </div>
             )}
 
-            <MokkaOrangePrice price={finalPrice} months={3} />
             <VariantSelector productId={product.id} basePrice={product.price} lowStockThreshold={product.low_stock_threshold || 5} onVariantSelect={setSelectedVariant} onHasVariants={setHasVariants} />
 
             {/* Bundle savings badge */}
             {isBundle && bundleSavings > 0 && (
-              <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 flex items-center gap-2">
-                <Badge className="bg-green-600 text-white">-{bundleSavingsPercent}%</Badge>
-                <span className="text-sm font-medium text-green-600 dark:text-green-400">
+              <div className="bg-primary/10 border border-primary/20 p-3 flex items-center gap-2">
+                <Badge className="bg-primary text-primary-foreground">-{bundleSavingsPercent}%</Badge>
+                <span className="text-sm font-medium text-primary">
                   Economisești {format(bundleSavings)} cumpărând pachetul!
                 </span>
               </div>
@@ -310,7 +309,7 @@ export default function ProductDetail() {
               <Button
                 variant="outline" size="lg"
                 onClick={() => product && addToComparison(product.id)}
-                className={isInComparison(product.id) ? "border-emag-blue text-emag-blue" : ""}
+                className={isInComparison(product.id) ? "border-primary text-primary" : ""}
               >
                 <GitCompare className="h-5 w-5" />
               </Button>
@@ -325,10 +324,10 @@ export default function ProductDetail() {
             {(() => {
               const threshold = product.low_stock_threshold || 5;
               if (activeStock > threshold) {
-                return <p className="text-sm font-medium text-green-600 dark:text-green-400">✓ În stoc</p>;
+                return <p className="text-sm font-medium text-primary">✓ În stoc</p>;
               } else if (activeStock > 0) {
                 return (
-                  <p className="text-sm font-medium text-orange-600 dark:text-orange-400 animate-pulse">
+                  <p className="text-sm font-medium text-accent animate-pulse">
                     ⚡ Stoc limitat — mai {activeStock === 1 ? "este 1 bucată" : `sunt ${activeStock} bucăți`}
                   </p>
                 );
@@ -372,7 +371,7 @@ export default function ProductDetail() {
                         </Button>
                       </div>
                     ) : (
-                      <p className="text-sm text-green-600 dark:text-green-400">✓ Vei primi un email când produsul revine în stoc.</p>
+                      <p className="text-sm text-primary">✓ Vei primi un email când produsul revine în stoc.</p>
                     )}
                   </div>
                 );

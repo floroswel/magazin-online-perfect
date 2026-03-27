@@ -94,6 +94,13 @@ const App = () => (
               <Route path="/tracking" element={<ErrorBoundary><Tracking /></ErrorBoundary>} />
               <Route path="/livrare-internationala" element={<ErrorBoundary><LivrareInternationala /></ErrorBoundary>} />
               <Route path="/comenzi-bulk-evenimente" element={<ErrorBoundary><ComenziEvenimente /></ErrorBoundary>} />
+              <Route path="/personalizare" element={<ErrorBoundary><Personalizare /></ErrorBoundary>} />
+              <Route path="/abonament" element={<ErrorBoundary><Abonament /></ErrorBoundary>} />
+              <Route path="/corporate-gifting" element={<ErrorBoundary><CorporateGifting /></ErrorBoundary>} />
+              <Route path="/quiz-parfum" element={<ErrorBoundary><QuizParfum /></ErrorBoundary>} />
+              <Route path="/ingrijire-lumanari" element={<ErrorBoundary><IngrijireLumanari /></ErrorBoundary>} />
+              <Route path="/povestea-noastra" element={<ErrorBoundary><PovesteaNoastra /></ErrorBoundary>} />
+              <Route path="/recenzii" element={<ErrorBoundary><Recenzii /></ErrorBoundary>} />
               <Route path="/unsubscribe" element={<ErrorBoundary><Unsubscribe /></ErrorBoundary>} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<NotFound />} />

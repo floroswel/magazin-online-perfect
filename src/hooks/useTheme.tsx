@@ -142,9 +142,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   --input: ${hexToHsl(c.border)};
   --ring: ${hexToHsl(c.primary)};
   --radius: ${b.borderRadius / 16}rem;
-  --emag-blue: ${hexToHsl(c.secondary)};
-  --emag-blue-light: ${hexToHsl(c.secondary)};
-  --emag-orange: ${hexToHsl(c.primary)};
 }
 body:not(.admin-panel) {
   font-family: '${t.fontFamily}', system-ui, sans-serif;
