@@ -443,6 +443,7 @@ export default function AdminRoutes() {
         <Route path="modules/ai-generator/bulk" element={<AdminAIBulkJobs />} />
         <Route path="modules/ai-generator/usage" element={<AdminAIUsageStats />} />
         <Route path="modules/logs" element={<AdminLogs />} />
+        <Route path="control" element={<AdminControlCenter />} />
       </Routes>
     </Suspense>
   );
