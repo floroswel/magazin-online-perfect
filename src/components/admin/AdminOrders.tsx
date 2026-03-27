@@ -64,6 +64,8 @@ export default function AdminOrders() {
   const [bulkProgress, setBulkProgress] = useState<{ running: boolean; current: number; total: number; succeeded: number; failed: number; details: string[] } | null>(null);
   const [bulkCourierDialog, setBulkCourierDialog] = useState(false);
   const [selectedCourier, setSelectedCourier] = useState("");
+  const [page, setPage] = useState(0);
+  const pageSize = 50;
 
   const { data: customStatuses = [] } = useQuery({
     queryKey: ["order-statuses"],
