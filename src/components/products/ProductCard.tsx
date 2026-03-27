@@ -57,7 +57,7 @@ function ProductCardInner({ product, eager = false }: Props & { eager?: boolean 
       <div className="h-full flex flex-col">
         <div className="relative aspect-[3/4] overflow-hidden bg-card rounded-md mb-2 md:mb-4 neon-border">
           {discount > 0 && (
-            <span className="absolute top-3 left-3 bg-foreground text-background text-[10px] tracking-wider uppercase font-medium px-2.5 py-1 z-10">
+            <span className="absolute top-3 left-3 bg-accent text-accent-foreground text-[10px] tracking-wider uppercase font-bold px-2.5 py-1 z-10 rounded">
               -{discount}%
             </span>
           )}
