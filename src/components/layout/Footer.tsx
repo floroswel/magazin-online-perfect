@@ -141,7 +141,7 @@ export default function Footer() {
           {/* Newsletter */}
           <div>
             <h4 className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground mb-5">Newsletter</h4>
-            <p className="text-sm text-secondary-foreground/60 mb-4">Primește -10% la prima comandă și noutăți despre colecții.</p>
+            <p className="text-sm text-muted-foreground mb-4">Primește -10% la prima comandă și noutăți despre colecții.</p>
             <form onSubmit={handleSubscribe} className="space-y-3">
               <div className="flex">
                 <Input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}
