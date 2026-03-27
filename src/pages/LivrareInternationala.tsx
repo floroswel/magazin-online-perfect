@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Globe, Package, AlertTriangle, Truck } from "lucide-react";
-import SeoHead from "@/components/SeoHead";
+import { useEffect } from "react";
 
 const euCountries = [
   { country: "Germania", cost: "25 RON", days: "5-7" },
