@@ -108,6 +108,9 @@ export default function Index() {
 
       <CategoryGrid />
 
+      <PersonalizareSection />
+      <ScentQuiz />
+
       {/* Featured products */}
       {sections.show_featured && (
         <section className="container py-8">
@@ -132,11 +135,22 @@ export default function Index() {
       )}
 
       {sections.show_flash && <FlashDeals title={sections.flash_title} />}
+      <SocialProofTicker />
       {sections.show_mokka && <MokkaBanner />}
       {sections.show_bestsellers && <BestSellers title={sections.bestsellers_title} />}
+
+      <ProcessSection />
+      <SubscriptionSection />
+      <CorporateGiftingSection />
+      <TestimonialsSection />
+
       {sections.show_brands && <BrandCarousel />}
       {sections.show_recently_viewed && <RecentlyViewed />}
+
+      <NewsletterDiscount />
+
       {sections.show_blog && <BlogPreview />}
+      <TrustFooterStrip />
 
       {/* Schema.org JSON-LD */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({
