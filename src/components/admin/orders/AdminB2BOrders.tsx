@@ -13,13 +13,22 @@ export default function AdminB2BOrders() {
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["b2b-orders"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("orders").select("*").order("created_at", { ascending: false }).limit(50);
+      const { data, error } = await supabase.from("orders").select("*").order("created_at", { ascending: false }).limit(200);
       if (error) throw error;
-      return data;
+      // Filter B2B orders — those with billing_address containing CUI/company info
+      return (data || []).filter((o: any) => {
+        const billing = o.billing_address as any;
+        return billing?.cui || billing?.company_name || billing?.reg_com;
+      });
     },
   });
 
-  const filtered = orders.filter((o: any) => !search || o.id?.includes(search));
+  const filtered = orders.filter((o: any) => {
+    if (!search) return true;
+    const s = search.toLowerCase();
+    const billing = o.billing_address as any;
+    return o.id?.toLowerCase().includes(s) || billing?.company_name?.toLowerCase().includes(s) || billing?.cui?.toLowerCase().includes(s) || (o.shipping_address as any)?.full_name?.toLowerCase().includes(s);
+  });
 
   return (
     <div className="space-y-4">
@@ -51,7 +60,7 @@ export default function AdminB2BOrders() {
               ) : filtered.map((o: any) => (
                 <TableRow key={o.id}>
                   <TableCell className="font-mono text-xs">{o.id.slice(0, 8)}</TableCell>
-                  <TableCell>—</TableCell>
+                  <TableCell>{(() => { const b = o.billing_address as any; return b?.company_name ? `${b.company_name}${b.cui ? ` (${b.cui})` : ""}` : "—"; })()}</TableCell>
                   <TableCell><Badge variant="secondary">{o.status}</Badge></TableCell>
                   <TableCell className="font-semibold">{o.total} RON</TableCell>
                   <TableCell className="text-xs text-muted-foreground">{format(new Date(o.created_at), "dd.MM.yyyy")}</TableCell>

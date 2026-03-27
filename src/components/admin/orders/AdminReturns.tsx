@@ -45,7 +45,7 @@ export default function AdminReturns() {
   const { data: returns = [], isLoading } = useQuery({
     queryKey: ["admin-return-requests", statusFilter],
     queryFn: async () => {
-      let q = (supabase as any).from("returns").select("*, orders(id, total, user_email)").order("created_at", { ascending: false });
+      let q = (supabase as any).from("returns").select("*, orders(id, total, user_email, user_id)").order("created_at", { ascending: false });
       if (statusFilter !== "all") q = q.eq("status", statusFilter);
       const { data } = await q.limit(200);
       return (data || []) as any[];
@@ -83,6 +83,35 @@ export default function AdminReturns() {
   async function handleApprove() {
     if (!selectedReturn) return;
     updateStatus.mutate({ id: selectedReturn.id, status: "approved", extra: { admin_notes: adminNote || selectedReturn.admin_notes } });
+
+    // Credit wallet if refund method is wallet
+    if (selectedReturn.refund_method === "wallet" && selectedReturn.orders?.user_id) {
+      const userId = selectedReturn.orders.user_id;
+      const amount = selectedReturn.refund_amount || selectedReturn.orders?.total || 0;
+      if (amount > 0) {
+        // Upsert wallet
+        const { data: wallet } = await (supabase as any).from("customer_wallets").select("*").eq("customer_id", userId).maybeSingle();
+        if (wallet) {
+          await (supabase as any).from("customer_wallets").update({
+            available_balance: (wallet.available_balance || 0) + Number(amount),
+            total_earned: (wallet.total_earned || 0) + Number(amount),
+            updated_at: new Date().toISOString(),
+          }).eq("id", wallet.id);
+        } else {
+          await (supabase as any).from("customer_wallets").insert({
+            customer_id: userId, available_balance: Number(amount), total_earned: Number(amount),
+          });
+        }
+        // Log transaction
+        await (supabase as any).from("wallet_transactions").insert({
+          wallet_id: wallet?.id, customer_id: userId, type: "credit", amount: Number(amount),
+          description: `Rambursare retur #${selectedReturn.id.slice(0, 8)}`, status: "completed",
+          reference_type: "return", reference_id: selectedReturn.id,
+        });
+        toast.success(`${Number(amount).toFixed(2)} RON creditați în Wallet`);
+      }
+    }
+
     setDetailOpen(false);
   }
 

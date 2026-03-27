@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -64,6 +64,8 @@ export default function AdminOrders() {
   const [bulkProgress, setBulkProgress] = useState<{ running: boolean; current: number; total: number; succeeded: number; failed: number; details: string[] } | null>(null);
   const [bulkCourierDialog, setBulkCourierDialog] = useState(false);
   const [selectedCourier, setSelectedCourier] = useState("");
+  const [page, setPage] = useState(0);
+  const pageSize = 50;
 
   const { data: customStatuses = [] } = useQuery({
     queryKey: ["order-statuses"],
@@ -91,11 +93,26 @@ export default function AdminOrders() {
       const { data, error } = await supabase
         .from("orders")
         .select("*, order_items(*, products(name, image_url, slug, sku))")
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(1000);
       if (error) throw error;
       return data;
     },
   });
+
+  // Realtime subscription for new orders
+  useEffect(() => {
+    const channel = supabase
+      .channel('admin-orders-realtime')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, () => {
+        queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' }, () => {
+        queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [queryClient]);
 
   const { data: allTags = [] } = useQuery({
     queryKey: ["order-tags"],
@@ -208,6 +225,12 @@ export default function AdminOrders() {
 
     return result;
   }, [orders, filterStatus, filterPayment, filterTag, dateFrom, dateTo, minValue, maxValue, search, sortKey, sortDir, orderTagMap]);
+
+  const totalPages = Math.ceil(filtered.length / pageSize);
+  const paginatedOrders = filtered.slice(page * pageSize, (page + 1) * pageSize);
+
+  // Reset page when filters change
+  useEffect(() => { setPage(0); }, [filterStatus, filterPayment, filterTag, dateFrom, dateTo, minValue, maxValue, search]);
 
   const kpis = {
     total: orders.length,
@@ -536,7 +559,7 @@ export default function AdminOrders() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((order: any) => {
+                {paginatedOrders.map((order: any) => {
                   const addr = order.shipping_address as any;
                   const isExpanded = expandedRow === order.id;
                   const oTags = (orderTagMap.get(order.id) || []).map((tid: string) => allTags.find((t: any) => t.id === tid)).filter(Boolean);
@@ -637,11 +660,23 @@ export default function AdminOrders() {
                     </>
                   );
                 })}
-                {filtered.length === 0 && (
+                {paginatedOrders.length === 0 && (
                   <TableRow><TableCell colSpan={11} className="text-center py-8 text-muted-foreground">Nicio comandă găsită.</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>
+          )}
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between px-4 py-3 border-t">
+              <p className="text-xs text-muted-foreground">{filtered.length} comenzi · Pagina {page + 1} din {totalPages}</p>
+              <div className="flex gap-1">
+                <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setPage(0)} disabled={page === 0}>«</Button>
+                <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setPage(p => p - 1)} disabled={page === 0}>‹</Button>
+                <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setPage(p => p + 1)} disabled={page >= totalPages - 1}>›</Button>
+                <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setPage(totalPages - 1)} disabled={page >= totalPages - 1}>»</Button>
+              </div>
+            </div>
           )}
         </CardContent>
       </Card>
