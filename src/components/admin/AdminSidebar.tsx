@@ -27,6 +27,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
   {
     items: [
       { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
+      { label: "⚙️ Control Center", icon: Settings, path: "/admin/control" },
     ],
   },
   {
