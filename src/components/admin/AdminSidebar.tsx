@@ -147,7 +147,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "💰 Alerte de preț", path: "/admin/marketing/price-alerts" },
           { label: "👁️ Social Proof", path: "/admin/marketing/social-proof" },
           { label: "💬 Live Chat & AI", path: "/admin/marketing/live-chat" },
-          { label: "📦 Cutii abonament", path: "/admin/marketing/subscription-boxes" },
+          
           { label: "Recomandări produse", path: "/admin/marketing/recommendations" },
           { label: "Teste A/B", path: "/admin/marketing/ab-tests" },
           { label: "Rapoarte marketing", path: "/admin/marketing/reports" },
