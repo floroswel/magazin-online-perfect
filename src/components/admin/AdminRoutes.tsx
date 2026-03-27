@@ -96,7 +96,7 @@ const AdminIntegrationConfig = lazy(() => import("./integrations/AdminIntegratio
 // Smart components (batch 2 — all remaining)
 const AdminMarketplaceOrders = lazy(() => import("./orders/AdminMarketplaceOrders"));
 const AdminB2BOrders = lazy(() => import("./orders/AdminB2BOrders"));
-const AdminRecurringOrders = lazy(() => import("./orders/AdminRecurringOrders"));
+
 const AdminIssueOrders = lazy(() => import("./orders/AdminIssueOrders"));
 const AdminAttributeSets = lazy(() => import("./products/AdminAttributeSets"));
 const AdminSpecs = lazy(() => import("./products/AdminSpecs"));
