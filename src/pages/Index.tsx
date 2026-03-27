@@ -128,10 +128,6 @@ export default function Index() {
 
       <ProcessSection />
 
-      <SubscriptionSection />
-
-      <CorporateGiftingSection />
-
       <TestimonialsSection />
 
       {sections.show_recently_viewed && <RecentlyViewed />}
