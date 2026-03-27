@@ -7680,6 +7680,95 @@ export type Database = {
         }
         Relationships: []
       }
+      social_proof_analytics: {
+        Row: {
+          created_at: string
+          display_duration_ms: number | null
+          id: string
+          notification_type: string
+          page_url: string | null
+          product_id: string | null
+          session_id: string | null
+          was_clicked: boolean
+          was_dismissed: boolean
+        }
+        Insert: {
+          created_at?: string
+          display_duration_ms?: number | null
+          id?: string
+          notification_type?: string
+          page_url?: string | null
+          product_id?: string | null
+          session_id?: string | null
+          was_clicked?: boolean
+          was_dismissed?: boolean
+        }
+        Update: {
+          created_at?: string
+          display_duration_ms?: number | null
+          id?: string
+          notification_type?: string
+          page_url?: string | null
+          product_id?: string | null
+          session_id?: string | null
+          was_clicked?: boolean
+          was_dismissed?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_proof_analytics_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_proof_custom_messages: {
+        Row: {
+          active: boolean
+          created_at: string
+          icon_type: string
+          icon_value: string
+          id: string
+          link_url: string | null
+          message_text: string
+          priority: number
+          sort_order: number
+          updated_at: string
+          valid_from: string | null
+          valid_to: string | null
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          icon_type?: string
+          icon_value?: string
+          id?: string
+          link_url?: string | null
+          message_text?: string
+          priority?: number
+          sort_order?: number
+          updated_at?: string
+          valid_from?: string | null
+          valid_to?: string | null
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          icon_type?: string
+          icon_value?: string
+          id?: string
+          link_url?: string | null
+          message_text?: string
+          priority?: number
+          sort_order?: number
+          updated_at?: string
+          valid_from?: string | null
+          valid_to?: string | null
+        }
+        Relationships: []
+      }
       social_proof_events: {
         Row: {
           buyer_city: string | null
@@ -7714,6 +7803,56 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "social_proof_events_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_proof_simulated: {
+        Row: {
+          active: boolean
+          city: string
+          created_at: string
+          first_name: string
+          id: string
+          product_id: string | null
+          product_image: string | null
+          product_name: string
+          sort_order: number
+          time_display: string
+          type: string
+        }
+        Insert: {
+          active?: boolean
+          city?: string
+          created_at?: string
+          first_name?: string
+          id?: string
+          product_id?: string | null
+          product_image?: string | null
+          product_name?: string
+          sort_order?: number
+          time_display?: string
+          type?: string
+        }
+        Update: {
+          active?: boolean
+          city?: string
+          created_at?: string
+          first_name?: string
+          id?: string
+          product_id?: string | null
+          product_image?: string | null
+          product_name?: string
+          sort_order?: number
+          time_display?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_proof_simulated_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
