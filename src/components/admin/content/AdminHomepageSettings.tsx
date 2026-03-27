@@ -39,7 +39,7 @@ export default function AdminHomepageSettings() {
   const [trustBar, setTrustBar] = useState<TrustBarItem[]>([]);
   const [benefits, setBenefits] = useState<BenefitItem[]>([]);
   const [branding, setBranding] = useState<StoreBranding>({
-    name: "MegaShop", emoji: "🛒", tagline: "", phone: "", email: "", copyright: "",
+    name: "VENTUZA", emoji: "🕯️", tagline: "", phone: "", email: "", copyright: "",
   });
   const [sections, setSections] = useState<HomepageSections>({
     featured_title: "Produse recomandate", flash_title: "Oferte Flash",

@@ -24,9 +24,11 @@ const euCountries = [
 ];
 
 export default function LivrareInternationala() {
+  useEffect(() => { document.title = "Livrare Internațională — VENTUZA"; }, []);
+
   return (
     <Layout>
-      <SeoHead title="Livrare Internațională — VENTUZA" description="Livrăm lumânări handmade VENTUZA în toată Europa. Costuri, termene și informații despre transport internațional." />
+      <div className="container py-8 max-w-4xl">
       <div className="container py-8 max-w-4xl">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">

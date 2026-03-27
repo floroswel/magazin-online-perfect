@@ -33,9 +33,9 @@ export default defineConfig(({ mode }) => ({
         ],
       },
       manifest: {
-        name: "MegaShop - Magazin Online",
-        short_name: "MegaShop",
-        description: "Magazinul tău online preferat",
+        name: "VENTUZA - Lumânări Handmade",
+        short_name: "VENTUZA",
+        description: "Lumânări handmade din ceară naturală, realizate cu pasiune în România",
         theme_color: "#0865F5",
         background_color: "#ffffff",
         display: "standalone",

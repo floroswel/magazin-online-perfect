@@ -21,7 +21,7 @@ function hasAnalyticsConsent(): boolean {
 }
 
 // ========== UTM ==========
-const UTM_KEY = "megashop_utm";
+const UTM_KEY = "ventuza_utm";
 
 export function captureUtmParams() {
   try {

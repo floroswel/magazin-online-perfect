@@ -46,13 +46,13 @@ export default function Tracking() {
     setLoading(false);
   };
 
+  useEffect(() => { document.title = "Urmărire Comandă | VENTUZA"; }, []);
+
   const currentStepIndex = order ? statusSteps.findIndex(s => s.key === order.status) : -1;
 
   return (
     <Layout>
-      <SeoHead title="Urmărire Comandă | VENTUZA" description="Verifică statusul comenzii tale VENTUZA. Introdu numărul comenzii pentru tracking în timp real." />
       <div className="container py-8 max-w-xl">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Urmărire Comandă</h1>
         <p className="text-muted-foreground mb-6">Introdu datele comenzii pentru a vedea statusul în timp real.</p>
 
         <Card>

@@ -33,9 +33,10 @@ export default function ComenziEvenimente() {
     setSent(true);
   };
 
+  useEffect(() => { document.title = "Lumânări pentru Evenimente | VENTUZA"; }, []);
+
   return (
     <Layout>
-      <SeoHead title="Lumânări pentru Evenimente — Nuntă, Botez, Corporate | VENTUZA" description="Comandă lumânări personalizate pentru evenimente: nunți, botezuri, aniversări, corporate. Cantități mari, design personalizat. VENTUZA." />
       <div className="container py-8 max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Lumânări pentru Evenimente Speciale</h1>
