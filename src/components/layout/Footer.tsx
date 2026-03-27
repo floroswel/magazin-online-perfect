@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -45,19 +45,44 @@ export default function Footer() {
   const [gdprConsent, setGdprConsent] = useState(false);
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [texts, setTexts] = useState<FooterTexts>(DEFAULTS);
+  const [footerScripts, setFooterScripts] = useState<string[]>([]);
+  const footerScriptsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    supabase.from("app_settings").select("key, value_json")
-      .in("key", ["footer_social_links", "footer_texts"])
-      .then(({ data }) => {
-        data?.forEach(row => {
-          if (row.key === "footer_social_links" && Array.isArray(row.value_json))
-            setSocialLinks(row.value_json as unknown as SocialLink[]);
-          if (row.key === "footer_texts" && row.value_json && typeof row.value_json === "object" && !Array.isArray(row.value_json))
-            setTexts(prev => ({ ...prev, ...(row.value_json as any) }));
-        });
+    Promise.all([
+      supabase.from("app_settings").select("key, value_json")
+        .in("key", ["footer_social_links", "footer_texts"]),
+      (supabase as any).from("custom_scripts")
+        .select("inline_content, content")
+        .eq("is_active", true)
+        .eq("location", "footer")
+        .order("sort_order"),
+    ]).then(([settingsRes, scriptsRes]: any[]) => {
+      settingsRes.data?.forEach((row: any) => {
+        if (row.key === "footer_social_links" && Array.isArray(row.value_json))
+          setSocialLinks(row.value_json as unknown as SocialLink[]);
+        if (row.key === "footer_texts" && row.value_json && typeof row.value_json === "object" && !Array.isArray(row.value_json))
+          setTexts(prev => ({ ...prev, ...(row.value_json as any) }));
       });
+      const htmls = (scriptsRes.data || [])
+        .map((s: any) => (s.inline_content || s.content || "").trim())
+        .filter(Boolean);
+      setFooterScripts(htmls);
+    });
   }, []);
+
+  // Inject footer script HTML so <script> tags execute
+  useEffect(() => {
+    if (!footerScriptsRef.current || footerScripts.length === 0) return;
+    const container = footerScriptsRef.current;
+    container.innerHTML = "";
+    footerScripts.forEach(html => {
+      const range = document.createRange();
+      range.setStart(container, 0);
+      const frag = range.createContextualFragment(html);
+      container.appendChild(frag);
+    });
+  }, [footerScripts]);
 
   const col2Links = texts.col2_links.length > 0 ? texts.col2_links.filter(l => l.active) : [
     { label: "Lumânări Parfumate", url: "/catalog?category=parfumate", active: true },
@@ -175,7 +200,11 @@ export default function Footer() {
         {/* Legal badges */}
         <div className="border-t border-primary-foreground/20 mt-12 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-primary-foreground/60">{copyrightText}</p>
+            <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
+              <p className="text-xs text-primary-foreground/60">{copyrightText}</p>
+              {/* Footer scripts rendered inline next to copyright */}
+              <div ref={footerScriptsRef} className="flex items-center gap-2 [&_a]:text-[10px] [&_a]:text-primary-foreground/50 [&_a]:hover:text-primary-foreground/80 [&_a]:transition-colors [&_img]:h-5 [&_img]:object-contain [&_img]:opacity-60 [&_img]:hover:opacity-90 [&_span]:text-[10px] [&_span]:text-primary-foreground/50 [&_p]:text-[10px] [&_p]:text-primary-foreground/50 [&_div]:flex [&_div]:items-center [&_div]:gap-2" />
+            </div>
             {texts.show_made_in && (
               <p className="text-xs text-primary-foreground/60">Handmade cu dragoste în România 🇷🇴</p>
             )}
