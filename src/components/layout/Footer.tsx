@@ -173,9 +173,9 @@ export default function Footer() {
         </div>
 
         {/* Legal badges */}
-        <div className="border-t border-secondary-foreground/10 mt-12 pt-8">
+        <div className="border-t border-border mt-12 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-secondary-foreground/40">{copyrightText}</p>
+            <p className="text-xs text-muted-foreground">{copyrightText}</p>
             {texts.show_made_in && (
               <p className="text-xs text-secondary-foreground/40 tracking-wide">Handmade cu dragoste în România 🇷🇴</p>
             )}
