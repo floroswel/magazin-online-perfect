@@ -8,7 +8,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heart, Users, Building2, PartyPopper, CheckCircle, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
-import SeoHead from "@/components/SeoHead";
 
 const eventTypes = [
   { icon: Heart, label: "Nuntă", desc: "Lumânări personalizate cu numele mirilor și data evenimentului" },
