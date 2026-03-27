@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Mail, Facebook, Instagram, Youtube, Clock, MapPin, Phone } from "lucide-react";
+import { Mail, Facebook, Instagram, Youtube, Clock, MapPin, Phone, ShieldCheck, Lock, CreditCard, Truck } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -38,6 +38,67 @@ const DEFAULTS: FooterTexts = {
   col4_show_email: true, col4_show_phone: true, col4_show_address: true, col4_show_hours: true,
   copyright: "© {year} VENTUZA. Toate drepturile rezervate.", extra_legal: "", show_made_in: true,
 };
+
+/* ─── Payment & Shipping icons (SVG inline for speed) ─── */
+const PaymentIcons = () => (
+  <div className="flex flex-wrap items-center gap-2">
+    {/* Visa */}
+    <div className="bg-primary-foreground/10 rounded px-2 py-1 flex items-center h-7" title="Visa">
+      <span className="text-[10px] font-bold text-primary-foreground/70 tracking-wider">VISA</span>
+    </div>
+    {/* Mastercard */}
+    <div className="bg-primary-foreground/10 rounded px-2 py-1 flex items-center h-7" title="Mastercard">
+      <span className="text-[10px] font-bold text-primary-foreground/70 tracking-wider">MC</span>
+    </div>
+    {/* Apple Pay */}
+    <div className="bg-primary-foreground/10 rounded px-2 py-1 flex items-center h-7" title="Apple Pay">
+      <span className="text-[10px] font-bold text-primary-foreground/70 tracking-wider"> Pay</span>
+    </div>
+    {/* Google Pay */}
+    <div className="bg-primary-foreground/10 rounded px-2 py-1 flex items-center h-7" title="Google Pay">
+      <span className="text-[10px] font-bold text-primary-foreground/70 tracking-wider">G Pay</span>
+    </div>
+    {/* Ramburs */}
+    <div className="bg-primary-foreground/10 rounded px-2 py-1 flex items-center h-7" title="Ramburs">
+      <span className="text-[10px] font-bold text-primary-foreground/70 tracking-wider">Ramburs</span>
+    </div>
+  </div>
+);
+
+const ShippingIcons = () => (
+  <div className="flex flex-wrap items-center gap-2">
+    <div className="bg-primary-foreground/10 rounded px-2 py-1 flex items-center h-7" title="Fan Courier">
+      <span className="text-[10px] font-bold text-primary-foreground/70 tracking-wider">Fan Courier</span>
+    </div>
+    <div className="bg-primary-foreground/10 rounded px-2 py-1 flex items-center h-7" title="Sameday">
+      <span className="text-[10px] font-bold text-primary-foreground/70 tracking-wider">Sameday</span>
+    </div>
+    <div className="bg-primary-foreground/10 rounded px-2 py-1 flex items-center h-7" title="DPD">
+      <span className="text-[10px] font-bold text-primary-foreground/70 tracking-wider">DPD</span>
+    </div>
+  </div>
+);
+
+const TrustBadges = () => (
+  <div className="flex flex-wrap items-center gap-3">
+    <div className="flex items-center gap-1.5 text-primary-foreground/60">
+      <Lock className="w-3.5 h-3.5" />
+      <span className="text-[10px] font-medium">SSL Securizat</span>
+    </div>
+    <div className="flex items-center gap-1.5 text-primary-foreground/60">
+      <ShieldCheck className="w-3.5 h-3.5" />
+      <span className="text-[10px] font-medium">GDPR Compliant</span>
+    </div>
+    <div className="flex items-center gap-1.5 text-primary-foreground/60">
+      <CreditCard className="w-3.5 h-3.5" />
+      <span className="text-[10px] font-medium">Plăți Securizate</span>
+    </div>
+    <div className="flex items-center gap-1.5 text-primary-foreground/60">
+      <Truck className="w-3.5 h-3.5" />
+      <span className="text-[10px] font-medium">Livrare Rapidă</span>
+    </div>
+  </div>
+);
 
 export default function Footer() {
   const [email, setEmail] = useState("");
@@ -125,6 +186,7 @@ export default function Footer() {
       <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary" />
 
       <div className="container py-10 md:py-16 px-5">
+        {/* Main columns */}
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
           {/* Brand */}
           <div>
@@ -143,7 +205,7 @@ export default function Footer() {
             )}
           </div>
 
-          {/* Col 2 */}
+          {/* Col 2 - Colecții */}
           <div>
             <h4 className="text-xs font-bold tracking-wide uppercase text-primary-foreground/60 mb-5">{texts.col2_title}</h4>
             <ul className="space-y-3">
@@ -153,7 +215,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Col 3 */}
+          {/* Col 3 - Informații + Suport */}
           <div>
             <h4 className="text-xs font-bold tracking-wide uppercase text-primary-foreground/60 mb-5">{texts.col3_title}</h4>
             <ul className="space-y-3">
@@ -161,9 +223,19 @@ export default function Footer() {
                 <li key={i}><Link to={l.url} className="text-sm text-primary-foreground/80 hover:text-accent transition-colors">{l.label}</Link></li>
               ))}
             </ul>
+            {/* Legal links */}
+            <h4 className="text-xs font-bold tracking-wide uppercase text-primary-foreground/60 mt-6 mb-3">Informații Legale</h4>
+            <ul className="space-y-2">
+              <li><Link to="/page/termeni-si-conditii" className="text-xs text-primary-foreground/60 hover:text-accent transition-colors">Termeni și Condiții</Link></li>
+              <li><Link to="/page/politica-confidentialitate" className="text-xs text-primary-foreground/60 hover:text-accent transition-colors">Politica de Confidențialitate</Link></li>
+              <li><Link to="/page/politica-cookies" className="text-xs text-primary-foreground/60 hover:text-accent transition-colors">Politica Cookie</Link></li>
+              <li><Link to="/page/politica-retur" className="text-xs text-primary-foreground/60 hover:text-accent transition-colors">Politica de Retur</Link></li>
+              <li><a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer" className="text-xs text-primary-foreground/60 hover:text-accent transition-colors">A.N.P.C. – SAL</a></li>
+              <li><a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-xs text-primary-foreground/60 hover:text-accent transition-colors">SOL (ODR)</a></li>
+            </ul>
           </div>
 
-          {/* Newsletter */}
+          {/* Col 4 - Newsletter + Contact */}
           <div>
             <h4 className="text-xs font-bold tracking-wide uppercase text-primary-foreground/60 mb-5">Newsletter</h4>
             <p className="text-sm text-primary-foreground/70 mb-4">Primește -10% la prima comandă și noutăți despre colecții.</p>
@@ -197,12 +269,37 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Legal badges */}
-        <div className="border-t border-primary-foreground/20 mt-12 pt-8">
-          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+        {/* ─── Payment, Shipping, Trust section ─── */}
+        <div className="border-t border-primary-foreground/10 mt-10 pt-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Payment methods */}
+            <div>
+              <h5 className="text-[10px] font-bold tracking-wide uppercase text-primary-foreground/40 mb-3">Metode de plată</h5>
+              <PaymentIcons />
+            </div>
+            {/* Shipping partners */}
+            <div>
+              <h5 className="text-[10px] font-bold tracking-wide uppercase text-primary-foreground/40 mb-3">Livrare prin</h5>
+              <ShippingIcons />
+            </div>
+            {/* Trust badges */}
+            <div>
+              <h5 className="text-[10px] font-bold tracking-wide uppercase text-primary-foreground/40 mb-3">Siguranță</h5>
+              <TrustBadges />
+            </div>
+          </div>
+        </div>
+
+        {/* ─── Bottom bar: Copyright + ANPC badges + Company data ─── */}
+        <div className="border-t border-primary-foreground/20 mt-8 pt-6">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
             <p className="text-xs text-primary-foreground/60">{copyrightText}</p>
             <div ref={footerScriptsRef} className="inline-flex flex-row flex-wrap items-center gap-2 [&_a]:inline-flex [&_a]:text-[10px] [&_a]:text-primary-foreground/50 [&_a]:hover:text-primary-foreground/80 [&_a]:transition-colors [&_img]:h-5 [&_img]:!w-auto [&_img]:object-contain [&_img]:opacity-60 [&_img]:hover:opacity-90 [&_span]:text-[10px] [&_span]:text-primary-foreground/50 [&_p]:text-[10px] [&_p]:text-primary-foreground/50 [&_div]:contents" />
           </div>
+          {/* Company registration data */}
+          <p className="text-[10px] text-primary-foreground/40 text-center mt-3">
+            S.C. VENTUZA S.R.L. • CUI: RO00000000 • Nr. Reg. Com.: J00/0000/0000 • Sediu: București, România
+          </p>
         </div>
       </div>
     </footer>
