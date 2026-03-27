@@ -58,6 +58,8 @@ export default function CustomScriptInjector() {
     const pageTypes = getPageTypes(location.pathname);
 
     const applicable = scripts.filter(s => {
+      // Footer scripts are rendered by Footer.tsx, skip them here
+      if (s.location === "footer") return false;
       const pages: string[] = Array.isArray(s.pages) ? s.pages : ["all_pages"];
       return pages.some(p => pageTypes.includes(p));
     });
