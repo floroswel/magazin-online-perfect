@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   Flame, Sparkles, Gift, Paintbrush, Wrench, Package, ChevronRight, Zap
 } from "lucide-react";
+import { isCandleCollection } from "@/lib/candleCatalog";
 
 const iconMap: Record<string, React.ElementType> = {
   Flame, Sparkles, Gift, Paintbrush, Wrench,
@@ -40,18 +41,18 @@ export default function MegaMenu() {
       .eq("visible", true)
       .order("display_order")
       .order("name")
-      .then(({ data }) => setCategories((data as Cat[]) || []));
+      .then(({ data }) => setCategories(((data as Cat[]) || []).filter((cat) => isCandleCollection(cat)));
 
     supabase
       .from("dynamic_categories")
       .select("id, name, slug, icon, display_order")
       .eq("visible", true)
       .order("display_order")
-      .then(({ data }) => setDynCategories((data || []) as unknown as DynCat[]));
+      .then(({ data }) => setDynCategories((((data || []) as unknown as DynCat[]).filter((cat) => isCandleCollection(cat))));
   }, []);
 
   // Only show categories marked as show_in_nav
-  const navCategories = categories.filter(c => c.show_in_nav !== false);
+  const navCategories = categories.filter(c => c.show_in_nav !== false && isCandleCollection(c));
   const parents = navCategories.filter(c => !c.parent_id);
   const getChildren = (parentId: string) => navCategories.filter(c => c.parent_id === parentId);
 
