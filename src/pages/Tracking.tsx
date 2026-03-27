@@ -52,7 +52,8 @@ export default function Tracking() {
 
   return (
     <Layout>
-      <h1 className="text-3xl font-bold text-foreground mb-2">Urmărire Comandă</h1>
+      <div className="container py-8 max-w-xl">
+        <h1 className="text-3xl font-bold text-foreground mb-2">Urmărire Comandă</h1>
         <p className="text-muted-foreground mb-6">Introdu datele comenzii pentru a vedea statusul în timp real.</p>
 
         <Card>
