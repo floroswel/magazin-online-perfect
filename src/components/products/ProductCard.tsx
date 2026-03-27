@@ -54,8 +54,8 @@ function ProductCardInner({ product, eager = false }: Props & { eager?: boolean 
 
   return (
     <Link to={`/product/${product.slug}`} onMouseEnter={() => prefetchProduct(product.slug)} className="group">
-      <div className="h-full flex flex-col">
-        <div className="relative aspect-[3/4] overflow-hidden bg-muted rounded-lg mb-2 md:mb-3">
+      <div className="h-full flex flex-col bg-card rounded-lg border border-border shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
+        <div className="relative aspect-[3/4] overflow-hidden bg-muted">
           {discount > 0 && (
             <span className="absolute top-2 left-2 bg-destructive text-destructive-foreground text-[11px] font-bold px-2 py-0.5 z-10 rounded">
               -{discount}%
@@ -84,7 +84,7 @@ function ProductCardInner({ product, eager = false }: Props & { eager?: boolean 
             Adaugă în coș
           </Button>
         </div>
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col p-3">
           <h3 className="font-sans font-semibold text-xs md:text-sm text-foreground mb-1 leading-snug line-clamp-2">{product.name}</h3>
           <div className="flex items-baseline gap-2 mt-auto">
             <span className={`text-sm font-medium ${promoDiscount ? "text-destructive" : "text-foreground"}`}>

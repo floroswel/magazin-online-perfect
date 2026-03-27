@@ -8,13 +8,13 @@
   :root {
     /* VENTUZA — eMAG exact colors */
     --background: 0 0% 97%;
-    --foreground: 220 15% 18%;
+    --foreground: 220 25% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 18%;
+    --card-foreground: 220 25% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 18%;
+    --popover-foreground: 220 25% 12%;
 
     --primary: 220 94% 50%;
     --primary-foreground: 0 0% 100%;
@@ -23,16 +23,16 @@
     --secondary-foreground: 220 94% 40%;
 
     --muted: 220 14% 94%;
-    --muted-foreground: 220 8% 46%;
+    --muted-foreground: 220 10% 40%;
 
     --accent: 44 100% 50%;
-    --accent-foreground: 220 15% 10%;
+    --accent-foreground: 220 25% 8%;
 
     --destructive: 0 84% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 90%;
-    --input: 220 13% 90%;
+    --border: 220 18% 82%;
+    --input: 220 18% 82%;
     --ring: 220 94% 50%;
 
     --radius: 0.5rem;
@@ -58,33 +58,33 @@
   }
 
   .dark:not(.admin-panel) {
-    --background: 215 30% 10%;
+    --background: 220 25% 8%;
     --foreground: 0 0% 95%;
 
-    --card: 215 25% 14%;
+    --card: 220 20% 13%;
     --card-foreground: 0 0% 95%;
 
-    --popover: 215 25% 14%;
+    --popover: 220 20% 13%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 215 85% 55%;
+    --primary: 220 90% 58%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 215 30% 20%;
+    --secondary: 220 25% 18%;
     --secondary-foreground: 0 0% 90%;
 
-    --muted: 215 20% 18%;
-    --muted-foreground: 215 15% 55%;
+    --muted: 220 18% 16%;
+    --muted-foreground: 220 12% 60%;
 
-    --accent: 42 95% 52%;
-    --accent-foreground: 215 25% 10%;
+    --accent: 44 100% 50%;
+    --accent-foreground: 220 25% 8%;
 
     --destructive: 0 80% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 215 20% 22%;
-    --input: 215 20% 22%;
-    --ring: 215 85% 55%;
+    --border: 220 18% 28%;
+    --input: 220 18% 28%;
+    --ring: 220 90% 58%;
   }
 
   /* ADMIN PANEL — clean neutral */
