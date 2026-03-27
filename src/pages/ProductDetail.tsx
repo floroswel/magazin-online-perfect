@@ -239,7 +239,7 @@ export default function ProductDetail() {
             {promoDiscount && (
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge className="bg-destructive text-destructive-foreground">{promoDiscount.badgeText}</Badge>
-                <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                <span className="text-sm font-medium text-primary">
                   Economisești {format(promoDiscount.savings)}
                 </span>
                 {promoDiscount.endsAt && <CountdownTimer endsAt={promoDiscount.endsAt} />}
