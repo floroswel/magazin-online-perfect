@@ -45,19 +45,44 @@ export default function Footer() {
   const [gdprConsent, setGdprConsent] = useState(false);
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [texts, setTexts] = useState<FooterTexts>(DEFAULTS);
+  const [footerScripts, setFooterScripts] = useState<string[]>([]);
+  const footerScriptsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    supabase.from("app_settings").select("key, value_json")
-      .in("key", ["footer_social_links", "footer_texts"])
-      .then(({ data }) => {
-        data?.forEach(row => {
-          if (row.key === "footer_social_links" && Array.isArray(row.value_json))
-            setSocialLinks(row.value_json as unknown as SocialLink[]);
-          if (row.key === "footer_texts" && row.value_json && typeof row.value_json === "object" && !Array.isArray(row.value_json))
-            setTexts(prev => ({ ...prev, ...(row.value_json as any) }));
-        });
+    Promise.all([
+      supabase.from("app_settings").select("key, value_json")
+        .in("key", ["footer_social_links", "footer_texts"]),
+      (supabase as any).from("custom_scripts")
+        .select("inline_content, content")
+        .eq("is_active", true)
+        .eq("location", "footer")
+        .order("sort_order"),
+    ]).then(([settingsRes, scriptsRes]: any[]) => {
+      settingsRes.data?.forEach((row: any) => {
+        if (row.key === "footer_social_links" && Array.isArray(row.value_json))
+          setSocialLinks(row.value_json as unknown as SocialLink[]);
+        if (row.key === "footer_texts" && row.value_json && typeof row.value_json === "object" && !Array.isArray(row.value_json))
+          setTexts(prev => ({ ...prev, ...(row.value_json as any) }));
       });
+      const htmls = (scriptsRes.data || [])
+        .map((s: any) => (s.inline_content || s.content || "").trim())
+        .filter(Boolean);
+      setFooterScripts(htmls);
+    });
   }, []);
+
+  // Inject footer script HTML so <script> tags execute
+  useEffect(() => {
+    if (!footerScriptsRef.current || footerScripts.length === 0) return;
+    const container = footerScriptsRef.current;
+    container.innerHTML = "";
+    footerScripts.forEach(html => {
+      const range = document.createRange();
+      range.setStart(container, 0);
+      const frag = range.createContextualFragment(html);
+      container.appendChild(frag);
+    });
+  }, [footerScripts]);
 
   const col2Links = texts.col2_links.length > 0 ? texts.col2_links.filter(l => l.active) : [
     { label: "Lumânări Parfumate", url: "/catalog?category=parfumate", active: true },
