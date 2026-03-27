@@ -19,7 +19,7 @@ export default function SocialProofTicker() {
             const name = (o.shipping_address as any)?.fullName?.split(" ")[0] || "Un client";
             const city = (o.shipping_address as any)?.city || "";
             const product = o.order_items[0].products.name;
-            return `${name} din ${city} a comandat ${product} 🕯️`;
+            return `${name} din ${city} a comandat ${product}`;
           });
         setMessages(msgs);
       });
@@ -28,12 +28,12 @@ export default function SocialProofTicker() {
   if (messages.length === 0) return null;
 
   return (
-    <section className="bg-primary/5 border-y border-primary/10 py-3 overflow-hidden">
-      <div className="animate-marquee whitespace-nowrap flex gap-12">
+    <section className="border-y border-border py-3 overflow-hidden">
+      <div className="animate-marquee whitespace-nowrap flex gap-16">
         {[...messages, ...messages].map((msg, i) => (
-          <span key={i} className="text-sm text-foreground/70 inline-block">
+          <span key={i} className="text-xs tracking-wide text-muted-foreground inline-block uppercase">
             {msg}
-            <span className="mx-6 text-muted-foreground">•</span>
+            <span className="mx-8 text-primary">·</span>
           </span>
         ))}
       </div>
