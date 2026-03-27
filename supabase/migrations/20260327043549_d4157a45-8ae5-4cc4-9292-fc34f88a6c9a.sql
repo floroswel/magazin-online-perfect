@@ -1,0 +1,9 @@
+UPDATE products SET image_url = 'https://jkmiemvihdjwpcpgfleh.supabase.co/storage/v1/object/public/product-images/candle-vanilie-caramel.jpg' WHERE slug = 'lumanare-vanilie-caramel';
+UPDATE products SET image_url = 'https://jkmiemvihdjwpcpgfleh.supabase.co/storage/v1/object/public/product-images/candle-lavanda.jpg' WHERE slug = 'lumanare-lavanda-eucalipt';
+UPDATE products SET image_url = 'https://jkmiemvihdjwpcpgfleh.supabase.co/storage/v1/object/public/product-images/set-cadou-premium.jpg' WHERE slug IN ('set-cadou-seara-perfecta', 'set-cadou-relaxare-totala', 'set-cadou-romantic-3-lumanari');
+UPDATE products SET image_url = 'https://jkmiemvihdjwpcpgfleh.supabase.co/storage/v1/object/public/product-images/candle-twisted.jpg' WHERE slug IN ('lumanare-decorativa-twisted', 'lumanare-twisted-roz-pudrat');
+UPDATE products SET image_url = 'https://jkmiemvihdjwpcpgfleh.supabase.co/storage/v1/object/public/product-images/candle-personalizata.jpg' WHERE slug IN ('lumanare-personalizata-text', 'lumanare-botez-personalizata');
+UPDATE products SET image_url = 'https://jkmiemvihdjwpcpgfleh.supabase.co/storage/v1/object/public/product-images/candle-trandafir.jpg' WHERE slug = 'lumanare-trandafir-bujor';
+UPDATE products SET image_url = 'https://jkmiemvihdjwpcpgfleh.supabase.co/storage/v1/object/public/product-images/candle-scortisoara.jpg' WHERE slug IN ('lumanare-scortisoara-portocala', 'lumanare-crackling-santal-cedru');
+UPDATE products SET image_url = 'https://jkmiemvihdjwpcpgfleh.supabase.co/storage/v1/object/public/product-images/candle-bubble.jpg' WHERE slug IN ('lumanare-decorativa-bubble', 'lumanari-flotante-set-6');
+UPDATE products SET image_url = 'https://jkmiemvihdjwpcpgfleh.supabase.co/storage/v1/object/public/product-images/candle-vanilie-caramel.jpg' WHERE slug = 'suport-ceramic-artizanal' AND (image_url IS NULL OR image_url = '/placeholder.svg');
