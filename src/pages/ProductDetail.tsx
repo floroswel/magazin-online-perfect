@@ -324,7 +324,7 @@ export default function ProductDetail() {
             {(() => {
               const threshold = product.low_stock_threshold || 5;
               if (activeStock > threshold) {
-                return <p className="text-sm font-medium text-green-600 dark:text-green-400">✓ În stoc</p>;
+                return <p className="text-sm font-medium text-primary">✓ În stoc</p>;
               } else if (activeStock > 0) {
                 return (
                   <p className="text-sm font-medium text-orange-600 dark:text-orange-400 animate-pulse">
