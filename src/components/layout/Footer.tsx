@@ -100,8 +100,8 @@ export default function Footer() {
       {/* Divider */}
       <div className="ventuza-divider" />
 
-      <div className="container py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+      <div className="container py-10 md:py-16 px-5">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
           {/* Brand */}
           <div>
             <h3 className="font-serif text-2xl font-semibold tracking-[0.08em] mb-4 text-ventuza-gold">{texts.col1_title || "VENTUZA"}</h3>

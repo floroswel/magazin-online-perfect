@@ -93,24 +93,24 @@ export default function Index() {
 
       {/* Featured products */}
       {sections.show_featured && (
-        <section className="container py-16 md:py-20">
-          <div className="flex items-end justify-between mb-10">
+        <section className="container py-10 md:py-20 px-4">
+          <div className="flex items-end justify-between mb-6 md:mb-10">
             <div>
-              <p className="text-xs tracking-[0.3em] uppercase text-primary mb-2 font-medium">Curated</p>
-              <h2 className="font-serif text-3xl font-medium text-foreground">{sections.featured_title}</h2>
+              <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-primary mb-1.5 md:mb-2 font-medium">Curated</p>
+              <h2 className="font-serif text-2xl md:text-3xl font-medium text-foreground">{sections.featured_title}</h2>
             </div>
-            <Link to="/catalog" className="text-sm text-primary hover:text-primary/80 font-medium flex items-center gap-1.5 tracking-wide transition-colors">
-              Vezi toate <ArrowRight className="h-4 w-4" />
+            <Link to="/catalog" className="text-xs md:text-sm text-primary hover:text-primary/80 font-medium flex items-center gap-1 tracking-wide transition-colors whitespace-nowrap">
+              Vezi toate <ArrowRight className="h-3.5 w-3.5 md:h-4 md:w-4" />
             </Link>
           </div>
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
               {Array.from({ length: 8 }).map((_, i) => (
                 <ProductCardSkeleton key={i} />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
               {featured.map((p, i) => <ProductCard key={p.id} product={p} eager={i < 4} />)}
             </div>
           )}

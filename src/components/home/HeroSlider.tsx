@@ -28,25 +28,25 @@ export default function HeroSlider() {
   if (banners.length === 0) {
     return (
       <section className="relative bg-secondary text-secondary-foreground overflow-hidden">
-        <div className="container relative z-10 py-20 md:py-32 lg:py-40">
+        <div className="container relative z-10 py-12 md:py-32 lg:py-40 px-5">
           <div className="max-w-2xl">
-            <p className="text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-6 font-medium">Artă · Parfum · Lumină</p>
-            <h2 className="font-serif text-4xl md:text-6xl lg:text-7xl font-medium leading-[1.1] mb-6">
+            <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-3 md:mb-6 font-medium">Artă · Parfum · Lumină</p>
+            <h2 className="font-serif text-3xl md:text-6xl lg:text-7xl font-medium leading-[1.1] mb-4 md:mb-6">
               Lumânări<br />
               <span className="italic text-ventuza-gold">handmade</span><br />
               din ceară naturală
             </h2>
-            <p className="text-base md:text-lg text-secondary-foreground/60 mb-10 max-w-md leading-relaxed">
+            <p className="text-sm md:text-lg text-secondary-foreground/60 mb-6 md:mb-10 max-w-md leading-relaxed">
               Create manual cu dragoste în România. Arome naturale, design unic și posibilitate de personalizare completă.
             </p>
-            <div className="flex flex-wrap gap-4">
-              <Link to="/catalog">
-                <Button size="lg" className="bg-ventuza-gold hover:bg-ventuza-gold-light text-secondary rounded-none px-10 text-xs tracking-[0.15em] uppercase font-medium h-12">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+              <Link to="/catalog" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto bg-ventuza-gold hover:bg-ventuza-gold-light text-secondary rounded-none px-8 md:px-10 text-xs tracking-[0.15em] uppercase font-medium h-11 md:h-12">
                   Descoperă Colecția
                 </Button>
               </Link>
-              <Link to="/personalizare">
-                <Button size="lg" variant="outline" className="border-secondary-foreground/30 text-secondary-foreground hover:bg-secondary-foreground/5 rounded-none px-10 text-xs tracking-[0.15em] uppercase font-medium h-12">
+              <Link to="/personalizare" className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto border-secondary-foreground/30 text-secondary-foreground hover:bg-secondary-foreground/5 rounded-none px-8 md:px-10 text-xs tracking-[0.15em] uppercase font-medium h-11 md:h-12">
                   Personalizează
                 </Button>
               </Link>

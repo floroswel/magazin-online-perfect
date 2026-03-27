@@ -83,15 +83,15 @@ export default function Header() {
           </nav>
 
           {/* Search + Actions */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5 md:gap-1">
             <div className="hidden md:block w-56 lg:w-64">
               <SearchAutocomplete className="" />
             </div>
 
-            <Button variant="ghost" size="icon" className="text-foreground/70 hover:text-foreground" onClick={toggleDarkMode} aria-label={isDark ? "Mod luminos" : "Mod întunecat"}>
+            <Button variant="ghost" size="icon" className="h-8 w-8 md:h-9 md:w-9 text-foreground/70 hover:text-foreground" onClick={toggleDarkMode} aria-label={isDark ? "Mod luminos" : "Mod întunecat"}>
               {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
-            <LocaleSwitcher />
+            <span className="hidden sm:inline-flex"><LocaleSwitcher /></span>
 
             {user ? (
               <>

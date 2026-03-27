@@ -42,14 +42,14 @@ export default function NewsletterDiscount() {
   }
 
   return (
-    <section className="bg-secondary text-secondary-foreground py-16 md:py-20">
-      <div className="container max-w-lg text-center">
-        <p className="text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-4 font-medium">Ofertă Exclusivă</p>
-        <h2 className="font-serif text-3xl font-medium mb-3">-10% la Prima Comandă</h2>
-        <p className="text-secondary-foreground/60 mb-8">
+    <section className="bg-secondary text-secondary-foreground py-12 md:py-20">
+      <div className="container max-w-lg text-center px-5">
+        <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-3 md:mb-4 font-medium">Ofertă Exclusivă</p>
+        <h2 className="font-serif text-2xl md:text-3xl font-medium mb-2 md:mb-3">-10% la Prima Comandă</h2>
+        <p className="text-sm md:text-base text-secondary-foreground/60 mb-6 md:mb-8">
           Înscrie-te la newsletter și primești codul de reducere instant
         </p>
-        <form onSubmit={handleSubmit} className="flex max-w-sm mx-auto">
+        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row max-w-sm mx-auto gap-2 sm:gap-0">
           <Input
             type="email"
             placeholder="Adresa ta de email"
