@@ -27,6 +27,7 @@ import ReferralTab from "@/components/account/ReferralTab";
 import WishlistTab from "@/components/account/WishlistTab";
 import GiftCardTab from "@/components/account/GiftCardTab";
 import WalletTab from "@/components/account/WalletTab";
+import BurnLogTab from "@/components/account/BurnLogTab";
 
 const RETURNABLE_STATUSES = ["delivered", "shipped"];
 const STATUS_TIMELINE_DEFAULT = ["pending", "processing", "shipped", "delivered"];
