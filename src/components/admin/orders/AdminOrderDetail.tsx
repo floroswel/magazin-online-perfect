@@ -600,30 +600,35 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
             </CardContent>
           </Card>
 
-          {/* Fulfillment & AWB */}
+          {/* Expediere & Tracking */}
           <Card>
             <CardContent className="p-4">
-              <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><Truck className="w-3.5 h-3.5" /> Livrare & AWB</h4>
+              <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><Truck className="w-3.5 h-3.5" /> Expediere & Tracking</h4>
               <div className="text-sm text-muted-foreground space-y-2">
                 <p>Status: {order.shipping_status || "—"}</p>
                 {order.fulfillment_warehouse_id && <p className="text-xs">Depozit: {(order.fulfillment_warehouse_id as string).slice(0, 8)}</p>}
 
                 {(order as any).tracking_number ? (
-                  <div className="bg-muted/30 rounded-lg p-3 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-foreground">AWB</span>
-                      <Badge variant="outline" className="text-[10px] font-mono">{(order as any).tracking_number}</Badge>
+                  <div className="space-y-2">
+                    <div className="bg-green-500/10 rounded-lg p-3 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <Badge className="bg-green-500/20 text-green-600 border-green-500/30 text-[10px]">Expediat ✓</Badge>
+                        <Badge variant="outline" className="text-[10px] font-mono">{(order as any).tracking_number}</Badge>
+                      </div>
+                      {(order as any).courier_name && (
+                        <p className="text-xs">Curier: {(order as any).courier_name}</p>
+                      )}
+                      {(order as any).shipped_at && (
+                        <p className="text-[10px] text-muted-foreground">Expediat la: {format(new Date((order as any).shipped_at), "dd.MM.yyyy HH:mm", { locale: ro })}</p>
+                      )}
+                      {(order as any).tracking_url && (
+                        <a href={(order as any).tracking_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary flex items-center gap-1 hover:underline">
+                          <ExternalLink className="w-3 h-3" /> Urmărește coletul →
+                        </a>
+                      )}
                     </div>
-                    {(order as any).courier && (
-                      <p className="text-xs">Curier: {carriers.find((c: any) => c.courier === (order as any).courier)?.display_name || (order as any).courier}</p>
-                    )}
-                    {(order as any).tracking_url && (
-                      <a href={(order as any).tracking_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary flex items-center gap-1 hover:underline">
-                        <ExternalLink className="w-3 h-3" /> Urmărire colet
-                      </a>
-                    )}
                     {trackingEvents.length > 0 && (
-                      <div className="mt-2 border-t pt-2 space-y-1">
+                      <div className="border-t pt-2 space-y-1">
                         <p className="text-[10px] font-semibold text-foreground">Istoric tracking</p>
                         {trackingEvents.slice(0, 5).map((ev: any) => (
                           <div key={ev.id} className="text-[10px] text-muted-foreground">
@@ -636,14 +641,68 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
                   </div>
                 ) : (
                   <div className="space-y-2 border-t pt-2">
-                    <p className="text-xs font-medium text-foreground">Generare AWB</p>
+                    <p className="text-xs font-medium text-foreground">Expediere manuală</p>
+                    <Select value={manualCourier} onValueChange={setManualCourier}>
+                      <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Selectează curier" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Poșta Română">Poșta Română</SelectItem>
+                        <SelectItem value="Fan Courier">Fan Courier</SelectItem>
+                        <SelectItem value="Cargus">Cargus</SelectItem>
+                        <SelectItem value="Sameday">Sameday</SelectItem>
+                        <SelectItem value="DPD">DPD</SelectItem>
+                        <SelectItem value="GLS">GLS</SelectItem>
+                        <SelectItem value="DHL">DHL</SelectItem>
+                        <SelectItem value="Urgent Cargus">Urgent Cargus</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Input placeholder="Număr AWB" value={manualAwb} onChange={e => setManualAwb(e.target.value)} className="h-8 text-xs" />
+                    <Button size="sm" className="w-full" onClick={async () => {
+                      if (!manualCourier || !manualAwb.trim()) { toast.error("Selectează curierul și introdu AWB-ul."); return; }
+                      setSavingAwb(true);
+                      const trackingUrlTemplates: Record<string, string> = {
+                        "Poșta Română": `https://www.posta-romana.ro/track-trace.html?awb=${manualAwb.trim()}`,
+                        "Fan Courier": `https://www.fancourier.ro/en/tracking/?awb=${manualAwb.trim()}`,
+                        "Cargus": `https://www.cargus.ro/tracking-colet/?Awb=${manualAwb.trim()}`,
+                        "Sameday": `https://sameday.ro/tracking?awb=${manualAwb.trim()}`,
+                        "DPD": `https://tracking.dpd.de/status/ro_RO/parcel/${manualAwb.trim()}`,
+                        "GLS": `https://gls-group.eu/track/${manualAwb.trim()}`,
+                        "DHL": `https://www.dhl.com/ro-ro/home/tracking.html?tracking-id=${manualAwb.trim()}`,
+                        "Urgent Cargus": `https://www.cargus.ro/tracking-colet/?Awb=${manualAwb.trim()}`,
+                      };
+                      const trackingUrl = trackingUrlTemplates[manualCourier] || "";
+                      const now = new Date().toISOString();
+                      await supabase.from("orders").update({
+                        courier_name: manualCourier,
+                        tracking_number: manualAwb.trim(),
+                        tracking_url: trackingUrl,
+                        shipped_at: now,
+                        status: "shipped",
+                        updated_at: now,
+                      } as any).eq("id", orderId);
+                      await supabase.from("order_timeline").insert({
+                        order_id: orderId, action: "shipped", note: `Expediat via ${manualCourier} — AWB: ${manualAwb.trim()}`,
+                      });
+                      queryClient.invalidateQueries({ queryKey: ["admin-order-detail", orderId] });
+                      queryClient.invalidateQueries({ queryKey: ["order-timeline", orderId] });
+                      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+                      toast.success(`AWB salvat: ${manualAwb.trim()} (${manualCourier})`);
+                      setSavingAwb(false);
+                      setManualAwb("");
+                      setManualCourier("");
+                    }} disabled={!manualCourier || !manualAwb.trim() || savingAwb}>
+                      {savingAwb ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <Save className="w-3.5 h-3.5 mr-1" />}
+                      Salvează AWB
+                    </Button>
+
+                    <Separator className="my-2" />
+                    <p className="text-xs font-medium text-foreground">Generare AWB automat</p>
                     <Select value={awbCourier} onValueChange={setAwbCourier}>
                       <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Selectează curier" /></SelectTrigger>
                       <SelectContent>
                         {carriers.map((c: any) => <SelectItem key={c.courier} value={c.courier}>{c.display_name}</SelectItem>)}
                       </SelectContent>
                     </Select>
-                    <Button size="sm" className="w-full" onClick={generateAWB} disabled={!awbCourier || generatingAwb}>
+                    <Button size="sm" variant="outline" className="w-full" onClick={generateAWB} disabled={!awbCourier || generatingAwb}>
                       {generatingAwb ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <Printer className="w-3.5 h-3.5 mr-1" />}
                       {generatingAwb ? "Se generează..." : "Generează AWB"}
                     </Button>
