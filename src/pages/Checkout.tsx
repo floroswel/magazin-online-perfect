@@ -135,20 +135,22 @@ export default function Checkout() {
       const existingAllowStacking = appliedCoupons.every(c => c.combine_with_codes);
       if (!existingAllowStacking) { toast.error("Codurile existente nu permit combinarea cu alte coduri"); setCouponLoading(false); return; }
     }
-    const { data: coupon } = await supabase.from("coupons").select("*").eq("code", code).eq("is_active", true).maybeSingle();
+
+    // Server-side validation first
+    const { data: validation, error: rpcError } = await supabase.rpc("validate_coupon", {
+      p_coupon_code: code,
+      p_cart_total: totalPrice,
+      p_user_id: user?.id || null,
+    });
+    if (rpcError || !validation) { toast.error("Eroare la validarea cuponului"); setCouponLoading(false); return; }
+    const result = validation as any;
+    if (!result.valid) { toast.error(result.message); setCouponLoading(false); return; }
+
+    // Fetch full coupon data for discount calculation
+    const { data: coupon } = await supabase.from("coupons").select("*").eq("code", code).maybeSingle();
     if (!coupon) { toast.error("Cod invalid"); setCouponLoading(false); return; }
-    if (coupon.valid_from && new Date(coupon.valid_from) > new Date()) { toast.error("Acest cod nu este încă activ"); setCouponLoading(false); return; }
-    if (coupon.valid_until && new Date(coupon.valid_until) < new Date()) { toast.error("Cod expirat"); setCouponLoading(false); return; }
-    if (coupon.min_order_value && totalPrice < coupon.min_order_value) { toast.error(`Valoare minimă comandă: ${format(coupon.min_order_value)}`); setCouponLoading(false); return; }
-    const totalQty = items.reduce((s, i) => s + i.quantity, 0);
-    if (coupon.min_quantity && totalQty < coupon.min_quantity) { toast.error(`Cantitate minimă: ${coupon.min_quantity} produse`); setCouponLoading(false); return; }
-    if (coupon.max_uses && (coupon.used_count || 0) >= coupon.max_uses) { toast.error("Ai atins limita de utilizări"); setCouponLoading(false); return; }
     if (appliedCoupons.length > 0 && !coupon.combine_with_codes) { toast.error("Acest cod nu se combină cu alte coduri"); setCouponLoading(false); return; }
     if (user) {
-      if (coupon.max_uses_per_customer) {
-        const { count } = await supabase.from("coupon_usage").select("id", { count: "exact", head: true }).eq("coupon_id", coupon.id).eq("user_id", user.id);
-        if ((count || 0) >= coupon.max_uses_per_customer) { toast.error("Ai folosit deja acest cod de maximul de ori permis"); setCouponLoading(false); return; }
-      }
       if (coupon.first_order_only) {
         const { count } = await supabase.from("orders").select("id", { count: "exact", head: true }).eq("user_id", user.id);
         if ((count || 0) > 0) { toast.error("Acest cod e valabil doar pentru prima comandă"); setCouponLoading(false); return; }
