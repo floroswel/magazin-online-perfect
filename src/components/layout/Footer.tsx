@@ -202,16 +202,20 @@ export default function Footer() {
               <span className="font-sans text-[10px] text-[#FAF6F0]/25">·</span>
               <p className="font-sans text-[10px] text-[#FAF6F0]/30">EUIPO #019130214</p>
             </div>
-            <div className="flex items-center gap-3">
-              <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 font-sans text-[10px] text-[#FAF6F0]/40 hover:text-[#FAF6F0]/70 border border-[#FAF6F0]/10 px-3 py-1.5 rounded-full transition-colors">
-                <Globe className="w-3 h-3" /> SOL
-              </a>
+            <div className="flex items-center gap-4">
               <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 font-sans text-[10px] text-[#FAF6F0]/40 hover:text-[#FAF6F0]/70 border border-[#FAF6F0]/10 px-3 py-1.5 rounded-full transition-colors">
-                <ShieldCheck className="w-3 h-3" /> ANPC
+                className="inline-flex items-center gap-2 bg-[#FAF6F0]/[0.07] hover:bg-[#FAF6F0]/[0.12] border border-[#FAF6F0]/10 hover:border-[#FAF6F0]/20 px-4 py-2 rounded-lg transition-all"
+                title="ANPC – Autoritatea Națională pentru Protecția Consumatorilor">
+                <ShieldCheck className="w-5 h-5 text-primary" />
+                <span className="font-sans text-xs font-medium text-[#FAF6F0]/70">ANPC</span>
               </a>
-              <div ref={footerScriptsRef} className="inline-flex flex-row flex-wrap items-center gap-2 [&_a]:inline-flex [&_a]:text-[10px] [&_a]:text-[#FAF6F0]/40 [&_a]:hover:text-[#FAF6F0]/70 [&_a]:transition-colors [&_img]:h-4 [&_img]:!w-auto [&_img]:object-contain [&_img]:opacity-50 [&_img]:hover:opacity-80 [&_span]:text-[10px] [&_span]:text-[#FAF6F0]/40 [&_p]:text-[10px] [&_p]:text-[#FAF6F0]/40 [&_div]:contents" />
+              <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-[#FAF6F0]/[0.07] hover:bg-[#FAF6F0]/[0.12] border border-[#FAF6F0]/10 hover:border-[#FAF6F0]/20 px-4 py-2 rounded-lg transition-all"
+                title="SOL – Soluționarea Online a Litigiilor (UE)">
+                <Globe className="w-5 h-5 text-primary" />
+                <span className="font-sans text-xs font-medium text-[#FAF6F0]/70">SOL / ODR</span>
+              </a>
+              <div ref={footerScriptsRef} className="inline-flex flex-row flex-wrap items-center gap-3 [&_a]:inline-flex [&_a]:items-center [&_a]:bg-[#FAF6F0]/[0.07] [&_a]:hover:bg-[#FAF6F0]/[0.12] [&_a]:border [&_a]:border-[#FAF6F0]/10 [&_a]:hover:border-[#FAF6F0]/20 [&_a]:px-3 [&_a]:py-2 [&_a]:rounded-lg [&_a]:transition-all [&_img]:h-7 [&_img]:!w-auto [&_img]:object-contain [&_img]:opacity-70 [&_img]:hover:opacity-100 [&_span]:text-xs [&_span]:text-[#FAF6F0]/60 [&_p]:text-xs [&_p]:text-[#FAF6F0]/60 [&_div]:contents" />
             </div>
           </div>
         </div>
