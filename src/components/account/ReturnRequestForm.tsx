@@ -166,6 +166,20 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
 
   if (!settings) return null;
 
+  if (!settings.enabled) {
+    return (
+      <Dialog open={open} onOpenChange={() => onClose()}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><RotateCcw className="w-5 h-5" /> Retur indisponibil</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">Funcționalitatea de retur nu este activă momentan. Te rugăm să ne contactezi la adresa de email pentru a solicita un retur.</p>
+          <DialogFooter><Button onClick={onClose}>Închide</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   const reasons = settings.return_reasons || [];
 
   return (
