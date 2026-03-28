@@ -213,7 +213,7 @@ export default function AdminFinancialReports() {
   // ── Cash flow
   const activeOrdersValue = currentOrders.filter((o: any) => !["delivered", "cancelled", "refunded"].includes(o.status))
     .reduce((s: number, o: any) => s + Number(o.total || 0), 0);
-  const next30DaysSubs = subscriptions.reduce((s: number, sub: any) => s + Number(sub.price || 0), 0);
+  const next30DaysSubs = 0;
   const pendingRefunds = returns.reduce((s: number, r: any) => s + Number(r.refund_amount || 0), 0);
 
   // ── Export helpers
