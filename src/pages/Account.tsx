@@ -606,7 +606,7 @@ export default function Account() {
                   <CardContent className="p-4">
                     <h3 className="font-semibold mb-2">Cum câștigi puncte?</h3>
                     <ul className="text-sm space-y-1 text-muted-foreground">
-                      <li>🛒 <strong>1 punct</strong> pentru fiecare 10 lei cheltuiți</li>
+                      <li>🛒 <strong>1 punct</strong> pentru fiecare leu cheltuit</li>
                       <li>⭐ <strong>10 puncte</strong> pentru o recenzie</li>
                       <li>👥 <strong>50 puncte</strong> pentru recomandarea unui prieten</li>
                       <li>🕯️ <strong>5 puncte</strong> pentru o sesiune în Burn Log</li>
