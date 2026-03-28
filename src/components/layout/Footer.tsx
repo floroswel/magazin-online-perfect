@@ -54,14 +54,17 @@ export default function Footer() {
   const [footerScripts, setFooterScripts] = useState<string[]>([]);
   const footerScriptsRef = useRef<HTMLDivElement>(null);
 
+  const [companyInfo, setCompanyInfo] = useState<any>({});
+
   useEffect(() => {
     Promise.all([
-      supabase.from("app_settings").select("key, value_json").in("key", ["footer_social_links", "footer_texts"]),
+      supabase.from("app_settings").select("key, value_json").in("key", ["footer_social_links", "footer_texts", "company_info"]),
       (supabase as any).from("custom_scripts").select("inline_content, content").eq("is_active", true).eq("location", "footer").order("sort_order"),
     ]).then(([settingsRes, scriptsRes]: any[]) => {
       settingsRes.data?.forEach((row: any) => {
         if (row.key === "footer_social_links" && Array.isArray(row.value_json)) setSocialLinks(row.value_json as unknown as SocialLink[]);
         if (row.key === "footer_texts" && row.value_json && typeof row.value_json === "object" && !Array.isArray(row.value_json)) setTexts(prev => ({ ...prev, ...(row.value_json as any) }));
+        if (row.key === "company_info" && row.value_json) setCompanyInfo(row.value_json);
       });
       setFooterScripts((scriptsRes.data || []).map((s: any) => (s.inline_content || s.content || "").trim()).filter(Boolean));
     });
