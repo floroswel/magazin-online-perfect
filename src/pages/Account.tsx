@@ -271,6 +271,7 @@ export default function Account() {
 
         {/* Two-column layout: main content + sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6">
+        <div>
         <Tabs defaultValue="orders">
           <TabsList className="flex-wrap">
             <TabsTrigger value="orders"><Package className="h-4 w-4 mr-1" /> Comenzi</TabsTrigger>
