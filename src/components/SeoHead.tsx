@@ -16,8 +16,8 @@ interface SeoSettings {
 
 const defaults: SeoSettings = {
   site_title: "VENTUZA",
-  site_description: "",
-  og_image: "/pwa-512x512.png",
+  site_description: "Descoperă lumânări artizanale create din ingrediente naturale, parfumuri rare și cere de soia. Livrare în 24-48h.",
+  og_image: "/og-homepage.jpg",
   google_verification: "",
   bing_verification: "",
   canonical_url: "",
@@ -45,6 +45,89 @@ export function useSeoSettings() {
   return settings;
 }
 
+function setMeta(nameOrProp: string, content: string, attr: "name" | "property" = "name") {
+  if (!content) return;
+  let el = document.querySelector(`meta[${attr}="${nameOrProp}"]`);
+  if (!el) {
+    el = document.createElement("meta");
+    el.setAttribute(attr, nameOrProp);
+    document.head.appendChild(el);
+  }
+  el.setAttribute("content", content);
+}
+
+function setCanonical(href: string) {
+  let canon = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+  if (!canon) {
+    canon = document.createElement("link");
+    canon.rel = "canonical";
+    document.head.appendChild(canon);
+  }
+  canon.href = href;
+}
+
+export interface PageSeoData {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: string;
+  productPrice?: number;
+  productCurrency?: string;
+  noindex?: boolean;
+  canonicalOverride?: string;
+}
+
+/**
+ * Call from any page to set dynamic SEO meta.
+ */
+export function usePageSeo(data: PageSeoData) {
+  const seo = useSeoSettings();
+  const location = useLocation();
+
+  useEffect(() => {
+    const base = seo.canonical_url || window.location.origin;
+
+    // Title
+    if (data.title) document.title = data.title;
+
+    // Description
+    if (data.description) setMeta("description", data.description);
+
+    // OG tags
+    setMeta("og:title", data.title || document.title, "property");
+    setMeta("og:description", data.description || seo.site_description, "property");
+    setMeta("og:type", data.ogType || "website", "property");
+    setMeta("og:image", data.ogImage || seo.og_image || "/og-homepage.jpg", "property");
+    setMeta("og:url", base + location.pathname, "property");
+    setMeta("og:site_name", "VENTUZA", "property");
+    setMeta("og:locale", "ro_RO", "property");
+
+    // Product-specific OG
+    if (data.productPrice != null) {
+      setMeta("product:price:amount", String(data.productPrice), "property");
+      setMeta("product:price:currency", data.productCurrency || "RON", "property");
+    }
+
+    // Twitter
+    setMeta("twitter:card", "summary_large_image");
+    setMeta("twitter:title", data.title || document.title);
+    setMeta("twitter:description", data.description || seo.site_description);
+    setMeta("twitter:image", data.ogImage || seo.og_image || "/og-homepage.jpg");
+
+    // Canonical - catalog with filters should point to base /catalog
+    const canonPath = data.canonicalOverride || (location.pathname === "/catalog" ? "/catalog" : location.pathname);
+    setCanonical(base + canonPath);
+
+    // Noindex
+    if (data.noindex) {
+      setMeta("robots", "noindex, nofollow");
+    } else {
+      const robotsMeta = document.querySelector('meta[name="robots"]');
+      if (robotsMeta) robotsMeta.remove();
+    }
+  }, [data.title, data.description, data.ogImage, data.ogType, data.productPrice, location.pathname, seo]);
+}
+
 /**
  * Inject SEO verification meta tags + Organization JSON-LD on all pages.
  * Called once from Layout.
@@ -55,33 +138,38 @@ export default function SeoHead() {
 
   useEffect(() => {
     // Google verification
-    let gMeta = document.querySelector('meta[name="google-site-verification"]');
     if (seo.google_verification) {
-      if (!gMeta) { gMeta = document.createElement("meta"); gMeta.setAttribute("name", "google-site-verification"); document.head.appendChild(gMeta); }
-      gMeta.setAttribute("content", seo.google_verification);
+      setMeta("google-site-verification", seo.google_verification);
     }
-
     // Bing verification
-    let bMeta = document.querySelector('meta[name="msvalidate.01"]');
     if (seo.bing_verification) {
-      if (!bMeta) { bMeta = document.createElement("meta"); bMeta.setAttribute("name", "msvalidate.01"); document.head.appendChild(bMeta); }
-      bMeta.setAttribute("content", seo.bing_verification);
+      setMeta("msvalidate.01", seo.bing_verification);
     }
 
-    // Canonical
-    let canon = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-    if (!canon) { canon = document.createElement("link"); canon.rel = "canonical"; document.head.appendChild(canon); }
+    // Default canonical (pages using usePageSeo will override)
     const base = seo.canonical_url || window.location.origin;
-    canon.href = base + location.pathname;
+    setCanonical(base + location.pathname);
   }, [seo, location.pathname]);
 
   // Organization JSON-LD (all pages)
+  const base = seo.canonical_url || window.location.origin;
   const orgSchema = safeJsonLd({
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: seo.site_title || "VENTUZA",
-    url: seo.canonical_url || window.location.origin,
-    logo: (seo.canonical_url || window.location.origin) + "/pwa-512x512.png",
+    name: "VENTUZA SRL",
+    url: base,
+    logo: base + "/og-homepage.jpg",
+    sameAs: [
+      "https://www.tiktok.com/@ventuza",
+      "https://www.instagram.com/ventuza.ro",
+      "https://www.facebook.com/ventuza.ro"
+    ],
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: "contact@ventuza.ro",
+      contactType: "customer service",
+      availableLanguage: "Romanian"
+    }
   });
 
   return (
