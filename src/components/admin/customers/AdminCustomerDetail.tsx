@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, Mail, Ban, Trash2, Award, Plus, Save, ShoppingCart, MapPin, RefreshCw, RotateCcw, Star, StickyNote, Activity, User } from "lucide-react";
+import { ArrowLeft, Mail, Ban, Trash2, Award, Plus, Save, ShoppingCart, MapPin, RotateCcw, Star, StickyNote, Activity, User } from "lucide-react";
 import { format } from "date-fns";
 import { ro } from "date-fns/locale";
 import { toast } from "sonner";
