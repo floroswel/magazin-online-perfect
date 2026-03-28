@@ -124,31 +124,19 @@ export default function ManualOrderDialog({ open, onOpenChange }: Props) {
     try {
       const orderNumber = `MAN-${Date.now().toString(36).toUpperCase()}`;
 
-      // Lookup existing user by email
+      // Lookup existing user by email from previous orders
       let resolvedUserId = "00000000-0000-0000-0000-000000000000";
       if (customerEmail.trim()) {
-        const { data: profile } = await supabase
-          .from("profiles")
+        const emailLower = customerEmail.trim().toLowerCase();
+        const { data: existingOrder } = await supabase
+          .from("orders")
           .select("user_id")
-          .eq("user_id", (
-            await supabase.from("orders").select("user_id").eq("user_email", customerEmail.trim().toLowerCase()).limit(1).maybeSingle()
-          ).data?.user_id || "00000000-0000-0000-0000-000000000000")
+          .eq("user_email", emailLower)
+          .neq("user_id", "00000000-0000-0000-0000-000000000000")
+          .limit(1)
           .maybeSingle();
-        
-        if (!profile) {
-          // Try via auth - search orders table for this email
-          const { data: existingOrder } = await supabase
-            .from("orders")
-            .select("user_id")
-            .eq("user_email", customerEmail.trim().toLowerCase())
-            .neq("user_id", "00000000-0000-0000-0000-000000000000")
-            .limit(1)
-            .maybeSingle();
-          if (existingOrder?.user_id) {
-            resolvedUserId = existingOrder.user_id;
-          }
-        } else {
-          resolvedUserId = profile.user_id;
+        if (existingOrder?.user_id) {
+          resolvedUserId = existingOrder.user_id;
         }
       }
 
