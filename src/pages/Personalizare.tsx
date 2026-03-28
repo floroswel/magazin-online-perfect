@@ -15,7 +15,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 
-const baseProducts = [
+// Default base products — overridden by DB configurator_settings
+const defaultBaseProducts = [
   { id: "simpla", name: "Lumânare Simplă", price: 35, image: "🕯️" },
   { id: "recipient", name: "Lumânare în Recipient", price: 45, image: "🫙" },
   { id: "set", name: "Set Cadou", price: 89, image: "🎁" },
