@@ -572,8 +572,13 @@ export default function AdminOrders() {
                           {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
                         </TableCell>
                         <TableCell onClick={() => setExpandedRow(isExpanded ? null : order.id)}>
-                          <p className="font-mono text-xs text-muted-foreground">#{order.order_number || order.id.slice(0, 8)}</p>
-                          <p className="text-[11px] text-muted-foreground">{format(new Date(order.created_at), "dd MMM yy, HH:mm", { locale: ro })}</p>
+                          <div className="flex items-center gap-1.5">
+                            <div>
+                              <p className="font-mono text-xs text-muted-foreground">#{order.order_number || order.id.slice(0, 8)}</p>
+                              <p className="text-[11px] text-muted-foreground">{format(new Date(order.created_at), "dd MMM yy, HH:mm", { locale: ro })}</p>
+                            </div>
+                            {order.gift_wrapping && <span title={`Cadou: ${(order.gift_wrapping as any)?.message || ''}`} className="text-amber-500 text-base cursor-help">🎁</span>}
+                          </div>
                         </TableCell>
                         <TableCell>
                           <p className="text-sm font-medium truncate max-w-[160px]">{addr?.full_name || "—"}</p>
