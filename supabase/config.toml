@@ -65,3 +65,21 @@ verify_jwt = false
 
 [functions.send-push]
 verify_jwt = false
+
+[functions.netopia-payment]
+verify_jwt = false
+
+[functions.netopia-ipn]
+verify_jwt = false
+
+[functions.mokka-payment]
+verify_jwt = false
+
+[functions.mokka-checkout]
+verify_jwt = false
+
+[functions.paypo-payment]
+verify_jwt = false
+
+[functions.paypo-notify]
+verify_jwt = false
