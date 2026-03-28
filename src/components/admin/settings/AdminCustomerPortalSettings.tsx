@@ -16,7 +16,7 @@ const DEFAULTS = {
   enable_invoice_download: true,
   enable_reorder: true,
   enable_address_book: true,
-  enable_subscription_management: true,
+  enable_burn_log: true,
   enable_loyalty_dashboard: true,
   enable_wishlist_sharing: true,
   enable_price_alerts: true,
