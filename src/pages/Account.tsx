@@ -192,9 +192,54 @@ export default function Account() {
     ? Math.min(100, ((totalPoints - (currentLevel?.min_points || 0)) / (nextLevel.min_points - (currentLevel?.min_points || 0))) * 100)
     : 100;
 
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [exportingData, setExportingData] = useState(false);
+
+  const handleChangePassword = async () => {
+    if (newPassword.length < 6) { toast.error("Parola trebuie să aibă minim 6 caractere"); return; }
+    if (newPassword !== confirmPassword) { toast.error("Parolele nu coincid"); return; }
+    setChangingPassword(true);
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) { toast.error(error.message); } else { toast.success("Parola a fost schimbată!"); setShowChangePassword(false); setNewPassword(""); setConfirmPassword(""); }
+    setChangingPassword(false);
+  };
+
+  const handleExportData = async () => {
+    setExportingData(true);
+    try {
+      const exportData: any = { profile, addresses, orders: orders.map(o => ({ id: o.id, total: o.total, status: o.status, created_at: o.created_at, items: o.order_items?.length || 0 })), loyalty_points: pointsHistory, exported_at: new Date().toISOString() };
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = url; a.download = `ventuza-date-personale-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+      URL.revokeObjectURL(url);
+      toast.success("Datele au fost exportate!");
+    } catch { toast.error("Eroare la export"); }
+    setExportingData(false);
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+    try {
+      await supabase.rpc("anonymize_user_data", { p_user_id: user.id });
+      await supabase.auth.signOut();
+      toast.success("Contul a fost anonimizat și te-ai deconectat.");
+      window.location.href = "/";
+    } catch { toast.error("Eroare la ștergerea contului"); }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  };
+
   return (
     <Layout>
-      <div className="container py-6 max-w-4xl">
+      <div className="container py-6 max-w-6xl">
         {/* Personalized greeting */}
         <div className="mb-6">
           <h1 className="font-serif text-3xl font-medium">Bună, {profile?.full_name?.split(" ")[0] || "acolo"}</h1>
