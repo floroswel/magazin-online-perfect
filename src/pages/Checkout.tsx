@@ -216,7 +216,6 @@ export default function Checkout() {
     if (!user && (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))) { toast.error("Adresa de email nu este validă"); return; }
     setSubmitting(true);
 
-    // Track payment info + begin checkout
     trackAddPaymentInfo(paymentMethod);
     trackBeginCheckout(
       items.map(i => ({ id: i.product_id, name: i.product.name, price: i.product.price, quantity: i.quantity })),
@@ -226,6 +225,12 @@ export default function Checkout() {
     const isInstallments = selectedMethod?.type === "installments";
     const installmentData = isInstallments ? { provider: selectedMethod.provider || paymentMethod, months: parseInt(installmentMonths), monthly_amount: parseFloat(getInstallmentAmount()) } : null;
 
+    // Determine initial status based on payment method
+    const isRedirectPayment = ["card_online", "mokka", "paypo"].includes(paymentMethod);
+    const isBankTransfer = selectedMethod?.type === "bank_transfer";
+    const initialStatus = isRedirectPayment ? "pending_payment" : isBankTransfer ? "pending_transfer" : "confirmed";
+    const initialPaymentStatus = isRedirectPayment ? "pending" : isBankTransfer ? "pending_transfer" : "pending";
+
     const orderData: any = {
       total, payment_method: paymentMethod, shipping_address: form,
       coupon_id: appliedCoupons[0]?.id || null,
@@ -234,16 +239,14 @@ export default function Checkout() {
       payment_installments: installmentData,
       user_email: user?.email || form.email,
       currency,
+      status: initialStatus,
+      payment_status: initialPaymentStatus,
     };
     if (extraFee > 0) orderData.payment_fee = extraFee;
     if (user) orderData.user_id = user.id;
 
-    // Save UTM data to order
     const utmData = getUtmData();
     if (utmData) orderData.utm_data = utmData;
-
-    // Bank transfer → status pending
-    if (selectedMethod?.type === "bank_transfer") orderData.status = "în așteptare plată";
 
     const affCode = getAffiliateCode();
     if (affCode) {
@@ -265,15 +268,7 @@ export default function Checkout() {
     if (user && pointsToUse > 0) await addPoints(-pointsToUse, "redeem", `Folosite la comandă #${order.id.slice(0, 8)}`, order.id);
     if (user && pointsEarned > 0 && pointsToUse < totalPoints) await addPoints(pointsEarned, "purchase", `Comandă #${order.id.slice(0, 8)}`, order.id);
 
-    await clearCart();
-
-    try {
-      await supabase.functions.invoke("send-email", {
-        body: { type: "order_placed", to: user?.email || form.email, data: { orderId: order.id, customerName: form.fullName, total, paymentMethod, pointsEarned, items: items.map(i => ({ name: i.product.name, quantity: i.quantity, price: i.product.price })) } },
-      });
-    } catch (emailErr) { console.error("Email notification failed:", emailErr); }
-
-    // Newsletter opt-in from checkout
+    // Newsletter opt-in
     if (newsletterOptin && (user?.email || form.email)) {
       try {
         await supabase.from("newsletter_subscribers").upsert(
@@ -283,12 +278,108 @@ export default function Checkout() {
       } catch {}
     }
 
-    // Track purchase event
-    trackPurchase({
-      id: order.id,
-      total,
-      items: items.map(i => ({ id: i.product_id, name: i.product.name, price: i.product.price, quantity: i.quantity })),
-    });
+    trackPurchase({ id: order.id, total, items: items.map(i => ({ id: i.product_id, name: i.product.name, price: i.product.price, quantity: i.quantity })) });
+
+    // Handle payment redirect for card/BNPL methods
+    if (paymentMethod === "card_online") {
+      try {
+        const { data: netopiaData, error: netopiaError } = await supabase.functions.invoke("netopia-payment", {
+          body: { orderId: order.id },
+        });
+        if (netopiaError || !netopiaData?.redirectUrl) {
+          toast.error("Eroare la inițierea plății cu cardul. Comanda a fost salvată.");
+          await clearCart();
+          navigate("/order-confirmation/" + order.id);
+        } else {
+          await clearCart();
+          window.location.href = netopiaData.redirectUrl;
+        }
+      } catch {
+        toast.error("Eroare la conectarea cu procesatorul de plăți.");
+        await clearCart();
+        navigate("/order-confirmation/" + order.id);
+      }
+      setSubmitting(false);
+      return;
+    }
+
+    if (paymentMethod === "mokka") {
+      try {
+        const { data: mokkaData, error: mokkaError } = await supabase.functions.invoke("mokka-payment", {
+          body: { orderId: order.id },
+        });
+        if (mokkaError || !mokkaData?.redirectUrl) {
+          toast.error("Eroare la inițierea plății Mokka. Comanda a fost salvată.");
+          await clearCart();
+          navigate("/order-confirmation/" + order.id);
+        } else {
+          await clearCart();
+          window.location.href = mokkaData.redirectUrl;
+        }
+      } catch {
+        toast.error("Eroare la conectarea cu Mokka.");
+        await clearCart();
+        navigate("/order-confirmation/" + order.id);
+      }
+      setSubmitting(false);
+      return;
+    }
+
+    if (paymentMethod === "paypo") {
+      try {
+        const { data: paypoData, error: paypoError } = await supabase.functions.invoke("paypo-payment", {
+          body: { orderId: order.id },
+        });
+        if (paypoError || !paypoData?.redirectUrl) {
+          toast.error("Eroare la inițierea plății PayPo. Comanda a fost salvată.");
+          await clearCart();
+          navigate("/order-confirmation/" + order.id);
+        } else {
+          await clearCart();
+          window.location.href = paypoData.redirectUrl;
+        }
+      } catch {
+        toast.error("Eroare la conectarea cu PayPo.");
+        await clearCart();
+        navigate("/order-confirmation/" + order.id);
+      }
+      setSubmitting(false);
+      return;
+    }
+
+    // For Ramburs and Transfer Bancar — direct flow
+    await clearCart();
+
+    // Send confirmation email
+    try {
+      const emailData: any = {
+        orderId: order.id,
+        customerName: form.fullName,
+        total,
+        paymentMethod,
+        pointsEarned,
+        items: items.map(i => ({ name: i.product.name, quantity: i.quantity, price: i.product.price, image_url: i.product.image_url })),
+        shippingAddress: form,
+      };
+
+      // Add bank transfer details if applicable
+      if (isBankTransfer && selectedMethod?.bank_details) {
+        emailData.bankDetails = selectedMethod.bank_details;
+      }
+
+      await supabase.functions.invoke("send-email", {
+        body: { type: "order_placed", to: user?.email || form.email, data: emailData },
+      });
+
+      // Send admin notification email
+      await supabase.functions.invoke("send-email", {
+        body: {
+          type: "admin_new_order",
+          to: "admin@ventuza.ro",
+          data: { orderId: order.id, customerName: form.fullName, total, paymentMethod, items: emailData.items, shippingAddress: form, email: user?.email || form.email },
+        },
+      });
+    } catch (emailErr) { console.error("Email notification failed:", emailErr); }
 
     toast.success("Comanda a fost plasată cu succes!");
     navigate("/order-confirmation/" + order.id);
