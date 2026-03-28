@@ -166,6 +166,20 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
 
   if (!settings) return null;
 
+  if (!settings.enabled) {
+    return (
+      <Dialog open={open} onOpenChange={() => onClose()}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><RotateCcw className="w-5 h-5" /> Retur indisponibil</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">Funcționalitatea de retur nu este activă momentan. Te rugăm să ne contactezi la adresa de email pentru a solicita un retur.</p>
+          <DialogFooter><Button onClick={onClose}>Închide</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   const reasons = settings.return_reasons || [];
 
   return (
@@ -370,6 +384,11 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
               )}
               {observation && <p><span className="text-muted-foreground">Observații:</span> {observation}</p>}
             </div>
+            <div className="bg-muted/30 rounded-md p-3 text-xs text-muted-foreground space-y-1 border">
+              <p className="font-semibold text-foreground">📋 Informare legală</p>
+              <p>Conform Directivei UE 2011/83/EU și OUG 34/2014, ai dreptul de retragere din contract în termen de 14 zile calendaristice de la primirea produsului, fără a fi necesar să invoci un motiv.</p>
+              <p>Rambursarea se va efectua în maximum 14 zile de la primirea produselor returnate, folosind aceeași metodă de plată, cu excepția cazului în care ai convenit altfel.</p>
+            </div>
           </div>
         )}
 
@@ -382,6 +401,25 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
             {step < 6 ? (
               <Button
                 onClick={() => {
+                  // Validate step 2: every selected item must have a reason
+                  if (step === 2) {
+                    const selectedEntries = Object.entries(selectedItems).filter(([_, v]) => v.selected);
+                    const missingReason = selectedEntries.some(([_, v]) => !v.reasonId);
+                    if (missingReason) { toast.error("Selectează un motiv pentru fiecare produs."); return; }
+                    // Check required images
+                    for (const [_, v] of selectedEntries) {
+                      const reason = reasons.find(r => r.id === v.reasonId);
+                      if (reason?.image_requirement === "required" && v.photos.length === 0) {
+                        toast.error("Încarcă imaginile obligatorii pentru motivul selectat."); return;
+                      }
+                    }
+                  }
+                  // Validate step 4: IBAN format if bank refund selected
+                  if (step === 4 && returnType === "return" && refundMethod === "bank") {
+                    if (!bankHolder.trim()) { toast.error("Completează titularul contului."); return; }
+                    if (!bankIban.trim() || bankIban.trim().length < 24) { toast.error("IBAN invalid. Formatul corect: RO + 22 caractere."); return; }
+                    if (!bankName.trim()) { toast.error("Completează numele băncii."); return; }
+                  }
                   // Skip step 4 if not return type
                   if (step === 3 && returnType !== "return") setStep(5);
                   else setStep(step + 1);

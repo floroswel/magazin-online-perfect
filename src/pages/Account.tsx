@@ -606,7 +606,7 @@ export default function Account() {
                   <CardContent className="p-4">
                     <h3 className="font-semibold mb-2">Cum câștigi puncte?</h3>
                     <ul className="text-sm space-y-1 text-muted-foreground">
-                      <li>🛒 <strong>1 punct</strong> pentru fiecare 10 lei cheltuiți</li>
+                      <li>🛒 <strong>1 punct</strong> pentru fiecare leu cheltuit</li>
                       <li>⭐ <strong>10 puncte</strong> pentru o recenzie</li>
                       <li>👥 <strong>50 puncte</strong> pentru recomandarea unui prieten</li>
                       <li>🕯️ <strong>5 puncte</strong> pentru o sesiune în Burn Log</li>
@@ -873,9 +873,9 @@ export default function Account() {
             {/* Legal */}
             <div className="text-[10px] text-muted-foreground space-y-1 px-1">
               <p>Conform legislației UE (GDPR), ai dreptul la acces, rectificare, ștergere și portabilitatea datelor tale personale.</p>
-              <p>VENTUZA SRL · J40/xxxxx/2020 · CUI: ROxxxxxxx</p>
               <Link to="/page/politica-de-confidentialitate" className="hover:underline block">Politica de confidențialitate</Link>
               <Link to="/page/termeni-si-conditii" className="hover:underline block">Termeni și condiții</Link>
+              <Link to="/page/politica-retur" className="hover:underline block">Politica de retur</Link>
             </div>
           </div>
         </div>
