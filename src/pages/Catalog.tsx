@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCurrency } from "@/hooks/useCurrency";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
 import { isCandleCollection } from "@/lib/candleCatalog";
+import { usePageSeo } from "@/components/SeoHead";
 
 interface Cat {
   id: string;
