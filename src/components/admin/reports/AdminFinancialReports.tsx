@@ -110,17 +110,8 @@ export default function AdminFinancialReports() {
     },
   });
 
-  // Fetch subscriptions for cash flow
-  const { data: subscriptions = [] } = useQuery({
-    queryKey: ["fin-subscriptions"],
-    queryFn: async () => {
-      const { data } = await supabase.from("subscriptions")
-        .select("id, price, frequency, next_order_date, status")
-        .eq("status", "active")
-        .limit(500);
-      return data || [];
-    },
-  });
+  // Loyalty points issued for cash flow
+  const loyaltyPointsTotal = 0;
 
   // Fetch returns for cash flow
   const { data: returns = [] } = useQuery({
