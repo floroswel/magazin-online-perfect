@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import GiftExperience, { type GiftOptions } from "@/components/checkout/GiftExperience";
 import { useQuery } from "@tanstack/react-query";
 import { Ticket, CreditCard, Banknote, Wallet, MapPin, Award, Store, Building2, Info } from "lucide-react";
 import MokkaModal from "@/components/mokka/MokkaModal";
