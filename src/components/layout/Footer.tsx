@@ -201,9 +201,9 @@ export default function Footer() {
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               <p className="font-sans text-xs text-[#FAF6F0]/40">{copyrightText}</p>
               <span className="font-sans text-[10px] text-[#FAF6F0]/25">·</span>
-              <p className="font-sans text-[10px] text-[#FAF6F0]/30">CUI: RO00000000 · J40/0000/2020</p>
+              <p className="font-sans text-[10px] text-[#FAF6F0]/30">CUI: {companyInfo.cui || "RO00000000"} · {companyInfo.reg_com || "J40/0000/2020"}</p>
               <span className="font-sans text-[10px] text-[#FAF6F0]/25">·</span>
-              <p className="font-sans text-[10px] text-[#FAF6F0]/30">EUIPO #019130214</p>
+              <p className="font-sans text-[10px] text-[#FAF6F0]/30">EUIPO {companyInfo.euipo || "#019130214"}</p>
             </div>
             <div className="flex items-center gap-4">
               <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer"
