@@ -692,7 +692,7 @@ export default function Account() {
             </Card>
           </TabsContent>
         </Tabs>
-        </div> {/* end left column */}
+        </div>
 
           {/* RIGHT SIDEBAR */}
           <div className="space-y-4 lg:sticky lg:top-24 lg:self-start">
