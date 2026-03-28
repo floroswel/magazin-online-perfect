@@ -64,7 +64,7 @@ export default function BurnLogTab() {
   const save = async () => {
     if (!user || !form.product_name) { toast.error("Selectează o lumânare"); return; }
     const product = products.find((p: any) => p.name === form.product_name);
-    const { error } = await supabase.from("burn_logs").insert({
+    const { error } = await (supabase as any).from("burn_logs").insert({
       user_id: user.id,
       product_id: product?.id || null,
       product_name: form.product_name,
