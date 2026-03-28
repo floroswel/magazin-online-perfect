@@ -116,7 +116,7 @@ export default function Checkout() {
   const couponFreeShipping = appliedCoupons.some(c => c.discount_type === "free_shipping" || c.includes_free_shipping);
   const shipping = couponFreeShipping ? 0 : baseShipping;
   const subtotalAfterDiscounts = totalPrice - couponDiscount - loyaltyDiscount - groupDiscount - pointsDiscount;
-  const total = Math.max(0, subtotalAfterDiscounts + shipping + extraFee);
+  const total = Math.max(0, subtotalAfterDiscounts + shipping + extraFee + giftOptions.wrappingPrice);
   const maxPoints = maxRedeemablePoints(totalPrice);
   const pointsEarned = user && loyaltyConfig.program_enabled ? Math.floor(total / loyaltyConfig.earn_rate_per_amount) * loyaltyConfig.earn_rate_points : 0;
 
