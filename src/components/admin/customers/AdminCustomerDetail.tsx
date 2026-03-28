@@ -143,7 +143,7 @@ export default function AdminCustomerDetail() {
           <TabsTrigger value="summary"><User className="w-3 h-3 mr-1" />Sumar</TabsTrigger>
           <TabsTrigger value="orders"><ShoppingCart className="w-3 h-3 mr-1" />Comenzi ({orders.length})</TabsTrigger>
           <TabsTrigger value="addresses"><MapPin className="w-3 h-3 mr-1" />Adrese ({addresses.length})</TabsTrigger>
-          <TabsTrigger value="subscriptions"><RefreshCw className="w-3 h-3 mr-1" />Abonamente</TabsTrigger>
+          <TabsTrigger value="loyalty"><Award className="w-3 h-3 mr-1" />Puncte</TabsTrigger>
           <TabsTrigger value="returns"><RotateCcw className="w-3 h-3 mr-1" />Retururi</TabsTrigger>
           <TabsTrigger value="reviews"><Star className="w-3 h-3 mr-1" />Recenzii</TabsTrigger>
           <TabsTrigger value="notes"><StickyNote className="w-3 h-3 mr-1" />Note admin</TabsTrigger>
