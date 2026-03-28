@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import AIGeneratorModal from "@/components/admin/products/AIGeneratorModal";
 import AttributeExtractorModal from "@/components/admin/products/AttributeExtractorModal";
+import { processProductImage, formatBytes } from "@/lib/imageResize";
 
 // ─── Types ───
 interface BundleComponent {
