@@ -258,16 +258,16 @@ export default function AdminCustomerDetail() {
           ))}
         </TabsContent>
 
-        {/* SUBSCRIPTIONS */}
-        <TabsContent value="subscriptions" className="mt-3 space-y-2">
-          {subscriptions.length === 0 ? <p className="text-sm text-muted-foreground">Niciun abonament.</p> : subscriptions.map(s => (
-            <Card key={s.id}>
+        {/* LOYALTY POINTS */}
+        <TabsContent value="loyalty" className="mt-3 space-y-2">
+          {loyaltyPoints.length === 0 ? <p className="text-sm text-muted-foreground">Niciun punct acumulat.</p> : loyaltyPoints.map(lp => (
+            <Card key={lp.id}>
               <CardContent className="p-3 flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-sm">{s.products?.name || "Produs"}</p>
-                  <p className="text-xs text-muted-foreground">Frecvență: {s.frequency} · Cantitate: {s.quantity}</p>
+                  <p className="font-medium text-sm">{lp.description || lp.action}</p>
+                  <p className="text-xs text-muted-foreground">{new Date(lp.created_at).toLocaleDateString("ro-RO")}</p>
                 </div>
-                <Badge variant="outline" className="text-xs">{s.status}</Badge>
+                <Badge variant={lp.points > 0 ? "default" : "destructive"} className="text-xs">{lp.points > 0 ? "+" : ""}{lp.points}</Badge>
               </CardContent>
             </Card>
           ))}
