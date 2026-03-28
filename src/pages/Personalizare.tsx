@@ -91,7 +91,7 @@ export default function Personalizare() {
   const packaging = packagingOptions.find(p => p.id === selectedPackaging);
 
   const basePrice = base?.price || 0;
-  const textPrice = customText.trim() ? 10 : 0;
+  const textPrice = customText.trim() ? textSurcharge : 0;
   const packagingPrice = packaging?.price || 0;
   const totalPrice = basePrice + textPrice + packagingPrice;
 
