@@ -4327,6 +4327,7 @@ export type Database = {
           billing_address: Json | null
           coupon_id: string | null
           courier: string | null
+          courier_name: string | null
           created_at: string
           currency: string | null
           discount_amount: number | null
@@ -4346,6 +4347,7 @@ export type Database = {
           review_reminder_sent: boolean | null
           review_request_sent: boolean | null
           review_request_sent_at: string | null
+          shipped_at: string | null
           shipping_address: Json | null
           shipping_status: string | null
           shipping_total: number | null
@@ -4370,6 +4372,7 @@ export type Database = {
           billing_address?: Json | null
           coupon_id?: string | null
           courier?: string | null
+          courier_name?: string | null
           created_at?: string
           currency?: string | null
           discount_amount?: number | null
@@ -4389,6 +4392,7 @@ export type Database = {
           review_reminder_sent?: boolean | null
           review_request_sent?: boolean | null
           review_request_sent_at?: string | null
+          shipped_at?: string | null
           shipping_address?: Json | null
           shipping_status?: string | null
           shipping_total?: number | null
@@ -4413,6 +4417,7 @@ export type Database = {
           billing_address?: Json | null
           coupon_id?: string | null
           courier?: string | null
+          courier_name?: string | null
           created_at?: string
           currency?: string | null
           discount_amount?: number | null
@@ -4432,6 +4437,7 @@ export type Database = {
           review_reminder_sent?: boolean | null
           review_request_sent?: boolean | null
           review_request_sent_at?: string | null
+          shipped_at?: string | null
           shipping_address?: Json | null
           shipping_status?: string | null
           shipping_total?: number | null
