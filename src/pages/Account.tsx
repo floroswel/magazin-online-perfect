@@ -233,6 +233,7 @@ export default function Account() {
             <TabsTrigger value="wishlists"><Heart className="h-4 w-4 mr-1" /> Wishlist</TabsTrigger>
             <TabsTrigger value="giftcards"><Gift className="h-4 w-4 mr-1" /> Card cadou</TabsTrigger>
             <TabsTrigger value="wallet"><Wallet className="h-4 w-4 mr-1" /> Wallet</TabsTrigger>
+            <TabsTrigger value="burnlog"><Flame className="h-4 w-4 mr-1" /> Burn Log</TabsTrigger>
             <TabsTrigger value="profile"><UserIcon className="h-4 w-4 mr-1" /> Profil</TabsTrigger>
             <TabsTrigger value="preferences"><Settings className="h-4 w-4 mr-1" /> Preferințe</TabsTrigger>
           </TabsList>

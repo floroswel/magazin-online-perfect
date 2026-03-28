@@ -243,6 +243,7 @@ export default function Checkout() {
       currency,
       status: initialStatus,
       payment_status: initialPaymentStatus,
+      gift_wrapping: giftOptions.isGift ? { wrapping: giftOptions.wrappingId, price: giftOptions.wrappingPrice, message: giftOptions.message } : null,
     };
     if (extraFee > 0) orderData.payment_fee = extraFee;
     if (user) orderData.user_id = user.id;
