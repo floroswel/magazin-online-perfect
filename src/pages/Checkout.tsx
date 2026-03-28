@@ -217,6 +217,7 @@ export default function Checkout() {
     if (!form.city.trim()) { toast.error("Completează orașul"); return; }
     if (!form.county.trim()) { toast.error("Completează județul"); return; }
     if (!user && (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))) { toast.error("Adresa de email nu este validă"); return; }
+    if (!termsAccepted) { toast.error("Trebuie să accepți Termenii și Condițiile pentru a plasa comanda."); return; }
     setSubmitting(true);
 
     trackAddPaymentInfo(paymentMethod);
