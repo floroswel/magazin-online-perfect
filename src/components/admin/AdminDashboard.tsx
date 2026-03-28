@@ -45,6 +45,7 @@ import {
   Cell,
   BarChart,
 } from "recharts";
+import ManualOrderDialog from "./orders/ManualOrderDialog";
 
 const statusLabels: Record<string, string> = {
   pending: "În așteptare",
@@ -77,6 +78,7 @@ export default function AdminDashboard() {
   const queryClient = useQueryClient();
   const [dateRange, setDateRange] = useState<DateRange>("7d");
   const [autoRefresh, setAutoRefresh] = useState(false);
+  const [manualOrderOpen, setManualOrderOpen] = useState(false);
 
   const rangeStart = useMemo(() => {
     const days = dateRange === "7d" ? 7 : dateRange === "30d" ? 30 : 90;
@@ -364,10 +366,12 @@ export default function AdminDashboard() {
       {/* Quick Actions */}
       <div className="flex flex-wrap gap-2">
         <Link to="/admin/products?action=new"><Button size="sm" className="h-8 gap-1 text-xs"><Plus className="w-3.5 h-3.5" /> Adaugă produs</Button></Link>
+        <Button size="sm" variant="default" className="h-8 gap-1 text-xs" onClick={() => setManualOrderOpen(true)}><ShoppingCart className="w-3.5 h-3.5" /> Comandă manuală</Button>
         <Link to="/admin/orders"><Button size="sm" variant="outline" className="h-8 gap-1 text-xs"><ShoppingCart className="w-3.5 h-3.5" /> Comenzi</Button></Link>
         <Link to="/admin/coupons"><Button size="sm" variant="outline" className="h-8 gap-1 text-xs"><Tag className="w-3.5 h-3.5" /> Adaugă cupon</Button></Link>
         <Link to="/admin/reports"><Button size="sm" variant="outline" className="h-8 gap-1 text-xs"><BarChart3 className="w-3.5 h-3.5" /> Rapoarte</Button></Link>
       </div>
+      <ManualOrderDialog open={manualOrderOpen} onOpenChange={setManualOrderOpen} />
 
       {/* KPI Cards Row 1 */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
