@@ -58,13 +58,10 @@ async function getTrackingConfig(): Promise<Record<string, any>> {
   }
   _configLoading = true;
   try {
-    const { createClient } = await import("@supabase/supabase-js");
-    const url = import.meta.env.VITE_SUPABASE_URL;
-    const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-    const sb = createClient(url, key);
+    const { supabase } = await import("@/integrations/supabase/client");
     const [pixelRes, integRes] = await Promise.all([
-      sb.from("app_settings").select("value_json").eq("key", "pixel_tracking").maybeSingle(),
-      sb.from("app_settings").select("value_json").eq("key", "marketing_integrations").maybeSingle(),
+      supabase.from("app_settings").select("value_json").eq("key", "pixel_tracking").maybeSingle(),
+      supabase.from("app_settings").select("value_json").eq("key", "marketing_integrations").maybeSingle(),
     ]);
     _configCache = {
       pixels: (pixelRes.data?.value_json as Record<string, any>) || {},

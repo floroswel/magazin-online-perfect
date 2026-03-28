@@ -5612,6 +5612,7 @@ export type Database = {
       }
       products: {
         Row: {
+          brand_id: string | null
           bundle_discount_percent: number | null
           bundle_pricing_mode: string | null
           canonical_url: string | null
@@ -5656,6 +5657,7 @@ export type Database = {
           width_cm: number | null
         }
         Insert: {
+          brand_id?: string | null
           bundle_discount_percent?: number | null
           bundle_pricing_mode?: string | null
           canonical_url?: string | null
@@ -5700,6 +5702,7 @@ export type Database = {
           width_cm?: number | null
         }
         Update: {
+          brand_id?: string | null
           bundle_discount_percent?: number | null
           bundle_pricing_mode?: string | null
           canonical_url?: string | null
@@ -5744,6 +5747,13 @@ export type Database = {
           width_cm?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "products_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "products_category_id_fkey"
             columns: ["category_id"]
@@ -9351,6 +9361,14 @@ export type Database = {
       }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
+      validate_coupon: {
+        Args: {
+          p_cart_total: number
+          p_coupon_code: string
+          p_user_id?: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       app_role:
