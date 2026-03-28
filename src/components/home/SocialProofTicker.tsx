@@ -5,20 +5,21 @@ export default function SocialProofTicker() {
   const [messages, setMessages] = useState<string[]>([]);
 
   useEffect(() => {
+    // Single query with JOIN — no N+1
     supabase
-      .from("orders")
-      .select("shipping_address, created_at, order_items(products(name))")
-      .order("created_at", { ascending: false })
+      .from("order_items")
+      .select("quantity, products(name), orders!inner(shipping_address, created_at)")
+      .order("created_at", { ascending: false, referencedTable: "orders" })
       .limit(10)
       .then(({ data }) => {
         if (!data) return;
         const msgs = data
-          .filter((o: any) => o.shipping_address?.fullName && o.order_items?.[0]?.products?.name)
+          .filter((oi: any) => oi.products?.name && oi.orders?.shipping_address?.fullName)
           .slice(0, 6)
-          .map((o: any) => {
-            const name = (o.shipping_address as any)?.fullName?.split(" ")[0] || "Un client";
-            const city = (o.shipping_address as any)?.city || "";
-            const product = o.order_items[0].products.name;
+          .map((oi: any) => {
+            const name = (oi.orders.shipping_address as any)?.fullName?.split(" ")[0] || "Un client";
+            const city = (oi.orders.shipping_address as any)?.city || "";
+            const product = oi.products.name;
             return `${name} din ${city} a comandat ${product}`;
           });
         setMessages(msgs);
