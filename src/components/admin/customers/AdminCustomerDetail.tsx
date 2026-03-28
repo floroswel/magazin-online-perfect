@@ -79,11 +79,24 @@ export default function AdminCustomerDetail() {
   };
 
   const addLoyaltyPoints = async () => {
-    if (!pointsToAdd || !userId) return;
+    if (!pointsToAdd || !userId || !pointsReason.trim()) {
+      toast.error("Completează punctele și motivul.");
+      return;
+    }
     setAddingPoints(true);
-    await supabase.from("loyalty_points").insert({ user_id: userId, points: Number(pointsToAdd), action: "manual_admin", description: "Adăugat manual de admin" });
-    toast.success(`+${pointsToAdd} puncte adăugate`);
+    const pts = Number(pointsToAdd);
+    await supabase.from("loyalty_points").insert({
+      user_id: userId,
+      points: pts,
+      action: "manual_adjustment",
+      description: pointsReason.trim(),
+    });
+    toast.success(`${pts > 0 ? "+" : ""}${pts} puncte ${pts > 0 ? "adăugate" : "retrase"}`);
     setPointsToAdd("");
+    setPointsReason("");
+    // Refresh loyalty points
+    const { data: lp } = await supabase.from("loyalty_points").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(50);
+    setLoyaltyPoints(lp || []);
     setAddingPoints(false);
   };
 
