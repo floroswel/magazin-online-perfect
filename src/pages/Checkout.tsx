@@ -52,6 +52,7 @@ export default function Checkout() {
   const [invoiceForm, setInvoiceForm] = useState({ companyName: "", cui: "", regCom: "", address: "" });
   const [pointsToUse, setPointsToUse] = useState(0);
   const [newsletterOptin, setNewsletterOptin] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [giftOptions, setGiftOptions] = useState<GiftOptions>({ isGift: false, wrappingId: "none", wrappingPrice: 0, message: "" });
 
   // Fetch enabled payment methods from DB
@@ -216,6 +217,7 @@ export default function Checkout() {
     if (!form.city.trim()) { toast.error("Completează orașul"); return; }
     if (!form.county.trim()) { toast.error("Completează județul"); return; }
     if (!user && (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))) { toast.error("Adresa de email nu este validă"); return; }
+    if (!termsAccepted) { toast.error("Trebuie să accepți Termenii și Condițiile pentru a plasa comanda."); return; }
     setSubmitting(true);
 
     trackAddPaymentInfo(paymentMethod);
@@ -615,10 +617,16 @@ export default function Checkout() {
               {pointsEarned > 0 && (
                 <div className="bg-primary/5 rounded-lg p-2 text-center text-sm"><span className="font-medium">+{pointsEarned} puncte fidelitate</span> la această comandă</div>
               )}
-              <label className="flex items-start gap-2 cursor-pointer">
-                <input type="checkbox" checked={newsletterOptin} onChange={e => setNewsletterOptin(e.target.checked)} className="mt-0.5 rounded" />
-                <span className="text-xs text-muted-foreground">Doresc să primesc oferte și noutăți pe email. Citește <Link to="/page/politica-de-confidentialitate" className="text-primary hover:underline" target="_blank">Politica de Confidențialitate</Link>.</span>
-              </label>
+              <div className="space-y-2">
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input type="checkbox" checked={termsAccepted} onChange={e => setTermsAccepted(e.target.checked)} className="mt-0.5 rounded accent-primary" required />
+                  <span className="text-xs text-muted-foreground">Am citit și accept <Link to="/page/termeni-si-conditii" className="text-primary hover:underline" target="_blank">Termenii și Condițiile</Link> și <Link to="/page/politica-de-confidentialitate" className="text-primary hover:underline" target="_blank">Politica de Confidențialitate</Link>. *</span>
+                </label>
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input type="checkbox" checked={newsletterOptin} onChange={e => setNewsletterOptin(e.target.checked)} className="mt-0.5 rounded" />
+                  <span className="text-xs text-muted-foreground">Doresc să primesc oferte și noutăți pe email. Citește <Link to="/page/politica-de-confidentialitate" className="text-primary hover:underline" target="_blank">Politica de Confidențialitate</Link>.</span>
+                </label>
+              </div>
               <Button type="submit" className="w-full font-semibold" size="lg" disabled={submitting || availableMethods.length === 0}>
                 {submitting ? "Se procesează..." : "Plasează comanda"}
               </Button>
