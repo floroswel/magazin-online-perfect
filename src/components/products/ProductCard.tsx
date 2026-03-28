@@ -75,17 +75,39 @@ function ProductCardInner({ product, eager = false }: Props) {
         {/* Image */}
         <div className="relative aspect-square overflow-hidden rounded-lg bg-secondary mb-3">
           {/* Badges */}
-          {discount > 0 && (
-            <span className="absolute top-3 left-3 bg-primary text-accent-foreground text-[10px] font-sans font-medium px-2.5 py-1 z-10 rounded-full tracking-wide">
-              -{discount}%
-            </span>
-          )}
-          {promotion && !pricingDiscount && (
-            <span className="absolute top-3 left-3 text-[10px] font-sans font-medium px-2.5 py-1 z-10 rounded-full text-accent-foreground"
-              style={{ backgroundColor: promotion.badgeColor || "hsl(var(--primary))" }}>
-              {promotion.badgeText}
-            </span>
-          )}
+          <div className="absolute top-3 left-3 z-10 flex flex-col gap-1">
+            {discount > 0 && (
+              <span className="bg-destructive text-destructive-foreground text-[10px] font-sans font-medium px-2.5 py-1 rounded-full tracking-wide">
+                -{discount}%
+              </span>
+            )}
+            {(product as any).badge_new && (
+              <span className="bg-green-500 text-white text-[10px] font-sans font-medium px-2.5 py-1 rounded-full">NOU</span>
+            )}
+            {(product as any).badge_bestseller && (
+              <span className="bg-amber-500 text-white text-[10px] font-sans font-medium px-2.5 py-1 rounded-full">BESTSELLER</span>
+            )}
+            {(product as any).badge_exclusive && (
+              <span className="bg-purple-500 text-white text-[10px] font-sans font-medium px-2.5 py-1 rounded-full">EXCLUSIV</span>
+            )}
+            {(product as any).badge_gift && (
+              <span className="bg-teal-500 text-white text-[10px] font-sans font-medium px-2.5 py-1 rounded-full">CADOU PERFECT</span>
+            )}
+            {(product as any).badge_low_stock && product.stock !== null && product.stock > 0 && product.stock < 10 && (
+              <span className="bg-orange-500 text-white text-[10px] font-sans font-medium px-2.5 py-1 rounded-full">EPUIZAT CURÂND</span>
+            )}
+            {(product as any).badge_custom_text && (
+              <span className="text-white text-[10px] font-sans font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: (product as any).badge_custom_color || '#6b7280' }}>
+                {(product as any).badge_custom_text}
+              </span>
+            )}
+            {promotion && !pricingDiscount && (
+              <span className="text-[10px] font-sans font-medium px-2.5 py-1 rounded-full text-accent-foreground"
+                style={{ backgroundColor: promotion.badgeColor || "hsl(var(--primary))" }}>
+                {promotion.badgeText}
+              </span>
+            )}
+          </div>
 
           {/* Wishlist */}
           <button
