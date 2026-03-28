@@ -758,7 +758,6 @@ export default function Account() {
             </div>
           </div>
         </div> {/* end grid */}
-      </div>
 
       {/* Change Password Dialog */}
       <Dialog open={showChangePassword} onOpenChange={setShowChangePassword}>
