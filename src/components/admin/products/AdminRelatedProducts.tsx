@@ -14,7 +14,7 @@ export default function AdminRelatedProducts() {
   const { data: products = [] } = useQuery({
     queryKey: ["products-for-relations"],
     queryFn: async () => {
-      const { data, error } = await (supabase as any).from("products").select("id, name, category_id, brand_id, brands(name), price, images").order("name").limit(50);
+      const { data, error } = await supabase.from("products").select("id, name, category_id, brand_id, brands(name), price, images").order("name").limit(50);
       if (error) throw error;
       return data;
     },

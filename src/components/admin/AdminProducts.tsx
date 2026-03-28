@@ -141,7 +141,7 @@ export default function AdminProducts() {
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["admin-products"],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from("products")
         .select("*, categories(name), brands(name)")
         .order("created_at", { ascending: false });
