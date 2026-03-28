@@ -57,6 +57,8 @@ export default function CookieConsent() {
 
   const saveConsent = async (analytics: boolean, marketing: boolean) => {
     const sessionId = getSessionId();
+    // Save preferences in localStorage for quick access
+    localStorage.setItem(CONSENT_PREFS_KEY, JSON.stringify({ analytics, marketing }));
     try {
       const { data } = await supabase.functions.invoke("save-gdpr-consent", {
         body: { session_id: sessionId, analytics, marketing },
