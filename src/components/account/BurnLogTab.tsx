@@ -39,7 +39,7 @@ export default function BurnLogTab() {
     queryKey: ["burn-logs", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("burn_logs")
         .select("*")
         .eq("user_id", user.id)
