@@ -757,8 +757,9 @@ export default function Account() {
               <Link to="/page/termeni-si-conditii" className="hover:underline block">Termeni și condiții</Link>
             </div>
           </div>
-        </div> {/* end grid */}
-      </div> {/* end container */}
+        </div>
+      </div>
+
 
       {/* Change Password Dialog */}
       <Dialog open={showChangePassword} onOpenChange={setShowChangePassword}>
