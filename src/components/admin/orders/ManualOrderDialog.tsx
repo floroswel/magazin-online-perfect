@@ -124,10 +124,26 @@ export default function ManualOrderDialog({ open, onOpenChange }: Props) {
     try {
       const orderNumber = `MAN-${Date.now().toString(36).toUpperCase()}`;
 
+      // Lookup existing user by email from previous orders
+      let resolvedUserId = "00000000-0000-0000-0000-000000000000";
+      if (customerEmail.trim()) {
+        const emailLower = customerEmail.trim().toLowerCase();
+        const { data: existingOrder } = await supabase
+          .from("orders")
+          .select("user_id")
+          .eq("user_email", emailLower)
+          .neq("user_id", "00000000-0000-0000-0000-000000000000")
+          .limit(1)
+          .maybeSingle();
+        if (existingOrder?.user_id) {
+          resolvedUserId = existingOrder.user_id;
+        }
+      }
+
       const { data: order, error: orderErr } = await supabase
         .from("orders")
         .insert({
-          user_id: "00000000-0000-0000-0000-000000000000",
+          user_id: resolvedUserId,
           status: "pending",
           total,
           subtotal,
