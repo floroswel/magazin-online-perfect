@@ -262,9 +262,14 @@ export default function Account() {
     <Layout>
       <div className="container py-6 max-w-6xl">
         {/* Personalized greeting */}
-        <div className="mb-6">
-          <h1 className="font-serif text-3xl font-medium">Bună, {profile?.full_name?.split(" ")[0] || "acolo"} 👋</h1>
-          <p className="text-sm text-muted-foreground mt-1">Gestionează contul, comenzile și preferințele tale.</p>
+        <div className="mb-6 flex items-start justify-between">
+          <div>
+            <h1 className="font-serif text-3xl font-medium">Bună, {profile?.full_name?.split(" ")[0] || "acolo"} 👋</h1>
+            <p className="text-sm text-muted-foreground mt-1">Gestionează contul, comenzile și preferințele tale.</p>
+          </div>
+          <Button variant="outline" size="sm" className="gap-2 text-muted-foreground hover:text-destructive" onClick={handleLogout}>
+            <LogOut className="w-4 h-4" /> Deconectare
+          </Button>
         </div>
 
         {/* Quick stats */}
