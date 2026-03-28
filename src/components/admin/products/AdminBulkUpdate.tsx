@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Pencil, Save } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Search, Save, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AdminBulkUpdate() {
@@ -18,10 +19,12 @@ export default function AdminBulkUpdate() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [action, setAction] = useState("price_increase");
   const [actionValue, setActionValue] = useState("");
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [applying, setApplying] = useState(false);
 
   useEffect(() => {
     Promise.all([
-      supabase.from("products").select("id,name,price,stock,category_id,brand_id,brands(name)").order("name").limit(500),
+      supabase.from("products").select("id,name,price,old_price,stock,category_id,brand_id,visible,brands(name)").order("name").limit(500),
       supabase.from("categories").select("id,name"),
     ]).then(([p, c]) => {
       setProducts(p.data || []);
@@ -37,8 +40,28 @@ export default function AdminBulkUpdate() {
     else setSelected(new Set(filtered.map((p) => p.id)));
   };
 
+  const actionLabel: Record<string, string> = {
+    price_increase: "Majorare preț %",
+    price_decrease: "Reducere preț %",
+    set_sale_price: "Setează preț promoțional %",
+    remove_sale_price: "Elimină prețul promoțional",
+    set_stock: "Setare stoc",
+    set_category: "Schimbă categoria",
+    activate: "Activează produsele",
+    deactivate: "Dezactivează produsele",
+  };
+
+  const needsValue = !["remove_sale_price", "activate", "deactivate"].includes(action);
+
+  const handleApplyClick = () => {
+    if (selected.size === 0) return;
+    if (needsValue && !actionValue) return;
+    setConfirmOpen(true);
+  };
+
   const applyBulk = async () => {
-    if (selected.size === 0 || !actionValue) return;
+    setConfirmOpen(false);
+    setApplying(true);
     const ids = Array.from(selected);
     const val = parseFloat(actionValue);
 
@@ -52,15 +75,35 @@ export default function AdminBulkUpdate() {
         const product = products.find((p) => p.id === id);
         if (product) await supabase.from("products").update({ price: +(product.price * (1 - val / 100)).toFixed(2) }).eq("id", id);
       }
+    } else if (action === "set_sale_price") {
+      for (const id of ids) {
+        const product = products.find((p) => p.id === id);
+        if (product) {
+          const salePrice = +(product.price * (1 - val / 100)).toFixed(2);
+          await supabase.from("products").update({ old_price: product.price, price: salePrice }).eq("id", id);
+        }
+      }
+    } else if (action === "remove_sale_price") {
+      for (const id of ids) {
+        const product = products.find((p) => p.id === id);
+        if (product && product.old_price) {
+          await supabase.from("products").update({ price: product.old_price, old_price: null }).eq("id", id);
+        }
+      }
     } else if (action === "set_stock") {
       await Promise.all(ids.map((id) => supabase.from("products").update({ stock: val }).eq("id", id)));
     } else if (action === "set_category") {
       await Promise.all(ids.map((id) => supabase.from("products").update({ category_id: actionValue }).eq("id", id)));
+    } else if (action === "activate") {
+      await Promise.all(ids.map((id) => supabase.from("products").update({ visible: true }).eq("id", id)));
+    } else if (action === "deactivate") {
+      await Promise.all(ids.map((id) => supabase.from("products").update({ visible: false }).eq("id", id)));
     }
 
     toast({ title: `${ids.length} produse actualizate` });
     setSelected(new Set());
-    const { data } = await supabase.from("products").select("id,name,price,stock,category_id,brand_id,brands(name)").order("name").limit(500);
+    setApplying(false);
+    const { data } = await supabase.from("products").select("id,name,price,old_price,stock,category_id,brand_id,visible,brands(name)").order("name").limit(500);
     setProducts(data || []);
   };
 
@@ -68,7 +111,7 @@ export default function AdminBulkUpdate() {
     <div className="space-y-4">
       <div>
         <h1 className="text-xl font-bold">Actualizare în Masă</h1>
-        <p className="text-sm text-muted-foreground">Modificare rapidă preț, stoc sau categorie pentru mai multe produse.</p>
+        <p className="text-sm text-muted-foreground">Modificare rapidă preț, stoc, categorie sau vizibilitate pentru mai multe produse.</p>
       </div>
 
       <Card>
@@ -76,28 +119,29 @@ export default function AdminBulkUpdate() {
           <div className="flex flex-wrap gap-3 items-end">
             <div>
               <label className="text-xs font-medium mb-1 block">Acțiune</label>
-              <Select value={action} onValueChange={setAction}>
-                <SelectTrigger className="w-48 h-9"><SelectValue /></SelectTrigger>
+              <Select value={action} onValueChange={(v) => { setAction(v); setActionValue(""); }}>
+                <SelectTrigger className="w-56 h-9"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="price_increase">Majorare preț %</SelectItem>
-                  <SelectItem value="price_decrease">Reducere preț %</SelectItem>
-                  <SelectItem value="set_stock">Setare stoc</SelectItem>
-                  <SelectItem value="set_category">Schimbă categoria</SelectItem>
+                  {Object.entries(actionLabel).map(([k, v]) => (
+                    <SelectItem key={k} value={k}>{v}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <label className="text-xs font-medium mb-1 block">Valoare</label>
-              {action === "set_category" ? (
-                <Select value={actionValue} onValueChange={setActionValue}>
-                  <SelectTrigger className="w-48 h-9"><SelectValue placeholder="Selectează" /></SelectTrigger>
-                  <SelectContent>{categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
-                </Select>
-              ) : (
-                <Input type="number" placeholder={action.includes("price") ? "%" : "cantitate"} value={actionValue} onChange={(e) => setActionValue(e.target.value)} className="w-32 h-9" />
-              )}
-            </div>
-            <Button onClick={applyBulk} disabled={selected.size === 0}>
+            {needsValue && (
+              <div>
+                <label className="text-xs font-medium mb-1 block">Valoare</label>
+                {action === "set_category" ? (
+                  <Select value={actionValue} onValueChange={setActionValue}>
+                    <SelectTrigger className="w-48 h-9"><SelectValue placeholder="Selectează" /></SelectTrigger>
+                    <SelectContent>{categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
+                  </Select>
+                ) : (
+                  <Input type="number" placeholder={action.includes("price") || action === "set_sale_price" ? "%" : "cantitate"} value={actionValue} onChange={(e) => setActionValue(e.target.value)} className="w-32 h-9" />
+                )}
+              </div>
+            )}
+            <Button onClick={handleApplyClick} disabled={selected.size === 0 || applying}>
               <Save className="w-4 h-4 mr-1" /> Aplică ({selected.size})
             </Button>
           </div>
@@ -124,7 +168,9 @@ export default function AdminBulkUpdate() {
                   <TableHead className="w-8"><Checkbox checked={selected.size === filtered.length && filtered.length > 0} onCheckedChange={toggleAll} /></TableHead>
                   <TableHead>Produs</TableHead>
                   <TableHead>Preț</TableHead>
+                  <TableHead>Preț vechi</TableHead>
                   <TableHead>Stoc</TableHead>
+                  <TableHead>Vizibil</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -139,7 +185,9 @@ export default function AdminBulkUpdate() {
                     </TableCell>
                     <TableCell className="font-medium text-sm">{p.name}</TableCell>
                     <TableCell>{p.price?.toLocaleString("ro-RO")} lei</TableCell>
+                    <TableCell className="text-muted-foreground">{p.old_price ? `${p.old_price.toLocaleString("ro-RO")} lei` : "—"}</TableCell>
                     <TableCell>{p.stock}</TableCell>
+                    <TableCell>{p.visible !== false ? "✅" : "❌"}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -147,6 +195,26 @@ export default function AdminBulkUpdate() {
           )}
         </CardContent>
       </Card>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-500" /> Confirmare acțiune
+            </DialogTitle>
+            <DialogDescription>
+              Ești sigur că vrei să aplici <strong>{actionLabel[action]}</strong>
+              {needsValue && actionValue && <> cu valoarea <strong>{actionValue}{action.includes("price") || action === "set_sale_price" ? "%" : ""}</strong></>}
+              {" "}pentru <strong>{selected.size} produse</strong>?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmOpen(false)}>Renunță</Button>
+            <Button onClick={applyBulk}>Da, aplică</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

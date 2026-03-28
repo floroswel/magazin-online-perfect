@@ -572,8 +572,13 @@ export default function AdminOrders() {
                           {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
                         </TableCell>
                         <TableCell onClick={() => setExpandedRow(isExpanded ? null : order.id)}>
-                          <p className="font-mono text-xs text-muted-foreground">#{order.order_number || order.id.slice(0, 8)}</p>
-                          <p className="text-[11px] text-muted-foreground">{format(new Date(order.created_at), "dd MMM yy, HH:mm", { locale: ro })}</p>
+                          <div className="flex items-center gap-1.5">
+                            <div>
+                              <p className="font-mono text-xs text-muted-foreground">#{order.order_number || order.id.slice(0, 8)}</p>
+                              <p className="text-[11px] text-muted-foreground">{format(new Date(order.created_at), "dd MMM yy, HH:mm", { locale: ro })}</p>
+                            </div>
+                            {order.gift_wrapping && <span title={`Cadou: ${(order.gift_wrapping as any)?.message || ''}`} className="text-amber-500 text-base cursor-help">🎁</span>}
+                          </div>
                         </TableCell>
                         <TableCell>
                           <p className="text-sm font-medium truncate max-w-[160px]">{addr?.full_name || "—"}</p>
@@ -649,6 +654,14 @@ export default function AdminOrders() {
                                 <h4 className="text-xs font-semibold mb-1.5 text-muted-foreground">NOTE</h4>
                                 <p className="text-xs text-muted-foreground">{order.notes || "Fără note de la client."}</p>
                                 {order.internal_notes && <p className="text-xs mt-1 text-primary/70 italic">📝 {order.internal_notes}</p>}
+                                {order.gift_wrapping && (
+                                  <div className="mt-2 p-2 bg-amber-50 dark:bg-amber-900/20 rounded border border-amber-200 dark:border-amber-700/30">
+                                    <h5 className="text-xs font-semibold text-amber-700 flex items-center gap-1 mb-1">🎁 Comandă Cadou</h5>
+                                    <p className="text-[11px] text-muted-foreground">Ambalaj: {(order.gift_wrapping as any)?.wrapping || '—'}</p>
+                                    {(order.gift_wrapping as any)?.price > 0 && <p className="text-[11px] text-muted-foreground">Preț ambalaj: {(order.gift_wrapping as any)?.price} RON</p>}
+                                    {(order.gift_wrapping as any)?.message && <p className="text-[11px] italic mt-1">„{(order.gift_wrapping as any)?.message}"</p>}
+                                  </div>
+                                )}
                                 <Button size="sm" variant="outline" className="mt-2 h-6 text-[10px]" onClick={() => setDetailOrderId(order.id)}>
                                   Deschide detalii →
                                 </Button>
