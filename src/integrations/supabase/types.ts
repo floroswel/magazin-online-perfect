@@ -4328,15 +4328,18 @@ export type Database = {
           coupon_id: string | null
           courier: string | null
           created_at: string
+          currency: string | null
           discount_amount: number | null
           discount_total: number | null
           fulfillment_warehouse_id: string | null
+          gift_wrapping: Json | null
           id: string
           internal_notes: string | null
           loyalty_points_earned: number | null
           marketplace_data: Json | null
           notes: string | null
           order_number: string | null
+          payment_fee: number | null
           payment_installments: Json | null
           payment_method: string | null
           payment_status: string | null
@@ -4368,15 +4371,18 @@ export type Database = {
           coupon_id?: string | null
           courier?: string | null
           created_at?: string
+          currency?: string | null
           discount_amount?: number | null
           discount_total?: number | null
           fulfillment_warehouse_id?: string | null
+          gift_wrapping?: Json | null
           id?: string
           internal_notes?: string | null
           loyalty_points_earned?: number | null
           marketplace_data?: Json | null
           notes?: string | null
           order_number?: string | null
+          payment_fee?: number | null
           payment_installments?: Json | null
           payment_method?: string | null
           payment_status?: string | null
@@ -4408,15 +4414,18 @@ export type Database = {
           coupon_id?: string | null
           courier?: string | null
           created_at?: string
+          currency?: string | null
           discount_amount?: number | null
           discount_total?: number | null
           fulfillment_warehouse_id?: string | null
+          gift_wrapping?: Json | null
           id?: string
           internal_notes?: string | null
           loyalty_points_earned?: number | null
           marketplace_data?: Json | null
           notes?: string | null
           order_number?: string | null
+          payment_fee?: number | null
           payment_installments?: Json | null
           payment_method?: string | null
           payment_status?: string | null
