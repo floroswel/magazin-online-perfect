@@ -23,6 +23,7 @@ export default function Auth() {
 
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [registerForm, setRegisterForm] = useState({ email: "", password: "", fullName: "" });
+  const [gdprConsent, setGdprConsent] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
