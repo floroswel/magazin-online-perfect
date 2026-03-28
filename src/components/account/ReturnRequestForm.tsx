@@ -384,6 +384,11 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
               )}
               {observation && <p><span className="text-muted-foreground">Observații:</span> {observation}</p>}
             </div>
+            <div className="bg-muted/30 rounded-md p-3 text-xs text-muted-foreground space-y-1 border">
+              <p className="font-semibold text-foreground">📋 Informare legală</p>
+              <p>Conform Directivei UE 2011/83/EU și OUG 34/2014, ai dreptul de retragere din contract în termen de 14 zile calendaristice de la primirea produsului, fără a fi necesar să invoci un motiv.</p>
+              <p>Rambursarea se va efectua în maximum 14 zile de la primirea produselor returnate, folosind aceeași metodă de plată, cu excepția cazului în care ai convenit altfel.</p>
+            </div>
           </div>
         )}
 
