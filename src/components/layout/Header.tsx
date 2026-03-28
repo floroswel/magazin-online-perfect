@@ -159,49 +159,88 @@ export default function Header() {
       </header>
 
       {/* Mobile fullscreen overlay */}
-      {mobileMenu && (
-        <div className="fixed inset-0 z-[100] bg-ventuza-dark flex flex-col animate-fade-in">
-          <div className="flex items-center justify-between px-6 h-16">
-            <span className="font-serif text-[20px] font-light tracking-[5px] text-[#FAF6F0]">VENTUZA</span>
-            <button onClick={() => setMobileMenu(false)} className="text-[#FAF6F0] p-2">
-              <X className="h-6 w-6" />
-            </button>
+      <div
+        className={`fixed inset-0 z-[100] bg-ventuza-dark transition-transform duration-300 ease-out ${mobileMenu ? "translate-x-0" : "-translate-x-full"}`}
+        style={{ willChange: "transform" }}
+      >
+        <div className="flex items-center justify-between px-6 h-16 border-b border-white/10">
+          <span className="font-serif text-[20px] font-light tracking-[5px] text-[#FAF6F0]">VENTUZA</span>
+          <button onClick={() => setMobileMenu(false)} className="text-[#FAF6F0] p-2 min-w-[44px] min-h-[44px] flex items-center justify-center">
+            <X className="h-6 w-6" />
+          </button>
+        </div>
+
+        {/* User section */}
+        {user && (
+          <div className="px-6 py-3 border-b border-white/10 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
+              {(user.email || "?")[0].toUpperCase()}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[#FAF6F0] text-sm font-medium truncate">{user.email}</p>
+              <Link to="/account" onClick={() => setMobileMenu(false)} className="text-primary text-xs">Contul meu →</Link>
+            </div>
           </div>
-          <nav className="flex-1 flex flex-col items-center justify-center gap-6">
-            {[
-              { to: "/catalog", label: "Colecții" },
-              { to: "/povestea-noastra", label: "Despre noi" },
-              { to: "/quiz-parfum", label: "Quiz Parfum" },
-              { to: "/personalizare", label: "Personalizare" },
-              { to: "/recenzii", label: "Blog" },
-              { to: "/faq", label: "Contact" },
-              ...(user ? [{ to: "/account", label: "Contul meu" }, { to: "/favorites", label: "Favorite" }] : [{ to: "/auth", label: "Autentificare" }]),
-              ...(isAdmin ? [{ to: "/admin", label: "Admin Panel" }] : []),
-            ].map((link) => (
+        )}
+
+        <nav className="flex-1 overflow-y-auto px-4 py-4">
+          {[
+            { to: "/", label: "Acasă" },
+            { to: "/catalog", label: "Colecții" },
+            { to: "/povestea-noastra", label: "Despre noi" },
+            { to: "/quiz-parfum", label: "Quiz Parfum" },
+            { to: "/personalizare", label: "Personalizare" },
+            { to: "/recenzii", label: "Blog" },
+            { to: "/faq", label: "Contact" },
+            ...(user ? [{ to: "/account", label: "Contul meu" }, { to: "/favorites", label: "Favorite" }] : [{ to: "/auth", label: "Autentificare" }]),
+            ...(isAdmin ? [{ to: "/admin", label: "Admin Panel" }] : []),
+          ].map((link) => {
+            const isActive = location.pathname === link.to;
+            return (
               <Link
                 key={link.to}
                 to={link.to}
                 onClick={() => setMobileMenu(false)}
-                className="text-[#FAF6F0] font-serif text-[28px] font-light tracking-wide hover:text-primary transition-colors"
+                className={`flex items-center gap-3 text-[#FAF6F0] text-lg font-light tracking-wide min-h-[52px] px-3 rounded-lg transition-colors ${isActive ? "bg-primary/15 border-l-2 border-primary" : "hover:bg-white/5"}`}
               >
                 {link.label}
               </Link>
-            ))}
-            {user && (
-              <button
-                onClick={() => { signOut(); setMobileMenu(false); }}
-                className="text-[#FAF6F0]/50 font-sans text-sm tracking-wide mt-4"
-              >
-                Deconectare
-              </button>
+            );
+          })}
+
+          {/* Cart in mobile menu */}
+          <Link
+            to="/cart"
+            onClick={() => setMobileMenu(false)}
+            className="flex items-center justify-between text-[#FAF6F0] text-lg font-light tracking-wide min-h-[52px] px-3 rounded-lg hover:bg-white/5 mt-1"
+          >
+            <span>Coș</span>
+            {totalItems > 0 && (
+              <Badge className="bg-primary text-primary-foreground text-xs">{totalItems}</Badge>
             )}
-          </nav>
-          <div className="flex justify-center gap-3 pb-8">
-            <button onClick={toggleDarkMode} className="text-[#FAF6F0]/50 p-2">
+          </Link>
+        </nav>
+
+        <div className="px-6 pb-6 space-y-3">
+          {user && (
+            <button
+              onClick={() => { signOut(); setMobileMenu(false); }}
+              className="text-[#FAF6F0]/50 font-sans text-sm tracking-wide w-full text-left min-h-[44px]"
+            >
+              Deconectare
+            </button>
+          )}
+          <div className="flex justify-center gap-3 pt-2 border-t border-white/10">
+            <button onClick={toggleDarkMode} className="text-[#FAF6F0]/50 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center">
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Mobile overlay backdrop */}
+      {mobileMenu && (
+        <div className="fixed inset-0 z-[99] bg-black/50" onClick={() => setMobileMenu(false)} />
       )}
     </>
   );
