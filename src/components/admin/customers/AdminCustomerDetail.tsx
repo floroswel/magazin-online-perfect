@@ -26,6 +26,8 @@ export default function AdminCustomerDetail() {
   const [newNote, setNewNote] = useState("");
   const [addingPoints, setAddingPoints] = useState(false);
   const [pointsToAdd, setPointsToAdd] = useState("");
+  const [pointsReason, setPointsReason] = useState("");
+  const [loyaltyPoints, setLoyaltyPoints] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
