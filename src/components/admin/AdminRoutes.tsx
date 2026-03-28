@@ -182,6 +182,7 @@ const AdminSamedaySettings = lazy(() => import("./shipping/AdminSamedaySettings"
 const Admin360SliderSettings = lazy(() => import("./settings/Admin360SliderSettings"));
 const AdminCustom404Settings = lazy(() => import("./settings/AdminCustom404Settings"));
 const AdminControlCenter = lazy(() => import("./control/AdminControlCenter"));
+const AdminConfiguratorSettings = lazy(() => import("./settings/AdminConfiguratorSettings"));
 
 export default function AdminRoutes() {
   return (
