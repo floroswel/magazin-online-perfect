@@ -1,206 +1,208 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, Heart, User, Menu, X, GitCompare, Shield, Sun, Moon, ChevronDown } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Search, Heart, User, Menu, X, Sun, Moon, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useCart } from "@/hooks/useCart";
-import { useComparison } from "@/hooks/useComparison";
-import { Badge } from "@/components/ui/badge";
-import SearchAutocomplete from "@/components/SearchAutocomplete";
-import MegaMenu from "./MegaMenu";
-import LocaleSwitcher from "./LocaleSwitcher";
-import { supabase } from "@/integrations/supabase/client";
 import { useDarkMode } from "@/hooks/useDarkMode";
-import { isCandleCollection } from "@/lib/candleCatalog";
+import SearchAutocomplete from "@/components/SearchAutocomplete";
 
 export default function Header() {
   const { user, signOut } = useAuth();
   const { isAdmin } = useAdmin();
   const { totalItems } = useCart();
-  const { comparisonItems } = useComparison();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isDark, toggle: toggleDarkMode } = useDarkMode();
-  const [search, setSearch] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
-  const [mobileCategories, setMobileCategories] = useState<{ id: string; name: string; slug: string; parent_id: string | null }[]>([]);
-  const [expandedMobileCat, setExpandedMobileCat] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+
+  const isHome = location.pathname === "/";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 80);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    supabase.from("categories").select("id, name, slug, parent_id, show_in_nav").eq("visible", true).order("display_order").order("name").then(({ data }) => {
-      setMobileCategories((((data as any[]) || []).filter((cat) => isCandleCollection(cat)) as any[]) || []);
-    });
-  }, []);
+    if (mobileMenu) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileMenu]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (search.trim()) navigate(`/catalog?search=${encodeURIComponent(search.trim())}`);
-  };
+  const headerBg = isHome && !scrolled
+    ? "bg-transparent"
+    : "bg-background/95 backdrop-blur-md border-b border-border shadow-sm";
+
+  const textColor = isHome && !scrolled ? "text-[#FAF6F0]" : "text-foreground";
+  const mutedColor = isHome && !scrolled ? "text-[#FAF6F0]/70" : "text-muted-foreground";
 
   return (
-    <header className="sticky top-0 z-50 shadow-lg">
-      {/* Announcement bar */}
-      <div className="bg-primary text-primary-foreground">
-        <div className="container flex items-center justify-center py-1.5 px-4">
-          <p className="text-[10px] md:text-xs font-bold text-center tracking-wide">
-            🚛 Livrare gratuită pentru comenzi peste 200 RON · Handmade în România
-          </p>
+    <>
+      {/* Announcement Bar */}
+      <div className="bg-ventuza-dark text-[#FAF6F0] relative z-[60] overflow-hidden">
+        <div className="flex items-center h-9">
+          <div className="animate-marquee flex items-center whitespace-nowrap gap-16 px-4">
+            <span className="text-[11px] font-sans tracking-wide">Transport gratuit la comenzi peste 200 lei</span>
+            <span className="text-[11px] font-sans tracking-wide opacity-40">✦</span>
+            <span className="text-[11px] font-sans tracking-wide">Lumânări artizanale create în România 🕯</span>
+            <span className="text-[11px] font-sans tracking-wide opacity-40">✦</span>
+            <span className="text-[11px] font-sans tracking-wide">Livrare în 24-48h prin Sameday Courier</span>
+            <span className="text-[11px] font-sans tracking-wide opacity-40">✦</span>
+            <span className="text-[11px] font-sans tracking-wide">Transport gratuit la comenzi peste 200 lei</span>
+            <span className="text-[11px] font-sans tracking-wide opacity-40">✦</span>
+            <span className="text-[11px] font-sans tracking-wide">Lumânări artizanale create în România 🕯</span>
+            <span className="text-[11px] font-sans tracking-wide opacity-40">✦</span>
+            <span className="text-[11px] font-sans tracking-wide">Livrare în 24-48h prin Sameday Courier</span>
+          </div>
         </div>
       </div>
 
-      {/* Main header */}
-      <div className={`transition-all duration-300 bg-white border-b-2 border-border ${scrolled ? "shadow-md" : ""}`}>
-        <div className="container flex items-center justify-between py-3 md:py-4 px-4">
-          {/* Logo */}
-          <Link to="/" className="flex-shrink-0">
-            <h1 className="font-serif text-xl md:text-2xl font-extrabold tracking-tight text-primary drop-shadow-sm">
-              VENTUZA
-            </h1>
-          </Link>
-
-          {/* Desktop nav links */}
-          <nav className="hidden lg:flex items-center gap-6">
-            <Link to="/catalog" className="text-sm font-semibold tracking-wide uppercase text-foreground hover:text-primary transition-colors">
+      {/* Main Header */}
+      <header className={`sticky top-0 z-50 transition-all duration-500 ${headerBg}`}>
+        <div className="container flex items-center justify-between h-[72px] md:h-[72px] px-4">
+          {/* Left nav (desktop) */}
+          <nav className={`hidden lg:flex items-center gap-8 flex-1 ${mutedColor}`}>
+            <Link to="/catalog" className="text-[13px] font-sans font-medium tracking-wide hover:text-primary transition-colors">
               Colecții
             </Link>
-            <Link to="/personalizare" className="text-sm font-semibold tracking-wide uppercase text-foreground hover:text-primary transition-colors">
-              Personalizare
+            <Link to="/povestea-noastra" className="text-[13px] font-sans font-medium tracking-wide hover:text-primary transition-colors">
+              Despre noi
             </Link>
-            <Link to="/povestea-noastra" className="text-sm font-semibold tracking-wide uppercase text-foreground hover:text-primary transition-colors">
-              Povestea Noastră
+            <Link to="/recenzii" className="text-[13px] font-sans font-medium tracking-wide hover:text-primary transition-colors">
+              Blog
+            </Link>
+          </nav>
+
+          {/* Mobile hamburger */}
+          <button
+            className={`lg:hidden p-2 -ml-2 ${textColor}`}
+            onClick={() => setMobileMenu(true)}
+            aria-label="Meniu"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+
+          {/* Center Logo */}
+          <Link to="/" className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 lg:flex-none">
+            <span className={`font-serif text-[22px] font-light tracking-[6px] ${textColor} transition-colors`}>
+              VENTUZA
+            </span>
+          </Link>
+
+          {/* Right nav (desktop) */}
+          <nav className={`hidden lg:flex items-center gap-8 flex-1 justify-end mr-6 ${mutedColor}`}>
+            <Link to="/quiz-parfum" className="text-[13px] font-sans font-medium tracking-wide hover:text-primary transition-colors">
+              Quiz Parfum
+            </Link>
+            <Link to="/faq" className="text-[13px] font-sans font-medium tracking-wide hover:text-primary transition-colors">
+              Contact
             </Link>
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center gap-0.5 md:gap-1">
-            <div className="hidden md:block w-56 lg:w-64">
-              <SearchAutocomplete className="" />
-            </div>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={toggleDarkMode}
+              className={`hidden sm:flex w-9 h-9 items-center justify-center rounded-full hover:bg-foreground/10 transition-colors ${mutedColor}`}
+              aria-label={isDark ? "Mod luminos" : "Mod întunecat"}
+            >
+              {isDark ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
+            </button>
 
-            <Button variant="ghost" size="icon" className="hidden sm:inline-flex h-8 w-8 text-foreground/70 hover:text-foreground" onClick={toggleDarkMode} aria-label={isDark ? "Mod luminos" : "Mod întunecat"}>
-              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
-            <span className="hidden md:inline-flex"><LocaleSwitcher /></span>
+            <button
+              onClick={() => setShowSearch(!showSearch)}
+              className={`w-9 h-9 flex items-center justify-center rounded-full hover:bg-foreground/10 transition-colors ${mutedColor}`}
+              aria-label="Caută"
+            >
+              <Search className="h-[18px] w-[18px]" />
+            </button>
 
-            {user ? (
-              <>
-                <Link to="/compare" className="relative hidden sm:inline-flex">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground/70 hover:text-foreground">
-                    <GitCompare className="h-4 w-4" />
-                    {comparisonItems.length > 0 && (
-                      <Badge className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 text-[10px] bg-primary text-primary-foreground rounded-full">
-                        {comparisonItems.length}
-                      </Badge>
-                    )}
-                  </Button>
-                </Link>
-                <Link to="/favorites">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground/70 hover:text-foreground">
-                    <Heart className="h-4 w-4" />
-                  </Button>
-                </Link>
-                <Link to="/cart" className="relative">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground/70 hover:text-foreground">
-                    <ShoppingCart className="h-4 w-4" />
-                    {totalItems > 0 && (
-                      <Badge className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center p-0 text-[10px] bg-primary text-primary-foreground rounded-full">
-                        {totalItems}
-                      </Badge>
-                    )}
-                  </Button>
-                </Link>
-                <Link to="/account">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-foreground/70 hover:text-foreground">
-                    <User className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </>
-            ) : (
-              <Link to="/auth">
-                <Button size="sm" className="font-medium text-xs tracking-wide uppercase bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-none px-4 md:px-5">
-                  Cont
-                </Button>
+            {user && (
+              <Link to="/favorites" className={`hidden sm:flex w-9 h-9 items-center justify-center rounded-full hover:bg-foreground/10 transition-colors ${mutedColor}`}>
+                <Heart className="h-[18px] w-[18px]" />
               </Link>
             )}
-            <Button variant="ghost" size="icon" className="lg:hidden h-8 w-8 text-foreground" onClick={() => setMobileMenu(!mobileMenu)}>
-              {mobileMenu ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
+
+            <Link to={user ? "/cart" : "/auth"} className={`relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-foreground/10 transition-colors ${mutedColor}`}>
+              <ShoppingBag className="h-[18px] w-[18px]" />
+              {totalItems > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 h-[18px] min-w-[18px] flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-sans font-medium px-1 animate-bounce-count">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+
+            {user ? (
+              <Link to="/account" className={`hidden sm:flex w-9 h-9 items-center justify-center rounded-full hover:bg-foreground/10 transition-colors ${mutedColor}`}>
+                <User className="h-[18px] w-[18px]" />
+              </Link>
+            ) : (
+              <Link to="/auth" className={`hidden sm:flex w-9 h-9 items-center justify-center rounded-full hover:bg-foreground/10 transition-colors ${mutedColor}`}>
+                <User className="h-[18px] w-[18px]" />
+              </Link>
+            )}
           </div>
         </div>
-      </div>
 
-      <MegaMenu />
+        {/* Search dropdown */}
+        {showSearch && (
+          <div className="absolute top-full left-0 right-0 bg-background border-b border-border p-4 animate-fade-in">
+            <div className="container max-w-lg mx-auto">
+              <SearchAutocomplete className="" />
+            </div>
+          </div>
+        )}
+      </header>
 
-      {/* Mobile menu */}
+      {/* Mobile fullscreen overlay */}
       {mobileMenu && (
-        <div className="lg:hidden bg-background border-b border-border">
-          <div className="container py-4 px-4">
-            <form onSubmit={handleSearch} className="mb-4">
-              <div className="relative">
-                <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Caută lumânări..." className="pr-10 rounded-none border-foreground/20" />
-                <Button type="submit" size="icon" variant="ghost" className="absolute right-1 top-1 h-8 w-8">
-                  <Search className="h-4 w-4" />
-                </Button>
-              </div>
-            </form>
-            <nav className="space-y-1 mb-4">
-              <Link to="/catalog" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-foreground border-b border-border/50">Colecții</Link>
-              <Link to="/personalizare" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-foreground border-b border-border/50">Personalizare</Link>
-              <Link to="/povestea-noastra" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-foreground border-b border-border/50">Povestea Noastră</Link>
-              <Link to="/compare" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-foreground border-b border-border/50">Comparare</Link>
-              {isAdmin && <Link to="/admin" onClick={() => setMobileMenu(false)} className="block py-2.5 text-sm tracking-wide uppercase text-primary border-b border-border/50">Admin Panel</Link>}
-              {user && <button onClick={() => { signOut(); setMobileMenu(false); }} className="block py-2.5 text-sm tracking-wide uppercase text-muted-foreground border-b border-border/50 w-full text-left">Deconectare</button>}
-            </nav>
-            <ul className="space-y-1">
-              {mobileCategories.filter(c => !c.parent_id).map(cat => {
-                const children = mobileCategories.filter(c => c.parent_id === cat.id);
-                const isExpanded = expandedMobileCat === cat.id;
-                return (
-                  <li key={cat.slug}>
-                    <div className="flex items-center">
-                      <Link
-                        to={cat.slug.includes("personalizat") ? "/personalizare" : `/catalog?category=${cat.slug}`}
-                        onClick={() => setMobileMenu(false)}
-                        className="flex-1 px-2 py-2 text-sm text-muted-foreground hover:text-foreground"
-                      >
-                        {cat.name}
-                      </Link>
-                      {children.length > 0 && (
-                        <button onClick={() => setExpandedMobileCat(isExpanded ? null : cat.id)} className="px-2 py-2">
-                          <ChevronDown className={`h-4 w-4 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
-                        </button>
-                      )}
-                    </div>
-                    {children.length > 0 && isExpanded && (
-                      <ul className="ml-4 space-y-0.5">
-                        {children.map(child => (
-                          <li key={child.slug}>
-                            <Link
-                              to={`/catalog?category=${child.slug}`}
-                              onClick={() => setMobileMenu(false)}
-                              className="block px-2 py-1.5 text-sm text-muted-foreground hover:text-foreground"
-                            >
-                              {child.name}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
+        <div className="fixed inset-0 z-[100] bg-ventuza-dark flex flex-col animate-fade-in">
+          <div className="flex items-center justify-between px-6 h-16">
+            <span className="font-serif text-[20px] font-light tracking-[5px] text-[#FAF6F0]">VENTUZA</span>
+            <button onClick={() => setMobileMenu(false)} className="text-[#FAF6F0] p-2">
+              <X className="h-6 w-6" />
+            </button>
+          </div>
+          <nav className="flex-1 flex flex-col items-center justify-center gap-6">
+            {[
+              { to: "/catalog", label: "Colecții" },
+              { to: "/povestea-noastra", label: "Despre noi" },
+              { to: "/quiz-parfum", label: "Quiz Parfum" },
+              { to: "/personalizare", label: "Personalizare" },
+              { to: "/recenzii", label: "Blog" },
+              { to: "/faq", label: "Contact" },
+              ...(user ? [{ to: "/account", label: "Contul meu" }, { to: "/favorites", label: "Favorite" }] : [{ to: "/auth", label: "Autentificare" }]),
+              ...(isAdmin ? [{ to: "/admin", label: "Admin Panel" }] : []),
+            ].map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={() => setMobileMenu(false)}
+                className="text-[#FAF6F0] font-serif text-[28px] font-light tracking-wide hover:text-primary transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+            {user && (
+              <button
+                onClick={() => { signOut(); setMobileMenu(false); }}
+                className="text-[#FAF6F0]/50 font-sans text-sm tracking-wide mt-4"
+              >
+                Deconectare
+              </button>
+            )}
+          </nav>
+          <div className="flex justify-center gap-3 pb-8">
+            <button onClick={toggleDarkMode} className="text-[#FAF6F0]/50 p-2">
+              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </button>
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }

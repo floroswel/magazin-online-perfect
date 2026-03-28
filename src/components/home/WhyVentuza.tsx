@@ -1,56 +1,47 @@
-import { Leaf, HandMetal, Palette, Truck } from "lucide-react";
+import { Leaf, Hand, Palette, Truck } from "lucide-react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const reasons = [
   {
     icon: Leaf,
     title: "Ceară 100% Naturală",
-    desc: "Folosim exclusiv ceară de soia premium, fără parafină sau aditivi chimici. Arde curat, fără fum negru.",
+    desc: "Ceară de soia premium, fără parafină sau aditivi chimici. Arde curat.",
   },
   {
-    icon: HandMetal,
+    icon: Hand,
     title: "Handmade în România",
-    desc: "Fiecare lumânare este turnată manual, cu atenție la detalii, în atelierul nostru din România.",
+    desc: "Fiecare lumânare e turnată manual, cu atenție, în atelierul nostru.",
   },
   {
     icon: Palette,
     title: "Personalizare Completă",
-    desc: "Alege aroma, culoarea, mesajul și ambalajul. Creăm lumânări unice pentru tine sau ca și cadou.",
+    desc: "Alege aroma, culoarea, mesajul. Creăm lumânări unice pentru tine.",
   },
   {
     icon: Truck,
     title: "Livrare Rapidă & Gratuită",
-    desc: "Comenzile peste 200 RON beneficiază de livrare gratuită. Ambalaj premium inclus.",
+    desc: "Comenzile peste 200 RON cu livrare gratuită. Ambalaj premium.",
   },
 ];
 
 export default function WhyVentuza() {
+  const ref = useScrollReveal();
+
   return (
-    <section className="py-12 md:py-20">
+    <section className="py-16 md:py-24" ref={ref}>
       <div className="container px-4">
-        <div className="text-center mb-10 md:mb-14">
-          <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary mb-3 block">
-            De ce VENTUZA
-          </span>
-          <h2 className="font-serif text-2xl md:text-3xl font-extrabold text-foreground">
-            Mai mult decât o lumânare
-          </h2>
-          <div className="w-16 h-1 bg-primary rounded mx-auto mt-4" />
+        <div className="text-center mb-12 reveal stagger-1">
+          <p className="font-sans text-[11px] tracking-[4px] uppercase text-primary mb-3">DE CE VENTUZA</p>
+          <h2 className="font-serif text-3xl md:text-4xl text-foreground">Mai mult decât o lumânare</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {reasons.map((r, i) => (
-            <div
-              key={i}
-              className="group bg-card rounded-xl border border-border p-6 md:p-8 text-center hover:shadow-lg hover:border-primary/30 transition-all duration-300"
-            >
-              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-5 group-hover:bg-primary/20 transition-colors">
-                <r.icon className="h-6 w-6 text-primary" />
+            <div key={i} className={`reveal stagger-${i + 1} group text-center p-6 md:p-8`}>
+              <div className="w-12 h-12 rounded-full bg-ventuza-sage/10 flex items-center justify-center mx-auto mb-5 group-hover:bg-ventuza-sage/20 transition-colors">
+                <r.icon className="h-5 w-5 text-ventuza-sage" strokeWidth={1.5} />
               </div>
-              <h3 className="font-serif font-bold text-foreground text-sm md:text-base mb-2">
-                {r.title}
-              </h3>
-              <p className="text-muted-foreground text-xs md:text-sm leading-relaxed">
-                {r.desc}
-              </p>
+              <h3 className="font-serif text-lg text-foreground mb-2">{r.title}</h3>
+              <p className="font-sans font-light text-sm text-muted-foreground leading-relaxed">{r.desc}</p>
             </div>
           ))}
         </div>

@@ -9,11 +9,11 @@ import SeoHead from "@/components/SeoHead";
 import SocialProofPopup from "@/components/SocialProofPopup";
 import LiveChat from "@/components/LiveChat";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children, hideHeader }: { children: React.ReactNode; hideHeader?: boolean }) {
   return (
     <div className="min-h-screen flex flex-col">
       <SeoHead />
-      <Header />
+      {!hideHeader && <Header />}
       <Breadcrumbs />
       <main className="flex-1">{children}</main>
       <Footer />

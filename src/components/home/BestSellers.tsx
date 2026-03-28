@@ -5,9 +5,11 @@ import ProductCard from "@/components/products/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { isCandleCollection } from "@/lib/candleCatalog";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
-export default function BestSellers({ title = "Cele Mai Iubite" }: { title?: string }) {
+export default function BestSellers({ title = "Cele mai iubite" }: { title?: string }) {
   const [products, setProducts] = useState<Tables<"products">[]>([]);
+  const ref = useScrollReveal();
 
   useEffect(() => {
     supabase
@@ -15,15 +17,10 @@ export default function BestSellers({ title = "Cele Mai Iubite" }: { title?: str
       .select("id, name, slug")
       .eq("visible", true)
       .then(({ data: cats }) => {
-        const ids = ((cats || []) as Array<{ id: string; name: string; slug: string }>).filter((cat) =>
-          isCandleCollection(cat)
-        ).map((cat) => cat.id);
-
-        if (ids.length === 0) {
-          setProducts([]);
-          return;
-        }
-
+        const ids = ((cats || []) as Array<{ id: string; name: string; slug: string }>)
+          .filter((cat) => isCandleCollection(cat))
+          .map((cat) => cat.id);
+        if (ids.length === 0) { setProducts([]); return; }
         supabase
           .from("products")
           .select("*")
@@ -37,18 +34,20 @@ export default function BestSellers({ title = "Cele Mai Iubite" }: { title?: str
   if (products.length === 0) return null;
 
   return (
-    <section className="container py-16 md:py-20">
-      <div className="flex items-end justify-between mb-10">
-        <div>
-          <p className="text-xs tracking-[0.3em] uppercase text-primary mb-2 font-medium">Bestsellers</p>
-          <h2 className="font-serif text-3xl font-medium text-foreground">{title}</h2>
+    <section className="bg-card py-16 md:py-24" ref={ref}>
+      <div className="container px-4">
+        <div className="flex items-end justify-between mb-10 reveal stagger-1">
+          <div>
+            <p className="font-sans text-[11px] tracking-[4px] uppercase text-primary mb-2">BESTSELLERS</p>
+            <h2 className="font-serif text-3xl md:text-4xl text-foreground">{title}</h2>
+          </div>
+          <Link to="/catalog" className="font-sans text-sm text-primary hover:text-ventuza-amber-dark font-medium flex items-center gap-1.5 transition-colors">
+            Vezi toate <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
-        <Link to="/catalog" className="text-sm text-primary hover:text-primary/80 font-medium flex items-center gap-1.5 tracking-wide transition-colors">
-          Vezi toate <ArrowRight className="h-4 w-4" />
-        </Link>
-      </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-        {products.map(p => <ProductCard key={p.id} product={p} />)}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 reveal stagger-2">
+          {products.map(p => <ProductCard key={p.id} product={p} />)}
+        </div>
       </div>
     </section>
   );
