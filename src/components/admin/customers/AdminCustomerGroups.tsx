@@ -47,7 +47,7 @@ const RULE_FIELDS = [
   { value: "product_purchased", label: "A cumpărat produsul" },
   { value: "county", label: "Județ" },
   { value: "registered_days_lt", label: "Înregistrat în ultimele X zile" },
-  { value: "has_active_subscription", label: "Are abonament activ" },
+  { value: "has_burn_log", label: "Are jurnal de ardere" },
   { value: "abc_class", label: "Clasificare ABC" },
 ];
 

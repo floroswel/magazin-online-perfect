@@ -52,10 +52,7 @@ const DEFAULT_TEMPLATES: Record<string, { subject: string; body: string }> = {
   return_approved: { subject: "Returul tău a fost aprobat ✅", body: "<h2>Bună, {{nume_client}}!</h2><p>Cererea de retur a fost aprobată.</p>" },
   return_rejected: { subject: "Returul tău a fost respins", body: "<h2>Bună, {{nume_client}}!</h2><p>Motiv: {{motiv}}</p>" },
   refund_processed: { subject: "Rambursare procesată — {{suma_rambursata}} RON", body: "<h2>Bună, {{nume_client}}!</h2><p>Rambursarea de {{suma_rambursata}} RON a fost procesată.</p>" },
-  subscription_activated: { subject: "Abonamentul tău a fost activat 🎉", body: "<h2>Bună, {{nume_client}}!</h2><p>Abonamentul tău a fost activat.</p>" },
-  subscription_renewal_reminder: { subject: "Reminder: reînnoire abonament", body: "<h2>Bună, {{nume_client}}!</h2><p>Abonamentul tău se va reînnoi în curând.</p>" },
-  subscription_order_created: { subject: "Comandă din abonament #{{id_comanda}}", body: "<h2>Bună, {{nume_client}}!</h2><p>Comanda recurentă a fost generată. Total: {{total_comanda}} RON</p>" },
-  subscription_paused: { subject: "Abonamentul tău a fost modificat", body: "<h2>Bună, {{nume_client}}!</h2><p>Abonamentul tău a fost modificat.</p>" },
+  gift_order_notification: { subject: "O comandă cadou a fost plasată 🎁", body: "<h2>Bună, {{nume_client}}!</h2><p>Comanda ta cadou a fost confirmată.</p>" },
   invoice_issued: { subject: "Factura #{{nr_factura}} a fost emisă", body: "<h2>Bună, {{nume_client}}!</h2><p>Factura #{{nr_factura}} — Total: {{total_comanda}} RON</p>" },
 };
 

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import GiftExperience, { type GiftOptions } from "@/components/checkout/GiftExperience";
 import { useQuery } from "@tanstack/react-query";
 import { Ticket, CreditCard, Banknote, Wallet, MapPin, Award, Store, Building2, Info } from "lucide-react";
 import MokkaModal from "@/components/mokka/MokkaModal";
@@ -51,6 +52,7 @@ export default function Checkout() {
   const [invoiceForm, setInvoiceForm] = useState({ companyName: "", cui: "", regCom: "", address: "" });
   const [pointsToUse, setPointsToUse] = useState(0);
   const [newsletterOptin, setNewsletterOptin] = useState(false);
+  const [giftOptions, setGiftOptions] = useState<GiftOptions>({ isGift: false, wrappingId: "none", wrappingPrice: 0, message: "" });
 
   // Fetch enabled payment methods from DB
   const { data: paymentMethods = [] } = useQuery({
@@ -114,7 +116,7 @@ export default function Checkout() {
   const couponFreeShipping = appliedCoupons.some(c => c.discount_type === "free_shipping" || c.includes_free_shipping);
   const shipping = couponFreeShipping ? 0 : baseShipping;
   const subtotalAfterDiscounts = totalPrice - couponDiscount - loyaltyDiscount - groupDiscount - pointsDiscount;
-  const total = Math.max(0, subtotalAfterDiscounts + shipping + extraFee);
+  const total = Math.max(0, subtotalAfterDiscounts + shipping + extraFee + giftOptions.wrappingPrice);
   const maxPoints = maxRedeemablePoints(totalPrice);
   const pointsEarned = user && loyaltyConfig.program_enabled ? Math.floor(total / loyaltyConfig.earn_rate_per_amount) * loyaltyConfig.earn_rate_points : 0;
 
@@ -241,6 +243,7 @@ export default function Checkout() {
       currency,
       status: initialStatus,
       payment_status: initialPaymentStatus,
+      gift_wrapping: giftOptions.isGift ? { wrapping: giftOptions.wrappingId, price: giftOptions.wrappingPrice, message: giftOptions.message } : null,
     };
     if (extraFee > 0) orderData.payment_fee = extraFee;
     if (user) orderData.user_id = user.id;
@@ -461,6 +464,9 @@ export default function Checkout() {
                 )}
               </div>
 
+              {/* Gift Experience */}
+              <GiftExperience value={giftOptions} onChange={setGiftOptions} />
+
               {/* Dynamic payment methods */}
               <h2 className="text-lg font-semibold pt-2">Metodă de plată</h2>
               {availableMethods.length === 0 ? (
@@ -574,6 +580,9 @@ export default function Checkout() {
               {pointsDiscount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Puncte folosite ({pointsToUse})</span><span>-{format(pointsDiscount)}</span></div>}
               {groupDiscount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Discount grup</span><span>-{format(groupDiscount)}</span></div>}
               <div className="flex justify-between text-sm"><span className="text-muted-foreground">Livrare</span><span>{shipping === 0 ? "GRATUITĂ" : format(shipping)}</span></div>
+              {giftOptions.wrappingPrice > 0 && (
+                <div className="flex justify-between text-sm"><span className="text-muted-foreground">🎁 Ambalaj cadou</span><span>+{format(giftOptions.wrappingPrice)}</span></div>
+              )}
               {extraFee > 0 && (
                 <div className="flex justify-between text-sm text-amber-700">
                   <span>Taxă {selectedMethod?.name}</span>

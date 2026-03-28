@@ -41,12 +41,11 @@ const faqSections = [
     ],
   },
   {
-    title: "Abonamente",
+    title: "Personalizare",
     items: [
-      { q: "Cum funcționează abonamentul?", a: "Alegeți un plan (Starter, Classic sau Premium) și primiți lunar lumânări VENTUZA la un preț redus, cu livrare gratuită." },
-      { q: "Pot schimba parfumul lunar?", a: "Da, pentru planurile Classic și Premium puteți alege parfumul dorit din contul dvs. înainte de data de expediere lunară." },
-      { q: "Cum anulez abonamentul?", a: "Puteți anula oricând din secțiunea Abonamente a contului dvs. Anularea se aplică din luna următoare." },
-      { q: "Când se livrează abonamentul lunar?", a: "Abonamentele se expediază în primele 5 zile ale fiecărei luni. Veți primi notificare pe email." },
+      { q: "Pot personaliza o lumânare?", a: "Da! Accesează pagina de Personalizare unde poți alege baza, parfumul, culoarea, textul și ambalajul. Fiecare lumânare este creată manual după specificațiile tale." },
+      { q: "Cât durează o comandă personalizată?", a: "Lumânările personalizate se realizează în 3-5 zile lucrătoare, fiind create manual de echipa noastră." },
+      { q: "Pot comanda un set cadou personalizat?", a: "Da, oferim seturi cadou personalizate cu ambalaj premium, mesaj personalizat și fundă de mătase. Selectează opțiunea la checkout." },
     ],
   },
 ];

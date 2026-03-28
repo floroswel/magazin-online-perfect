@@ -6810,7 +6810,8 @@ export type Database = {
           id: string
           product_id: string
           rating: number
-          user_id: string
+          reviewer_name: string | null
+          user_id: string | null
         }
         Insert: {
           comment?: string | null
@@ -6818,7 +6819,8 @@ export type Database = {
           id?: string
           product_id: string
           rating: number
-          user_id: string
+          reviewer_name?: string | null
+          user_id?: string | null
         }
         Update: {
           comment?: string | null
@@ -6826,7 +6828,8 @@ export type Database = {
           id?: string
           product_id?: string
           rating?: number
-          user_id?: string
+          reviewer_name?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
