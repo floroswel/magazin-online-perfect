@@ -116,5 +116,6 @@ function ProductCardInner({ product, eager = false }: Props & { eager?: boolean 
   );
 }
 
-const ProductCard = memo(ProductCardInner);
+const ProductCard = memo(forwardRef<HTMLAnchorElement, Props & { eager?: boolean }>((props, _ref) => <ProductCardInner {...props} />));
+ProductCard.displayName = "ProductCard";
 export default ProductCard;
