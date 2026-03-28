@@ -459,12 +459,12 @@ export default function Checkout() {
                       <div><Label>Reg. Com.</Label><Input value={invoiceForm.regCom} onChange={e => setInvoiceForm(p => ({ ...p, regCom: e.target.value }))} /></div>
                     </div>
                     <div><Label>Adresă sediu</Label><Input value={invoiceForm.address} onChange={e => setInvoiceForm(p => ({ ...p, address: e.target.value }))} /></div>
+                  </div>
+                )}
               </div>
 
               {/* Gift Experience */}
               <GiftExperience value={giftOptions} onChange={setGiftOptions} />
-                )}
-              </div>
 
               {/* Dynamic payment methods */}
               <h2 className="text-lg font-semibold pt-2">Metodă de plată</h2>
