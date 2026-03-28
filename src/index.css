@@ -2,49 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
 
 @layer base {
   :root {
-    /* VENTUZA — Blue commerce, high visibility */
-    --background: 220 20% 95%;
-    --foreground: 220 30% 10%;
+    /* VENTUZA — Warm artisan palette */
+    --background: 36 33% 95%;
+    --foreground: 18 15% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 30% 10%;
+    --card-foreground: 18 15% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 30% 10%;
+    --popover-foreground: 18 15% 15%;
 
-    --primary: 220 88% 45%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 32 48% 46%;
+    --primary-foreground: 36 33% 95%;
 
-    --secondary: 220 30% 92%;
-    --secondary-foreground: 220 40% 25%;
+    --secondary: 39 42% 90%;
+    --secondary-foreground: 18 15% 15%;
 
-    --muted: 220 15% 92%;
-    --muted-foreground: 220 10% 35%;
+    --muted: 30 18% 90%;
+    --muted-foreground: 22 15% 49%;
 
-    --accent: 44 100% 50%;
-    --accent-foreground: 220 30% 10%;
+    --accent: 32 48% 46%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 82%;
-    --input: 220 15% 85%;
-    --ring: 220 88% 45%;
+    --border: 28 22% 85%;
+    --input: 28 22% 85%;
+    --ring: 32 48% 46%;
 
     --radius: 0.5rem;
 
     /* Brand tokens */
-    --ventuza-noir: 220 30% 10%;
-    --ventuza-charcoal: 220 15% 92%;
-    --ventuza-gold: 44 100% 50%;
-    --ventuza-gold-light: 44 95% 60%;
-    --ventuza-cream: 220 20% 97%;
-    --ventuza-warm: 220 15% 94%;
-    --ventuza-blush: 0 72% 48%;
+    --ventuza-ivory: 36 33% 95%;
+    --ventuza-cream: 39 42% 90%;
+    --ventuza-amber: 32 48% 46%;
+    --ventuza-amber-dark: 30 54% 36%;
+    --ventuza-dark: 18 15% 15%;
+    --ventuza-dark-surface: 18 24% 9%;
+    --ventuza-sage: 105 13% 56%;
+    --ventuza-rose: 0 17% 72%;
+    --ventuza-text-muted: 22 15% 49%;
 
     /* Sidebar (admin) */
     --sidebar-background: 220 50% 18%;
@@ -57,63 +59,54 @@
     --sidebar-ring: 220 88% 50%;
   }
 
-  /* Force same light theme even in dark mode for storefront */
   .dark:not(.admin-panel) {
-    --background: 220 20% 95%;
-    --foreground: 220 30% 10%;
+    --background: 18 24% 9%;
+    --foreground: 36 33% 95%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 30% 10%;
+    --card: 18 20% 12%;
+    --card-foreground: 36 33% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 30% 10%;
+    --popover: 18 20% 12%;
+    --popover-foreground: 36 33% 95%;
 
-    --primary: 220 88% 45%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 32 48% 46%;
+    --primary-foreground: 36 33% 95%;
 
-    --secondary: 220 30% 92%;
-    --secondary-foreground: 220 40% 25%;
+    --secondary: 18 18% 16%;
+    --secondary-foreground: 36 33% 95%;
 
-    --muted: 220 15% 92%;
-    --muted-foreground: 220 10% 35%;
+    --muted: 18 14% 18%;
+    --muted-foreground: 30 12% 60%;
 
-    --accent: 44 100% 50%;
-    --accent-foreground: 220 30% 10%;
+    --accent: 32 48% 46%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 82%;
-    --input: 220 15% 85%;
-    --ring: 220 88% 45%;
+    --border: 36 33% 6%;
+    --input: 36 33% 6%;
+    --ring: 32 48% 46%;
   }
 
   /* ADMIN PANEL — clean neutral */
   .admin-panel {
     --background: 210 20% 96%;
     --foreground: 220 20% 14%;
-
     --card: 0 0% 100%;
     --card-foreground: 220 20% 14%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 220 20% 14%;
-
     --primary: 220 70% 50%;
     --primary-foreground: 0 0% 100%;
-
     --secondary: 220 14% 92%;
     --secondary-foreground: 220 20% 14%;
-
     --muted: 220 14% 94%;
     --muted-foreground: 220 10% 46%;
-
     --accent: 220 14% 90%;
     --accent-foreground: 220 20% 14%;
-
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 100%;
-
     --border: 220 13% 88%;
     --input: 220 13% 88%;
     --ring: 220 70% 50%;
@@ -143,13 +136,15 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Open Sans', system-ui, sans-serif;
+    font-family: 'DM Sans', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', 'Open Sans', sans-serif;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 300;
     letter-spacing: -0.01em;
   }
 
@@ -170,38 +165,57 @@
 }
 
 @layer utilities {
-  /* Premium gradients */
-  .ventuza-gradient-dark {
-    background: linear-gradient(180deg, hsl(var(--ventuza-noir)), hsl(var(--ventuza-charcoal)));
-  }
-
-  .ventuza-gradient-gold {
-    background: linear-gradient(135deg, hsl(var(--ventuza-gold)), hsl(var(--ventuza-gold-light)));
-  }
-
-  .ventuza-gradient-warm {
-    background: linear-gradient(180deg, hsl(var(--ventuza-charcoal)), hsl(var(--ventuza-noir)));
-  }
-
-  /* Gold accent text */
-  .text-gold {
-    color: hsl(var(--ventuza-gold));
-  }
-
-  /* Elegant separator */
-  .ventuza-divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--ventuza-gold) / 0.4), transparent);
-  }
-
-  /* Marquee animation */
+  /* Marquee */
   @keyframes marquee {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
   }
-
   .animate-marquee {
     animation: marquee 30s linear infinite;
+  }
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Stagger delays */
+  .stagger-1 { transition-delay: 0s; }
+  .stagger-2 { transition-delay: 0.15s; }
+  .stagger-3 { transition-delay: 0.3s; }
+  .stagger-4 { transition-delay: 0.45s; }
+
+  /* Noise texture */
+  .noise-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  /* CTA button hover */
+  .btn-cta {
+    @apply transition-all duration-200;
+  }
+  .btn-cta:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 20px rgba(176, 125, 58, 0.3);
+  }
+
+  /* Input focus glow */
+  .input-glow:focus {
+    box-shadow: 0 0 0 3px hsla(32, 48%, 46%, 0.3);
   }
 
   /* Admin scrollbar */
