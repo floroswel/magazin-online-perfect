@@ -2874,6 +2874,45 @@ export type Database = {
           },
         ]
       }
+      gdpr_consents: {
+        Row: {
+          analytics: boolean
+          created_at: string | null
+          id: string
+          ip_hash: string | null
+          marketing: boolean
+          necessary: boolean
+          session_id: string
+          updated_at: string | null
+          user_agent_hash: string | null
+          user_id: string | null
+        }
+        Insert: {
+          analytics?: boolean
+          created_at?: string | null
+          id?: string
+          ip_hash?: string | null
+          marketing?: boolean
+          necessary?: boolean
+          session_id: string
+          updated_at?: string | null
+          user_agent_hash?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          analytics?: boolean
+          created_at?: string | null
+          id?: string
+          ip_hash?: string | null
+          marketing?: boolean
+          necessary?: boolean
+          session_id?: string
+          updated_at?: string | null
+          user_agent_hash?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       gift_card_transactions: {
         Row: {
           amount: number
@@ -9325,6 +9364,7 @@ export type Database = {
       }
     }
     Functions: {
+      anonymize_user_data: { Args: { p_user_id: string }; Returns: Json }
       count_dynamic_category_products: {
         Args: { p_rules: Json }
         Returns: number
@@ -9361,6 +9401,14 @@ export type Database = {
       }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
+      use_loyalty_points: {
+        Args: {
+          p_order_id?: string
+          p_points_to_use: number
+          p_user_id: string
+        }
+        Returns: Json
+      }
       validate_coupon: {
         Args: {
           p_cart_total: number

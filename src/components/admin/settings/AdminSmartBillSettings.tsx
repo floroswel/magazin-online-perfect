@@ -459,7 +459,7 @@ export default function AdminSmartBillSettings() {
                         <TableCell>
                           {inv.smartbill_url && (
                             <Button variant="ghost" size="sm" asChild>
-                              <a href={inv.smartbill_url} target="_blank" rel="noopener"><Download className="h-3 w-3" /></a>
+                              <a href={inv.smartbill_url} target="_blank" rel="noopener noreferrer"><Download className="h-3 w-3" /></a>
                             </Button>
                           )}
                         </TableCell>

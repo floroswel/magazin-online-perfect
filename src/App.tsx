@@ -103,7 +103,7 @@ const App = () => (
               <Route path="/recenzii" element={<ErrorBoundary><Recenzii /></ErrorBoundary>} />
               <Route path="/unsubscribe" element={<ErrorBoundary><Unsubscribe /></ErrorBoundary>} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
-              <Route path="*" element={<NotFound />} />
+              <Route path="*" element={<ErrorBoundary><NotFound /></ErrorBoundary>} />
             </Routes>
             </ErrorBoundary>
           </CartProvider>

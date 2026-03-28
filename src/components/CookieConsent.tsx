@@ -2,14 +2,25 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Cookie } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-const COOKIE_KEY = "ventuza_cookie_consent";
+const CONSENT_ID_KEY = "ventuza_consent_id";
+const SESSION_KEY = "ventuza_session_id";
 
 type CookiePrefs = {
   necessary: boolean;
   analytics: boolean;
   marketing: boolean;
 };
+
+function getSessionId(): string {
+  let sid = localStorage.getItem(SESSION_KEY);
+  if (!sid) {
+    sid = crypto.randomUUID();
+    localStorage.setItem(SESSION_KEY, sid);
+  }
+  return sid;
+}
 
 export default function CookieConsent() {
   const [visible, setVisible] = useState(false);
@@ -21,22 +32,48 @@ export default function CookieConsent() {
   });
 
   useEffect(() => {
-    const stored = localStorage.getItem(COOKIE_KEY);
-    if (!stored) setVisible(true);
+    const consentId = localStorage.getItem(CONSENT_ID_KEY);
+    if (consentId) {
+      // Load consent from DB
+      supabase.from("gdpr_consents").select("analytics, marketing").eq("id", consentId).maybeSingle()
+        .then(({ data }) => {
+          if (data) {
+            // Consent exists in DB, fire consent event
+            window.dispatchEvent(new CustomEvent("gdpr-consent", { detail: { analytics: data.analytics, marketing: data.marketing } }));
+          } else {
+            // Consent ID invalid, show banner
+            localStorage.removeItem(CONSENT_ID_KEY);
+            setVisible(true);
+          }
+        });
+    } else {
+      setVisible(true);
+    }
   }, []);
 
-  const accept = (all: boolean) => {
-    const finalPrefs = all
-      ? { necessary: true, analytics: true, marketing: true }
-      : prefs;
-    localStorage.setItem(COOKIE_KEY, JSON.stringify({ ...finalPrefs, timestamp: Date.now() }));
+  const saveConsent = async (analytics: boolean, marketing: boolean) => {
+    const sessionId = getSessionId();
+    try {
+      const { data } = await supabase.functions.invoke("save-gdpr-consent", {
+        body: { session_id: sessionId, analytics, marketing },
+      });
+      if (data?.consent_id) {
+        localStorage.setItem(CONSENT_ID_KEY, data.consent_id);
+      }
+    } catch {
+      // Fallback: store minimal flag
+      localStorage.setItem(CONSENT_ID_KEY, "local");
+    }
+    window.dispatchEvent(new CustomEvent("gdpr-consent", { detail: { analytics, marketing } }));
     setVisible(false);
   };
 
-  const reject = () => {
-    localStorage.setItem(COOKIE_KEY, JSON.stringify({ necessary: true, analytics: false, marketing: false, timestamp: Date.now() }));
-    setVisible(false);
+  const accept = (all: boolean) => {
+    const finalPrefs = all ? { analytics: true, marketing: true } : prefs;
+    saveConsent(finalPrefs.analytics, finalPrefs.marketing);
   };
+
+  const reject = () => saveConsent(false, false);
 
   if (!visible) return null;
 
@@ -60,22 +97,12 @@ export default function CookieConsent() {
                   <span className="text-muted-foreground">— esențiale pentru funcționare</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={prefs.analytics}
-                    onChange={(e) => setPrefs(p => ({ ...p, analytics: e.target.checked }))}
-                    className="accent-primary"
-                  />
+                  <input type="checkbox" checked={prefs.analytics} onChange={(e) => setPrefs(p => ({ ...p, analytics: e.target.checked }))} className="accent-primary" />
                   <span className="text-foreground font-medium">Analitice</span>
                   <span className="text-muted-foreground">— ne ajută să îmbunătățim site-ul</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={prefs.marketing}
-                    onChange={(e) => setPrefs(p => ({ ...p, marketing: e.target.checked }))}
-                    className="accent-primary"
-                  />
+                  <input type="checkbox" checked={prefs.marketing} onChange={(e) => setPrefs(p => ({ ...p, marketing: e.target.checked }))} className="accent-primary" />
                   <span className="text-foreground font-medium">Marketing</span>
                   <span className="text-muted-foreground">— reclame personalizate</span>
                 </label>

@@ -55,15 +55,23 @@ export default class ErrorBoundary extends Component<Props, State> {
               Ceva nu a funcționat corect
             </h2>
             <p className="text-muted-foreground text-sm">
-              Something went wrong. Please refresh the page.
+              A apărut o eroare. Încearcă să reîncarci pagina.
             </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-            >
-              <RefreshCw className="h-4 w-4" />
-              Refresh
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={() => window.location.reload()}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Reîncarcă
+              </button>
+              <a
+                href="/"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-border text-sm font-medium hover:bg-muted transition-colors"
+              >
+                Înapoi la magazin
+              </a>
+            </div>
           </div>
         </div>
       );
