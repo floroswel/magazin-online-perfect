@@ -225,8 +225,6 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         children: [
           { label: "Toate integrările", path: "/admin/integrations" },
           { label: "App Store", path: "/admin/integrations/app-store" },
-          { label: "Stripe", path: "/admin/integrations/stripe" },
-          { label: "PayPal", path: "/admin/integrations/paypal" },
           { label: "Netopia", path: "/admin/integrations/netopia" },
           { label: "euPlătesc", path: "/admin/integrations/euplatesc" },
           { label: "Plăți Online", path: "/admin/integrations/plati-online" },

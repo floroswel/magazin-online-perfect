@@ -338,8 +338,7 @@ export default function AdminRoutes() {
         {/* ═══════════ INTEGRĂRI ═══════════ */}
         <Route path="integrations" element={<AdminAppStore />} />
         <Route path="integrations/app-store" element={<AdminAppStore />} />
-        <Route path="integrations/stripe" element={<AdminIntegrationConfig integrationKey="stripe" title="Stripe" description="Configurare Stripe pentru plăți cu cardul." fields={[{ key: "publishable_key", label: "Publishable Key" }, { key: "secret_key", label: "Secret Key", type: "password" }, { key: "webhook_secret", label: "Webhook Secret", type: "password" }]} />} />
-        <Route path="integrations/paypal" element={<AdminIntegrationConfig integrationKey="paypal" title="PayPal" description="Configurare PayPal." fields={[{ key: "client_id", label: "Client ID" }, { key: "client_secret", label: "Client Secret", type: "password" }, { key: "mode", label: "Mod (sandbox/live)" }]} />} />
+        {/* Stripe and PayPal removed — Romanian-only payment methods */}
         <Route path="integrations/netopia" element={<AdminIntegrationConfig integrationKey="netopia" title="Netopia Payments" description="Configurare Netopia." fields={[{ key: "signature", label: "Signature" }, { key: "public_key", label: "Public Key" }, { key: "private_key", label: "Private Key", type: "password" }]} />} />
         <Route path="integrations/euplatesc" element={<AdminIntegrationConfig integrationKey="euplatesc" title="euPlătesc" description="Configurare euPlătesc." fields={[{ key: "mid", label: "MID" }, { key: "key", label: "Cheie secretă", type: "password" }]} />} />
         <Route path="integrations/plati-online" element={<AdminIntegrationConfig integrationKey="plati-online" title="Plăți Online" description="Configurare plăți-online.ro." fields={[{ key: "api_key", label: "API Key", type: "password" }, { key: "ipn_url", label: "IPN URL", type: "url" }]} />} />
