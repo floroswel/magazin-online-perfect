@@ -13,7 +13,8 @@ import { toast } from "sonner";
 
 const DEFAULT_SETTINGS = {
   company: {
-    name: "", cui: "", reg_com: "", country: "România", county: "", city: "", address: "", postal_code: "",
+    name: "", cui: "", reg_com: "", euipo: "#019130214", iban: "", bank: "", website: "",
+    country: "România", county: "", city: "", address: "", postal_code: "",
     phone: "", email: "", email_orders: "", email_support: "", phone_orders: "", order_phone_hours: "",
     show_contact_details: true,
   },
@@ -108,7 +109,11 @@ export default function AdminGeneralSettings() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div><Label>Nume societate</Label><Input value={settings.company.name} onChange={e => updateCompany("name", e.target.value)} placeholder="S.C. Magazin S.R.L." /></div>
                 <div><Label>CUI</Label><Input value={settings.company.cui} onChange={e => updateCompany("cui", e.target.value)} placeholder="RO12345678" /></div>
-                <div><Label>Nr. Registrul Comerțului</Label><Input value={settings.company.reg_com} onChange={e => updateCompany("reg_com", e.target.value)} placeholder="J40/1234/2024" /></div>
+                <div><Label>Nr. Registrul Comerțului (J)</Label><Input value={settings.company.reg_com} onChange={e => updateCompany("reg_com", e.target.value)} placeholder="J40/1234/2024" /></div>
+                <div><Label>EUIPO Trademark</Label><Input value={(settings.company as any).euipo || ""} onChange={e => updateCompany("euipo", e.target.value)} placeholder="#019130214" /></div>
+                <div><Label>IBAN</Label><Input value={(settings.company as any).iban || ""} onChange={e => updateCompany("iban", e.target.value)} placeholder="RO00XXXX0000000000000000" /></div>
+                <div><Label>Bancă</Label><Input value={(settings.company as any).bank || ""} onChange={e => updateCompany("bank", e.target.value)} placeholder="ING Bank" /></div>
+                <div><Label>Website</Label><Input value={(settings.company as any).website || ""} onChange={e => updateCompany("website", e.target.value)} placeholder="https://ventuza.ro" /></div>
                 <div><Label>Țara</Label><Input value={settings.company.country} onChange={e => updateCompany("country", e.target.value)} /></div>
                 <div><Label>Județ</Label><Input value={settings.company.county} onChange={e => updateCompany("county", e.target.value)} placeholder="București" /></div>
                 <div><Label>Oraș</Label><Input value={settings.company.city} onChange={e => updateCompany("city", e.target.value)} placeholder="Sector 1" /></div>

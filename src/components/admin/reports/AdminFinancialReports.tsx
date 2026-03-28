@@ -110,17 +110,8 @@ export default function AdminFinancialReports() {
     },
   });
 
-  // Fetch subscriptions for cash flow
-  const { data: subscriptions = [] } = useQuery({
-    queryKey: ["fin-subscriptions"],
-    queryFn: async () => {
-      const { data } = await supabase.from("subscriptions")
-        .select("id, price, frequency, next_order_date, status")
-        .eq("status", "active")
-        .limit(500);
-      return data || [];
-    },
-  });
+  // Loyalty points issued for cash flow
+  const loyaltyPointsTotal = 0;
 
   // Fetch returns for cash flow
   const { data: returns = [] } = useQuery({
@@ -222,7 +213,7 @@ export default function AdminFinancialReports() {
   // ── Cash flow
   const activeOrdersValue = currentOrders.filter((o: any) => !["delivered", "cancelled", "refunded"].includes(o.status))
     .reduce((s: number, o: any) => s + Number(o.total || 0), 0);
-  const next30DaysSubs = subscriptions.reduce((s: number, sub: any) => s + Number(sub.price || 0), 0);
+  const next30DaysSubs = 0;
   const pendingRefunds = returns.reduce((s: number, r: any) => s + Number(r.refund_amount || 0), 0);
 
   // ── Export helpers
@@ -690,9 +681,9 @@ export default function AdminFinancialReports() {
             </Card>
             <Card>
               <CardContent className="p-4">
-                <p className="text-xs text-muted-foreground mb-1">Abonamente (30 zile)</p>
-                <p className="text-2xl font-bold text-green-600">{fmt(next30DaysSubs)} RON</p>
-                <p className="text-[11px] text-muted-foreground">{subscriptions.length} abonamente active</p>
+                <p className="text-xs text-muted-foreground mb-1">Puncte Fidelizare Emise</p>
+                <p className="text-2xl font-bold text-green-600">{loyaltyPointsTotal}</p>
+                <p className="text-[11px] text-muted-foreground">Total puncte</p>
               </CardContent>
             </Card>
             <Card>
@@ -705,8 +696,8 @@ export default function AdminFinancialReports() {
             <Card>
               <CardContent className="p-4">
                 <p className="text-xs text-muted-foreground mb-1">Cash Flow Estimat Net</p>
-                <p className="text-2xl font-bold text-primary">{fmt(activeOrdersValue + next30DaysSubs - pendingRefunds)} RON</p>
-                <p className="text-[11px] text-muted-foreground">Active + Abonamente - Retururi</p>
+                <p className="text-2xl font-bold text-primary">{fmt(activeOrdersValue - pendingRefunds)} RON</p>
+                <p className="text-[11px] text-muted-foreground">Active - Retururi</p>
               </CardContent>
             </Card>
           </div>

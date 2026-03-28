@@ -1222,6 +1222,53 @@ export type Database = {
         }
         Relationships: []
       }
+      burn_logs: {
+        Row: {
+          burn_date: string
+          created_at: string
+          duration_minutes: number
+          id: string
+          mood: string | null
+          notes: string | null
+          product_id: string | null
+          product_name: string
+          rating: number | null
+          user_id: string
+        }
+        Insert: {
+          burn_date?: string
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          mood?: string | null
+          notes?: string | null
+          product_id?: string | null
+          product_name?: string
+          rating?: number | null
+          user_id: string
+        }
+        Update: {
+          burn_date?: string
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          mood?: string | null
+          notes?: string | null
+          product_id?: string | null
+          product_name?: string
+          rating?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "burn_logs_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       candle_subscription_plans: {
         Row: {
           active: boolean
@@ -5685,6 +5732,7 @@ export type Database = {
           brand_id: string | null
           bundle_discount_percent: number | null
           bundle_pricing_mode: string | null
+          burn_hours: number | null
           canonical_url: string | null
           category_id: string | null
           cost_price: number | null
@@ -5702,12 +5750,15 @@ export type Database = {
           meta_description: string | null
           meta_title: string | null
           name: string
+          occasion_tags: string[] | null
           old_price: number | null
           price: number
           product_type: string
           published_at: string | null
           rating: number | null
           review_count: number | null
+          scent_family: string | null
+          scent_intensity: number | null
           search_vector: unknown
           short_description: string | null
           sku: string | null
@@ -5739,6 +5790,7 @@ export type Database = {
           brand_id?: string | null
           bundle_discount_percent?: number | null
           bundle_pricing_mode?: string | null
+          burn_hours?: number | null
           canonical_url?: string | null
           category_id?: string | null
           cost_price?: number | null
@@ -5756,12 +5808,15 @@ export type Database = {
           meta_description?: string | null
           meta_title?: string | null
           name: string
+          occasion_tags?: string[] | null
           old_price?: number | null
           price?: number
           product_type?: string
           published_at?: string | null
           rating?: number | null
           review_count?: number | null
+          scent_family?: string | null
+          scent_intensity?: number | null
           search_vector?: unknown
           short_description?: string | null
           sku?: string | null
@@ -5793,6 +5848,7 @@ export type Database = {
           brand_id?: string | null
           bundle_discount_percent?: number | null
           bundle_pricing_mode?: string | null
+          burn_hours?: number | null
           canonical_url?: string | null
           category_id?: string | null
           cost_price?: number | null
@@ -5810,12 +5866,15 @@ export type Database = {
           meta_description?: string | null
           meta_title?: string | null
           name?: string
+          occasion_tags?: string[] | null
           old_price?: number | null
           price?: number
           product_type?: string
           published_at?: string | null
           rating?: number | null
           review_count?: number | null
+          scent_family?: string | null
+          scent_intensity?: number | null
           search_vector?: unknown
           short_description?: string | null
           sku?: string | null
@@ -6301,6 +6360,30 @@ export type Database = {
           updated_at?: string
           user_agent?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      quiz_results: {
+        Row: {
+          answers_json: Json
+          created_at: string
+          id: string
+          recommended_product_ids: Json
+          user_id: string | null
+        }
+        Insert: {
+          answers_json?: Json
+          created_at?: string
+          id?: string
+          recommended_product_ids?: Json
+          user_id?: string | null
+        }
+        Update: {
+          answers_json?: Json
+          created_at?: string
+          id?: string
+          recommended_product_ids?: Json
+          user_id?: string | null
         }
         Relationships: []
       }

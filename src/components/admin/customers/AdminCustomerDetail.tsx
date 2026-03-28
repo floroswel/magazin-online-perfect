@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, Mail, Ban, Trash2, Award, Plus, Save, ShoppingCart, MapPin, RefreshCw, RotateCcw, Star, StickyNote, Activity, User } from "lucide-react";
+import { ArrowLeft, Mail, Ban, Trash2, Award, Plus, Save, ShoppingCart, MapPin, RotateCcw, Star, StickyNote, Activity, User } from "lucide-react";
 import { format } from "date-fns";
 import { ro } from "date-fns/locale";
 import { toast } from "sonner";
@@ -19,7 +19,7 @@ export default function AdminCustomerDetail() {
   const [profile, setProfile] = useState<any>(null);
   const [orders, setOrders] = useState<any[]>([]);
   const [addresses, setAddresses] = useState<any[]>([]);
-  const [subscriptions, setSubscriptions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [returns, setReturns] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
   const [notes, setNotes] = useState<any[]>([]);
@@ -28,16 +28,14 @@ export default function AdminCustomerDetail() {
   const [pointsToAdd, setPointsToAdd] = useState("");
   const [pointsReason, setPointsReason] = useState("");
   const [loyaltyPoints, setLoyaltyPoints] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!userId) return;
     const load = async () => {
-      const [profileRes, ordersRes, addrRes, subsRes, retRes, revRes, notesRes, loyaltyRes] = await Promise.all([
+      const [profileRes, ordersRes, addrRes, retRes, revRes, notesRes, loyaltyRes] = await Promise.all([
         supabase.from("profiles").select("*").eq("user_id", userId).single(),
         supabase.from("orders").select("id, order_number, created_at, status, total, payment_method, user_email").eq("user_id", userId).order("created_at", { ascending: false }),
         supabase.from("addresses").select("*").eq("user_id", userId),
-        supabase.from("subscriptions").select("*, products(name, images)").eq("customer_id", userId),
         supabase.from("returns").select("*, orders(id, order_number)").eq("user_id", userId),
         supabase.from("reviews").select("*, products(name)").eq("user_id", userId),
         supabase.from("customer_notes").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
@@ -46,7 +44,6 @@ export default function AdminCustomerDetail() {
       setProfile(profileRes.data);
       setOrders(ordersRes.data || []);
       setAddresses(addrRes.data || []);
-      setSubscriptions(subsRes.data || []);
       setReturns(retRes.data || []);
       setReviews(revRes.data || []);
       setNotes(notesRes.data || []);
@@ -143,7 +140,7 @@ export default function AdminCustomerDetail() {
           <TabsTrigger value="summary"><User className="w-3 h-3 mr-1" />Sumar</TabsTrigger>
           <TabsTrigger value="orders"><ShoppingCart className="w-3 h-3 mr-1" />Comenzi ({orders.length})</TabsTrigger>
           <TabsTrigger value="addresses"><MapPin className="w-3 h-3 mr-1" />Adrese ({addresses.length})</TabsTrigger>
-          <TabsTrigger value="subscriptions"><RefreshCw className="w-3 h-3 mr-1" />Abonamente</TabsTrigger>
+          <TabsTrigger value="loyalty"><Award className="w-3 h-3 mr-1" />Puncte</TabsTrigger>
           <TabsTrigger value="returns"><RotateCcw className="w-3 h-3 mr-1" />Retururi</TabsTrigger>
           <TabsTrigger value="reviews"><Star className="w-3 h-3 mr-1" />Recenzii</TabsTrigger>
           <TabsTrigger value="notes"><StickyNote className="w-3 h-3 mr-1" />Note admin</TabsTrigger>
@@ -258,16 +255,16 @@ export default function AdminCustomerDetail() {
           ))}
         </TabsContent>
 
-        {/* SUBSCRIPTIONS */}
-        <TabsContent value="subscriptions" className="mt-3 space-y-2">
-          {subscriptions.length === 0 ? <p className="text-sm text-muted-foreground">Niciun abonament.</p> : subscriptions.map(s => (
-            <Card key={s.id}>
+        {/* LOYALTY POINTS */}
+        <TabsContent value="loyalty" className="mt-3 space-y-2">
+          {loyaltyPoints.length === 0 ? <p className="text-sm text-muted-foreground">Niciun punct acumulat.</p> : loyaltyPoints.map(lp => (
+            <Card key={lp.id}>
               <CardContent className="p-3 flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-sm">{s.products?.name || "Produs"}</p>
-                  <p className="text-xs text-muted-foreground">Frecvență: {s.frequency} · Cantitate: {s.quantity}</p>
+                  <p className="font-medium text-sm">{lp.description || lp.action}</p>
+                  <p className="text-xs text-muted-foreground">{new Date(lp.created_at).toLocaleDateString("ro-RO")}</p>
                 </div>
-                <Badge variant="outline" className="text-xs">{s.status}</Badge>
+                <Badge variant={lp.points > 0 ? "default" : "destructive"} className="text-xs">{lp.points > 0 ? "+" : ""}{lp.points}</Badge>
               </CardContent>
             </Card>
           ))}
