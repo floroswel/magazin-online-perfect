@@ -759,6 +759,7 @@ export default function Account() {
             </div>
           </div>
         </div>
+      </div>
 
 
       {/* Change Password Dialog */}
