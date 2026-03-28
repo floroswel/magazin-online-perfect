@@ -139,8 +139,14 @@ export default function Auth() {
                   <form onSubmit={handleRegister} className="space-y-4">
                     <div><Label>Nume complet</Label><Input value={registerForm.fullName} onChange={e => setRegisterForm(p => ({ ...p, fullName: e.target.value }))} required /></div>
                     <div><Label>Email</Label><Input type="email" value={registerForm.email} onChange={e => setRegisterForm(p => ({ ...p, email: e.target.value }))} required /></div>
-                    <div><Label>Parolă</Label><Input type="password" value={registerForm.password} onChange={e => setRegisterForm(p => ({ ...p, password: e.target.value }))} required /></div>
-                    <Button type="submit" className="w-full" disabled={loading}>{loading ? "Se procesează..." : "Creează cont"}</Button>
+                    <div><Label>Parolă</Label><Input type="password" value={registerForm.password} onChange={e => setRegisterForm(p => ({ ...p, password: e.target.value }))} required minLength={6} /></div>
+                    <label className="flex items-start gap-2 cursor-pointer">
+                      <input type="checkbox" checked={gdprConsent} onChange={e => setGdprConsent(e.target.checked)} className="mt-1 rounded" />
+                      <span className="text-xs text-muted-foreground">
+                        Sunt de acord cu <Link to="/page/termeni-si-conditii" className="text-primary hover:underline" target="_blank">Termenii și Condițiile</Link> și <Link to="/page/politica-de-confidentialitate" className="text-primary hover:underline" target="_blank">Politica de Confidențialitate</Link>.
+                      </span>
+                    </label>
+                    <Button type="submit" className="w-full" disabled={loading || !gdprConsent}>{loading ? "Se procesează..." : "Creează cont"}</Button>
                   </form>
                 </div>
               </TabsContent>
