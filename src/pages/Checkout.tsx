@@ -59,7 +59,8 @@ export default function Checkout() {
   const { data: paymentMethods = [] } = useQuery({
     queryKey: ["checkout-payment-methods"],
     queryFn: async () => {
-      const { data } = await supabase.from("payment_methods").select("*").eq("is_active", true).order("display_order", { ascending: true });
+      // Use safe view that excludes sensitive config_json
+      const { data } = await supabase.from("safe_payment_methods").select("*").order("display_order", { ascending: true });
       return data || [];
     },
   });

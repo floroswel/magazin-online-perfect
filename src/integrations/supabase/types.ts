@@ -4631,6 +4631,13 @@ export type Database = {
             referencedRelation: "payment_methods"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "payment_transactions_payment_method_id_fkey"
+            columns: ["payment_method_id"]
+            isOneToOne: false
+            referencedRelation: "safe_payment_methods"
+            referencedColumns: ["id"]
+          },
         ]
       }
       paypo_oauth_tokens: {
@@ -9371,6 +9378,72 @@ export type Database = {
           referrer_count: number | null
           url_accessed: string | null
           visit_count: number | null
+        }
+        Relationships: []
+      }
+      safe_payment_methods: {
+        Row: {
+          allowed_counties: string[] | null
+          allowed_customer_groups: string[] | null
+          bank_details: Json | null
+          bnpl_config: Json | null
+          description: string | null
+          display_order: number | null
+          extra_fee_type: string | null
+          extra_fee_value: number | null
+          icon_url: string | null
+          id: string | null
+          is_active: boolean | null
+          key: string | null
+          max_amount: number | null
+          min_amount: number | null
+          name: string | null
+          payment_deadline_days: number | null
+          pickup_location_id: string | null
+          provider: string | null
+          type: string | null
+        }
+        Insert: {
+          allowed_counties?: string[] | null
+          allowed_customer_groups?: string[] | null
+          bank_details?: Json | null
+          bnpl_config?: Json | null
+          description?: string | null
+          display_order?: number | null
+          extra_fee_type?: string | null
+          extra_fee_value?: number | null
+          icon_url?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          key?: string | null
+          max_amount?: number | null
+          min_amount?: number | null
+          name?: string | null
+          payment_deadline_days?: number | null
+          pickup_location_id?: string | null
+          provider?: string | null
+          type?: string | null
+        }
+        Update: {
+          allowed_counties?: string[] | null
+          allowed_customer_groups?: string[] | null
+          bank_details?: Json | null
+          bnpl_config?: Json | null
+          description?: string | null
+          display_order?: number | null
+          extra_fee_type?: string | null
+          extra_fee_value?: number | null
+          icon_url?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          key?: string | null
+          max_amount?: number | null
+          min_amount?: number | null
+          name?: string | null
+          payment_deadline_days?: number | null
+          pickup_location_id?: string | null
+          provider?: string | null
+          type?: string | null
         }
         Relationships: []
       }

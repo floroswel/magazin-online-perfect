@@ -5,6 +5,7 @@ import { Cookie } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const CONSENT_ID_KEY = "ventuza_consent_id";
+const CONSENT_PREFS_KEY = "ventuza_consent_prefs";
 const SESSION_KEY = "ventuza_session_id";
 
 type CookiePrefs = {
@@ -34,18 +35,21 @@ export default function CookieConsent() {
   useEffect(() => {
     const consentId = localStorage.getItem(CONSENT_ID_KEY);
     if (consentId) {
-      // Load consent from DB
-      supabase.from("gdpr_consents").select("analytics, marketing").eq("id", consentId).maybeSingle()
-        .then(({ data }) => {
-          if (data) {
-            // Consent exists in DB, fire consent event
-            window.dispatchEvent(new CustomEvent("gdpr-consent", { detail: { analytics: data.analytics, marketing: data.marketing } }));
-          } else {
-            // Consent ID invalid, show banner
-            localStorage.removeItem(CONSENT_ID_KEY);
-            setVisible(true);
-          }
-        });
+      // Load consent preferences from localStorage (DB read restricted by RLS)
+      const savedPrefs = localStorage.getItem(CONSENT_PREFS_KEY);
+      if (savedPrefs) {
+        try {
+          const parsed = JSON.parse(savedPrefs);
+          window.dispatchEvent(new CustomEvent("gdpr-consent", { detail: { analytics: !!parsed.analytics, marketing: !!parsed.marketing } }));
+        } catch {
+          localStorage.removeItem(CONSENT_ID_KEY);
+          localStorage.removeItem(CONSENT_PREFS_KEY);
+          setVisible(true);
+        }
+      } else {
+        // Legacy: consent_id exists but no prefs stored, show banner again
+        setVisible(true);
+      }
     } else {
       setVisible(true);
     }
@@ -53,6 +57,8 @@ export default function CookieConsent() {
 
   const saveConsent = async (analytics: boolean, marketing: boolean) => {
     const sessionId = getSessionId();
+    // Save preferences in localStorage for quick access
+    localStorage.setItem(CONSENT_PREFS_KEY, JSON.stringify({ analytics, marketing }));
     try {
       const { data } = await supabase.functions.invoke("save-gdpr-consent", {
         body: { session_id: sessionId, analytics, marketing },
