@@ -617,7 +617,7 @@ export default function Checkout() {
               )}
               <label className="flex items-start gap-2 cursor-pointer">
                 <input type="checkbox" checked={newsletterOptin} onChange={e => setNewsletterOptin(e.target.checked)} className="mt-0.5 rounded" />
-                <span className="text-xs text-muted-foreground">Doresc să primesc oferte și noutăți pe email</span>
+                <span className="text-xs text-muted-foreground">Doresc să primesc oferte și noutăți pe email. Citește <Link to="/page/politica-de-confidentialitate" className="text-primary hover:underline" target="_blank">Politica de Confidențialitate</Link>.</span>
               </label>
               <Button type="submit" className="w-full font-semibold" size="lg" disabled={submitting || availableMethods.length === 0}>
                 {submitting ? "Se procesează..." : "Plasează comanda"}
