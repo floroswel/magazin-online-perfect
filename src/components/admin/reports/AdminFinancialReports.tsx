@@ -696,8 +696,8 @@ export default function AdminFinancialReports() {
             <Card>
               <CardContent className="p-4">
                 <p className="text-xs text-muted-foreground mb-1">Cash Flow Estimat Net</p>
-                <p className="text-2xl font-bold text-primary">{fmt(activeOrdersValue + next30DaysSubs - pendingRefunds)} RON</p>
-                <p className="text-[11px] text-muted-foreground">Active + Abonamente - Retururi</p>
+                <p className="text-2xl font-bold text-primary">{fmt(activeOrdersValue - pendingRefunds)} RON</p>
+                <p className="text-[11px] text-muted-foreground">Active - Retururi</p>
               </CardContent>
             </Card>
           </div>
