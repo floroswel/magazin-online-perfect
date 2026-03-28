@@ -27,6 +27,7 @@ import { usePricingRules } from "@/hooks/usePricingRules";
 import { toast } from "sonner";
 import { safeJsonLd, sanitizeForJsonLd } from "@/lib/sanitize-json-ld";
 import { useCurrency } from "@/hooks/useCurrency";
+import { usePageSeo } from "@/components/SeoHead";
 import type { Tables } from "@/integrations/supabase/types";
 
 export default function ProductDetail() {
@@ -59,24 +60,7 @@ export default function ProductDetail() {
       if (!prod) { setLoading(false); return; }
       setProduct(prod);
 
-      // Set page SEO meta
-      document.title = prod.meta_title || `${prod.name} | VENTUZA`;
-      const setMeta = (name: string, content: string, attr = "name") => {
-        let el = document.querySelector(`meta[${attr}="${name}"]`);
-        if (!el) { el = document.createElement("meta"); el.setAttribute(attr, name); document.head.appendChild(el); }
-        el.setAttribute("content", content);
-      };
-      if (prod.meta_description) setMeta("description", prod.meta_description);
-      setMeta("og:title", prod.meta_title || prod.name, "property");
-      setMeta("og:description", prod.meta_description || prod.short_description || "", "property");
-      setMeta("og:type", "product", "property");
-      setMeta("og:image", prod.image_url || "/pwa-512x512.png", "property");
-      setMeta("og:url", window.location.href, "property");
-      setMeta("og:price:amount", String(prod.price), "property");
-      setMeta("og:price:currency", "RON", "property");
-      setMeta("twitter:card", "summary_large_image");
-      setMeta("twitter:title", prod.meta_title || prod.name);
-      setMeta("twitter:image", prod.image_url || "/pwa-512x512.png");
+      // SEO meta is handled by usePageSeo below
 
       // Track in localStorage
       try {
@@ -175,6 +159,16 @@ export default function ProductDetail() {
     const { data } = await supabase.from("product_questions").select("*").eq("product_id", product.id).order("created_at", { ascending: false });
     setQuestions(data || []);
   };
+
+  // Dynamic SEO for product page
+  usePageSeo({
+    title: product ? `${product.name} — ${product.price} lei · VENTUZA` : "VENTUZA",
+    description: product ? `${product.name} — ${product.short_description || "Lumânare artizanală VENTUZA"}. Stoc: ${product.stock} bucăți. Livrare rapidă în România.` : "",
+    ogImage: product?.image_url || "/og-homepage.jpg",
+    ogType: "product",
+    productPrice: product?.price,
+    productCurrency: "RON",
+  });
 
   if (loading) return <Layout><div className="container py-16 text-center">Se încarcă...</div></Layout>;
   if (!product) return <Layout><div className="container py-16 text-center">Produsul nu a fost găsit.</div></Layout>;

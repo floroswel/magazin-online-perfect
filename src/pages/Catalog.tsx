@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCurrency } from "@/hooks/useCurrency";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
 import { isCandleCollection } from "@/lib/candleCatalog";
+import { usePageSeo } from "@/components/SeoHead";
 
 interface Cat {
   id: string;
@@ -174,20 +175,18 @@ export default function Catalog() {
     load();
   }, [categorySlug, searchQuery, smartSlug, smartCategory, sort, priceRange, selectedBrands, inStockOnly, selectedRatings, categories, currentPage, perPage, categoriesLoaded, allowedCategoryIds]);
 
-  // Dynamic SEO meta tags for categories
-  useEffect(() => {
-    if (currentCategory) {
-      document.title = (currentCategory as any).meta_title || `${currentCategory.name} | VENTUZA`;
-      const desc = (currentCategory as any).meta_description || `Cumpără ${currentCategory.name} online de la VENTUZA.`;
-      let metaDesc = document.querySelector('meta[name="description"]');
-      if (!metaDesc) { metaDesc = document.createElement("meta"); metaDesc.setAttribute("name", "description"); document.head.appendChild(metaDesc); }
-      metaDesc.setAttribute("content", desc);
-    } else if (searchQuery) {
-      document.title = `Căutare: ${searchQuery} | VENTUZA`;
-    } else {
-      document.title = "Catalog | VENTUZA";
-    }
-  }, [currentCategory, searchQuery]);
+  // Dynamic SEO via usePageSeo
+  usePageSeo({
+    title: currentCategory
+      ? `${currentCategory.name} — Lumânări VENTUZA`
+      : searchQuery
+        ? `Căutare: ${searchQuery} | VENTUZA`
+        : "Catalog — Lumânări Artizanale | VENTUZA",
+    description: currentCategory
+      ? `Colecția ${currentCategory.name} — ${totalCount} produse artizanale. Ingrediente naturale, parfumuri unice.`
+      : "Explorează toate lumânările artizanale VENTUZA. Ingrediente naturale, parfumuri rare.",
+    canonicalOverride: "/catalog",
+  });
 
   // BreadcrumbList JSON-LD
   const breadcrumbJsonLd = useMemo(() => {

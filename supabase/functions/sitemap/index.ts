@@ -13,14 +13,16 @@ Deno.serve(async (req) => {
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
   const supabase = createClient(supabaseUrl, serviceKey);
 
-  const baseUrl = req.headers.get("origin") || "https://ventuza.ro";
+  const baseUrl = "https://ventuza.ro";
   const url = new URL(req.url);
   const page = url.searchParams.get("page");
 
-  // Fetch counts first to decide if we need sitemap index
   const [productsRes, categoriesRes, pagesRes, postsRes] = await Promise.all([
-    supabase.from("products").select("slug, updated_at, noindex", { count: "exact" }).is("noindex", null).order("updated_at", { ascending: false }).limit(page ? 1000 : 5000).range(page ? (Number(page) - 1) * 1000 : 0, page ? Number(page) * 1000 - 1 : 4999),
-    supabase.from("categories").select("slug, meta_title, meta_description").eq("visible", true).order("name"),
+    supabase.from("products").select("slug, updated_at", { count: "exact" })
+      .eq("visible", true)
+      .order("updated_at", { ascending: false })
+      .range(page ? (Number(page) - 1) * 1000 : 0, page ? Number(page) * 1000 - 1 : 4999),
+    supabase.from("categories").select("slug, name").eq("visible", true).order("name"),
     supabase.from("cms_pages").select("slug, updated_at").eq("published", true),
     supabase.from("blog_posts").select("slug, updated_at").eq("status", "published"),
   ]);
@@ -28,15 +30,29 @@ Deno.serve(async (req) => {
   const totalProducts = productsRes.count || 0;
   const products = productsRes.data || [];
   const categories = categoriesRes.data || [];
-  const pages2 = pagesRes.data || [];
+  const cmsPages = pagesRes.data || [];
   const posts = postsRes.data || [];
 
+  // Static pages
+  const staticPages = [
+    { path: "/", priority: "1.0", freq: "daily" },
+    { path: "/catalog", priority: "0.9", freq: "daily" },
+    { path: "/quiz-parfum", priority: "0.7", freq: "monthly" },
+    { path: "/povestea-noastra", priority: "0.6", freq: "monthly" },
+    { path: "/faq", priority: "0.5", freq: "monthly" },
+    { path: "/recenzii", priority: "0.6", freq: "weekly" },
+    { path: "/afilieri", priority: "0.4", freq: "monthly" },
+    { path: "/corporate-gifting", priority: "0.5", freq: "monthly" },
+    { path: "/personalizare", priority: "0.6", freq: "monthly" },
+    { path: "/ingrijire-lumanari", priority: "0.5", freq: "monthly" },
+    { path: "/livrare-internationala", priority: "0.5", freq: "monthly" },
+  ];
+
   // If > 1000 products and no page param, return sitemap index
-  const totalUrls = totalProducts + categories.length + pages2.length + posts.length + 3;
+  const totalUrls = totalProducts + categories.length + cmsPages.length + posts.length + staticPages.length;
   if (!page && totalUrls > 1000) {
     const numPages = Math.ceil(totalProducts / 1000);
-    let indexXml = `<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+    let indexXml = `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
     for (let i = 1; i <= numPages + 1; i++) {
       indexXml += `\n  <sitemap><loc>${baseUrl}/functions/v1/sitemap?page=${i}</loc></sitemap>`;
     }
@@ -44,28 +60,34 @@ Deno.serve(async (req) => {
     return new Response(indexXml, { headers: corsHeaders });
   }
 
-  let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>${baseUrl}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
-  <url><loc>${baseUrl}/catalog</loc><changefreq>daily</changefreq><priority>0.9</priority></url>`;
+  let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
 
+  // Static pages
+  for (const sp of staticPages) {
+    xml += `\n  <url><loc>${baseUrl}${sp.path}</loc><changefreq>${sp.freq}</changefreq><priority>${sp.priority}</priority></url>`;
+  }
+
+  // Categories
   for (const cat of categories) {
     xml += `\n  <url><loc>${baseUrl}/catalog?category=${cat.slug}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`;
   }
 
+  // Products
   for (const p of products) {
     const lastmod = p.updated_at ? `<lastmod>${p.updated_at.slice(0, 10)}</lastmod>` : "";
-    xml += `\n  <url><loc>${baseUrl}/product/${p.slug}</loc>${lastmod}<changefreq>weekly</changefreq><priority>0.6</priority></url>`;
+    xml += `\n  <url><loc>${baseUrl}/product/${p.slug}</loc>${lastmod}<changefreq>weekly</changefreq><priority>0.9</priority></url>`;
   }
 
-  for (const pg of pages2) {
+  // CMS pages
+  for (const pg of cmsPages) {
     const lastmod = pg.updated_at ? `<lastmod>${pg.updated_at.slice(0, 10)}</lastmod>` : "";
-    xml += `\n  <url><loc>${baseUrl}/page/${pg.slug}</loc>${lastmod}<changefreq>monthly</changefreq><priority>0.5</priority></url>`;
+    xml += `\n  <url><loc>${baseUrl}/page/${pg.slug}</loc>${lastmod}<changefreq>monthly</changefreq><priority>0.6</priority></url>`;
   }
 
+  // Blog posts
   for (const post of posts) {
     const lastmod = post.updated_at ? `<lastmod>${post.updated_at.slice(0, 10)}</lastmod>` : "";
-    xml += `\n  <url><loc>${baseUrl}/blog/${post.slug}</loc>${lastmod}<changefreq>weekly</changefreq><priority>0.6</priority></url>`;
+    xml += `\n  <url><loc>${baseUrl}/blog/${post.slug}</loc>${lastmod}<changefreq>weekly</changefreq><priority>0.7</priority></url>`;
   }
 
   xml += "\n</urlset>";

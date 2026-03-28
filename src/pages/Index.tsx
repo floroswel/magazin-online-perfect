@@ -19,10 +19,16 @@ import { safeJsonLd } from "@/lib/sanitize-json-ld";
 import { isCandleCollection } from "@/lib/candleCatalog";
 import { useStoreBranding } from "@/hooks/useStoreBranding";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { usePageSeo } from "@/components/SeoHead";
 import type { Tables } from "@/integrations/supabase/types";
 
 export default function Index() {
   const branding = useStoreBranding();
+  usePageSeo({
+    title: "VENTUZA — Lumânări Artizanale Premium din România",
+    description: "Descoperă lumânări artizanale create din ingrediente naturale, parfumuri rare și cere de soia. Livrare în 24-48h.",
+    ogImage: "/og-homepage.jpg",
+  });
   const [featured, setFeatured] = useState<Tables<"products">[]>([]);
   const [loading, setLoading] = useState(true);
   const featuredRef = useScrollReveal();
