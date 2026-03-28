@@ -61,7 +61,7 @@ export default function AdminGlobalSearch() {
       items.push({
         id: p.id, type: "product",
         title: p.name,
-        subtitle: `${p.brand || "—"} · ${Number(p.price).toFixed(0)} RON`,
+        subtitle: `${p.sku || "—"} · ${p.brands?.name || "—"} · ${Number(p.price).toFixed(0)} RON`,
         path: "/admin/products",
       })
     );

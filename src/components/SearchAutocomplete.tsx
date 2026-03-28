@@ -52,7 +52,7 @@ export default function SearchAutocomplete({ className }: { className?: string }
   const search = (q: string) => {
     setQuery(q);
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (q.trim().length < 2) {
+    if (q.trim().length < 3) {
       setSuggestions([]);
       setOpen(false);
       return;
