@@ -19,7 +19,7 @@ export default function AdminCustomerDetail() {
   const [profile, setProfile] = useState<any>(null);
   const [orders, setOrders] = useState<any[]>([]);
   const [addresses, setAddresses] = useState<any[]>([]);
-  const [subscriptions, setSubscriptions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [returns, setReturns] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
   const [notes, setNotes] = useState<any[]>([]);
