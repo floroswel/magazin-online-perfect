@@ -78,6 +78,7 @@ export default function AdminDashboard() {
   const queryClient = useQueryClient();
   const [dateRange, setDateRange] = useState<DateRange>("7d");
   const [autoRefresh, setAutoRefresh] = useState(false);
+  const [manualOrderOpen, setManualOrderOpen] = useState(false);
 
   const rangeStart = useMemo(() => {
     const days = dateRange === "7d" ? 7 : dateRange === "30d" ? 30 : 90;
