@@ -13,7 +13,8 @@ import { toast } from "sonner";
 
 const DEFAULT_SETTINGS = {
   company: {
-    name: "", cui: "", reg_com: "", country: "România", county: "", city: "", address: "", postal_code: "",
+    name: "", cui: "", reg_com: "", euipo: "#019130214", iban: "", bank: "", website: "",
+    country: "România", county: "", city: "", address: "", postal_code: "",
     phone: "", email: "", email_orders: "", email_support: "", phone_orders: "", order_phone_hours: "",
     show_contact_details: true,
   },
