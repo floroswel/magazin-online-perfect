@@ -600,7 +600,27 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
             </CardContent>
           </Card>
 
-          {/* Expediere & Tracking */}
+          {/* Gift Details */}
+          {order.gift_wrapping && (
+            <Card className="border-amber-200 dark:border-amber-700/30">
+              <CardContent className="p-4">
+                <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><Gift className="w-3.5 h-3.5 text-amber-500" /> Detalii Cadou</h4>
+                <div className="text-sm text-muted-foreground space-y-1">
+                  <p className="text-xs">Ambalaj: <span className="font-medium text-foreground">{(order.gift_wrapping as any)?.wrapping || '—'}</span></p>
+                  {(order.gift_wrapping as any)?.price > 0 && (
+                    <p className="text-xs">Preț ambalaj: <span className="font-medium text-foreground">{(order.gift_wrapping as any)?.price} RON</span></p>
+                  )}
+                  {(order.gift_wrapping as any)?.message && (
+                    <div className="mt-2 p-2 bg-amber-50 dark:bg-amber-900/20 rounded border border-amber-200 dark:border-amber-700/30">
+                      <p className="text-[10px] font-semibold text-amber-700 mb-1">Mesaj cadou:</p>
+                      <p className="text-xs italic">„{(order.gift_wrapping as any)?.message}"</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <Card>
             <CardContent className="p-4">
               <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><Truck className="w-3.5 h-3.5" /> Expediere & Tracking</h4>
