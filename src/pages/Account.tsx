@@ -843,6 +843,7 @@ export default function Account() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </div>
     </Layout>
   );
 }
