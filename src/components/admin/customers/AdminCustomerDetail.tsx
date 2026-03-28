@@ -33,7 +33,7 @@ export default function AdminCustomerDetail() {
   useEffect(() => {
     if (!userId) return;
     const load = async () => {
-      const [profileRes, ordersRes, addrRes, subsRes, retRes, revRes, notesRes] = await Promise.all([
+      const [profileRes, ordersRes, addrRes, subsRes, retRes, revRes, notesRes, loyaltyRes] = await Promise.all([
         supabase.from("profiles").select("*").eq("user_id", userId).single(),
         supabase.from("orders").select("id, order_number, created_at, status, total, payment_method, user_email").eq("user_id", userId).order("created_at", { ascending: false }),
         supabase.from("addresses").select("*").eq("user_id", userId),
@@ -41,6 +41,7 @@ export default function AdminCustomerDetail() {
         supabase.from("returns").select("*, orders(id, order_number)").eq("user_id", userId),
         supabase.from("reviews").select("*, products(name)").eq("user_id", userId),
         supabase.from("customer_notes").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
+        supabase.from("loyalty_points").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(50),
       ]);
       setProfile(profileRes.data);
       setOrders(ordersRes.data || []);
