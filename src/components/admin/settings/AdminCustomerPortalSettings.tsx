@@ -57,7 +57,7 @@ export default function AdminCustomerPortalSettings() {
     ["enable_delivery_scheduling", "Programare livrare"],
     ["enable_invoice_download", "Descărcare facturi"],
     ["enable_ticket_system", "Sistem tichete suport"],
-    ["enable_subscription_management", "Gestionare abonamente"],
+    ["enable_burn_log", "Jurnal ardere lumânări"],
     ["enable_loyalty_dashboard", "Dashboard fidelitate"],
     ["enable_wishlist_sharing", "Partajare wishlist"],
     ["enable_price_alerts", "Alerte de preț"],
