@@ -545,7 +545,7 @@ export default function AdminSamedaySettings() {
                           {awb.generated_at ? format(new Date(awb.generated_at), "dd.MM.yy HH:mm", { locale: ro }) : "—"}
                         </TableCell>
                         <TableCell className="font-mono text-sm font-medium">
-                          <a href={`https://www.sameday.ro/tracking?awb=${awb.awb_number}`} target="_blank" rel="noopener" className="text-primary hover:underline">
+                          <a href={`https://www.sameday.ro/tracking?awb=${awb.awb_number}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                             {awb.awb_number}
                           </a>
                         </TableCell>

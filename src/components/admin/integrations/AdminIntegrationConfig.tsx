@@ -62,7 +62,7 @@ export default function AdminIntegrationConfig({ integrationKey, title, descript
         <div className="flex gap-2">
           {docsUrl && (
             <Button variant="outline" size="sm" asChild>
-              <a href={docsUrl} target="_blank" rel="noopener"><ExternalLink className="w-3.5 h-3.5 mr-1" /> Documentație</a>
+              <a href={docsUrl} target="_blank" rel="noopener noreferrer"><ExternalLink className="w-3.5 h-3.5 mr-1" /> Documentație</a>
             </Button>
           )}
           <Button onClick={save} disabled={saving}><Save className="w-4 h-4 mr-1" /> Salvează</Button>
