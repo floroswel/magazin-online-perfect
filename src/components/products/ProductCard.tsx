@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingCart, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
