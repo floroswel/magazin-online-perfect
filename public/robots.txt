@@ -1,11 +1,16 @@
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /admin/*
 Disallow: /checkout
 Disallow: /account
 Disallow: /cart
 Disallow: /reset-password
 Disallow: /forgot-password
+Disallow: /auth
+Disallow: /recover-cart
+Disallow: /unsubscribe
+Disallow: /install
 
 User-agent: Googlebot
 Allow: /

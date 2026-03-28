@@ -13,6 +13,11 @@
     <link rel="apple-touch-icon" href="/pwa-192x192.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/pwa-192x192.png" />
 
+    <!-- Security headers via meta -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
     <!-- Font preconnect + preload -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
