@@ -38,6 +38,7 @@ export default function Auth() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!gdprConsent) { toast.error("Trebuie să accepți Termenii și Politica de Confidențialitate."); return; }
     setLoading(true);
     const { error } = await signUp(registerForm.email, registerForm.password, registerForm.fullName);
     if (error) { toast.error(error.message); setLoading(false); return; }
