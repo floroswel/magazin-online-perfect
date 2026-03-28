@@ -233,8 +233,16 @@ export default function Checkout() {
     const initialStatus = isRedirectPayment ? "pending_payment" : isBankTransfer ? "pending_transfer" : "confirmed";
     const initialPaymentStatus = isRedirectPayment ? "pending" : isBankTransfer ? "pending_transfer" : "pending";
 
+    const orderNumber = `VNZ-${Date.now().toString(36).toUpperCase()}`;
     const orderData: any = {
-      total, payment_method: paymentMethod, shipping_address: form,
+      user_id: user?.id || "00000000-0000-0000-0000-000000000000",
+      order_number: orderNumber,
+      total,
+      subtotal: totalPrice,
+      shipping_total: shipping,
+      discount_total: couponDiscount + loyaltyDiscount + groupDiscount + pointsDiscount,
+      payment_method: paymentMethod,
+      shipping_address: form,
       coupon_id: appliedCoupons[0]?.id || null,
       discount_amount: couponDiscount + loyaltyDiscount + groupDiscount + pointsDiscount,
       loyalty_points_earned: pointsEarned,
@@ -243,10 +251,11 @@ export default function Checkout() {
       currency,
       status: initialStatus,
       payment_status: initialPaymentStatus,
+      source: "website",
       gift_wrapping: giftOptions.isGift ? { wrapping: giftOptions.wrappingId, price: giftOptions.wrappingPrice, message: giftOptions.message } : null,
     };
     if (extraFee > 0) orderData.payment_fee = extraFee;
-    if (user) orderData.user_id = user.id;
+    if (wantInvoice) orderData.billing_address = invoiceForm;
 
     const utmData = getUtmData();
     if (utmData) orderData.utm_data = utmData;
