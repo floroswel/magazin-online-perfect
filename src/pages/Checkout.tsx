@@ -52,6 +52,7 @@ export default function Checkout() {
   const [invoiceForm, setInvoiceForm] = useState({ companyName: "", cui: "", regCom: "", address: "" });
   const [pointsToUse, setPointsToUse] = useState(0);
   const [newsletterOptin, setNewsletterOptin] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [giftOptions, setGiftOptions] = useState<GiftOptions>({ isGift: false, wrappingId: "none", wrappingPrice: 0, message: "" });
 
   // Fetch enabled payment methods from DB
