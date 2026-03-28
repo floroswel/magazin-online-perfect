@@ -26,12 +26,14 @@ export default function AdminCustomerDetail() {
   const [newNote, setNewNote] = useState("");
   const [addingPoints, setAddingPoints] = useState(false);
   const [pointsToAdd, setPointsToAdd] = useState("");
+  const [pointsReason, setPointsReason] = useState("");
+  const [loyaltyPoints, setLoyaltyPoints] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!userId) return;
     const load = async () => {
-      const [profileRes, ordersRes, addrRes, subsRes, retRes, revRes, notesRes] = await Promise.all([
+      const [profileRes, ordersRes, addrRes, subsRes, retRes, revRes, notesRes, loyaltyRes] = await Promise.all([
         supabase.from("profiles").select("*").eq("user_id", userId).single(),
         supabase.from("orders").select("id, order_number, created_at, status, total, payment_method, user_email").eq("user_id", userId).order("created_at", { ascending: false }),
         supabase.from("addresses").select("*").eq("user_id", userId),
@@ -39,6 +41,7 @@ export default function AdminCustomerDetail() {
         supabase.from("returns").select("*, orders(id, order_number)").eq("user_id", userId),
         supabase.from("reviews").select("*, products(name)").eq("user_id", userId),
         supabase.from("customer_notes").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
+        supabase.from("loyalty_points").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(50),
       ]);
       setProfile(profileRes.data);
       setOrders(ordersRes.data || []);
@@ -47,6 +50,7 @@ export default function AdminCustomerDetail() {
       setReturns(retRes.data || []);
       setReviews(revRes.data || []);
       setNotes(notesRes.data || []);
+      setLoyaltyPoints(loyaltyRes.data || []);
       setLoading(false);
     };
     load();
@@ -77,11 +81,24 @@ export default function AdminCustomerDetail() {
   };
 
   const addLoyaltyPoints = async () => {
-    if (!pointsToAdd || !userId) return;
+    if (!pointsToAdd || !userId || !pointsReason.trim()) {
+      toast.error("Completează punctele și motivul.");
+      return;
+    }
     setAddingPoints(true);
-    await supabase.from("loyalty_points").insert({ user_id: userId, points: Number(pointsToAdd), action: "manual_admin", description: "Adăugat manual de admin" });
-    toast.success(`+${pointsToAdd} puncte adăugate`);
+    const pts = Number(pointsToAdd);
+    await supabase.from("loyalty_points").insert({
+      user_id: userId,
+      points: pts,
+      action: "manual_adjustment",
+      description: pointsReason.trim(),
+    });
+    toast.success(`${pts > 0 ? "+" : ""}${pts} puncte ${pts > 0 ? "adăugate" : "retrase"}`);
     setPointsToAdd("");
+    setPointsReason("");
+    // Refresh loyalty points
+    const { data: lp } = await supabase.from("loyalty_points").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(50);
+    setLoyaltyPoints(lp || []);
     setAddingPoints(false);
   };
 
@@ -168,13 +185,32 @@ export default function AdminCustomerDetail() {
           {/* Add loyalty points */}
           <Card>
             <CardContent className="p-3">
-              <h3 className="text-sm font-semibold mb-2 flex items-center gap-1"><Award className="w-4 h-4" /> Puncte loialitate</h3>
-              <div className="flex gap-2">
-                <Input type="number" placeholder="Puncte de adăugat" value={pointsToAdd} onChange={e => setPointsToAdd(e.target.value)} className="w-40 h-8" />
-                <Button size="sm" onClick={addLoyaltyPoints} disabled={addingPoints || !pointsToAdd}>
-                  <Plus className="w-3 h-3 mr-1" /> Adaugă
-                </Button>
+              <h3 className="text-sm font-semibold mb-2 flex items-center gap-1"><Award className="w-4 h-4" /> Ajustare puncte loialitate</h3>
+              <p className="text-xs text-muted-foreground mb-2">
+                Sold curent: <strong>{loyaltyPoints.reduce((s, p) => s + (p.points || 0), 0)}</strong> puncte
+              </p>
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
+                  <Input type="number" placeholder="+/- puncte" value={pointsToAdd} onChange={e => setPointsToAdd(e.target.value)} className="w-32 h-8" />
+                  <Input placeholder="Motiv (obligatoriu)" value={pointsReason} onChange={e => setPointsReason(e.target.value)} className="flex-1 h-8" />
+                  <Button size="sm" onClick={addLoyaltyPoints} disabled={addingPoints || !pointsToAdd || !pointsReason.trim()}>
+                    <Plus className="w-3 h-3 mr-1" /> Aplică
+                  </Button>
+                </div>
               </div>
+              {loyaltyPoints.length > 0 && (
+                <div className="mt-3 space-y-1 max-h-40 overflow-y-auto">
+                  <p className="text-xs font-semibold text-muted-foreground">Istoric recent</p>
+                  {loyaltyPoints.slice(0, 10).map((p: any) => (
+                    <div key={p.id} className="flex justify-between text-xs border-b border-border/30 pb-1">
+                      <span className="text-muted-foreground">{new Date(p.created_at).toLocaleDateString("ro-RO")} — {p.description || p.action}</span>
+                      <span className={p.points >= 0 ? "text-green-600 font-medium" : "text-destructive font-medium"}>
+                        {p.points >= 0 ? "+" : ""}{p.points}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

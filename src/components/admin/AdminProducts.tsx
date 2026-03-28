@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import AIGeneratorModal from "@/components/admin/products/AIGeneratorModal";
 import AttributeExtractorModal from "@/components/admin/products/AttributeExtractorModal";
+import { processProductImage, formatBytes } from "@/lib/imageResize";
 
 // ─── Types ───
 interface BundleComponent {
@@ -196,11 +197,15 @@ export default function AdminProducts() {
     name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
   const uploadImage = async (file: File): Promise<string> => {
-    const ext = file.name.split(".").pop();
+    // Auto-resize & convert to WebP before upload
+    const { resizeImage } = await import("@/lib/imageResize");
+    const result = await resizeImage(file, 1200, 1200, 0.85);
+    const ext = result.blob.type === "image/webp" ? "webp" : "jpg";
     const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const { error } = await supabase.storage.from("product-images").upload(path, file);
+    const { error } = await supabase.storage.from("product-images").upload(path, result.blob, { contentType: result.blob.type });
     if (error) throw error;
     const { data } = supabase.storage.from("product-images").getPublicUrl(path);
+    toast.info(`Imagine: ${formatBytes(result.originalSize)} → ${formatBytes(result.compressedSize)}`);
     return data.publicUrl;
   };
 

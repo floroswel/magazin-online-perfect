@@ -182,6 +182,7 @@ const AdminSamedaySettings = lazy(() => import("./shipping/AdminSamedaySettings"
 const Admin360SliderSettings = lazy(() => import("./settings/Admin360SliderSettings"));
 const AdminCustom404Settings = lazy(() => import("./settings/AdminCustom404Settings"));
 const AdminControlCenter = lazy(() => import("./control/AdminControlCenter"));
+const AdminConfiguratorSettings = lazy(() => import("./settings/AdminConfiguratorSettings"));
 
 export default function AdminRoutes() {
   return (
@@ -426,6 +427,7 @@ export default function AdminRoutes() {
         <Route path="settings/wallet" element={<AdminWalletSettings />} />
         <Route path="settings/360-slider" element={<Admin360SliderSettings />} />
         <Route path="settings/custom-404" element={<AdminCustom404Settings />} />
+        <Route path="settings/configurator" element={<AdminConfiguratorSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />

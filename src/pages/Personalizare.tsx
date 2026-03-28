@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,9 +11,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import Layout from "@/components/layout/Layout";
 import { useCart } from "@/hooks/useCart";
 import { useCurrency } from "@/hooks/useCurrency";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 
-const baseProducts = [
+// Default base products — overridden by DB configurator_settings
+const defaultBaseProducts = [
   { id: "simpla", name: "Lumânare Simplă", price: 35, image: "🕯️" },
   { id: "recipient", name: "Lumânare în Recipient", price: 45, image: "🫙" },
   { id: "set", name: "Set Cadou", price: 89, image: "🎁" },
@@ -54,6 +57,24 @@ const fonts = [
 export default function Personalizare() {
   const { addToCart } = useCart();
   const { format } = useCurrency();
+
+  // Load configurator settings from DB
+  const { data: configSettings } = useQuery({
+    queryKey: ["configurator-settings"],
+    queryFn: async () => {
+      const { data } = await supabase.from("app_settings").select("value_json").eq("key", "configurator_settings").maybeSingle();
+      return data?.value_json as any || null;
+    },
+    staleTime: 120_000,
+  });
+
+  // Use DB prices if available, fallback to defaults
+  const baseProducts = configSettings?.vessels?.length > 0
+    ? configSettings.vessels.map((v: any) => ({ id: v.id, name: v.name, price: v.price, image: "🕯️" }))
+    : defaultBaseProducts;
+
+  const textSurcharge = configSettings?.custom_text_surcharge ?? 10;
+  const productionTime = configSettings?.production_time || "3-5 zile lucrătoare";
   const [step, setStep] = useState(1);
   const [selectedBase, setSelectedBase] = useState<string | null>(null);
   const [selectedScent, setSelectedScent] = useState<string | null>(null);
@@ -70,7 +91,7 @@ export default function Personalizare() {
   const packaging = packagingOptions.find(p => p.id === selectedPackaging);
 
   const basePrice = base?.price || 0;
-  const textPrice = customText.trim() ? 10 : 0;
+  const textPrice = customText.trim() ? textSurcharge : 0;
   const packagingPrice = packaging?.price || 0;
   const totalPrice = basePrice + textPrice + packagingPrice;
 
@@ -227,7 +248,7 @@ export default function Personalizare() {
                       <p className={`text-lg ${fonts.find(f => f.id === selectedFont)?.class}`}>
                         {customText}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-2">Previzualizare text (+10 RON)</p>
+                      <p className="text-xs text-muted-foreground mt-2">Previzualizare text (+{textSurcharge} RON)</p>
                     </div>
                   )}
                 </div>
@@ -327,7 +348,7 @@ export default function Personalizare() {
                   <span className="text-primary">{format(totalPrice)}</span>
                 </div>
                 <div className="text-xs text-muted-foreground space-y-1">
-                  <p>⏱ Preparare: 3-5 zile</p>
+                  <p>⏱ Preparare: {productionTime}</p>
                   <p>📦 Livrare estimată: {new Date(Date.now() + 7 * 86400000).toLocaleDateString("ro-RO")}</p>
                 </div>
               </CardContent>
