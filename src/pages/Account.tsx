@@ -192,13 +192,8 @@ export default function Account() {
     ? Math.min(100, ((totalPoints - (currentLevel?.min_points || 0)) / (nextLevel.min_points - (currentLevel?.min_points || 0))) * 100)
     : 100;
 
-  const [showChangePassword, setShowChangePassword] = useState(false);
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [changingPassword, setChangingPassword] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [exportingData, setExportingData] = useState(false);
+
+
 
   const handleChangePassword = async () => {
     if (newPassword.length < 6) { toast.error("Parola trebuie să aibă minim 6 caractere"); return; }
