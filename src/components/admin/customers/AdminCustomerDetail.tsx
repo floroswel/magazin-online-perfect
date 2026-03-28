@@ -28,7 +28,6 @@ export default function AdminCustomerDetail() {
   const [pointsToAdd, setPointsToAdd] = useState("");
   const [pointsReason, setPointsReason] = useState("");
   const [loyaltyPoints, setLoyaltyPoints] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!userId) return;
