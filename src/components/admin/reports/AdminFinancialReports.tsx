@@ -681,9 +681,9 @@ export default function AdminFinancialReports() {
             </Card>
             <Card>
               <CardContent className="p-4">
-                <p className="text-xs text-muted-foreground mb-1">Abonamente (30 zile)</p>
-                <p className="text-2xl font-bold text-green-600">{fmt(next30DaysSubs)} RON</p>
-                <p className="text-[11px] text-muted-foreground">{subscriptions.length} abonamente active</p>
+                <p className="text-xs text-muted-foreground mb-1">Puncte Fidelizare Emise</p>
+                <p className="text-2xl font-bold text-green-600">{loyaltyPointsTotal}</p>
+                <p className="text-[11px] text-muted-foreground">Total puncte</p>
               </CardContent>
             </Card>
             <Card>
