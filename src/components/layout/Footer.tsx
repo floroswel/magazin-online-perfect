@@ -152,8 +152,8 @@ export default function Footer() {
             <h4 className="font-sans text-[11px] font-medium tracking-[3px] uppercase text-[#FAF6F0]/40 mt-8 mb-4">Informații Legale</h4>
             <ul className="space-y-2">
               <li><Link to="/page/termeni-si-conditii" className="font-sans text-xs text-[#FAF6F0]/40 hover:text-[#FAF6F0]/80 transition-colors">Termeni și Condiții</Link></li>
-              <li><Link to="/page/politica-confidentialitate" className="font-sans text-xs text-[#FAF6F0]/40 hover:text-[#FAF6F0]/80 transition-colors">Politica de Confidențialitate</Link></li>
-              <li><Link to="/page/politica-cookies" className="font-sans text-xs text-[#FAF6F0]/40 hover:text-[#FAF6F0]/80 transition-colors">Politica Cookie</Link></li>
+               <li><Link to="/page/politica-de-confidentialitate" className="font-sans text-xs text-[#FAF6F0]/40 hover:text-[#FAF6F0]/80 transition-colors">Politica de Confidențialitate</Link></li>
+               <li><Link to="/page/politica-cookie" className="font-sans text-xs text-[#FAF6F0]/40 hover:text-[#FAF6F0]/80 transition-colors">Politica Cookie</Link></li>
               <li><Link to="/page/politica-retur" className="font-sans text-xs text-[#FAF6F0]/40 hover:text-[#FAF6F0]/80 transition-colors">Politica de Retur</Link></li>
             </ul>
           </div>
@@ -172,7 +172,7 @@ export default function Footer() {
               </div>
               <label className="flex items-start gap-2 cursor-pointer">
                 <input type="checkbox" checked={gdprConsent} onChange={e => setGdprConsent(e.target.checked)} className="mt-0.5 rounded-sm" />
-                <span className="font-sans text-[11px] text-[#FAF6F0]/40">Sunt de acord să primesc emailuri.</span>
+                <span className="font-sans text-[11px] text-[#FAF6F0]/40">Sunt de acord să primesc emailuri. Citește <Link to="/page/politica-de-confidentialitate" className="text-primary hover:underline">Politica de Confidențialitate</Link>.</span>
               </label>
             </form>
             <div className="mt-6 space-y-2">

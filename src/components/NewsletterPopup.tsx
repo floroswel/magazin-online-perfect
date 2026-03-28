@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -111,7 +112,7 @@ export default function NewsletterPopup() {
           <div className="flex items-start gap-2">
             <Checkbox id="popup-consent" checked={consent} onCheckedChange={v => setConsent(!!v)} className="mt-0.5" />
             <label htmlFor="popup-consent" className="text-xs text-muted-foreground cursor-pointer">
-              Sunt de acord să primesc emailuri promoționale. Mă pot dezabona oricând.
+              Sunt de acord să primesc emailuri promoționale. Citește <Link to="/page/politica-de-confidentialitate" className="text-primary hover:underline">Politica de Confidențialitate</Link>. Mă pot dezabona oricând.
             </label>
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
