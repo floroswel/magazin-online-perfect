@@ -27,6 +27,7 @@ import { usePricingRules } from "@/hooks/usePricingRules";
 import { toast } from "sonner";
 import { safeJsonLd, sanitizeForJsonLd } from "@/lib/sanitize-json-ld";
 import { useCurrency } from "@/hooks/useCurrency";
+import { usePageSeo } from "@/components/SeoHead";
 import type { Tables } from "@/integrations/supabase/types";
 
 export default function ProductDetail() {
