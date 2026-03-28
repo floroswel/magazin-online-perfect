@@ -72,13 +72,6 @@ export default class ErrorBoundary extends Component<Props, State> {
                 Înapoi la magazin
               </a>
             </div>
-            <button
-              onClick={() => window.location.reload()}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-            >
-              <RefreshCw className="h-4 w-4" />
-              Refresh
-            </button>
           </div>
         </div>
       );
