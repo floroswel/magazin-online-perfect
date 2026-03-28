@@ -242,9 +242,9 @@ export default function Account() {
   const handleDeleteAccount = async () => {
     if (!user) return;
     try {
-      await supabase.rpc("anonymize_user_data", { p_user_id: user.id });
-      await supabase.auth.signOut();
-      toast.success("Contul a fost anonimizat și te-ai deconectat.");
+      const { error } = await supabase.functions.invoke("delete-account");
+      if (error) throw error;
+      toast.success("Contul a fost șters definitiv.");
       window.location.href = "/";
     } catch { toast.error("Eroare la ștergerea contului"); }
   };
