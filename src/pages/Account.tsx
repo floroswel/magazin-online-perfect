@@ -694,6 +694,115 @@ export default function Account() {
         </Tabs>
       </div>
 
+          {/* RIGHT SIDEBAR */}
+          <div className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+            {/* Account Info Card */}
+            <Card>
+              <CardContent className="p-4 text-center">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                  <UserIcon className="w-8 h-8 text-primary" />
+                </div>
+                <p className="font-semibold text-sm">{profile?.full_name || "Utilizator"}</p>
+                <p className="text-xs text-muted-foreground">{user.email}</p>
+                <p className="text-[10px] text-muted-foreground mt-1">Membru din {user.created_at ? new Date(user.created_at).toLocaleDateString("ro-RO", { month: "long", year: "numeric" }) : "—"}</p>
+              </CardContent>
+            </Card>
+
+            {/* Security Card */}
+            <Card>
+              <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Shield className="w-4 h-4" /> Securitate</CardTitle></CardHeader>
+              <CardContent className="space-y-2">
+                <Button variant="outline" size="sm" className="w-full justify-start gap-2 text-xs" onClick={() => setShowChangePassword(true)}>
+                  <KeyRound className="w-3.5 h-3.5" /> Schimbă parola
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start gap-2 text-xs" onClick={handleLogout}>
+                  <LogOut className="w-3.5 h-3.5" /> Deconectare
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* GDPR Card */}
+            <Card>
+              <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><DatabaseBackup className="w-4 h-4" /> Datele mele (GDPR)</CardTitle></CardHeader>
+              <CardContent className="space-y-2">
+                <Button variant="outline" size="sm" className="w-full justify-start gap-2 text-xs" onClick={handleExportData} disabled={exportingData}>
+                  <Download className="w-3.5 h-3.5" /> {exportingData ? "Se exportă..." : "Exportă datele personale"}
+                </Button>
+                <p className="text-[10px] text-muted-foreground">Descarcă o copie a tuturor datelor tale personale în format JSON, conform GDPR Art. 20.</p>
+                <Separator />
+                <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-xs text-destructive hover:text-destructive" onClick={() => setShowDeleteConfirm(true)}>
+                  <UserX className="w-3.5 h-3.5" /> Șterge contul
+                </Button>
+                <p className="text-[10px] text-muted-foreground">Conform GDPR Art. 17 (dreptul la ștergere). Datele vor fi anonimizate ireversibil.</p>
+              </CardContent>
+            </Card>
+
+            {/* Quick Links */}
+            <Card>
+              <CardHeader className="pb-2"><CardTitle className="text-sm">Link-uri rapide</CardTitle></CardHeader>
+              <CardContent className="space-y-1">
+                <Link to="/catalog" className="block text-xs text-muted-foreground hover:text-foreground transition-colors py-1">🛒 Continuă cumpărăturile</Link>
+                <Link to="/favorites" className="block text-xs text-muted-foreground hover:text-foreground transition-colors py-1">❤️ Lista de dorințe</Link>
+                <Link to="/tracking" className="block text-xs text-muted-foreground hover:text-foreground transition-colors py-1">📦 Urmărește o comandă</Link>
+                <Link to="/quiz-parfum" className="block text-xs text-muted-foreground hover:text-foreground transition-colors py-1">🕯️ Quiz parfum</Link>
+                <Link to="/faq" className="block text-xs text-muted-foreground hover:text-foreground transition-colors py-1">❓ Întrebări frecvente</Link>
+              </CardContent>
+            </Card>
+
+            {/* Legal info */}
+            <div className="text-[10px] text-muted-foreground space-y-1 px-1">
+              <p>Conform legislației UE (GDPR), ai dreptul la acces, rectificare, ștergere și portabilitatea datelor tale personale.</p>
+              <p>VENTUZA SRL · J40/xxxxx/2020 · CUI: ROxxxxxxx</p>
+              <Link to="/page/politica-de-confidentialitate" className="hover:underline block">Politica de confidențialitate</Link>
+              <Link to="/page/termeni-si-conditii" className="hover:underline block">Termeni și condiții</Link>
+            </div>
+          </div>
+        </div> {/* end grid */}
+      </div>
+
+      {/* Change Password Dialog */}
+      <Dialog open={showChangePassword} onOpenChange={setShowChangePassword}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Schimbă parola</DialogTitle>
+            <DialogDescription>Introdu noua parolă (minim 6 caractere).</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="relative">
+              <Label>Parola nouă</Label>
+              <Input type={showPassword ? "text" : "password"} value={newPassword} onChange={e => setNewPassword(e.target.value)} />
+              <button type="button" className="absolute right-3 top-8 text-muted-foreground" onClick={() => setShowPassword(p => !p)}>
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+            <div>
+              <Label>Confirmă parola</Label>
+              <Input type={showPassword ? "text" : "password"} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowChangePassword(false)}>Anulează</Button>
+            <Button onClick={handleChangePassword} disabled={changingPassword}>{changingPassword ? "Se procesează..." : "Salvează"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Account Confirm Dialog */}
+      <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-destructive">Ștergere cont</DialogTitle>
+            <DialogDescription>
+              Ești sigur că vrei să ștergi contul? Toate datele tale personale vor fi anonimizate ireversibil conform GDPR Art. 17. Comenzile existente vor rămâne în sistem doar pentru scopuri contabile.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>Anulează</Button>
+            <Button variant="destructive" onClick={handleDeleteAccount}>Da, șterge contul</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Return Request Form */}
       {returnOrder && user && (
         <ReturnRequestForm
