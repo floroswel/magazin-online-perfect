@@ -348,7 +348,7 @@ export default function Personalizare() {
                   <span className="text-primary">{format(totalPrice)}</span>
                 </div>
                 <div className="text-xs text-muted-foreground space-y-1">
-                  <p>⏱ Preparare: 3-5 zile</p>
+                  <p>⏱ Preparare: {productionTime}</p>
                   <p>📦 Livrare estimată: {new Date(Date.now() + 7 * 86400000).toLocaleDateString("ro-RO")}</p>
                 </div>
               </CardContent>
