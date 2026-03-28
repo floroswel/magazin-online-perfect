@@ -50,6 +50,7 @@ export default function AdminCustomerDetail() {
       setReturns(retRes.data || []);
       setReviews(revRes.data || []);
       setNotes(notesRes.data || []);
+      setLoyaltyPoints(loyaltyRes.data || []);
       setLoading(false);
     };
     load();
