@@ -5673,6 +5673,15 @@ export type Database = {
       }
       products: {
         Row: {
+          badge_bestseller: boolean
+          badge_custom_color: string | null
+          badge_custom_text: string | null
+          badge_exclusive: boolean
+          badge_gift: boolean
+          badge_low_stock: boolean
+          badge_new: boolean
+          badge_new_until: string | null
+          badge_promo: boolean
           brand_id: string | null
           bundle_discount_percent: number | null
           bundle_pricing_mode: string | null
@@ -5718,6 +5727,15 @@ export type Database = {
           width_cm: number | null
         }
         Insert: {
+          badge_bestseller?: boolean
+          badge_custom_color?: string | null
+          badge_custom_text?: string | null
+          badge_exclusive?: boolean
+          badge_gift?: boolean
+          badge_low_stock?: boolean
+          badge_new?: boolean
+          badge_new_until?: string | null
+          badge_promo?: boolean
           brand_id?: string | null
           bundle_discount_percent?: number | null
           bundle_pricing_mode?: string | null
@@ -5763,6 +5781,15 @@ export type Database = {
           width_cm?: number | null
         }
         Update: {
+          badge_bestseller?: boolean
+          badge_custom_color?: string | null
+          badge_custom_text?: string | null
+          badge_exclusive?: boolean
+          badge_gift?: boolean
+          badge_low_stock?: boolean
+          badge_new?: boolean
+          badge_new_until?: string | null
+          badge_promo?: boolean
           brand_id?: string | null
           bundle_discount_percent?: number | null
           bundle_pricing_mode?: string | null
