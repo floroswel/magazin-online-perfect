@@ -580,6 +580,9 @@ export default function Checkout() {
               {pointsDiscount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Puncte folosite ({pointsToUse})</span><span>-{format(pointsDiscount)}</span></div>}
               {groupDiscount > 0 && <div className="flex justify-between text-sm text-green-600"><span>Discount grup</span><span>-{format(groupDiscount)}</span></div>}
               <div className="flex justify-between text-sm"><span className="text-muted-foreground">Livrare</span><span>{shipping === 0 ? "GRATUITĂ" : format(shipping)}</span></div>
+              {giftOptions.wrappingPrice > 0 && (
+                <div className="flex justify-between text-sm"><span className="text-muted-foreground">🎁 Ambalaj cadou</span><span>+{format(giftOptions.wrappingPrice)}</span></div>
+              )}
               {extraFee > 0 && (
                 <div className="flex justify-between text-sm text-amber-700">
                   <span>Taxă {selectedMethod?.name}</span>
