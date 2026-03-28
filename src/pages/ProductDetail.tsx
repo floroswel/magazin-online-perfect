@@ -160,6 +160,16 @@ export default function ProductDetail() {
     setQuestions(data || []);
   };
 
+  // Dynamic SEO for product page
+  usePageSeo({
+    title: product ? `${product.name} — ${product.price} lei · VENTUZA` : "VENTUZA",
+    description: product ? `${product.name} — ${product.short_description || "Lumânare artizanală VENTUZA"}. Stoc: ${product.stock} bucăți. Livrare rapidă în România.` : "",
+    ogImage: product?.image_url || "/og-homepage.jpg",
+    ogType: "product",
+    productPrice: product?.price,
+    productCurrency: "RON",
+  });
+
   if (loading) return <Layout><div className="container py-16 text-center">Se încarcă...</div></Layout>;
   if (!product) return <Layout><div className="container py-16 text-center">Produsul nu a fost găsit.</div></Layout>;
 
