@@ -57,6 +57,24 @@ const fonts = [
 export default function Personalizare() {
   const { addToCart } = useCart();
   const { format } = useCurrency();
+
+  // Load configurator settings from DB
+  const { data: configSettings } = useQuery({
+    queryKey: ["configurator-settings"],
+    queryFn: async () => {
+      const { data } = await supabase.from("app_settings").select("value_json").eq("key", "configurator_settings").maybeSingle();
+      return data?.value_json as any || null;
+    },
+    staleTime: 120_000,
+  });
+
+  // Use DB prices if available, fallback to defaults
+  const baseProducts = configSettings?.vessels?.length > 0
+    ? configSettings.vessels.map((v: any) => ({ id: v.id, name: v.name, price: v.price, image: "🕯️" }))
+    : defaultBaseProducts;
+
+  const textSurcharge = configSettings?.custom_text_surcharge ?? 10;
+  const productionTime = configSettings?.production_time || "3-5 zile lucrătoare";
   const [step, setStep] = useState(1);
   const [selectedBase, setSelectedBase] = useState<string | null>(null);
   const [selectedScent, setSelectedScent] = useState<string | null>(null);
