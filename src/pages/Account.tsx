@@ -564,6 +564,11 @@ export default function Account() {
             <WalletTab />
           </TabsContent>
 
+          {/* BURN LOG TAB */}
+          <TabsContent value="burnlog" className="mt-4">
+            <BurnLogTab />
+          </TabsContent>
+
           {/* PREFERENCES TAB */}
           <TabsContent value="preferences" className="mt-4 space-y-4">
             <Card>
