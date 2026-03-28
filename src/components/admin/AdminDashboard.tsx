@@ -45,6 +45,7 @@ import {
   Cell,
   BarChart,
 } from "recharts";
+import ManualOrderDialog from "./orders/ManualOrderDialog";
 
 const statusLabels: Record<string, string> = {
   pending: "În așteptare",
