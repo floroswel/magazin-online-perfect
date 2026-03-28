@@ -248,7 +248,7 @@ export default function Personalizare() {
                       <p className={`text-lg ${fonts.find(f => f.id === selectedFont)?.class}`}>
                         {customText}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-2">Previzualizare text (+10 RON)</p>
+                      <p className="text-xs text-muted-foreground mt-2">Previzualizare text (+{textSurcharge} RON)</p>
                     </div>
                   )}
                 </div>
