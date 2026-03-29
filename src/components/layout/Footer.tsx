@@ -132,8 +132,8 @@ export default function Footer() {
   const footerColsClass = layout.footer_columns === 2 ? "lg:grid-cols-2" : layout.footer_columns === 3 ? "lg:grid-cols-3" : layout.footer_columns === 5 ? "lg:grid-cols-5" : "lg:grid-cols-4";
 
   return (
-    <footer className="bg-foreground text-background mt-auto">
-      <div className="container py-10 md:py-14 px-4">
+    <footer className="bg-foreground text-background mt-auto overflow-hidden">
+      <div className="container py-10 md:py-14 px-4 max-w-[1200px] mx-auto">
         {showColumns !== false && (
           <div className={`grid grid-cols-2 md:grid-cols-2 ${footerColsClass} gap-8`}>
             {/* Brand + Social */}
