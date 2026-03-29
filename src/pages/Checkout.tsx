@@ -246,7 +246,7 @@ export default function Checkout() {
     const initialPaymentStatus = isRedirectPayment ? "pending" : isBankTransfer ? "pending_transfer" : "pending";
 
     const orderData: any = {
-      user_id: user?.id || "00000000-0000-0000-0000-000000000000",
+      user_id: user?.id || null,
       total,
       subtotal: totalPrice,
       shipping_total: shipping,
