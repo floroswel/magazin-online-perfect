@@ -220,6 +220,13 @@ export default function Checkout() {
     if (!form.city.trim()) { toast.error("Completează orașul"); return; }
     if (!form.county.trim()) { toast.error("Completează județul"); return; }
     if (!user && (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))) { toast.error("Adresa de email nu este validă"); return; }
+    if (shipToDifferent) {
+      if (!shippingForm.fullName.trim() || shippingForm.fullName.trim().length < 3) { toast.error("Numele destinatarului trebuie să conțină minim 3 caractere"); return; }
+      if (!shippingForm.phone.trim() || !/^(\+?4)?0[0-9]{9}$/.test(shippingForm.phone.replace(/\s/g, ""))) { toast.error("Telefonul destinatarului nu este valid"); return; }
+      if (!shippingForm.address.trim() || shippingForm.address.trim().length < 5) { toast.error("Adresa de livrare trebuie să conțină minim 5 caractere"); return; }
+      if (!shippingForm.city.trim()) { toast.error("Completează orașul de livrare"); return; }
+      if (!shippingForm.county.trim()) { toast.error("Completează județul de livrare"); return; }
+    }
     if (!termsAccepted) { toast.error("Trebuie să accepți Termenii și Condițiile pentru a plasa comanda."); return; }
     setSubmitting(true);
 
