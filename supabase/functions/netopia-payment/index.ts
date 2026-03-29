@@ -10,9 +10,6 @@ Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
-
-  // Temporary GET diagnostic
-  if (req.method === "GET") {
     const apiKey = Deno.env.get("NETOPIA_API_KEY") || "";
     console.log("DIAG api_key_length:", apiKey.length);
     console.log("DIAG api_key_first15:", apiKey.substring(0, 15));
