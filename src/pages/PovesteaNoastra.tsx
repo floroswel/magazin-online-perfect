@@ -1,7 +1,28 @@
+import { useState, useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import { usePageSeo } from "@/components/SeoHead";
+import { supabase } from "@/integrations/supabase/client";
+
+interface PovesteaSection { label: string; title: string; text: string; }
+
+const defaultSections: PovesteaSection[] = [
+  { label: "Cum a Început", title: "O Pasiune Născută Acasă", text: "MamaLucica s-a născut dintr-o pasiune simplă: dorința de a crea ceva frumos, cu mâinile proprii, din ingrediente naturale. Totul a început acasă, în bucătărie, cu primele experimente cu ceară de soia și uleiuri esențiale. Astăzi, fiecare lumânare MamaLucica poartă aceeași dragoste și atenție la detalii din primele zile." },
+  { label: "Ingrediente", title: "Ce Folosim", text: "" },
+  { label: "Principii", title: "Valorile Noastre", text: "" },
+  { label: "Angajament", title: "Promisiunea Noastră", text: "Fiecare lumânare MamaLucica este o mică operă de artă. Promitem să folosim mereu ingrediente naturale, să respectăm mediul și să creăm produse care aduc bucurie în fiecare casă." },
+];
 
 export default function PovesteaNoastra() {
+  const [sections, setSections] = useState<PovesteaSection[]>([]);
+
+  useEffect(() => {
+    supabase.from("app_settings").select("value_json").eq("key", "static_page_povestea").maybeSingle()
+      .then(({ data }) => {
+        if (data?.value_json && Array.isArray(data.value_json) && data.value_json.length > 0) {
+          setSections(data.value_json as unknown as PovesteaSection[]);
+        }
+      });
+  }, []);
   usePageSeo({
     title: "Povestea MamaLucica — Lumânări Artizanale din România",
     description: "Descoperă cum a început MamaLucica și pasiunea noastră pentru lumânări artizanale din ingrediente naturale.",
