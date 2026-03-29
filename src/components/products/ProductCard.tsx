@@ -23,6 +23,7 @@ function ProductCardInner({ product, eager = false }: Props) {
   const { getProductPromotion } = usePromotions();
   const { calcPointsForPrice, config } = useLoyalty();
   const { prefetchProduct } = usePrefetch();
+  const taxSettings = useTaxSettings();
   const [addedToCart, setAddedToCart] = useState(false);
   const [liked, setLiked] = useState(false);
 
