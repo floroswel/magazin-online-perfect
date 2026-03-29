@@ -2,51 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@300;400;500;600&display=swap');
 
 @layer base {
   :root {
-    /* VENTUZA — Warm artisan palette */
-    --background: 36 33% 95%;
-    --foreground: 18 15% 15%;
+    /* MAMA LUCICA — Clean Ella-inspired palette */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 18 15% 15%;
+    --card-foreground: 0 0% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 18 15% 15%;
+    --popover-foreground: 0 0% 10%;
 
-    --primary: 32 48% 46%;
-    --primary-foreground: 36 33% 95%;
+    --primary: 22 52% 54%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 39 42% 90%;
-    --secondary-foreground: 18 15% 15%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 10%;
 
-    --muted: 30 18% 90%;
-    --muted-foreground: 22 15% 49%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 32 48% 46%;
+    --accent: 22 52% 54%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 28 22% 85%;
-    --input: 28 22% 85%;
-    --ring: 32 48% 46%;
+    --border: 0 0% 91%;
+    --input: 0 0% 91%;
+    --ring: 22 52% 54%;
 
     --radius: 0.5rem;
 
     /* Brand tokens */
-    --ventuza-ivory: 36 33% 95%;
-    --ventuza-cream: 39 42% 90%;
-    --ventuza-amber: 32 48% 46%;
-    --ventuza-amber-dark: 30 54% 36%;
-    --ventuza-dark: 18 15% 15%;
-    --ventuza-dark-surface: 18 24% 9%;
-    --ventuza-sage: 105 13% 56%;
-    --ventuza-rose: 0 17% 72%;
-    --ventuza-text-muted: 22 15% 49%;
+    --ml-terracotta: 22 52% 54%;
+    --ml-terracotta-dark: 22 52% 44%;
+    --ml-dark: 0 0% 10%;
+    --ml-dark-surface: 0 0% 7%;
+    --ml-light-bg: 30 40% 97%;
+    --ml-warm-bg: 33 60% 96%;
+    --ml-border: 0 0% 91%;
 
     /* Sidebar (admin) */
     --sidebar-background: 220 50% 18%;
@@ -60,33 +58,33 @@
   }
 
   .dark:not(.admin-panel) {
-    --background: 18 24% 9%;
-    --foreground: 36 33% 95%;
+    --background: 20 10% 8%;
+    --foreground: 30 15% 90%;
 
-    --card: 18 20% 12%;
-    --card-foreground: 36 33% 95%;
+    --card: 20 8% 12%;
+    --card-foreground: 30 15% 90%;
 
-    --popover: 18 20% 12%;
-    --popover-foreground: 36 33% 95%;
+    --popover: 20 8% 12%;
+    --popover-foreground: 30 15% 90%;
 
-    --primary: 32 48% 46%;
-    --primary-foreground: 36 33% 95%;
+    --primary: 22 52% 54%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 18 18% 16%;
-    --secondary-foreground: 36 33% 95%;
+    --secondary: 20 8% 15%;
+    --secondary-foreground: 30 15% 90%;
 
-    --muted: 18 14% 18%;
-    --muted-foreground: 30 12% 60%;
+    --muted: 20 6% 16%;
+    --muted-foreground: 25 10% 55%;
 
-    --accent: 32 48% 46%;
+    --accent: 22 52% 54%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 36 33% 6%;
-    --input: 36 33% 6%;
-    --ring: 32 48% 46%;
+    --border: 20 8% 18%;
+    --input: 20 8% 18%;
+    --ring: 22 52% 54%;
   }
 
   /* ADMIN PANEL — clean neutral */
@@ -136,16 +134,15 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: 'Poppins', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-weight: 300;
-    letter-spacing: -0.01em;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 500;
   }
 
   ::-webkit-scrollbar {
@@ -165,7 +162,6 @@
 }
 
 @layer utilities {
-  /* Marquee */
   @keyframes marquee {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
@@ -177,7 +173,6 @@
     animation-play-state: paused;
   }
 
-  /* Scroll reveal */
   .reveal {
     opacity: 0;
     transform: translateY(24px);
@@ -188,34 +183,21 @@
     transform: translateY(0);
   }
 
-  /* Stagger delays */
   .stagger-1 { transition-delay: 0s; }
   .stagger-2 { transition-delay: 0.15s; }
   .stagger-3 { transition-delay: 0.3s; }
   .stagger-4 { transition-delay: 0.45s; }
 
-  /* Noise texture */
-  .noise-bg::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    pointer-events: none;
-  }
-
-  /* CTA button hover */
   .btn-cta {
     @apply transition-all duration-200;
   }
   .btn-cta:hover {
     transform: scale(1.02);
-    box-shadow: 0 4px 20px rgba(176, 125, 58, 0.3);
+    box-shadow: 0 4px 20px hsla(22, 52%, 54%, 0.3);
   }
 
-  /* Input focus glow */
   .input-glow:focus {
-    box-shadow: 0 0 0 3px hsla(32, 48%, 46%, 0.3);
+    box-shadow: 0 0 0 3px hsla(22, 52%, 54%, 0.25);
   }
 
   /* Admin scrollbar */
