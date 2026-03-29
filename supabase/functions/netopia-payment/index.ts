@@ -9,21 +9,6 @@ const corsHeaders = {
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
-
-
-      config: { emailTemplate: "", notifyUrl: "https://example.com/ipn", redirectUrl: "https://example.com/return", language: "ro" },
-      payment: { options: { installments: 0, bonus: 0 }, instrument: { type: "card" }, data: {} },
-      order: { ntpID: "", posSignature: "3BBD-XEHU-UYUY-4VLV-UQPW", dateTime: new Date().toISOString(), description: "Test diagnostic", orderID: "diag-001", amount: 1, currency: "RON", billing: { email: "test@test.com", phone: "0700000000", firstName: "Test", lastName: "User", city: "Bucuresti", country: 642, state: "B", postalCode: "010101", details: "test" }, shipping: { email: "test@test.com", phone: "0700000000", firstName: "Test", lastName: "User", city: "Bucuresti", country: 642, state: "B", postalCode: "010101", details: "test" }, products: [], installments: { selected: 0, available: [0] }, data: {} }
-    };
-    const resp = await fetch("https://secure.sandbox.netopia-payments.com/payment/card/start", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: apiKey },
-      body: JSON.stringify(testBody),
-    });
-    const body = await resp.text();
-    console.log("DIAG netopia_status:", resp.status);
-    console.log("DIAG netopia_body:", body);
-    return new Response(JSON.stringify({ api_key_length: apiKey.length, api_key_first15: apiKey.substring(0, 15), netopia_status: resp.status, netopia_body: body }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 
 
@@ -57,7 +42,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const config = pm.config_json as Record<string, any>;
-    const apiKey = config.api_key || Deno.env.get("NETOPIA_API_KEY") || "";
+    const apiKey = Deno.env.get("NETOPIA_API_KEY") || config.api_key || "";
     const posSignature = config.pos_signature || config.merchant_id || "";
     const isSandbox = config.sandbox === "true" || config.sandbox === true;
 
