@@ -6,11 +6,11 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Sandbox mode — flip to false + swap certs for production
+// Sandbox mode — flip to false + swap URL for production
 const SANDBOX_MODE = true;
 const NETOPIA_BASE = SANDBOX_MODE
-  ? "https://sandboxsecure.mobilpay.ro"
-  : "https://secure.mobilpay.ro";
+  ? "https://secure.sandbox.netopia-payments.com"
+  : "https://secure.mobilpay.ro/pay";
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -48,20 +48,14 @@ Deno.serve(async (req: Request) => {
     }
 
     const config = pm.config_json as Record<string, string>;
-    const signature = config.merchant_id || "";
-    const publicKeyPem = config.public_key || "";
-    const _privateKeyPem = config.private_key || "";
+    // Netopia V2 uses an API key for Authorization, stored as 'api_key' or 'merchant_id'
+    const apiKey = config.api_key || config.merchant_id || "";
+    const posSignature = config.pos_signature || config.merchant_id || "";
 
-    if (!signature) {
+    if (!apiKey) {
+      console.error("Netopia config missing api_key/merchant_id:", Object.keys(config));
       return new Response(
-        JSON.stringify({ error: "Netopia merchant_id not configured in payment method" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    if (!publicKeyPem) {
-      return new Response(
-        JSON.stringify({ error: "Netopia public_key not configured in payment method" }),
+        JSON.stringify({ error: "Netopia API key not configured in payment method config_json. Required field: 'api_key' or 'merchant_id'" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -86,6 +80,7 @@ Deno.serve(async (req: Request) => {
     const ipnUrl = `${supabaseUrl}/functions/v1/netopia-ipn`;
 
     // ── Build Netopia V2 Start Payment payload ──
+    // Per https://doc.netopia-payments.com/docs/payment-api/v2.x/start/Resources/sample-request
     const netopiaPayload = {
       config: {
         emailTemplate: "",
@@ -107,69 +102,90 @@ Deno.serve(async (req: Request) => {
       },
       order: {
         ntpID: "",
-        posSignature: signature,
+        posSignature: posSignature,
         dateTime: new Date().toISOString(),
         description: `Comandă VENTUZA #${orderId.slice(0, 8)}`,
         orderID: orderId,
-        amount: order.total,
+        amount: Number(order.total),
         currency: "RON",
         billing: {
           email: order.user_email || shippingAddr.email || "",
           phone: shippingAddr.phone || "",
-          firstName: (shippingAddr.full_name || "").split(" ")[0] || "Client",
-          lastName: (shippingAddr.full_name || "").split(" ").slice(1).join(" ") || "",
+          firstName: (shippingAddr.fullName || shippingAddr.full_name || "").split(" ")[0] || "Client",
+          lastName: (shippingAddr.fullName || shippingAddr.full_name || "").split(" ").slice(1).join(" ") || "",
           city: shippingAddr.city || "",
           country: 642,
           countryName: "Romania",
           state: shippingAddr.county || "",
-          postalCode: shippingAddr.postal_code || "",
+          postalCode: shippingAddr.postalCode || shippingAddr.postal_code || "",
           details: shippingAddr.address || "",
         },
         shipping: {
           email: order.user_email || shippingAddr.email || "",
           phone: shippingAddr.phone || "",
-          firstName: (shippingAddr.full_name || "").split(" ")[0] || "Client",
-          lastName: (shippingAddr.full_name || "").split(" ").slice(1).join(" ") || "",
+          firstName: (shippingAddr.fullName || shippingAddr.full_name || "").split(" ")[0] || "Client",
+          lastName: (shippingAddr.fullName || shippingAddr.full_name || "").split(" ").slice(1).join(" ") || "",
           city: shippingAddr.city || "",
           country: 642,
           countryName: "Romania",
           state: shippingAddr.county || "",
-          postalCode: shippingAddr.postal_code || "",
+          postalCode: shippingAddr.postalCode || shippingAddr.postal_code || "",
           details: shippingAddr.address || "",
         },
         products: [],
       },
     };
 
+    console.log("Netopia V2 request URL:", `${NETOPIA_BASE}/payment/card/start`);
+    console.log("Netopia V2 payload:", JSON.stringify(netopiaPayload));
+
     // ── Call Netopia V2 API ──
     const netopiaRes = await fetch(`${NETOPIA_BASE}/payment/card/start`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: signature,
+        "Authorization": apiKey,
       },
       body: JSON.stringify(netopiaPayload),
     });
 
-    const netopiaData = await netopiaRes.json();
-    console.log("Netopia response:", JSON.stringify(netopiaData));
+    const responseText = await netopiaRes.text();
+    console.log("Netopia V2 raw response status:", netopiaRes.status);
+    console.log("Netopia V2 raw response:", responseText.slice(0, 2000));
 
-    if (netopiaData.error && netopiaData.error.code !== "0" && netopiaData.error.code !== 0) {
+    // Try to parse as JSON
+    let netopiaData: any;
+    try {
+      netopiaData = JSON.parse(responseText);
+    } catch {
+      console.error("Netopia returned non-JSON response (likely wrong URL or auth):", responseText.slice(0, 500));
+      return new Response(
+        JSON.stringify({ error: "Netopia returned invalid response. Check API key and endpoint configuration." }),
+        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log("Netopia V2 parsed response:", JSON.stringify(netopiaData));
+
+    // Check for errors
+    if (netopiaData.error && netopiaData.error.code !== "0" && netopiaData.error.code !== 0 && netopiaData.error.code !== "100") {
+      console.error("Netopia API error:", JSON.stringify(netopiaData.error));
       await supabase.from("orders").update({
         payment_status: "failed",
         updated_at: new Date().toISOString(),
       }).eq("id", orderId);
 
       return new Response(
-        JSON.stringify({ error: netopiaData.error?.message || "Payment initiation failed" }),
+        JSON.stringify({ error: netopiaData.error?.message || "Payment initiation failed", netopiaError: netopiaData.error }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     // ── Store transaction ──
+    const ntpID = netopiaData.payment?.ntpID || null;
     await supabase.from("netopia_transactions").upsert({
       order_id: orderId,
-      netopia_purchase_id: netopiaData.payment?.ntpID || null,
+      netopia_purchase_id: ntpID,
       action: "started",
       status: "pending",
       original_amount: order.total,
@@ -183,16 +199,43 @@ Deno.serve(async (req: Request) => {
       updated_at: new Date().toISOString(),
     }).eq("id", orderId);
 
-    const redirectUrl = netopiaData.payment?.paymentURL || netopiaData.redirectUrl || confirmUrl;
+    // ── Determine redirect URL ──
+    // Netopia V2 can return:
+    // 1. error.code=100 + payment.status=15 → 3DS redirect needed
+    // 2. Direct payment URL
+    let redirectUrl: string | null = null;
+
+    if (netopiaData.error?.code === "100" || netopiaData.error?.code === 100) {
+      // 3D Secure required — redirect to authentication URL
+      redirectUrl = netopiaData.payment?.data?.AuthenticationUrl || 
+                    netopiaData.payment?.paymentURL ||
+                    null;
+      console.log("3DS redirect URL:", redirectUrl);
+    } else {
+      redirectUrl = netopiaData.payment?.paymentURL || 
+                    netopiaData.redirectUrl ||
+                    null;
+    }
+
+    if (!redirectUrl) {
+      console.error("No redirect URL in Netopia response:", JSON.stringify(netopiaData));
+      return new Response(
+        JSON.stringify({ 
+          error: "Netopia did not return a payment redirect URL", 
+          debug: { error: netopiaData.error, paymentStatus: netopiaData.payment?.status }
+        }),
+        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     return new Response(
-      JSON.stringify({ redirectUrl, ntpID: netopiaData.payment?.ntpID }),
+      JSON.stringify({ redirectUrl, ntpID }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
     console.error("Netopia payment error:", err);
     return new Response(
-      JSON.stringify({ error: "Internal server error" }),
+      JSON.stringify({ error: err instanceof Error ? err.message : "Internal server error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

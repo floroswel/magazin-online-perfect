@@ -146,10 +146,8 @@ Deno.serve(async (req) => {
           pdfUrl = result.pdfUrl;
           trackingUrl = `https://www.sameday.ro/tracking?awb=${awb}`;
         } else {
-          // Fallback: simulated AWB
-          const prefix = courierKey === "fan_courier" ? "FC" : courierKey === "sameday" ? "SD" : courierKey === "cargus" ? "CG" : courierKey === "dpd" ? "DP" : "GL";
-          awb = `${prefix}${Date.now().toString().slice(-8)}${Math.floor(Math.random() * 1000).toString().padStart(3, "0")}`;
-          trackingUrl = (COURIER_TRACKING_URLS[courierKey] || "") + awb;
+          // No courier credentials configured — cannot generate real AWB
+          throw new Error(`Credențialele pentru curierul '${courierKey}' nu sunt configurate. Configurați datele de autentificare în secțiunea Curieri din admin.`);
         }
 
         await supabase.from("orders").update({

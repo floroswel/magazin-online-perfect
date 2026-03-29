@@ -300,17 +300,20 @@ export default function Checkout() {
           body: { orderId: order.id },
         });
         if (netopiaError || !netopiaData?.redirectUrl) {
-          toast.error("Eroare la inițierea plății cu cardul. Comanda a fost salvată.");
-          await clearCart();
-          navigate("/order-confirmation/" + order.id);
+          const errMsg = netopiaData?.error || "Eroare la inițierea plății cu cardul.";
+          toast.error(typeof errMsg === "string" ? errMsg : "Eroare la inițierea plății cu cardul.");
+          // Mark order as failed since payment couldn't start
+          await supabase.from("orders").update({ status: "payment_failed", payment_status: "failed" }).eq("id", order.id);
+          setSubmitting(false);
+          return;
         } else {
           await clearCart();
           window.location.href = netopiaData.redirectUrl;
         }
-      } catch {
+      } catch (err) {
+        console.error("Netopia connection error:", err);
         toast.error("Eroare la conectarea cu procesatorul de plăți.");
-        await clearCart();
-        navigate("/order-confirmation/" + order.id);
+        await supabase.from("orders").update({ status: "payment_failed", payment_status: "failed" }).eq("id", order.id);
       }
       setSubmitting(false);
       return;
@@ -322,17 +325,18 @@ export default function Checkout() {
           body: { orderId: order.id },
         });
         if (mokkaError || !mokkaData?.redirectUrl) {
-          toast.error("Eroare la inițierea plății Mokka. Comanda a fost salvată.");
-          await clearCart();
-          navigate("/order-confirmation/" + order.id);
+          toast.error(mokkaData?.error || "Eroare la inițierea plății Mokka.");
+          await supabase.from("orders").update({ status: "payment_failed", payment_status: "failed" }).eq("id", order.id);
+          setSubmitting(false);
+          return;
         } else {
           await clearCart();
           window.location.href = mokkaData.redirectUrl;
         }
-      } catch {
+      } catch (err) {
+        console.error("Mokka connection error:", err);
         toast.error("Eroare la conectarea cu Mokka.");
-        await clearCart();
-        navigate("/order-confirmation/" + order.id);
+        await supabase.from("orders").update({ status: "payment_failed", payment_status: "failed" }).eq("id", order.id);
       }
       setSubmitting(false);
       return;
@@ -344,17 +348,18 @@ export default function Checkout() {
           body: { orderId: order.id },
         });
         if (paypoError || !paypoData?.redirectUrl) {
-          toast.error("Eroare la inițierea plății PayPo. Comanda a fost salvată.");
-          await clearCart();
-          navigate("/order-confirmation/" + order.id);
+          toast.error(paypoData?.error || "Eroare la inițierea plății PayPo.");
+          await supabase.from("orders").update({ status: "payment_failed", payment_status: "failed" }).eq("id", order.id);
+          setSubmitting(false);
+          return;
         } else {
           await clearCart();
           window.location.href = paypoData.redirectUrl;
         }
-      } catch {
+      } catch (err) {
+        console.error("PayPo connection error:", err);
         toast.error("Eroare la conectarea cu PayPo.");
-        await clearCart();
-        navigate("/order-confirmation/" + order.id);
+        await supabase.from("orders").update({ status: "payment_failed", payment_status: "failed" }).eq("id", order.id);
       }
       setSubmitting(false);
       return;
