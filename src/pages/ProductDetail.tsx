@@ -198,7 +198,7 @@ export default function ProductDetail() {
     ? Math.min(...bundleComponents.map((bc: any) => Math.floor((bc.product?.stock || 0) / bc.quantity)))
     : null;
 
-  const activePrice = selectedVariant ? selectedVariant.price : product.price;
+  const activePrice = selectedSize ? selectedSize.price : (selectedVariant ? selectedVariant.price : product.price);
   const activeStock = isBundle ? (bundleStock ?? 0) : (selectedVariant ? selectedVariant.stock : product.stock);
   const activeImage = selectedVariant?.image_url || product.image_url;
   const specs = product.specs && typeof product.specs === "object" ? Object.entries(product.specs as Record<string, string>).filter(([k]) => !k.startsWith("_")) : [];
