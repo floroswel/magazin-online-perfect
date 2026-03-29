@@ -264,12 +264,12 @@ export default function Account() {
     <Layout>
       <div className="container py-6 max-w-6xl">
         {/* Personalized greeting */}
-        <div className="mb-6 flex items-start justify-between">
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
           <div>
-            <h1 className="text-3xl font-bold">Bună, {(profile?.full_name && !profile.full_name.includes("DELETED") ? profile.full_name.split(" ")[0] : null) || "acolo"} 👋</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold">Bună, {(profile?.full_name && !profile.full_name.includes("DELETED") ? profile.full_name.split(" ")[0] : null) || "acolo"} 👋</h1>
             <p className="text-sm text-muted-foreground mt-1">Gestionează contul, comenzile și preferințele tale.</p>
           </div>
-          <Button variant="outline" size="sm" className="gap-2 text-muted-foreground hover:text-destructive" onClick={handleLogout}>
+          <Button variant="outline" size="sm" className="gap-2 text-muted-foreground hover:text-destructive self-start" onClick={handleLogout}>
             <LogOut className="w-4 h-4" /> Deconectare
           </Button>
         </div>
@@ -782,12 +782,36 @@ export default function Account() {
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Mobile-only: Security & GDPR (sidebar hidden on mobile) */}
+                <div className="lg:hidden space-y-4 mt-4">
+                  <Card>
+                    <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Shield className="w-4 h-4" /> Securitate</CardTitle></CardHeader>
+                    <CardContent className="space-y-2">
+                      <Button variant="outline" size="sm" className="w-full justify-start gap-2 text-xs" onClick={() => setShowChangePassword(true)}>
+                        <KeyRound className="w-3.5 h-3.5" /> Schimbă parola
+                      </Button>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><DatabaseBackup className="w-4 h-4" /> Datele mele (GDPR)</CardTitle></CardHeader>
+                    <CardContent className="space-y-2">
+                      <Button variant="outline" size="sm" className="w-full justify-start gap-2 text-xs" onClick={handleExportData} disabled={exportingData}>
+                        <Download className="w-3.5 h-3.5" /> {exportingData ? "Se exportă..." : "Exportă datele personale"}
+                      </Button>
+                      <Separator />
+                      <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-xs text-destructive hover:text-destructive" onClick={() => setShowDeleteConfirm(true)}>
+                        <UserX className="w-3.5 h-3.5" /> Șterge contul
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
               </TabsContent>
             </Tabs>
           </div>
 
-          {/* RIGHT SIDEBAR */}
-          <div className="space-y-4 lg:sticky lg:top-24 lg:self-start order-first lg:order-last">
+          {/* RIGHT SIDEBAR — hidden on mobile, info already in stats */}
+          <div className="hidden lg:block space-y-4 lg:sticky lg:top-24 lg:self-start">
             {/* Account Info Card */}
             <Card className="overflow-hidden">
               <div className="h-16 bg-gradient-to-r from-primary/20 to-primary/5" />
