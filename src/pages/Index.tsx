@@ -112,6 +112,10 @@ export default function Index() {
     newsletter_section: showNewsletter,
     instagram_feed: showInstagram,
     brand_logos: true,
+    quick_filters: true,
+    coupon_collector: true,
+    top_vendors: true,
+    buy_again: true,
   };
 
   const sectionComponents: Record<string, React.ReactNode> = useMemo(() => ({
