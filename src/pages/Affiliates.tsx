@@ -11,8 +11,10 @@ import { Users, DollarSign, TrendingUp, Gift, CheckCircle2, Loader2 } from "luci
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { usePageSeo } from "@/components/SeoHead";
 
 export default function Affiliates() {
+  usePageSeo({ title: "Program Afiliere — MamaLucica", description: "Câștigă comision recomandând lumânările MamaLucica.", noindex: true });
   const { user } = useAuth();
   const navigate = useNavigate();
   const [settings, setSettings] = useState<any>(null);

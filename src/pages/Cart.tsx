@@ -11,8 +11,10 @@ import CountdownTimer from "@/components/products/CountdownTimer";
 import FreeShippingBar from "@/components/cart/FreeShippingBar";
 import CartCrossSell from "@/components/cart/CartCrossSell";
 import CartRecommendations from "@/components/cart/CartRecommendations";
+import { usePageSeo } from "@/components/SeoHead";
 
 export default function Cart() {
+  usePageSeo({ title: "Coșul Tău — MamaLucica", description: "Produsele din coșul tău de cumpărături.", noindex: true });
   const { user } = useAuth();
   const { items, totalPrice, updateQuantity, removeFromCart } = useCart();
   const { format } = useCurrency();

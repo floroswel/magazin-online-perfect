@@ -31,6 +31,7 @@ const methodIcons: Record<string, any> = {
 };
 
 export default function Checkout() {
+  usePageSeo({ title: "Finalizare Comandă — MamaLucica", description: "Completează datele pentru a finaliza comanda.", noindex: true });
   const { user } = useAuth();
   const { items, totalPrice, clearCart } = useCart();
   const { totalPoints, currentLevel, addPoints, config: loyaltyConfig, pointsToValue, maxRedeemablePoints } = useLoyalty();

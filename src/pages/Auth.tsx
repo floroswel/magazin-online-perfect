@@ -12,8 +12,10 @@ import { useStoreBranding } from "@/hooks/useStoreBranding";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
+import { usePageSeo } from "@/components/SeoHead";
 
 export default function Auth() {
+  usePageSeo({ title: "Autentificare — MamaLucica", description: "Conectează-te sau creează un cont MamaLucica.", noindex: true });
   const { signIn, signUp } = useAuth();
   const branding = useStoreBranding();
   const navigate = useNavigate();

@@ -25,6 +25,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 import AffiliateTab from "@/components/account/AffiliateTab";
+import { usePageSeo } from "@/components/SeoHead";
 import ReferralTab from "@/components/account/ReferralTab";
 import WishlistTab from "@/components/account/WishlistTab";
 import GiftCardTab from "@/components/account/GiftCardTab";

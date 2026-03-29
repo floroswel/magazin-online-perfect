@@ -6,9 +6,11 @@ import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { usePageSeo } from "@/components/SeoHead";
 import type { Tables } from "@/integrations/supabase/types";
 
 export default function Favorites() {
+  usePageSeo({ title: "Favorite — MamaLucica", description: "Produsele tale favorite.", noindex: true });
   const { user } = useAuth();
   const [products, setProducts] = useState<Tables<"products">[]>([]);
   const [loading, setLoading] = useState(true);
