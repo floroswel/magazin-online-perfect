@@ -31,6 +31,7 @@ export default function Header() {
   const location = useLocation();
   const { isDark, toggle: toggleDarkMode } = useDarkMode();
   const layout = useLayoutSettings();
+  const branding = useStoreBranding();
   const [mobileMenu, setMobileMenu] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
 
