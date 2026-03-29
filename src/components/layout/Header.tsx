@@ -84,14 +84,14 @@ export default function Header() {
             <div className="h-1 bg-background/20">
               <div
                 className={`h-full transition-all duration-700 ease-out rounded-r-full ${
-                  totalPrice / 200 < 0.4 ? "bg-destructive" : totalPrice / 200 < 0.75 ? "bg-accent" : "bg-emerald-400"
+                  totalPrice / 200 < 0.4 ? "bg-destructive" : totalPrice / 200 < 0.75 ? "bg-accent" : "bg-primary"
                 }`}
                 style={{ width: `${Math.min(100, (totalPrice / 200) * 100)}%` }}
               />
             </div>
           )}
           {totalPrice >= 200 && (
-            <div className="h-1 bg-emerald-400" />
+            <div className="h-1 bg-primary" />
           )}
         </div>
       )}
