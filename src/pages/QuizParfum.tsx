@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ProductCard from "@/components/products/ProductCard";
 import Layout from "@/components/layout/Layout";
+import { usePageSeo } from "@/components/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
