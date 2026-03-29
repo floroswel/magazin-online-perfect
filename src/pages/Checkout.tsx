@@ -348,9 +348,10 @@ export default function Checkout() {
           body: { orderId: order.id },
         });
         if (paypoError || !paypoData?.redirectUrl) {
-          toast.error("Eroare la inițierea plății PayPo. Comanda a fost salvată.");
-          await clearCart();
-          navigate("/order-confirmation/" + order.id);
+          toast.error(paypoData?.error || "Eroare la inițierea plății PayPo.");
+          await supabase.from("orders").update({ status: "payment_failed", payment_status: "failed" }).eq("id", order.id);
+          setSubmitting(false);
+          return;
         } else {
           await clearCart();
           window.location.href = paypoData.redirectUrl;
