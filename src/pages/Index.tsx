@@ -155,6 +155,7 @@ export default function Index() {
     instagram_feed: <InstagramFeed key="instagram_feed" />,
     brand_logos: <BrandLogosCarousel key="brand_logos" />,
     recently_viewed: <RecentlyViewed key="recently_viewed" />,
+    personalized_recommendations: <PersonalizedRecommendations key="personalized_recommendations" />,
     newsletter_section: <NewsletterDiscount key="newsletter_section" />,
     quick_filters: <QuickFilters key="quick_filters" />,
     coupon_collector: <CouponCollector key="coupon_collector" />,
