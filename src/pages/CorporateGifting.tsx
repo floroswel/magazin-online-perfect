@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Layout from "@/components/layout/Layout";
+import { usePageSeo } from "@/components/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Check } from "lucide-react";
