@@ -7,13 +7,6 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SANDBOX_MODE = true;
-const NETOPIA_URL = SANDBOX_MODE
-  ? "https://sandboxsecure.mobilpay.ro"
-  : "https://secure.mobilpay.ro";
-
-/* ── XML builder ───────────────────────────────────── */
-
 function buildOrderXml(params: {
   orderId: string;
   timestamp: number;
@@ -56,27 +49,23 @@ function buildOrderXml(params: {
 </order>`;
 }
 
-/* ── Encryption (node-forge, RSA PKCS1 v1.5) ──────── */
-
 function encryptForNetopia(
   publicKeyPem: string,
   xmlData: string
 ): { envKey: string; envData: string } {
-  // 1. Generate random AES key (32 bytes) and IV (16 bytes)
   const aesKeyBytes = forge.random.getBytesSync(32);
   const iv = forge.random.getBytesSync(16);
 
-  // 2. AES-256-CBC encrypt the XML
   const cipher = forge.cipher.createCipher("AES-CBC", aesKeyBytes);
   cipher.start({ iv });
   cipher.update(forge.util.createBuffer(xmlData, "utf8"));
   cipher.finish();
   const encryptedXml = cipher.output.getBytes();
 
-  // 3. Combine IV + encrypted XML (Netopia expects IV prepended)
+  // IV prepended to ciphertext
   const combined = iv + encryptedXml;
 
-  // 4. Extract public key from certificate or use directly
+  // Extract public key from certificate
   let publicKey: forge.pki.rsa.PublicKey;
   if (publicKeyPem.includes("CERTIFICATE")) {
     const cert = forge.pki.certificateFromPem(publicKeyPem);
@@ -85,7 +74,7 @@ function encryptForNetopia(
     publicKey = forge.pki.publicKeyFromPem(publicKeyPem);
   }
 
-  // 5. RSA PKCS1 v1.5 encrypt the AES key (NOT OAEP — matches Netopia PHP SDK)
+  // RSA PKCS1 v1.5 (NOT OAEP) — matches Netopia PHP SDK
   const encryptedKey = publicKey.encrypt(aesKeyBytes, "RSAES-PKCS1-V1_5");
 
   return {
@@ -93,8 +82,6 @@ function encryptForNetopia(
     envData: forge.util.encode64(combined),
   };
 }
-
-/* ── Main handler ──────────────────────────────────── */
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -107,7 +94,6 @@ Deno.serve(async (req: Request) => {
 
   try {
     const { orderId } = await req.json();
-
     if (!orderId) {
       return new Response(
         JSON.stringify({ error: "Missing orderId" }),
@@ -115,7 +101,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Read credentials from payment_methods table
+    // 1. Load config
     const { data: pm, error: pmError } = await supabase
       .from("payment_methods")
       .select("config_json, sandbox_mode")
@@ -134,6 +120,13 @@ Deno.serve(async (req: Request) => {
     const config = pm.config_json as Record<string, string>;
     const posSignature = config.pos_signature || config.merchant_id || "";
     const publicKey = config.public_key || "";
+    const isSandbox = config.sandbox === "true" || config.sandbox === true as any;
+    const gatewayUrl = isSandbox
+      ? (config.sandbox_url || "https://sandboxsecure.mobilpay.ro")
+      : (config.live_url || "https://secure.mobilpay.ro");
+
+    console.log("1. Config loaded - signature:", posSignature, "sandbox:", isSandbox, "url:", gatewayUrl);
+    console.log("   public_key starts with:", publicKey.substring(0, 30));
 
     if (!posSignature || !publicKey) {
       console.error("Netopia config incomplete. Keys present:", Object.keys(config));
@@ -143,7 +136,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Fetch order
+    // 2. Fetch order
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .select("*")
@@ -167,7 +160,7 @@ Deno.serve(async (req: Request) => {
     const firstName = nameParts[0] || "Client";
     const lastName = nameParts.slice(1).join(" ") || "";
 
-    // Build the XML
+    // 3. Build XML
     const xml = buildOrderXml({
       orderId,
       timestamp: Date.now(),
@@ -184,15 +177,16 @@ Deno.serve(async (req: Request) => {
       phone: shippingAddr.phone || "",
     });
 
-    console.log("Netopia XML built for order:", orderId, "signature:", posSignature, "amount:", order.total);
-    console.log("XML preview:", xml.substring(0, 200));
+    console.log("2. XML built - length:", xml.length);
+    console.log("3. XML first 300 chars:", xml.substring(0, 300));
 
-    // Encrypt using node-forge (RSA PKCS1 v1.5 — matches Netopia PHP SDK)
+    // 4. Encrypt
     const { envKey, envData } = encryptForNetopia(publicKey, xml);
 
-    console.log("Netopia encryption OK (PKCS1v1.5). envKey length:", envKey.length, "envData length:", envData.length, "url:", NETOPIA_URL);
+    console.log("4. Encryption done - envKey:", envKey.length, "data:", envData.length);
+    console.log("5. Returning url:", gatewayUrl);
 
-    // Store transaction record
+    // Store transaction
     await supabase.from("netopia_transactions").upsert({
       order_id: orderId,
       action: "started",
@@ -208,12 +202,11 @@ Deno.serve(async (req: Request) => {
       updated_at: new Date().toISOString(),
     }).eq("id", orderId);
 
-    // Return encrypted data for frontend form POST
     return new Response(
       JSON.stringify({
         envKey,
         data: envData,
-        url: NETOPIA_URL,
+        url: gatewayUrl,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );

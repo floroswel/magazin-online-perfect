@@ -299,63 +299,52 @@ export default function Checkout() {
         const { data: netopiaData, error: netopiaError } = await supabase.functions.invoke("netopia-payment", {
           body: { orderId: order.id },
         });
+
+        console.log("NETOPIA FULL RESPONSE:", JSON.stringify(netopiaData));
+
         if (netopiaError || !netopiaData?.envKey || !netopiaData?.data || !netopiaData?.url) {
+          console.error("NETOPIA ERROR:", netopiaError, netopiaData);
           const errMsg = netopiaData?.error || "Eroare la inițierea plății cu cardul.";
           toast.error(typeof errMsg === "string" ? errMsg : "Eroare la inițierea plății cu cardul.");
           await supabase.from("orders").update({ status: "payment_failed", payment_status: "failed" }).eq("id", order.id);
           setSubmitting(false);
           return;
-        } else {
-          const response = netopiaData;
-          const netopiaUrl = (response.url || "").replace(/\/+$/, "");
-
-          console.log("NETOPIA RESPONSE:", JSON.stringify(response));
-          console.log("envKey:", response.envKey ? response.envKey.substring(0, 50) : "MISSING");
-          console.log("data:", response.data ? response.data.substring(0, 50) : "MISSING");
-          console.log("url:", response.url);
-
-          if (netopiaUrl !== "https://sandboxsecure.mobilpay.ro") {
-            console.warn("Unexpected Netopia URL:", netopiaUrl);
-          }
-
-          await clearCart();
-
-          // DEBUG alternative: /checkout?netopia_debug=get (tests GET vs POST)
-          const useGetRedirectDebug = new URLSearchParams(window.location.search).get("netopia_debug") === "get";
-          if (useGetRedirectDebug) {
-            const getUrl = `${netopiaUrl}?env_key=${encodeURIComponent(response.envKey)}&data=${encodeURIComponent(response.data)}`;
-            console.log("NETOPIA DEBUG GET URL:", getUrl.substring(0, 200) + "...");
-            window.location.href = getUrl;
-            setSubmitting(false);
-            return;
-          }
-
-          // Create and auto-submit a form to Netopia (official flow: POST env_key + data)
-          const formElement = document.createElement("form");
-          formElement.method = "POST";
-          formElement.action = netopiaUrl;
-
-          const envKeyInput = document.createElement("input");
-          envKeyInput.type = "hidden";
-          envKeyInput.name = "env_key";
-          envKeyInput.value = response.envKey;
-          formElement.appendChild(envKeyInput);
-
-          const dataInput = document.createElement("input");
-          dataInput.type = "hidden";
-          dataInput.name = "data";
-          dataInput.value = response.data;
-          formElement.appendChild(dataInput);
-
-          document.body.appendChild(formElement);
-
-          const formEnvKey = (formElement.elements.namedItem("env_key") as HTMLInputElement | null)?.value || "";
-          const formData = (formElement.elements.namedItem("data") as HTMLInputElement | null)?.value || "";
-          console.log("FORM env_key:", formEnvKey ? formEnvKey.substring(0, 50) : "MISSING");
-          console.log("FORM data:", formData ? formData.substring(0, 50) : "MISSING");
-
-          formElement.submit();
         }
+
+        const { envKey, data, url } = netopiaData;
+
+        console.log("envKey length:", envKey?.length);
+        console.log("data length:", data?.length);
+        console.log("url:", url);
+        console.log("envKey preview:", envKey?.substring(0, 30));
+        console.log("data preview:", data?.substring(0, 30));
+
+        await clearCart();
+
+        // Create and submit form
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = url;
+
+        const envKeyInput = document.createElement("input");
+        envKeyInput.type = "hidden";
+        envKeyInput.name = "env_key";
+        envKeyInput.value = envKey;
+        form.appendChild(envKeyInput);
+
+        const dataInput = document.createElement("input");
+        dataInput.type = "hidden";
+        dataInput.name = "data";
+        dataInput.value = data;
+        form.appendChild(dataInput);
+
+        document.body.appendChild(form);
+
+        console.log("SUBMITTING FORM TO:", url);
+        console.log("env_key value preview:", envKeyInput.value.substring(0, 30));
+        console.log("data value preview:", dataInput.value.substring(0, 30));
+
+        form.submit();
       } catch (err) {
         console.error("Netopia connection error:", err);
         toast.error("Eroare la conectarea cu procesatorul de plăți.");
