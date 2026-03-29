@@ -66,11 +66,23 @@ export default function ProductDetail() {
 
       // SEO meta is handled by usePageSeo below
 
-      // Track in localStorage
+      // Track in localStorage (product IDs + category mapping)
       try {
         const ids: string[] = JSON.parse(localStorage.getItem("recently_viewed") || "[]");
         const updated = [prod.id, ...ids.filter(id => id !== prod.id)].slice(0, 20);
         localStorage.setItem("recently_viewed", JSON.stringify(updated));
+
+        // Save category mapping for personalized recommendations
+        const catMap: Record<string, string> = JSON.parse(localStorage.getItem("viewed_categories") || "{}");
+        if (prod.category_id) catMap[prod.id] = prod.category_id;
+        // Keep only last 20
+        const catEntries = Object.entries(catMap);
+        if (catEntries.length > 30) {
+          const trimmed = Object.fromEntries(catEntries.slice(-20));
+          localStorage.setItem("viewed_categories", JSON.stringify(trimmed));
+        } else {
+          localStorage.setItem("viewed_categories", JSON.stringify(catMap));
+        }
       } catch {}
 
       const [simRes, qRes] = await Promise.all([
