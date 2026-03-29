@@ -158,6 +158,7 @@ export default function Index() {
     coupon_collector: <CouponCollector key="coupon_collector" />,
     top_vendors: <TopVendors key="top_vendors" />,
     buy_again: <BuyAgain key="buy_again" />,
+    mood_selector: <CandleMoodSelector key="mood_selector" />,
   }), [featured, loading, featuredRef]);
 
   return (

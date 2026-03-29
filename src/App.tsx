@@ -110,6 +110,8 @@ const App = () => (
               <Route path="/vendor/:slug" element={<ErrorBoundary><VendorStore /></ErrorBoundary>} />
               <Route path="/oferte" element={<ErrorBoundary><Oferte /></ErrorBoundary>} />
               <Route path="/de-incredere" element={<ErrorBoundary><DeIncredere /></ErrorBoundary>} />
+              <Route path="/nou" element={<ErrorBoundary><NouLansari /></ErrorBoundary>} />
+              <Route path="/despre-noi/numere" element={<ErrorBoundary><TransparencyDashboard /></ErrorBoundary>} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<ErrorBoundary><NotFound /></ErrorBoundary>} />
             </Routes>
