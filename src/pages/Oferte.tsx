@@ -7,11 +7,11 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
 const discountFilters = [
-  { label: "Toate", min: 0, icon: Tag },
-  { label: "10%+", min: 10, icon: Percent },
-  { label: "20%+", min: 20, icon: Percent },
-  { label: "30%+", min: 30, icon: TrendingDown },
-  { label: "50%+", min: 50, icon: Zap },
+  { label: "Toate", min: 0 },
+  { label: "10%+", min: 10 },
+  { label: "20%+", min: 20 },
+  { label: "30%+", min: 30 },
+  { label: "50%+", min: 50 },
 ];
 
 const priceFilters = [
@@ -90,59 +90,58 @@ export default function Oferte() {
       {/* Hero banner */}
       <div className="relative bg-primary overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-4 left-10 text-6xl rotate-12">🏷️</div>
-          <div className="absolute bottom-4 right-16 text-5xl -rotate-6">💰</div>
-          <div className="absolute top-8 right-40 text-4xl rotate-45">✨</div>
+          <div className="absolute top-4 left-10 text-6xl rotate-12 hidden md:block">🏷️</div>
+          <div className="absolute bottom-4 right-16 text-5xl -rotate-6 hidden md:block">💰</div>
+          <div className="absolute top-8 right-40 text-4xl rotate-45 hidden md:block">✨</div>
         </div>
-        <div className="container px-4 py-10 md:py-14 relative z-10">
+        <div className="container px-4 py-8 md:py-14 relative z-10">
           <div className="flex items-center gap-3 mb-3">
-            <div className="bg-primary-foreground/20 p-2 rounded-xl">
-              <Zap className="w-7 h-7 text-primary-foreground" />
+            <div className="bg-primary-foreground/20 p-2 rounded-xl shrink-0">
+              <Zap className="w-6 h-6 md:w-7 md:h-7 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-4xl font-extrabold text-primary-foreground">Oferte & Reduceri</h1>
-              <p className="text-primary-foreground/70 text-sm">Actualizate zilnic • Stocuri limitate</p>
+              <h1 className="text-2xl md:text-4xl font-extrabold text-primary-foreground">Oferte & Reduceri</h1>
+              <p className="text-primary-foreground/70 text-xs md:text-sm">Actualizate zilnic • Stocuri limitate</p>
             </div>
           </div>
 
           {/* Stats bar */}
-          <div className="flex flex-wrap gap-4 mt-6">
-            <div className="bg-primary-foreground/10 backdrop-blur-sm rounded-xl px-4 py-3 text-primary-foreground">
-              <p className="text-2xl font-bold">{products.length}</p>
-              <p className="text-xs opacity-70">Produse la ofertă</p>
+          <div className="grid grid-cols-3 gap-2 md:flex md:flex-wrap md:gap-4 mt-4 md:mt-6">
+            <div className="bg-primary-foreground/10 backdrop-blur-sm rounded-xl px-3 md:px-4 py-2 md:py-3 text-primary-foreground text-center md:text-left">
+              <p className="text-lg md:text-2xl font-bold">{products.length}</p>
+              <p className="text-[10px] md:text-xs opacity-70">Produse la ofertă</p>
             </div>
-            <div className="bg-primary-foreground/10 backdrop-blur-sm rounded-xl px-4 py-3 text-primary-foreground">
-              <p className="text-2xl font-bold">-{maxDiscount}%</p>
-              <p className="text-xs opacity-70">Reducere maximă</p>
+            <div className="bg-primary-foreground/10 backdrop-blur-sm rounded-xl px-3 md:px-4 py-2 md:py-3 text-primary-foreground text-center md:text-left">
+              <p className="text-lg md:text-2xl font-bold">-{maxDiscount}%</p>
+              <p className="text-[10px] md:text-xs opacity-70">Reducere maximă</p>
             </div>
-            <div className="bg-primary-foreground/10 backdrop-blur-sm rounded-xl px-4 py-3 text-primary-foreground">
-              <p className="text-2xl font-bold">{totalSaved.toFixed(0)} lei</p>
-              <p className="text-xs opacity-70">Economisești total</p>
+            <div className="bg-primary-foreground/10 backdrop-blur-sm rounded-xl px-3 md:px-4 py-2 md:py-3 text-primary-foreground text-center md:text-left">
+              <p className="text-lg md:text-2xl font-bold">{totalSaved.toFixed(0)} lei</p>
+              <p className="text-[10px] md:text-xs opacity-70">Economie totală</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="container px-4 py-6">
+      <div className="container px-4 py-4 md:py-6">
         {/* Filters section */}
-        <div className="bg-card border border-border rounded-xl p-4 mb-6 space-y-4">
+        <div className="bg-card border border-border rounded-xl p-3 md:p-4 mb-4 md:mb-6 space-y-3 md:space-y-4">
           {/* Discount filters */}
           <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <Percent className="w-3.5 h-3.5" /> Procent reducere
+            <p className="text-[10px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <Percent className="w-3 h-3 md:w-3.5 md:h-3.5" /> Procent reducere
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 md:gap-2">
               {discountFilters.map((f, i) => (
                 <button
                   key={i}
                   onClick={() => setActiveDiscount(i)}
-                  className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
+                  className={`px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-medium border transition-all duration-200 min-h-[36px] md:min-h-[auto] ${
                     activeDiscount === i
                       ? "bg-primary text-primary-foreground border-primary shadow-sm"
                       : "bg-card text-card-foreground border-border hover:border-primary/50"
                   }`}
                 >
-                  <f.icon className="w-3.5 h-3.5" />
                   {f.label}
                 </button>
               ))}
@@ -151,15 +150,15 @@ export default function Oferte() {
 
           {/* Price filters */}
           <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <Tag className="w-3.5 h-3.5" /> Interval preț
+            <p className="text-[10px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <Tag className="w-3 h-3 md:w-3.5 md:h-3.5" /> Interval preț
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 md:gap-2">
               {priceFilters.map((f, i) => (
                 <button
                   key={i}
                   onClick={() => setActivePrice(i)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
+                  className={`px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-medium border transition-all duration-200 min-h-[36px] md:min-h-[auto] ${
                     activePrice === i
                       ? "bg-accent text-accent-foreground border-accent shadow-sm"
                       : "bg-card text-card-foreground border-border hover:border-accent/50"
@@ -174,13 +173,13 @@ export default function Oferte() {
           {/* Category filters */}
           {categories.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                <Filter className="w-3.5 h-3.5" /> Categorie
+              <p className="text-[10px] md:text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <Filter className="w-3 h-3 md:w-3.5 md:h-3.5" /> Categorie
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5 md:gap-2">
                 <button
                   onClick={() => setActiveCategory(null)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
+                  className={`px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-medium border transition-all duration-200 min-h-[36px] md:min-h-[auto] ${
                     !activeCategory
                       ? "bg-foreground text-background border-foreground"
                       : "bg-card text-card-foreground border-border hover:border-foreground/30"
@@ -192,7 +191,7 @@ export default function Oferte() {
                   <button
                     key={cat.id}
                     onClick={() => setActiveCategory(cat.id)}
-                    className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
+                    className={`px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-medium border transition-all duration-200 min-h-[36px] md:min-h-[auto] ${
                       activeCategory === cat.id
                         ? "bg-foreground text-background border-foreground"
                         : "bg-card text-card-foreground border-border hover:border-foreground/30"
@@ -206,14 +205,14 @@ export default function Oferte() {
           )}
 
           {/* Sort + count */}
-          <div className="flex items-center justify-between border-t border-border pt-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-border pt-3 gap-2">
             <p className="text-sm text-muted-foreground">
               <strong className="text-foreground">{sorted.length}</strong> produse găsite
             </p>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-muted border border-border rounded-lg px-3 py-1.5 text-sm text-card-foreground"
+              className="bg-muted border border-border rounded-lg px-3 py-1.5 text-sm text-card-foreground w-full sm:w-auto"
             >
               <option value="discount">Cea mai mare reducere</option>
               <option value="price_asc">Preț crescător</option>
@@ -233,10 +232,10 @@ export default function Oferte() {
           <div className="text-center py-16">
             <Zap className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
             <h3 className="text-lg font-medium mb-2">Nu am găsit oferte</h3>
-            <p className="text-muted-foreground">Încearcă cu alt filtru sau revin-o mai târziu</p>
+            <p className="text-muted-foreground text-sm">Încearcă cu alt filtru sau revino mai târziu</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-3 lg:gap-4">
             {sorted.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
