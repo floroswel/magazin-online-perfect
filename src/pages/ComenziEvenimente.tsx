@@ -65,11 +65,11 @@ export default function ComenziEvenimente() {
             ) : (
               <form onSubmit={handleSubmit} className="border border-border p-8 space-y-4">
                 <h3 className="font-serif text-lg font-medium text-foreground mb-2">Solicită Ofertă</h3>
-                <Input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Nume complet *" className="rounded-none" required />
-                <Input value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} placeholder="Email *" type="email" className="rounded-none" required />
-                <Input value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} placeholder="Telefon" className="rounded-none" />
+                <Input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Nume complet *" required />
+                <Input value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} placeholder="Email *" type="email" required />
+                <Input value={form.phone} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} placeholder="Telefon" />
                 <Select value={form.eventType} onValueChange={v => setForm(p => ({ ...p, eventType: v }))}>
-                  <SelectTrigger className="rounded-none"><SelectValue placeholder="Tip eveniment *" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Tip eveniment *" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="nunta">Nuntă</SelectItem>
                     <SelectItem value="botez">Botez</SelectItem>
@@ -78,9 +78,9 @@ export default function ComenziEvenimente() {
                     <SelectItem value="altul">Altul</SelectItem>
                   </SelectContent>
                 </Select>
-                <Input value={form.quantity} onChange={e => setForm(p => ({ ...p, quantity: e.target.value }))} placeholder="Cantitate estimată *" className="rounded-none" required />
-                <Textarea value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} placeholder="Detalii suplimentare (parfum, culoare, text...)" className="rounded-none" rows={3} />
-                <Button type="submit" className="w-full rounded-none h-11 text-xs tracking-wider uppercase bg-primary text-primary-foreground">
+                <Input value={form.quantity} onChange={e => setForm(p => ({ ...p, quantity: e.target.value }))} placeholder="Cantitate estimată *" required />
+                <Textarea value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} placeholder="Detalii suplimentare (parfum, culoare, text...)" rows={3} />
+                <Button type="submit" className="w-full h-11 text-xs tracking-wider uppercase bg-primary text-primary-foreground">
                   Trimite Cererea
                 </Button>
               </form>

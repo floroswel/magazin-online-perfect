@@ -212,7 +212,7 @@ export default function Account() {
     );
   };
 
-  const statusLabels: Record<string, string> = { pending: "În așteptare", processing: "Se procesează", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată", ...statusLabelsFromDb };
+  const statusLabels: Record<string, string> = { pending: "În așteptare", processing: "Se procesează", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată", payment_failed: "Plată eșuată", refunded: "Rambursată", returned: "Returnată", on_hold: "În așteptare", ...statusLabelsFromDb };
   const statusIcons: Record<string, any> = { pending: Clock, processing: Package, shipped: Truck, delivered: CheckCircle2, cancelled: XCircle };
 
   const progressToNext = nextLevel
@@ -266,7 +266,7 @@ export default function Account() {
         {/* Personalized greeting */}
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-serif text-3xl font-medium">Bună, {profile?.full_name?.split(" ")[0] || "acolo"} 👋</h1>
+            <h1 className="text-3xl font-bold">Bună, {(profile?.full_name && !profile.full_name.includes("DELETED") ? profile.full_name.split(" ")[0] : null) || "acolo"} 👋</h1>
             <p className="text-sm text-muted-foreground mt-1">Gestionează contul, comenzile și preferințele tale.</p>
           </div>
           <Button variant="outline" size="sm" className="gap-2 text-muted-foreground hover:text-destructive" onClick={handleLogout}>
@@ -306,7 +306,7 @@ export default function Account() {
         </div>
 
         {/* Two-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 items-start">
           <div>
             <Tabs defaultValue="orders">
               {/* Scrollable tab bar */}
@@ -723,17 +723,19 @@ export default function Account() {
                             <Label className="text-sm font-medium">{item.label}</Label>
                             <p className="text-xs text-muted-foreground">{item.desc}</p>
                           </div>
-                          <input
-                            type="checkbox"
-                            checked={prefs[item.key] !== false}
-                            onChange={async (e) => {
-                              const newPrefs = { ...prefs, [item.key]: e.target.checked };
+                          <button
+                            role="switch"
+                            aria-checked={prefs[item.key] !== false}
+                            onClick={async () => {
+                              const newPrefs = { ...prefs, [item.key]: prefs[item.key] === false };
                               await supabase.from("profiles").update({ notification_preferences: newPrefs as any }).eq("user_id", user.id);
                               setProfile((p: any) => p ? { ...p, notification_preferences: newPrefs } : p);
                               toast.success("Preferințe actualizate");
                             }}
-                            className="h-4 w-4 rounded border-input accent-primary"
-                          />
+                            className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${prefs[item.key] !== false ? 'bg-primary' : 'bg-input'}`}
+                          >
+                            <span className={`pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform ${prefs[item.key] !== false ? 'translate-x-4' : 'translate-x-0'}`} />
+                          </button>
                         </div>
                       );
                     })}
@@ -785,7 +787,7 @@ export default function Account() {
           </div>
 
           {/* RIGHT SIDEBAR */}
-          <div className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+          <div className="space-y-4 lg:sticky lg:top-24 lg:self-start order-first lg:order-last">
             {/* Account Info Card */}
             <Card className="overflow-hidden">
               <div className="h-16 bg-gradient-to-r from-primary/20 to-primary/5" />

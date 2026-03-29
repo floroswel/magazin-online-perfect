@@ -24,7 +24,7 @@ export default function Cart() {
           <ShoppingBag className="h-12 w-12 mx-auto text-muted-foreground/40 mb-6" />
           <h1 className="font-serif text-3xl font-medium mb-3">Coșul tău este gol</h1>
           <p className="text-muted-foreground mb-6">Descoperă colecția noastră de lumânări handmade.</p>
-          <Link to="/catalog"><Button className="rounded-none px-10 text-xs tracking-wider uppercase">Explorează Colecția</Button></Link>
+          <Link to="/catalog"><Button className="px-10 text-xs tracking-wider uppercase">Explorează Colecția</Button></Link>
         </div>
       </Layout>
     );
