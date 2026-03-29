@@ -65,7 +65,7 @@ export default function Recenzii() {
                           <Star key={i} className={`h-4 w-4 ${i < r.rating ? "fill-yellow-400 text-yellow-400" : "text-muted"}`} />
                         ))}
                       </div>
-                      <p className="font-medium text-foreground text-sm">{r.reviewer_name || "Client verificat"}</p>
+                      <p className="font-medium text-foreground text-sm">{r.user_name || r.reviewer_name || "Client verificat"}</p>
                     </div>
                     <span className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("ro-RO")}</span>
                   </div>
