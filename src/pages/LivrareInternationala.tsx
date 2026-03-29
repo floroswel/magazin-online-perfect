@@ -1,4 +1,5 @@
 import Layout from "@/components/layout/Layout";
+import { usePageSeo } from "@/components/SeoHead";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
