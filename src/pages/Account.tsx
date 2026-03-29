@@ -54,6 +54,7 @@ function EmptyState({ icon: Icon, title, description, actionLabel, actionLink }:
 }
 
 export default function Account() {
+  usePageSeo({ title: "Contul Meu — MamaLucica", description: "Gestionează contul, comenzile și preferințele tale.", noindex: true });
   const { user } = useAuth();
   const { totalPoints, currentLevel, nextLevel, levels, loading: loyaltyLoading, config: loyaltyConfig, pointsToValue } = useLoyalty();
   const { format } = useCurrency();
