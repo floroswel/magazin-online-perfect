@@ -155,6 +155,9 @@ export default function Cart() {
               <span>Total</span>
               <span className="text-primary">{format(totalPrice - totalSavings + shipping)}</span>
             </div>
+            {taxSettings.show_tax_included_message && (
+              <p className="text-xs text-muted-foreground text-center">{taxSettings.tax_included_message}</p>
+            )}
             <Link to="/checkout" className="block">
               <Button className="w-full font-semibold" size="lg">Finalizează comanda</Button>
             </Link>
