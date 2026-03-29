@@ -32,7 +32,7 @@ const DEFAULT_SECTIONS: HomepageSection[] = [
   { key: "flash", label: "Oferte Flash / Limitate", visible: true, title: "Oferte Limitate" },
   { key: "social_proof", label: "Social Proof Ticker", visible: true },
   { key: "bestsellers", label: "Cele Mai Iubite (Bestsellers)", visible: true, title: "Cele Mai Iubite" },
-  { key: "why_ventuza", label: "De Ce VENTUZA", visible: true },
+  { key: "why_ventuza", label: "De Ce MamaLucica", visible: true },
   { key: "process", label: "Procesul Nostru", visible: true },
   { key: "testimonials", label: "Testimoniale", visible: true },
   { key: "recently_viewed", label: "Produse Vizualizate Recent", visible: true },
@@ -57,7 +57,7 @@ export default function AdminHomepageSettings() {
   const [trustBar, setTrustBar] = useState<TrustBarItem[]>([]);
   const [benefits, setBenefits] = useState<BenefitItem[]>([]);
   const [branding, setBranding] = useState<StoreBranding>({
-    name: "VENTUZA", emoji: "🕯️", tagline: "", phone: "", email: "", copyright: "",
+    name: "MamaLucica", emoji: "🕯️", tagline: "", phone: "", email: "", copyright: "",
   });
   const [sections, setSections] = useState<HomepageSection[]>(DEFAULT_SECTIONS);
   const [loading, setLoading] = useState(true);
