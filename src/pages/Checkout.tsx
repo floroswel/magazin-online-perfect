@@ -306,28 +306,55 @@ export default function Checkout() {
           setSubmitting(false);
           return;
         } else {
-          console.log("Posting to Netopia:", {
-            url: netopiaData.url,
-            env_key: netopiaData.envKey.substring(0, 20) + "...",
-            data: netopiaData.data.substring(0, 20) + "...",
-          });
+          const response = netopiaData;
+          const netopiaUrl = (response.url || "").replace(/\/+$/, "");
+
+          console.log("NETOPIA RESPONSE:", JSON.stringify(response));
+          console.log("envKey:", response.envKey ? response.envKey.substring(0, 50) : "MISSING");
+          console.log("data:", response.data ? response.data.substring(0, 50) : "MISSING");
+          console.log("url:", response.url);
+
+          if (netopiaUrl !== "https://sandboxsecure.mobilpay.ro") {
+            console.warn("Unexpected Netopia URL:", netopiaUrl);
+          }
+
           await clearCart();
+
+          // DEBUG alternative: /checkout?netopia_debug=get (tests GET vs POST)
+          const useGetRedirectDebug = new URLSearchParams(window.location.search).get("netopia_debug") === "get";
+          if (useGetRedirectDebug) {
+            const getUrl = `${netopiaUrl}?env_key=${encodeURIComponent(response.envKey)}&data=${encodeURIComponent(response.data)}`;
+            console.log("NETOPIA DEBUG GET URL:", getUrl.substring(0, 200) + "...");
+            window.location.href = getUrl;
+            setSubmitting(false);
+            return;
+          }
+
           // Create and auto-submit a form to Netopia (official flow: POST env_key + data)
-          const form = document.createElement("form");
-          form.method = "POST";
-          form.action = netopiaData.url;
+          const formElement = document.createElement("form");
+          formElement.method = "POST";
+          formElement.action = netopiaUrl;
+
           const envKeyInput = document.createElement("input");
           envKeyInput.type = "hidden";
           envKeyInput.name = "env_key";
-          envKeyInput.value = netopiaData.envKey;
-          form.appendChild(envKeyInput);
+          envKeyInput.value = response.envKey;
+          formElement.appendChild(envKeyInput);
+
           const dataInput = document.createElement("input");
           dataInput.type = "hidden";
           dataInput.name = "data";
-          dataInput.value = netopiaData.data;
-          form.appendChild(dataInput);
-          document.body.appendChild(form);
-          form.submit();
+          dataInput.value = response.data;
+          formElement.appendChild(dataInput);
+
+          document.body.appendChild(formElement);
+
+          const formEnvKey = (formElement.elements.namedItem("env_key") as HTMLInputElement | null)?.value || "";
+          const formData = (formElement.elements.namedItem("data") as HTMLInputElement | null)?.value || "";
+          console.log("FORM env_key:", formEnvKey ? formEnvKey.substring(0, 50) : "MISSING");
+          console.log("FORM data:", formData ? formData.substring(0, 50) : "MISSING");
+
+          formElement.submit();
         }
       } catch (err) {
         console.error("Netopia connection error:", err);
