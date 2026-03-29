@@ -54,6 +54,17 @@ const defaultFaqSections = [
 ];
 
 export default function FAQ() {
+  const [faqSections, setFaqSections] = useState(defaultFaqSections);
+
+  useEffect(() => {
+    supabase.from("app_settings").select("value_json").eq("key", "static_page_faq").maybeSingle()
+      .then(({ data }) => {
+        if (data?.value_json && Array.isArray(data.value_json) && data.value_json.length > 0) {
+          setFaqSections(data.value_json as any);
+        }
+      });
+  }, []);
+
   usePageSeo({
     title: "Întrebări Frecvente — FAQ | MamaLucica",
     description: "Răspunsuri la cele mai comune întrebări despre comenzi, livrare, plăți, retururi și lumânările handmade MamaLucica.",
