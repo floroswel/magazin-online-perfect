@@ -89,8 +89,8 @@ export default function Footer() {
   ];
 
   const col3Links = texts.col3_links.length > 0 ? texts.col3_links.filter(l => l.active) : [
-    { label: "Devino Vendor", url: "/page/vinde", active: true },
-    { label: "Portal Vendori", url: "/page/portal-vendori", active: true },
+    { label: "Devino Artizan", url: "/page/vinde", active: true },
+    { label: "Portal Artizani", url: "/page/portal-vendori", active: true },
     { label: "Reguli & Politici", url: "/page/reguli", active: true },
   ];
 
