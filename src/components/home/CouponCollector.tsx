@@ -17,14 +17,14 @@ export default function CouponCollector() {
   const [collected, setCollected] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    supabase
+    (supabase as any)
       .from("coupons")
       .select("id, code, discount_type, discount_value, min_order_value, description")
       .eq("active", true)
       .eq("public_visible", true)
       .order("created_at", { ascending: false })
       .limit(6)
-      .then(({ data }) => {
+      .then(({ data }: any) => {
         if (data) {
           setCoupons(
             data.map((c: any) => ({
