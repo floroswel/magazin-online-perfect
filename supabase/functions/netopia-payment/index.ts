@@ -185,12 +185,12 @@ Deno.serve(async (req: Request) => {
     });
 
     console.log("Netopia XML built for order:", orderId, "signature:", posSignature, "amount:", order.total);
-    console.log("XML preview:", xml.substring(0, 300));
+    console.log("XML preview:", xml.substring(0, 200));
 
     // Encrypt using node-forge (RSA PKCS1 v1.5 — matches Netopia PHP SDK)
     const { envKey, envData } = encryptForNetopia(publicKey, xml);
 
-    console.log("Netopia encryption OK (PKCS1v1.5). envKey length:", envKey.length, "envData length:", envData.length);
+    console.log("Netopia encryption OK (PKCS1v1.5). envKey length:", envKey.length, "envData length:", envData.length, "url:", NETOPIA_URL);
 
     // Store transaction record
     await supabase.from("netopia_transactions").upsert({
