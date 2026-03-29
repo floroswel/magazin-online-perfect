@@ -275,9 +275,9 @@ export default function Account() {
         </div>
 
         {/* Quick stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-          <Card className="group hover:border-primary/30 transition-colors">
-            <CardContent className="p-3 text-center">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <Card className="group hover:border-primary/30 transition-colors overflow-hidden">
+            <CardContent className="p-3 sm:p-4 text-center">
               <Package className="w-4 h-4 mx-auto mb-1 text-muted-foreground group-hover:text-primary transition-colors" />
               <p className="text-lg font-bold">{orders.length}</p>
               <p className="text-[10px] text-muted-foreground">Comenzi</p>
