@@ -21,42 +21,41 @@ export default function VendorReviews({ brandId, rating, reviewCount }: VendorRe
   const [reviews, setReviews] = useState<Review[]>([]);
 
   useEffect(() => {
-    if (!brandId) return;
-    // Fetch reviews for products belonging to this brand
-    supabase
-      .from("reviews")
-      .select("id, rating, comment, author_name, created_at, product_id")
-      .eq("status", "approved")
-      .order("created_at", { ascending: false })
-      .limit(10)
-      .then(({ data }: any) => {
-        if (!data || data.length === 0) return;
+    const load = async () => {
+      const { data } = await supabase
+        .from("reviews" as any)
+        .select("id, rating, comment, author_name, created_at, product_id")
+        .eq("status", "approved")
+        .order("created_at", { ascending: false })
+        .limit(10);
 
-        // Get product names for these reviews
-        const productIds = [...new Set(data.map((r: any) => r.product_id).filter(Boolean))];
-        const { data: products } = await supabase
-          .from("products")
-          .select("id, name, brand_id")
-          .in("id", productIds)
-          .eq("brand_id", brandId);
+      if (!data || data.length === 0) return;
 
-        const brandProductIds = new Set((products || []).map((p: any) => p.id));
-        const productNameMap: Record<string, string> = {};
-        (products || []).forEach((p: any) => { productNameMap[p.id] = p.name; });
+      const productIds = [...new Set((data as any[]).map((r) => r.product_id).filter(Boolean))] as string[];
+      const { data: products } = await supabase
+        .from("products")
+        .select("id, name, brand_id")
+        .in("id", productIds)
+        .eq("brand_id", brandId);
 
-        const filtered = data
-          .filter((r: any) => brandProductIds.has(r.product_id))
-          .map((r: any) => ({
-            id: r.id,
-            rating: r.rating,
-            comment: r.comment || "",
-            author_name: r.author_name || "Client",
-            created_at: r.created_at,
-            product_name: productNameMap[r.product_id] || "Produs",
-          }));
+      const brandProductIds = new Set((products || []).map((p: any) => p.id));
+      const productNameMap: Record<string, string> = {};
+      (products || []).forEach((p: any) => { productNameMap[p.id] = p.name; });
 
-        setReviews(filtered);
-      });
+      const filtered = (data as any[])
+        .filter((r) => brandProductIds.has(r.product_id))
+        .map((r) => ({
+          id: r.id,
+          rating: r.rating,
+          comment: r.comment || "",
+          author_name: r.author_name || "Client",
+          created_at: r.created_at,
+          product_name: productNameMap[r.product_id] || "Produs",
+        }));
+
+      setReviews(filtered);
+    };
+    load();
   }, [brandId]);
 
   return (
