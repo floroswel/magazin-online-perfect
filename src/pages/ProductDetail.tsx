@@ -391,7 +391,7 @@ export default function ProductDetail() {
 
         {/* Vendor Comparison */}
         <div className="mt-8">
-          <VendorComparison productName={product.name} />
+          <VendorComparison productName={product.name} productId={product.id} productPrice={product.price} brandId={product.brand_id} />
         </div>
 
         {/* Tabs */}
