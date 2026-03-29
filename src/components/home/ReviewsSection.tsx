@@ -3,9 +3,9 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const reviews = [
   { name: "Maria P.", text: "Produse excelente, livrare rapidă! Recomand cu încredere.", rating: 5, city: "București" },
-  { name: "Andrei M.", text: "Prețuri foarte bune comparativ cu alte platforme. Vendorii sunt serioși.", rating: 5, city: "Cluj-Napoca" },
+  { name: "Andrei M.", text: "Prețuri foarte bune și calitate excelentă. Recomand cu încredere!", rating: 5, city: "Cluj-Napoca" },
   { name: "Elena D.", text: "Am primit coletul în 24h. Calitate la superlativ!", rating: 4, city: "Timișoara" },
-  { name: "Cosmin R.", text: "Marketplace-ul perfect pentru cumpărături online. Varietate mare.", rating: 5, city: "Iași" },
+  { name: "Cosmin R.", text: "Magazinul perfect pentru lumânări artizanale. Varietate mare.", rating: 5, city: "Iași" },
 ];
 
 export default function ReviewsSection() {

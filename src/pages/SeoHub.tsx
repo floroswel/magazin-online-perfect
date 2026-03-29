@@ -83,9 +83,8 @@ export default function SeoHub() {
             Cum funcționează MamaLucica?
           </h2>
           <p>
-            MamaLucica este marketplace-ul dedicat lumânărilor artizanale din România. Conectăm artizani 
-            talentați cu iubitorii de lumânări din întreaga țară. Fiecare produs este realizat manual, 
-            din ingrediente naturale premium: ceară de soia, uleiuri esențiale și fitiluri din bumbac.
+            MamaLucica este magazinul online dedicat lumânărilor artizanale din România. Creăm și oferim
+            lumânări realizate manual, din ingrediente naturale premium: ceară de soia, uleiuri esențiale și fitiluri din bumbac.
           </p>
           <p>
             Livrăm prin curier rapid în toate orașele României, de obicei în 1-3 zile lucrătoare. 

@@ -39,7 +39,7 @@ const SocialIcon = React.forwardRef<HTMLSpanElement, { icon: string; className?:
 SocialIcon.displayName = "SocialIcon";
 
 const DEFAULTS: FooterTexts = {
-  col1_title: "MamaLucica", col1_description: "Marketplace-ul tău de lumânări artizanale handmade din România.",
+  col1_title: "MamaLucica", col1_description: "Magazinul tău de lumânări artizanale handmade din România.",
   col2_title: "Cumpărători", col2_links: [],
   col3_title: "Artizani", col3_links: [],
   col4_title: "Contact", col4_email: "contact@mamalucica.ro", col4_phone: "0800-123-456", col4_address: "București, România", col4_hours: "L-V: 09-18",

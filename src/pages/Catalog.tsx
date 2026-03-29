@@ -297,7 +297,7 @@ export default function Catalog() {
               <div>
                 <h1 className="font-serif text-3xl font-medium text-foreground">{currentCategory.name}</h1>
                 {currentCategory.description && (
-                  <div className="text-sm text-muted-foreground mt-1 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: currentCategory.description }} />
+                  <div className="text-sm text-muted-foreground mt-1 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(currentCategory.description) }} />
                 )}
               </div>
             </div>

@@ -14,8 +14,8 @@ export default function BrandStory() {
               Magazinul Nr. 1 de Lumânări Artizanale
             </h2>
             <p className="text-muted-foreground text-sm md:text-base mb-6 leading-relaxed">
-              Conectăm artizani pasionați cu iubitori de lumânări din toată România. 
-              Fiecare lumânare este turnată manual, din ingrediente naturale, cu grija și atenția pe care le meriți.
+              Creăm lumânări artizanale cu ingrediente naturale pentru iubitorii de arome din toată România.
+              Fiecare lumânare este turnată manual, cu grija și atenția pe care le meriți.
             </p>
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div className="text-center bg-muted rounded-lg p-4">
