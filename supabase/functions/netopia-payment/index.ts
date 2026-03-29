@@ -75,7 +75,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const shippingAddr = (order.shipping_address as Record<string, any>) || {};
-    const siteUrl = Deno.env.get("SITE_URL") || "https://mamalucica.ro";
+    const siteUrl = Deno.env.get("SITE_URL") || "https://www.mamalucica.ro";
     const returnUrl = `${siteUrl}/order-confirmation/${orderId}`;
     const notifyUrl = `${supabaseUrl}/functions/v1/netopia-ipn`;
 
