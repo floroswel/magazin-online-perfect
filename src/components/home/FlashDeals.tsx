@@ -1,81 +1,80 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Clock } from "lucide-react";
+import { Zap, ArrowRight } from "lucide-react";
 import ProductCard from "@/components/products/ProductCard";
+import { ProductCardSkeleton } from "@/components/ui/skeletons";
 import { supabase } from "@/integrations/supabase/client";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 import type { Tables } from "@/integrations/supabase/types";
-import { isCandleCollection } from "@/lib/candleCatalog";
 
-function useCountdown() {
-  const [time, setTime] = useState({ h: 0, m: 0, s: 0 });
-  useEffect(() => {
-    const update = () => {
-      const now = new Date();
-      const end = new Date(now); end.setHours(23, 59, 59, 999);
-      const diff = Math.max(0, end.getTime() - now.getTime());
-      setTime({ h: Math.floor(diff / 3600000), m: Math.floor((diff % 3600000) / 60000), s: Math.floor((diff % 60000) / 1000) });
-    };
-    update();
-    const timer = setInterval(update, 1000);
-    return () => clearInterval(timer);
-  }, []);
-  return time;
+interface Props {
+  title?: string;
 }
 
-export default function FlashDeals({ title = "Oferte Limitate" }: { title?: string }) {
-  const [deals, setDeals] = useState<Tables<"products">[]>([]);
-  const countdown = useCountdown();
+export default function FlashDeals({ title = "⚡ Flash Deals" }: Props) {
+  const [products, setProducts] = useState<Tables<"products">[]>([]);
+  const [loading, setLoading] = useState(true);
+  const ref = useScrollReveal();
+
+  const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0 });
+  useEffect(() => {
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+    const tick = () => {
+      const diff = Math.max(0, endOfDay.getTime() - Date.now());
+      setTimeLeft({
+        h: Math.floor(diff / 3600000),
+        m: Math.floor((diff % 3600000) / 60000),
+        s: Math.floor((diff % 60000) / 1000),
+      });
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     supabase
-      .from("categories")
-      .select("id, name, slug")
-      .eq("visible", true)
-      .then(({ data: cats }) => {
-        const ids = ((cats || []) as Array<{ id: string; name: string; slug: string }>).filter((cat) =>
-          isCandleCollection(cat)
-        ).map((cat) => cat.id);
-
-        if (ids.length === 0) {
-          setDeals([]);
-          return;
-        }
-
-        supabase
-          .from("products")
-          .select("*")
-          .in("category_id", ids)
-          .not("old_price", "is", null)
-          .order("created_at", { ascending: false })
-          .limit(4)
-          .then(({ data }) => setDeals(data || []));
-      });
+      .from("products")
+      .select("*")
+      .not("old_price", "is", null)
+      .order("created_at", { ascending: false })
+      .limit(6)
+      .then(({ data }) => { setProducts(data || []); setLoading(false); });
   }, []);
 
-  if (deals.length === 0) return null;
-
-  const pad = (n: number) => String(n).padStart(2, "0");
-
   return (
-    <section className="py-16 md:py-20 border-y border-border">
-      <div className="container px-4">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <h2 className="font-serif text-3xl text-foreground">{title}</h2>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1.5 text-sm font-mono text-foreground bg-secondary px-4 py-2">
-              <Clock className="h-3.5 w-3.5 text-primary" />
-              <span>{pad(countdown.h)}</span>:<span>{pad(countdown.m)}</span>:<span>{pad(countdown.s)}</span>
+    <section className="bg-card border-y border-border" ref={ref}>
+      <div className="container py-6 md:py-10 px-4">
+        <div className="flex items-center justify-between mb-5 reveal stagger-1">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary text-primary-foreground px-3 py-1.5 rounded-md flex items-center gap-1.5">
+              <Zap className="w-4 h-4" />
+              <span className="font-bold text-sm">{title}</span>
             </div>
-            <Link to="/catalog" className="hidden md:flex text-sm text-primary hover:text-primary/80 font-medium items-center gap-1.5 transition-colors">
-              Vezi toate <ArrowRight className="h-4 w-4" />
-            </Link>
+            <div className="flex items-center gap-1 text-sm">
+              <span className="text-muted-foreground">Se termină în:</span>
+              <span className="bg-foreground text-background font-mono font-bold px-1.5 py-0.5 rounded text-xs">{String(timeLeft.h).padStart(2, "0")}</span>
+              <span className="font-bold text-foreground">:</span>
+              <span className="bg-foreground text-background font-mono font-bold px-1.5 py-0.5 rounded text-xs">{String(timeLeft.m).padStart(2, "0")}</span>
+              <span className="font-bold text-foreground">:</span>
+              <span className="bg-foreground text-background font-mono font-bold px-1.5 py-0.5 rounded text-xs">{String(timeLeft.s).padStart(2, "0")}</span>
+            </div>
           </div>
+          <Link to="/catalog?badge=deals" className="text-primary text-sm font-medium flex items-center gap-1 hover:underline">
+            Vezi toate <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {deals.map(p => <ProductCard key={p.id} product={p} />)}
-        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            {Array.from({ length: 6 }).map((_, i) => <ProductCardSkeleton key={i} />)}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 reveal stagger-2">
+            {products.map((p, i) => <ProductCard key={p.id} product={p} eager={i < 4} />)}
+          </div>
+        )}
       </div>
     </section>
   );

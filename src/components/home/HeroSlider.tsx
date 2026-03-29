@@ -1,93 +1,97 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+const slides = [
+  {
+    title: "Mega Reduceri de Primăvară",
+    subtitle: "Până la 70% reducere la mii de produse",
+    cta: "VEZI OFERTELE",
+    link: "/catalog?badge=deals",
+    image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200&h=500&fit=crop",
+    bg: "from-primary/90 to-primary/60",
+  },
+  {
+    title: "Produse Noi în Fiecare Zi",
+    subtitle: "Descoperă cele mai recente adăugiri în catalog",
+    cta: "EXPLOREAZĂ",
+    link: "/catalog?sort=newest",
+    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=500&fit=crop",
+    bg: "from-foreground/80 to-foreground/50",
+  },
+  {
+    title: "Livrare Gratuită",
+    subtitle: "La comenzi peste 200 lei, transport gratuit în toată România",
+    cta: "CUMPĂRĂ ACUM",
+    link: "/catalog",
+    image: "https://images.unsplash.com/photo-1573855619003-97b4799dcd8b?w=1200&h=500&fit=crop",
+    bg: "from-accent/90 to-accent/60",
+  },
+];
 
 export default function HeroSlider() {
-  const [loaded, setLoaded] = useState(false);
   const [current, setCurrent] = useState(0);
 
-  const slides = [
-    {
-      image: "https://images.unsplash.com/photo-1602607753498-2e513137e061?w=1920&h=1080&fit=crop",
-      title: "STIL ATEMPORAL\nPENTRU VIAȚA\nMODERNĂ",
-      cta: "CUMPĂRĂ ACUM",
-      link: "/catalog",
-    },
-    {
-      image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1920&h=1080&fit=crop",
-      title: "DESCOPERĂ\nCOLECȚIA\nNOUĂ",
-      cta: "VEZI COLECȚIA",
-      link: "/catalog?category=noi",
-    },
-  ];
-
   useEffect(() => {
-    const t = setTimeout(() => setLoaded(true), 100);
-    return () => clearTimeout(t);
+    const id = setInterval(() => setCurrent((c) => (c + 1) % slides.length), 5000);
+    return () => clearInterval(id);
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slides.length);
-    }, 6000);
-    return () => clearInterval(interval);
-  }, [slides.length]);
-
-  const slide = slides[current];
+  const prev = () => setCurrent((c) => (c - 1 + slides.length) % slides.length);
+  const next = () => setCurrent((c) => (c + 1) % slides.length);
 
   return (
-    <section className="relative h-screen min-h-[600px] max-h-[1000px] flex items-end overflow-hidden">
-      {/* Background images */}
-      {slides.map((s, i) => (
-        <div
-          key={i}
-          className={`absolute inset-0 transition-opacity duration-1000 ${i === current ? "opacity-100" : "opacity-0"}`}
-        >
-          <img
-            src={s.image}
-            alt="Mama Lucica"
-            className="w-full h-full object-cover"
-            loading={i === 0 ? "eager" : "lazy"}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-        </div>
-      ))}
-
-      {/* Content */}
-      <div className="relative z-10 container px-6 md:px-8 pb-16 md:pb-24">
-        <h1
-          className={`font-serif text-white uppercase leading-[0.92] mb-8 transition-all duration-1000 whitespace-pre-line ${
-            loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}
-          style={{ fontSize: "clamp(36px, 7vw, 82px)", fontWeight: 700, letterSpacing: "-0.02em" }}
-        >
-          {slide.title}
-        </h1>
-
-        <Link
-          to={slide.link}
-          className={`inline-block font-sans text-[12px] font-medium tracking-[2.5px] uppercase text-foreground bg-background px-10 py-4 hover:bg-foreground hover:text-background transition-all duration-300 ${
-            loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}
-          style={{ transitionDelay: "0.3s" }}
-        >
-          {slide.cta}
-        </Link>
-
-        {/* Slide indicators */}
-        {slides.length > 1 && (
-          <div className="flex gap-2 mt-8">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrent(i)}
-                className={`h-[2px] transition-all duration-500 ${
-                  i === current ? "w-10 bg-white" : "w-5 bg-white/40 hover:bg-white/60"
-                }`}
-                aria-label={`Slide ${i + 1}`}
-              />
-            ))}
+    <section className="relative w-full overflow-hidden bg-card">
+      <div className="relative h-[200px] sm:h-[300px] md:h-[400px]">
+        {slides.map((slide, i) => (
+          <div
+            key={i}
+            className={`absolute inset-0 transition-opacity duration-700 ${i === current ? "opacity-100 z-10" : "opacity-0 z-0"}`}
+          >
+            <img
+              src={slide.image}
+              alt={slide.title}
+              className="absolute inset-0 w-full h-full object-cover"
+              loading={i === 0 ? "eager" : "lazy"}
+            />
+            <div className={`absolute inset-0 bg-gradient-to-r ${slide.bg}`} />
+            <div className="relative z-10 h-full flex items-center">
+              <div className="container px-4 md:px-8">
+                <div className="max-w-lg text-primary-foreground">
+                  <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold mb-2 md:mb-4 leading-tight">
+                    {slide.title}
+                  </h2>
+                  <p className="text-sm sm:text-base md:text-lg opacity-90 mb-4 md:mb-6">
+                    {slide.subtitle}
+                  </p>
+                  <Link
+                    to={slide.link}
+                    className="inline-block bg-primary-foreground text-foreground font-bold text-sm px-6 py-3 rounded-lg hover:opacity-90 transition-opacity"
+                  >
+                    {slide.cta}
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
-        )}
+        ))}
+
+        <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-card/80 rounded-full flex items-center justify-center shadow hover:bg-card transition-colors">
+          <ChevronLeft className="w-5 h-5 text-foreground" />
+        </button>
+        <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-card/80 rounded-full flex items-center justify-center shadow hover:bg-card transition-colors">
+          <ChevronRight className="w-5 h-5 text-foreground" />
+        </button>
+
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`w-2.5 h-2.5 rounded-full transition-all ${i === current ? "bg-primary-foreground w-6" : "bg-primary-foreground/50"}`}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
