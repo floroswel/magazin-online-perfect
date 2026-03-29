@@ -38,6 +38,8 @@ export default function Checkout() {
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({ fullName: "", phone: "", email: "", address: "", city: "", county: "", postalCode: "" });
+  const [shipToDifferent, setShipToDifferent] = useState(false);
+  const [shippingForm, setShippingForm] = useState({ fullName: "", phone: "", address: "", city: "", county: "", postalCode: "" });
   const [paymentMethod, setPaymentMethod] = useState("");
   const [installmentMonths, setInstallmentMonths] = useState("3");
   const [couponCode, setCouponCode] = useState("");
