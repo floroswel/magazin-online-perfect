@@ -300,9 +300,12 @@ export default function Checkout() {
           body: { orderId: order.id },
         });
         if (netopiaError || !netopiaData?.redirectUrl) {
-          toast.error("Eroare la inițierea plății cu cardul. Comanda a fost salvată.");
-          await clearCart();
-          navigate("/order-confirmation/" + order.id);
+          const errMsg = netopiaData?.error || "Eroare la inițierea plății cu cardul.";
+          toast.error(typeof errMsg === "string" ? errMsg : "Eroare la inițierea plății cu cardul.");
+          // Mark order as failed since payment couldn't start
+          await supabase.from("orders").update({ status: "payment_failed", payment_status: "failed" }).eq("id", order.id);
+          setSubmitting(false);
+          return;
         } else {
           await clearCart();
           window.location.href = netopiaData.redirectUrl;
