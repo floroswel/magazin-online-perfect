@@ -37,7 +37,7 @@ export default function AdminCustomerDetail() {
         supabase.from("orders").select("id, order_number, created_at, status, total, payment_method, user_email").eq("user_id", userId).order("created_at", { ascending: false }),
         supabase.from("addresses").select("*").eq("user_id", userId),
         supabase.from("returns").select("*, orders(id, order_number)").eq("user_id", userId),
-        supabase.from("reviews").select("*, products(name)").eq("user_id", userId),
+        supabase.from("product_reviews").select("*, products(name)").eq("user_id", userId),
         supabase.from("customer_notes").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
         supabase.from("loyalty_points").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(50),
       ]);

@@ -10,7 +10,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { Save, Eye, RotateCcw, Paintbrush, Type, Square, Layout, Code } from "lucide-react";
-import type { ThemeSettings } from "@/hooks/useTheme";
+// Local ThemeSettings type for the advanced admin editor (writes to app_settings)
+interface ThemeSettings {
+  colors: {
+    primary: string; primaryForeground: string; secondary: string; secondaryForeground: string;
+    background: string; foreground: string; card: string; muted: string; mutedForeground: string;
+    accent: string; accentForeground: string; destructive: string; border: string;
+  };
+  typography: {
+    fontFamily: string; fontFamilyHeadings: string; baseFontSize: number;
+    h1Size: number; h2Size: number; h3Size: number;
+    h1Weight: string; h2Weight: string; h3Weight: string;
+    bodyWeight: string; lineHeight: number;
+  };
+  buttons: {
+    borderRadius: number; paddingX: number; paddingY: number; fontWeight: string;
+    textTransform: "none" | "uppercase" | "capitalize"; hoverEffect: "darken" | "lighten" | "shadow" | "scale";
+  };
+  layout: {
+    containerMaxWidth: number; sectionSpacing: number; cardBorderRadius: number;
+    headerStyle: "gradient" | "solid" | "transparent";
+  };
+  customCss: string;
+  isPublished: boolean;
+}
 
 const GOOGLE_FONTS = [
   "Inter", "Roboto", "Open Sans", "Montserrat", "Lato", "Poppins", "Nunito", "Raleway",

@@ -8,11 +8,13 @@ import NewsletterPopup from "@/components/NewsletterPopup";
 import SeoHead from "@/components/SeoHead";
 import SocialProofPopup from "@/components/SocialProofPopup";
 import LiveChat from "@/components/LiveChat";
+import BannerRenderer from "./BannerRenderer";
 
 export default function Layout({ children, hideHeader }: { children: React.ReactNode; hideHeader?: boolean }) {
   return (
     <div className="min-h-screen flex flex-col">
       <SeoHead />
+      <BannerRenderer />
       {!hideHeader && <Header />}
       <Breadcrumbs />
       <main className="flex-1">{children}</main>

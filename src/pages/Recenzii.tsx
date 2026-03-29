@@ -12,7 +12,7 @@ export default function Recenzii() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let q = (supabase as any).from("reviews").select("*, products(name, slug, image_url)").eq("status", "approved").order("created_at", { ascending: false }).limit(50);
+    let q = supabase.from("product_reviews").select("*, products(name, slug, image_url)").eq("status", "approved").order("created_at", { ascending: false }).limit(50);
     if (filter !== "all") q = q.eq("rating", parseInt(filter));
     q.then(({ data }: any) => { setReviews(data || []); setLoading(false); });
   }, [filter]);
@@ -65,11 +65,11 @@ export default function Recenzii() {
                           <Star key={i} className={`h-4 w-4 ${i < r.rating ? "fill-yellow-400 text-yellow-400" : "text-muted"}`} />
                         ))}
                       </div>
-                      <p className="font-medium text-foreground text-sm">{r.reviewer_name || "Client verificat"}</p>
+                      <p className="font-medium text-foreground text-sm">{r.user_name || r.reviewer_name || "Client verificat"}</p>
                     </div>
                     <span className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("ro-RO")}</span>
                   </div>
-                  <p className="text-sm text-foreground mb-2">{r.comment}</p>
+                  <p className="text-sm text-foreground mb-2">{r.body || r.comment}</p>
                   {r.products && (
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       {r.products.image_url && <img src={r.products.image_url} alt="" className="w-8 h-8 rounded object-cover" />}
