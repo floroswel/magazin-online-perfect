@@ -356,10 +356,10 @@ export default function Checkout() {
           await clearCart();
           window.location.href = paypoData.redirectUrl;
         }
-      } catch {
+      } catch (err) {
+        console.error("PayPo connection error:", err);
         toast.error("Eroare la conectarea cu PayPo.");
-        await clearCart();
-        navigate("/order-confirmation/" + order.id);
+        await supabase.from("orders").update({ status: "payment_failed", payment_status: "failed" }).eq("id", order.id);
       }
       setSubmitting(false);
       return;
