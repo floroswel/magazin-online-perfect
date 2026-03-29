@@ -89,8 +89,23 @@ export default function SearchAutocomplete({ className }: { className?: string }
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
+      addRecentSearch(query.trim());
       setOpen(false);
       navigate(`/catalog?search=${encodeURIComponent(query.trim())}`);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!open) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIdx(prev => Math.min(prev + 1, suggestions.length));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIdx(prev => Math.max(prev - 1, -1));
+    } else if (e.key === "Enter" && activeIdx >= 0 && activeIdx < suggestions.length) {
+      e.preventDefault();
+      goToProduct(suggestions[activeIdx].slug);
     }
   };
 
