@@ -107,7 +107,7 @@ export default function QuizParfum() {
       <Layout>
         <div className="container py-10 max-w-3xl">
           <div className="text-center mb-8">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-ventuza-amber font-medium mb-2">Recomandări personalizate</p>
+            <p className="text-[10px] tracking-[0.3em] uppercase text-accent font-medium mb-2">Recomandări personalizate</p>
             <h1 className="font-serif text-3xl font-light text-foreground">Parfumul tău ideal</h1>
             <p className="text-muted-foreground mt-2 text-sm">
               Pe baza celor {questions.length} răspunsuri, iată lumânările perfecte pentru tine:
@@ -137,7 +137,7 @@ export default function QuizParfum() {
     <Layout>
       <div className="container py-10 max-w-lg">
         <div className="text-center mb-8">
-          <p className="text-[10px] tracking-[0.3em] uppercase text-ventuza-amber font-medium mb-2">Quiz Parfum</p>
+          <p className="text-[10px] tracking-[0.3em] uppercase text-accent font-medium mb-2">Quiz Parfum</p>
           <h1 className="font-serif text-2xl font-light text-foreground">Găsește Parfumul Tău Perfect</h1>
           <p className="text-muted-foreground mt-1 text-sm">5 întrebări simple, recomandări personalizate</p>
         </div>
@@ -146,7 +146,7 @@ export default function QuizParfum() {
           {questions.map((_, i) => (
             <div
               key={i}
-              className={`h-1.5 flex-1 rounded-full transition-all ${i <= step ? "bg-ventuza-amber" : "bg-muted"}`}
+              className={`h-1.5 flex-1 rounded-full transition-all ${i <= step ? "bg-accent" : "bg-muted"}`}
             />
           ))}
         </div>
@@ -160,7 +160,7 @@ export default function QuizParfum() {
             <Button
               key={i}
               variant="outline"
-              className="w-full h-auto py-4 justify-start text-left hover:border-ventuza-amber hover:bg-ventuza-amber/5"
+              className="w-full h-auto py-4 justify-start text-left hover:border-accent hover:bg-accent/5"
               onClick={() => handleAnswer(opt.tags)}
             >
               <span className="text-base">{opt.label}</span>

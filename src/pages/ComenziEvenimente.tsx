@@ -31,7 +31,7 @@ export default function ComenziEvenimente() {
     <Layout>
       <section className="bg-secondary text-secondary-foreground py-16 md:py-20">
         <div className="container max-w-3xl text-center">
-          <p className="text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-4 font-medium">Evenimente</p>
+          <p className="text-xs tracking-[0.3em] uppercase text-accent mb-4 font-medium">Evenimente</p>
           <h1 className="font-serif text-4xl font-medium mb-4">Lumânări pentru Evenimente</h1>
           <p className="text-secondary-foreground/60">Nuntă · Botez · Corporate · Aniversare</p>
         </div>

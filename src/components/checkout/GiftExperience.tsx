@@ -49,12 +49,12 @@ export default function GiftExperience({ value, onChange }: Props) {
       <label className="flex items-center gap-2 cursor-pointer">
         <Checkbox checked={value.isGift} onCheckedChange={(v) => toggleGift(!!v)} />
         <span className="text-sm font-medium flex items-center gap-1">
-          <Gift className="h-4 w-4 text-ventuza-amber" /> Aceasta este o comandă cadou
+          <Gift className="h-4 w-4 text-accent" /> Aceasta este o comandă cadou
         </span>
       </label>
 
       {value.isGift && (
-        <Card className="border-ventuza-amber/30 bg-ventuza-amber/5">
+        <Card className="border-accent/30 bg-accent/5">
           <CardContent className="p-4 space-y-4">
             <div>
               <Label className="text-sm font-medium mb-2 block">Ambalaj cadou</Label>
@@ -63,7 +63,7 @@ export default function GiftExperience({ value, onChange }: Props) {
                   <div
                     key={opt.id}
                     className={`flex items-center space-x-2 border rounded-lg p-3 transition-colors ${
-                      value.wrappingId === opt.id ? "border-ventuza-amber bg-background" : "hover:border-ventuza-amber/50"
+                      value.wrappingId === opt.id ? "border-accent bg-background" : "hover:border-accent/50"
                     }`}
                   >
                     <RadioGroupItem value={opt.id} id={`wrap-${opt.id}`} />

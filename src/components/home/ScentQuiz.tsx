@@ -71,7 +71,7 @@ export default function ScentQuiz() {
       return (
         <section className="container py-12 md:py-20 px-4">
           <div className="text-center mb-8 md:mb-10">
-            <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-ventuza-amber mb-2 md:mb-3 font-medium">Recomandări</p>
+            <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-accent mb-2 md:mb-3 font-medium">Recomandări</p>
             <h2 className="font-serif text-2xl md:text-3xl font-light text-foreground">Parfumul Tău Perfect</h2>
             <p className="text-muted-foreground mt-2 text-sm">Pe baza preferințelor tale, iată selecția noastră:</p>
           </div>
@@ -93,7 +93,7 @@ export default function ScentQuiz() {
     <section className="bg-card py-12 md:py-20">
       <div className="container px-4">
         <div className="text-center mb-8 md:mb-10">
-          <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-ventuza-amber mb-2 md:mb-3 font-medium">Quiz Parfum</p>
+          <p className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-accent mb-2 md:mb-3 font-medium">Quiz Parfum</p>
           <h2 className="font-serif text-2xl md:text-3xl font-light text-foreground">Găsește Parfumul Tău</h2>
           <p className="text-sm md:text-base text-muted-foreground mt-2">3 întrebări · Recomandări personalizate</p>
         </div>
@@ -101,7 +101,7 @@ export default function ScentQuiz() {
         <div className="max-w-md mx-auto">
           <div className="flex gap-2 mb-8">
             {questions.map((_, i) => (
-              <div key={i} className={`h-1 flex-1 rounded-full transition-all ${i <= step ? "bg-ventuza-amber" : "bg-border"}`} />
+              <div key={i} className={`h-1 flex-1 rounded-full transition-all ${i <= step ? "bg-accent" : "bg-border"}`} />
             ))}
           </div>
 
@@ -110,13 +110,13 @@ export default function ScentQuiz() {
             {current.options.map((opt, i) => (
               <button
                 key={i}
-                className="py-6 px-4 bg-background border border-border rounded-xl hover:border-ventuza-amber hover:shadow-md text-center transition-all duration-200 group flex flex-col items-center gap-3"
+                className="py-6 px-4 bg-background border border-border rounded-xl hover:border-accent hover:shadow-md text-center transition-all duration-200 group flex flex-col items-center gap-3"
                 onClick={() => handleAnswer(opt.tags)}
               >
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center ${opt.color} transition-transform group-hover:scale-110`}>
                   <opt.icon className="h-5 w-5" />
                 </div>
-                <span className="text-sm font-medium text-foreground group-hover:text-ventuza-amber transition-colors">{opt.label}</span>
+                <span className="text-sm font-medium text-foreground group-hover:text-accent transition-colors">{opt.label}</span>
               </button>
             ))}
           </div>

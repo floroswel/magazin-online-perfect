@@ -88,7 +88,7 @@ export default function FAQ() {
     <Layout>
       <section className="bg-secondary text-secondary-foreground py-16 md:py-20">
         <div className="container max-w-3xl text-center">
-          <p className="text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-4 font-medium">Suport</p>
+          <p className="text-xs tracking-[0.3em] uppercase text-accent mb-4 font-medium">Suport</p>
           <h1 className="font-serif text-4xl font-medium">Întrebări Frecvente</h1>
         </div>
       </section>

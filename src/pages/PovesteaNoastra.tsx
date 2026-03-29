@@ -6,7 +6,7 @@ export default function PovesteaNoastra() {
       {/* Hero */}
       <section className="bg-secondary text-secondary-foreground py-20 md:py-28">
         <div className="container max-w-3xl text-center">
-          <p className="text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-4 font-medium">Despre Noi</p>
+          <p className="text-xs tracking-[0.3em] uppercase text-accent mb-4 font-medium">Despre Noi</p>
           <h1 className="font-serif text-4xl md:text-5xl font-medium leading-tight mb-6">Povestea VENTUZA</h1>
           <p className="text-secondary-foreground/60 text-lg leading-relaxed">
             De la pasiune la parfumuri care transformă fiecare moment

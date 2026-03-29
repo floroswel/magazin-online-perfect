@@ -30,7 +30,7 @@ export default function Tracking() {
     <Layout>
       <section className="bg-secondary text-secondary-foreground py-16 md:py-20">
         <div className="container max-w-xl text-center">
-          <p className="text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-4 font-medium">Livrare</p>
+          <p className="text-xs tracking-[0.3em] uppercase text-accent mb-4 font-medium">Livrare</p>
           <h1 className="font-serif text-4xl font-medium mb-4">Urmărire Comandă</h1>
           <p className="text-secondary-foreground/60">Introdu numărul comenzii pentru a vedea statusul</p>
         </div>
