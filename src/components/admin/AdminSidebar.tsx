@@ -168,7 +168,10 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
         children: [
           { label: "Pagini (CMS)", path: "/admin/content/pages" },
           { label: "Page Builder", path: "/admin/content/page-builder" },
+          { label: "Hero Slider", path: "/admin/content/hero-slides" },
           { label: "Homepage", path: "/admin/content/homepage" },
+          { label: "Opțiuni Personalizare", path: "/admin/content/personalization" },
+          { label: "Pagini Statice", path: "/admin/content/static-pages" },
           { label: "Landing pages", path: "/admin/content/landing" },
           { label: "Blog", path: "/admin/content/blog" },
           { label: "Media library", path: "/admin/content/media" },
