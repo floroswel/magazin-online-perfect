@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
-import { Facebook, Instagram, Youtube, Globe, ShieldCheck, ArrowRight } from "lucide-react";
+import { Facebook, Instagram, Youtube, Globe, ShieldCheck, ArrowRight, Phone, Mail, MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -37,12 +37,12 @@ const SocialIcon = React.forwardRef<HTMLSpanElement, { icon: string; className?:
 SocialIcon.displayName = "SocialIcon";
 
 const DEFAULTS: FooterTexts = {
-  col1_title: "Mama Lucica", col1_description: "Lumânări artizanale din ceară de soia, create cu dragoste în România.",
-  col2_title: "Colecții", col2_links: [],
-  col3_title: "Informații", col3_links: [],
-  col4_title: "Contact", col4_email: "contact@mamalucica.ro", col4_phone: "", col4_address: "", col4_hours: "",
+  col1_title: "MamaLucica", col1_description: "Marketplace-ul tău de încredere din România.",
+  col2_title: "Cumpărători", col2_links: [],
+  col3_title: "Vendori", col3_links: [],
+  col4_title: "Contact", col4_email: "contact@mamalucica.ro", col4_phone: "0800-123-456", col4_address: "București, România", col4_hours: "L-V: 09-18",
   col4_show_email: true, col4_show_phone: true, col4_show_address: true, col4_show_hours: true,
-  copyright: "© {year} Mama Lucica", extra_legal: "", show_made_in: true,
+  copyright: "© {year} MamaLucica", extra_legal: "", show_made_in: true,
 };
 
 export default function Footer() {
@@ -81,23 +81,25 @@ export default function Footer() {
   }, [footerScripts]);
 
   const col2Links = texts.col2_links.length > 0 ? texts.col2_links.filter(l => l.active) : [
-    { label: "Noutăți", url: "/catalog?sort=newest", active: true },
-    { label: "Lumânări Parfumate", url: "/catalog?category=parfumate", active: true },
-    { label: "Seturi Cadou", url: "/catalog?category=seturi-cadou", active: true },
-    { label: "Personalizare", url: "/personalizare", active: true },
+    { label: "Cum Cumpăr", url: "/faq", active: true },
+    { label: "Plăți & Rate", url: "/page/plati", active: true },
+    { label: "Livrare", url: "/livrare-internationala", active: true },
+    { label: "Retururi", url: "/page/politica-retur", active: true },
+    { label: "Garanție", url: "/page/garantie", active: true },
   ];
 
   const col3Links = texts.col3_links.length > 0 ? texts.col3_links.filter(l => l.active) : [
-    { label: "Povestea Noastră", url: "/povestea-noastra", active: true },
-    { label: "Cariere", url: "/page/cariere", active: true },
-    { label: "Blog", url: "/recenzii", active: true },
+    { label: "Devino Vendor", url: "/page/vinde", active: true },
+    { label: "Portal Vendori", url: "/page/portal-vendori", active: true },
+    { label: "Reguli & Politici", url: "/page/reguli", active: true },
   ];
 
   const col4Links = [
-    { label: "Ghid Mărimi", url: "/page/ghid-marimi" },
-    { label: "Retururi & Schimburi", url: "/page/politica-retur" },
-    { label: "Livrare", url: "/livrare-internationala" },
-    { label: "FAQ", url: "/faq" },
+    { label: "Despre Noi", url: "/povestea-noastra" },
+    { label: "Blog", url: "/recenzii" },
+    { label: "Cariere", url: "/page/cariere" },
+    { label: "Termeni & Condiții", url: "/page/termeni" },
+    { label: "Confidențialitate", url: "/page/politica-de-confidentialitate" },
   ];
 
   const handleSubscribe = async (e: React.FormEvent) => {
@@ -117,37 +119,23 @@ export default function Footer() {
   const copyrightText = texts.copyright.replace("{year}", String(new Date().getFullYear()));
 
   return (
-    <footer className="bg-background border-t border-border mt-auto">
-      <div className="container py-14 md:py-16 px-5">
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-8">
-          {/* Newsletter column */}
+    <footer className="bg-foreground text-background mt-auto">
+      <div className="container py-10 md:py-14 px-4">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-8">
+          {/* Brand + Newsletter */}
           <div className="col-span-2 lg:col-span-1">
-            <p className="font-sans text-sm text-muted-foreground mb-4">
-              Abonează-te pentru noutăți și oferte!
-            </p>
-            <form onSubmit={handleSubscribe} className="mb-4">
-              <div className="flex border border-foreground">
-                <Input type="email" placeholder="Adresa de email" value={email} onChange={e => setEmail(e.target.value)}
-                  className="bg-transparent border-0 text-foreground placeholder:text-muted-foreground rounded-none flex-1 h-10 font-sans text-sm focus:ring-0" required />
-                <button type="submit" disabled={loading} className="shrink-0 px-3 h-10 text-foreground hover:opacity-70 transition-opacity">
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-              <label className="flex items-start gap-2 cursor-pointer mt-2">
-                <input type="checkbox" checked={gdprConsent} onChange={e => setGdprConsent(e.target.checked)} className="mt-0.5" />
-                <span className="font-sans text-[11px] text-muted-foreground">Sunt de acord cu <Link to="/page/politica-de-confidentialitate" className="underline">Politica de Confidențialitate</Link>.</span>
-              </label>
-            </form>
-            <div className="flex gap-4 mt-4">
+            <h4 className="text-lg font-extrabold mb-3">{texts.col1_title}</h4>
+            <p className="text-background/60 text-sm mb-4">{texts.col1_description}</p>
+            <div className="flex gap-3 mb-4">
               {(socialLinks.length > 0 ? socialLinks : [
-                { platform: "instagram", url: "#", icon: "instagram" },
                 { platform: "facebook", url: "#", icon: "facebook" },
-                { platform: "tiktok", url: "#", icon: "tiktok" },
+                { platform: "instagram", url: "#", icon: "instagram" },
+                { platform: "youtube", url: "#", icon: "youtube" },
               ]).map((link, i) => (
                 <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
-                  className="text-foreground/60 hover:text-foreground transition-colors"
+                  className="w-9 h-9 rounded-full bg-background/10 flex items-center justify-center hover:bg-background/20 transition-colors"
                   aria-label={link.platform}>
-                  <SocialIcon icon={link.icon} className="w-5 h-5" />
+                  <SocialIcon icon={link.icon} className="w-4 h-4" />
                 </a>
               ))}
             </div>
@@ -155,74 +143,79 @@ export default function Footer() {
 
           {/* Col 2 */}
           <div>
-            <h4 className="font-sans text-sm font-medium text-foreground mb-4">{texts.col2_title}</h4>
-            <ul className="space-y-2.5">
+            <h4 className="font-bold text-sm mb-3">{texts.col2_title}</h4>
+            <ul className="space-y-2">
               {col2Links.map((l, i) => (
-                <li key={i}><Link to={l.url} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">{l.label}</Link></li>
+                <li key={i}><Link to={l.url} className="text-sm text-background/60 hover:text-background transition-colors">{l.label}</Link></li>
               ))}
             </ul>
           </div>
 
           {/* Col 3 */}
           <div>
-            <h4 className="font-sans text-sm font-medium text-foreground mb-4">{texts.col3_title}</h4>
-            <ul className="space-y-2.5">
+            <h4 className="font-bold text-sm mb-3">{texts.col3_title}</h4>
+            <ul className="space-y-2">
               {col3Links.map((l, i) => (
-                <li key={i}><Link to={l.url} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">{l.label}</Link></li>
+                <li key={i}><Link to={l.url} className="text-sm text-background/60 hover:text-background transition-colors">{l.label}</Link></li>
               ))}
             </ul>
           </div>
 
-          {/* Col 4 - Help */}
+          {/* Col 4 */}
           <div>
-            <h4 className="font-sans text-sm font-medium text-foreground mb-4">Ajutor</h4>
-            <ul className="space-y-2.5">
+            <h4 className="font-bold text-sm mb-3">Companie</h4>
+            <ul className="space-y-2">
               {col4Links.map((l, i) => (
-                <li key={i}><Link to={l.url} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">{l.label}</Link></li>
+                <li key={i}><Link to={l.url} className="text-sm text-background/60 hover:text-background transition-colors">{l.label}</Link></li>
               ))}
             </ul>
           </div>
 
           {/* Col 5 - Contact */}
           <div>
+            <h4 className="font-bold text-sm mb-3">Contact</h4>
             {texts.col4_show_phone && texts.col4_phone && (
-              <p className="font-sans text-sm text-foreground mb-1">{texts.col4_phone}</p>
+              <div className="flex items-center gap-2 mb-2 text-background/60 text-sm">
+                <Phone className="w-4 h-4 shrink-0" />
+                <span>{texts.col4_phone}</span>
+              </div>
             )}
             {texts.col4_show_email && texts.col4_email && (
-              <p className="font-sans text-sm text-muted-foreground mb-3">{texts.col4_email}</p>
+              <div className="flex items-center gap-2 mb-2 text-background/60 text-sm">
+                <Mail className="w-4 h-4 shrink-0" />
+                <span>{texts.col4_email}</span>
+              </div>
             )}
             {texts.col4_show_address && texts.col4_address && (
-              <p className="font-sans text-sm text-muted-foreground">{texts.col4_address}</p>
+              <div className="flex items-center gap-2 text-background/60 text-sm">
+                <MapPin className="w-4 h-4 shrink-0" />
+                <span>{texts.col4_address}</span>
+              </div>
             )}
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-border mt-12 pt-6">
+        <div className="border-t border-background/10 mt-10 pt-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-              <p className="font-sans text-xs text-muted-foreground">{copyrightText}</p>
+              <p className="text-xs text-background/50">{copyrightText}</p>
               {companyInfo.cui && (
-                <>
-                  <span className="text-[10px] text-muted-foreground/50">·</span>
-                  <p className="font-sans text-[10px] text-muted-foreground">CUI: {companyInfo.cui} · {companyInfo.reg_com || ""}</p>
-                </>
+                <p className="text-[10px] text-background/40">CUI: {companyInfo.cui} · {companyInfo.reg_com || ""}</p>
               )}
             </div>
             <div className="flex items-center gap-3">
               <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
-                title="ANPC">
+                className="inline-flex items-center gap-1.5 text-background/50 hover:text-background transition-colors">
                 <ShieldCheck className="w-4 h-4" />
-                <span className="font-sans text-xs">ANPC</span>
+                <span className="text-xs">ANPC</span>
               </a>
               <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
-                title="SOL / ODR">
+                className="inline-flex items-center gap-1.5 text-background/50 hover:text-background transition-colors">
                 <Globe className="w-4 h-4" />
-                <span className="font-sans text-xs">SOL</span>
+                <span className="text-xs">SOL</span>
               </a>
-              <div ref={footerScriptsRef} className="inline-flex flex-row flex-wrap items-center gap-3 [&_a]:inline-flex [&_a]:items-center [&_a]:text-muted-foreground [&_a]:hover:text-foreground [&_a]:transition-colors [&_img]:h-5 [&_img]:!w-auto [&_img]:object-contain [&_img]:opacity-60 [&_img]:hover:opacity-100 [&_span]:text-xs [&_p]:text-xs [&_div]:contents" />
+              <div ref={footerScriptsRef} className="inline-flex flex-row flex-wrap items-center gap-3 [&_a]:inline-flex [&_a]:items-center [&_a]:text-background/50 [&_a]:hover:text-background [&_a]:transition-colors [&_img]:h-5 [&_img]:!w-auto [&_img]:object-contain [&_img]:opacity-60 [&_img]:hover:opacity-100 [&_span]:text-xs [&_p]:text-xs [&_div]:contents" />
             </div>
           </div>
         </div>

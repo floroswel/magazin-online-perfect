@@ -17,7 +17,6 @@ import BrandLogosCarousel from "@/components/home/BrandLogosCarousel";
 import { ProductCardSkeleton } from "@/components/ui/skeletons";
 import { supabase } from "@/integrations/supabase/client";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
-import { isCandleCollection } from "@/lib/candleCatalog";
 import { useStoreBranding } from "@/hooks/useStoreBranding";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { usePageSeo } from "@/components/SeoHead";
@@ -26,18 +25,18 @@ import type { Tables } from "@/integrations/supabase/types";
 
 const DEFAULT_ORDER = [
   "hero_section", "social_proof_bar", "collections_grid",
+  "flash_deals", "scent_guide_teaser",
   "featured_products", "brand_story_section",
-  "bestsellers_section", "scent_guide_teaser",
-  "reviews_section", "flash_deals",
-  "brand_logos", "instagram_feed",
+  "bestsellers_section", "instagram_feed",
+  "reviews_section", "brand_logos",
   "recently_viewed", "newsletter_section",
 ];
 
 export default function Index() {
   const branding = useStoreBranding();
   usePageSeo({
-    title: "Mama Lucica — Lumânări Artizanale Premium",
-    description: "Descoperă lumânări artizanale create din ingrediente naturale, parfumuri rare și cere de soia. Livrare în 24-48h.",
+    title: "MamaLucica — Marketplace Online România",
+    description: "Cumpără mii de produse de la vendori verificați. Prețuri mici, livrare rapidă, plată securizată. Marketplace-ul tău de încredere.",
     ogImage: "/og-homepage.jpg",
   });
   const [featured, setFeatured] = useState<Tables<"products">[]>([]);
@@ -87,22 +86,12 @@ export default function Index() {
 
   useEffect(() => {
     supabase
-      .from("categories")
-      .select("id, name, slug")
-      .eq("visible", true)
-      .then(({ data: cats }) => {
-        const ids = ((cats || []) as Array<{ id: string; name: string; slug: string }>)
-          .filter((cat) => isCandleCollection(cat))
-          .map((cat) => cat.id);
-        if (ids.length === 0) { setFeatured([]); setLoading(false); return; }
-        supabase
-          .from("products")
-          .select("*")
-          .eq("featured", true)
-          .in("category_id", ids)
-          .limit(4)
-          .then(({ data }) => { setFeatured(data || []); setLoading(false); });
-      });
+      .from("products")
+      .select("*")
+      .eq("featured", true)
+      .order("created_at", { ascending: false })
+      .limit(8)
+      .then(({ data }) => { setFeatured(data || []); setLoading(false); });
   }, []);
 
   const visibilityMap: Record<string, boolean | undefined> = {
@@ -126,23 +115,24 @@ export default function Index() {
     social_proof_bar: <SocialProofBar key="social_proof_bar" />,
     collections_grid: <CollectionsGrid key="collections_grid" />,
     featured_products: (
-      <section key="featured_products" className="container py-14 md:py-20 px-4" ref={featuredRef}>
-        <div className="text-center mb-10 reveal stagger-1">
-          <h2 className="font-serif text-3xl md:text-4xl text-foreground">Produse Recomandate</h2>
+      <section key="featured_products" className="container py-8 md:py-12 px-4" ref={featuredRef}>
+        <div className="flex items-center justify-between mb-5 reveal stagger-1">
+          <h2 className="text-xl md:text-2xl font-bold text-foreground">Produse Recomandate</h2>
+          <Link to="/catalog" className="text-primary text-sm font-medium hover:underline">Vezi toate →</Link>
         </div>
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
-            {Array.from({ length: 4 }).map((_, i) => <ProductCardSkeleton key={i} />)}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+            {Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)}
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 reveal stagger-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 reveal stagger-2">
             {featured.map((p, i) => <ProductCard key={p.id} product={p} eager={i < 4} />)}
           </div>
         )}
       </section>
     ),
-    flash_deals: <FlashDeals key="flash_deals" title="Oferte Limitate" />,
-    bestsellers_section: <BestSellers key="bestsellers_section" title="Cele mai vândute" />,
+    flash_deals: <FlashDeals key="flash_deals" title="⚡ Flash Deals" />,
+    bestsellers_section: <BestSellers key="bestsellers_section" title="Cele Mai Vândute" />,
     brand_story_section: <BrandStory key="brand_story_section" />,
     scent_guide_teaser: <ScentGuideTeaser key="scent_guide_teaser" />,
     reviews_section: <ReviewsSection key="reviews_section" />,
