@@ -156,10 +156,10 @@ function ProductCardInner({ product, eager = false }: Props) {
           <CountdownTimer endsAt={promotion.endsAt} />
         )}
 
-        {/* Shipping */}
+        {/* Shipping + Delivery estimate */}
         <div className="flex items-center gap-1 text-[11px] text-muted-foreground mt-2">
           <Truck className="w-3 h-3 text-[hsl(var(--marketplace-success))]" />
-          <span>Livrare gratuită</span>
+          <span>Livrare în 1-2 zile</span>
         </div>
 
         {/* Add to cart */}
