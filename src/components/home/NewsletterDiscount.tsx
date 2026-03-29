@@ -29,7 +29,7 @@ export default function NewsletterDiscount() {
 
   if (done) {
     return (
-      <section className="py-16">
+      <section className="py-14">
         <div className="container text-center">
           <h2 className="font-serif text-2xl text-foreground mb-2">Mulțumim!</h2>
           <p className="text-muted-foreground font-sans text-sm">
@@ -41,7 +41,7 @@ export default function NewsletterDiscount() {
   }
 
   return (
-    <section className="py-16 md:py-20" ref={ref}>
+    <section className="py-14 md:py-20" ref={ref}>
       <div className="container px-4">
         <div className="max-w-md mx-auto reveal stagger-1">
           <p className="font-sans text-sm text-muted-foreground mb-4 text-center md:text-left">

@@ -33,10 +33,10 @@ export default function BestSellers({ title = "Cele mai vândute" }: { title?: s
   if (products.length === 0) return null;
 
   return (
-    <section className="py-16 md:py-24" ref={ref}>
+    <section className="py-14 md:py-20" ref={ref}>
       <div className="container px-4">
         <div className="text-center mb-10 reveal stagger-1">
-          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">{title}</h2>
+          <h2 className="font-serif text-3xl md:text-4xl text-foreground">{title}</h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 reveal stagger-2">
           {products.map(p => <ProductCard key={p.id} product={p} />)}
@@ -44,7 +44,7 @@ export default function BestSellers({ title = "Cele mai vândute" }: { title?: s
         <div className="text-center mt-10">
           <Link
             to="/catalog"
-            className="inline-block font-sans text-[12px] font-medium tracking-[2px] uppercase border border-foreground text-foreground px-8 py-3 hover:bg-foreground hover:text-background transition-all"
+            className="inline-block font-sans text-[12px] font-medium tracking-[2px] uppercase border border-foreground text-foreground px-8 py-3 hover:bg-foreground hover:text-background transition-all duration-300"
           >
             Vezi toate produsele
           </Link>

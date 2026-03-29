@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
-import { Mail, Phone, MapPin, Facebook, Instagram, Youtube, Globe, ShieldCheck, ArrowRight } from "lucide-react";
+import { Facebook, Instagram, Youtube, Globe, ShieldCheck, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -81,6 +81,7 @@ export default function Footer() {
   }, [footerScripts]);
 
   const col2Links = texts.col2_links.length > 0 ? texts.col2_links.filter(l => l.active) : [
+    { label: "Noutăți", url: "/catalog?sort=newest", active: true },
     { label: "Lumânări Parfumate", url: "/catalog?category=parfumate", active: true },
     { label: "Seturi Cadou", url: "/catalog?category=seturi-cadou", active: true },
     { label: "Personalizare", url: "/personalizare", active: true },
@@ -88,16 +89,15 @@ export default function Footer() {
 
   const col3Links = texts.col3_links.length > 0 ? texts.col3_links.filter(l => l.active) : [
     { label: "Povestea Noastră", url: "/povestea-noastra", active: true },
-    { label: "FAQ", url: "/faq", active: true },
-    { label: "Livrare", url: "/livrare-internationala", active: true },
-    { label: "Urmărire Comandă", url: "/tracking", active: true },
+    { label: "Cariere", url: "/page/cariere", active: true },
+    { label: "Blog", url: "/recenzii", active: true },
   ];
 
-  const legalLinks = [
-    { label: "Termeni și Condiții", url: "/page/termeni-si-conditii" },
-    { label: "Politica de Confidențialitate", url: "/page/politica-de-confidentialitate" },
-    { label: "Politica Cookie", url: "/page/politica-cookie" },
-    { label: "Politica de Retur", url: "/page/politica-retur" },
+  const col4Links = [
+    { label: "Ghid Mărimi", url: "/page/ghid-marimi" },
+    { label: "Retururi & Schimburi", url: "/page/politica-retur" },
+    { label: "Livrare", url: "/livrare-internationala" },
+    { label: "FAQ", url: "/faq" },
   ];
 
   const handleSubscribe = async (e: React.FormEvent) => {
@@ -120,7 +120,7 @@ export default function Footer() {
     <footer className="bg-background border-t border-border mt-auto">
       <div className="container py-14 md:py-16 px-5">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-8">
-          {/* Newsletter column (like Ella footer) */}
+          {/* Newsletter column */}
           <div className="col-span-2 lg:col-span-1">
             <p className="font-sans text-sm text-muted-foreground mb-4">
               Abonează-te pentru noutăți și oferte!
@@ -173,17 +173,17 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Col 4 - Help */}
           <div>
-            <h4 className="font-sans text-sm font-medium text-foreground mb-4">Legal</h4>
+            <h4 className="font-sans text-sm font-medium text-foreground mb-4">Ajutor</h4>
             <ul className="space-y-2.5">
-              {legalLinks.map((l, i) => (
+              {col4Links.map((l, i) => (
                 <li key={i}><Link to={l.url} className="font-sans text-sm text-muted-foreground hover:text-foreground transition-colors">{l.label}</Link></li>
               ))}
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Col 5 - Contact */}
           <div>
             {texts.col4_show_phone && texts.col4_phone && (
               <p className="font-sans text-sm text-foreground mb-1">{texts.col4_phone}</p>
@@ -197,7 +197,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar with SOL + ANPC */}
+        {/* Bottom bar */}
         <div className="border-t border-border mt-12 pt-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
