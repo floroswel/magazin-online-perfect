@@ -320,8 +320,7 @@ export default function Checkout() {
         await clearCart();
 
         window.location.href = netopiaData.paymentUrl;
-      } catch (err) {
-        console.error("Netopia V2 connection error:", err);
+      } catch {
         toast.error("Eroare la conectarea cu procesatorul de plăți.");
         await supabase.from("orders").update({ status: "payment_failed", payment_status: "failed" }).eq("id", order.id);
       }
