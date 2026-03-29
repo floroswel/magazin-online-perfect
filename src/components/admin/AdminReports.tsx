@@ -52,7 +52,7 @@ export default function AdminReports() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("id, total, status, created_at, payment_method, user_id, discount_amount, order_items(quantity, price, product_id, products(name, category_id, brand, price))")
+        .select("id, total, status, created_at, payment_method, user_id, discount_amount, order_items(quantity, price, product_id, products(name, category_id, brand, price, cost_price))")
         .gte("created_at", prevCutoff)
         .order("created_at", { ascending: true });
       if (error) throw error;
