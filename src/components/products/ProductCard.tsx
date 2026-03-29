@@ -182,16 +182,25 @@ function ProductCardInner({ product, eager = false }: Props) {
         })()}
 
         {/* Add to cart */}
-        <button
-          onClick={handleAddToCart}
-          className="w-full mt-3 h-9 bg-primary text-primary-foreground text-sm font-medium rounded-md flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
-        >
-          {addedToCart ? (
-            <><Check className="h-4 w-4" /> Adăugat!</>
-          ) : (
-            <><ShoppingBag className="h-4 w-4" /> Adaugă în coș</>
-          )}
-        </button>
+        {product.stock !== null && product.stock !== undefined && product.stock <= 0 ? (
+          <button
+            disabled
+            className="w-full mt-3 h-9 bg-muted text-muted-foreground text-sm font-medium rounded-md flex items-center justify-center gap-2 cursor-not-allowed"
+          >
+            Stoc epuizat
+          </button>
+        ) : (
+          <button
+            onClick={handleAddToCart}
+            className="w-full mt-3 h-9 bg-primary text-primary-foreground text-sm font-medium rounded-md flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+          >
+            {addedToCart ? (
+              <><Check className="h-4 w-4" /> Adăugat!</>
+            ) : (
+              <><ShoppingBag className="h-4 w-4" /> Adaugă în coș</>
+            )}
+          </button>
+        )}
       </div>
     </Link>
   );

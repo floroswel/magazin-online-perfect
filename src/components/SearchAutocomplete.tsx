@@ -145,18 +145,46 @@ export default function SearchAutocomplete({ className }: { className?: string }
       </form>
 
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-xl z-50 overflow-hidden">
-          {loading ? (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-xl z-50 overflow-hidden max-h-[400px] overflow-y-auto">
+          {query.trim().length < 3 ? (
+            <div className="p-3">
+              {getRecentSearches().length > 0 && (
+                <div className="mb-3">
+                  <p className="text-xs font-semibold text-muted-foreground mb-2 px-1">Căutări recente</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {getRecentSearches().map(s => (
+                      <button key={s} className="text-xs px-2.5 py-1 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors"
+                        onClick={() => { setQuery(s); search(s); }}>
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground mb-2 px-1">Populare</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {TRENDING.map(t => (
+                    <button key={t} className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                      onClick={() => { setQuery(t); search(t); }}>
+                      🔥 {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : loading ? (
             <div className="p-4 text-center text-sm text-muted-foreground">Se caută...</div>
           ) : suggestions.length === 0 ? (
             <div className="p-4 text-center text-sm text-muted-foreground">Niciun rezultat pentru „{query}"</div>
           ) : (
             <>
-              {suggestions.map((s) => (
+              {suggestions.map((s, idx) => (
                 <button
                   key={s.id}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-muted transition-colors text-left"
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-muted transition-colors text-left ${activeIdx === idx ? "bg-muted" : ""}`}
                   onClick={() => goToProduct(s.slug)}
+                  onMouseEnter={() => setActiveIdx(idx)}
                 >
                   <img
                     src={s.image_url || "/placeholder.svg"}
@@ -184,7 +212,7 @@ export default function SearchAutocomplete({ className }: { className?: string }
                 </button>
               ))}
               <button
-                className="w-full px-4 py-2.5 text-center text-sm text-primary hover:bg-muted transition-colors font-medium border-t border-border"
+                className={`w-full px-4 py-2.5 text-center text-sm text-primary hover:bg-muted transition-colors font-medium border-t border-border ${activeIdx === suggestions.length ? "bg-muted" : ""}`}
                 onClick={handleSubmit as any}
               >
                 Vezi toate rezultatele pentru „{query}"
