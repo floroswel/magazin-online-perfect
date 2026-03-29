@@ -7,6 +7,7 @@ import { useAdmin } from "@/hooks/useAdmin";
 import { useCart } from "@/hooks/useCart";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import SearchAutocomplete from "@/components/SearchAutocomplete";
+import MegaMenu from "@/components/layout/MegaMenu";
 
 const categories = [
   { name: "Electronice", slug: "electronice", icon: "💻" },
