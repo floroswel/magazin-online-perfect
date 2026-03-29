@@ -31,10 +31,13 @@ export default function CandleCalculator({ burnHours, productName }: Props) {
   return (
     <Card className="border-dashed">
       <CardContent className="p-4">
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-2 mb-1">
           <Calculator className="w-4 h-4 text-primary" />
           <h3 className="text-sm font-bold text-foreground">Calculator Durată Ardere</h3>
         </div>
+        <p className="text-xs text-muted-foreground mb-3">
+          Această lumânare (<span className="font-semibold text-foreground">{productName}</span>) are <span className="font-semibold text-foreground">{burnHours} ore</span> de ardere totală.
+        </p>
 
         <div className="flex items-end gap-3 mb-3">
           <div className="flex-1">
