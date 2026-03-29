@@ -60,6 +60,11 @@ export default function Index() {
   const showRecentlyViewed = useVisibility("recently_viewed");
   const showNewsletter = useVisibility("newsletter_section");
   const showInstagram = useVisibility("instagram_feed");
+  const showQuickFilters = useVisibility("quick_filters");
+  const showCouponCollector = useVisibility("coupon_collector");
+  const showTopVendors = useVisibility("top_vendors");
+  const showBuyAgain = useVisibility("buy_again");
+  const showBrandLogos = useVisibility("brand_logos");
 
   useEffect(() => {
     const fetchOrder = () => {
