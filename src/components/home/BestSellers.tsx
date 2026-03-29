@@ -7,7 +7,7 @@ import type { Tables } from "@/integrations/supabase/types";
 import { isCandleCollection } from "@/lib/candleCatalog";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
-export default function BestSellers({ title = "Cele mai iubite" }: { title?: string }) {
+export default function BestSellers({ title = "Cele mai vândute" }: { title?: string }) {
   const [products, setProducts] = useState<Tables<"products">[]>([]);
   const ref = useScrollReveal();
 
@@ -34,14 +34,13 @@ export default function BestSellers({ title = "Cele mai iubite" }: { title?: str
   if (products.length === 0) return null;
 
   return (
-    <section className="bg-card py-16 md:py-24" ref={ref}>
+    <section className="bg-foreground py-16 md:py-24" ref={ref}>
       <div className="container px-4">
         <div className="flex items-end justify-between mb-10 reveal stagger-1">
           <div>
-            <p className="font-sans text-[11px] tracking-[4px] uppercase text-primary mb-2">BESTSELLERS</p>
-            <h2 className="font-serif text-3xl md:text-4xl text-foreground">{title}</h2>
+            <h2 className="font-serif text-3xl md:text-4xl text-background">{title}</h2>
           </div>
-          <Link to="/catalog" className="font-sans text-sm text-primary hover:text-ventuza-amber-dark font-medium flex items-center gap-1.5 transition-colors">
+          <Link to="/catalog" className="font-sans text-sm text-primary hover:text-primary/80 font-medium flex items-center gap-1.5 transition-colors">
             Vezi toate <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
