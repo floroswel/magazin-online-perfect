@@ -101,8 +101,8 @@ export default function Auth() {
       <div className="container py-20 flex justify-center">
         <Card className="w-full max-w-md border-border">
           <CardHeader className="text-center pb-2">
-            <p className="font-serif text-3xl font-medium tracking-wide text-foreground">VENTUZA</p>
-            <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mt-1">Contul Tău</p>
+            <p className="font-serif text-3xl font-medium tracking-wide text-foreground">MamaLucica</p>
+            <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground mt-1">Contul tău</p>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="login">
