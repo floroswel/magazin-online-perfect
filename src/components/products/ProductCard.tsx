@@ -70,7 +70,7 @@ function ProductCardInner({ product, eager = false }: Props) {
     <Link
       to={`/product/${product.slug}`}
       onMouseEnter={() => prefetchProduct(product.slug)}
-      className="group block bg-card rounded-lg border border-border overflow-hidden hover:shadow-lg transition-shadow duration-200"
+      className="group flex flex-col bg-card rounded-lg border border-border overflow-hidden hover:shadow-lg transition-shadow duration-200 h-full"
     >
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-secondary">
