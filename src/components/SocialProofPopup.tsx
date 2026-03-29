@@ -257,7 +257,7 @@ export default function SocialProofPopup() {
 
         if (reviews) {
           reviews.forEach((r: any) => {
-            const firstName = r.customer_name?.split(" ")[0] || "Un client";
+            const firstName = r.user_name?.split(" ")[0] || "Un client";
             notifications.push({
               id: `review-${r.id}`,
               type: "review",
