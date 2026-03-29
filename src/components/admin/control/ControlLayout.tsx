@@ -93,6 +93,9 @@ export default function ControlLayout() {
         </div>
       </div>
 
+      {/* Homepage Section Order */}
+      <HomepageSectionOrder />
+
       {/* Header Layout */}
       <Card className="border-border bg-card">
         <CardHeader><CardTitle className="flex items-center gap-2 text-lg"><PanelTop className="w-5 h-5 text-primary" /> Layout Header</CardTitle></CardHeader>
