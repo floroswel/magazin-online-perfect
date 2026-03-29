@@ -41,6 +41,7 @@ interface Settings404 {
 }
 
 const NotFound = () => {
+  usePageSeo({ title: "Pagina nu a fost găsită — MamaLucica", description: "Pagina pe care o cauți nu există.", noindex: true });
   const location = useLocation();
   const navigate = useNavigate();
   const [settings, setSettings] = useState<Settings404 | null>(null);
