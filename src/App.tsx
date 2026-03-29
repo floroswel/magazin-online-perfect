@@ -48,6 +48,7 @@ import NouLansari from "./pages/NouLansari";
 import TransparencyDashboard from "./pages/TransparencyDashboard";
 import GiftCards from "./pages/GiftCards";
 import SeoLanding from "./pages/SeoLanding";
+import SeoHub from "./pages/SeoHub";
 import SeasonalCollections from "./pages/SeasonalCollections";
 import VirtualTryOn from "./pages/VirtualTryOn";
 import PostDelivery from "./pages/PostDelivery";
