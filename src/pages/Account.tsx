@@ -212,7 +212,7 @@ export default function Account() {
     );
   };
 
-  const statusLabels: Record<string, string> = { pending: "În așteptare", processing: "Se procesează", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată", payment_failed: "Plată eșuată", refunded: "Rambursată", returned: "Returnată", on_hold: "În așteptare", ...statusLabelsFromDb };
+  const statusLabels: Record<string, string> = { pending: "În așteptare", processing: "Se procesează", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată", payment_failed: "Plată eșuată", refunded: "Rambursată", returned: "Returnată", on_hold: "În așteptare", pending_transfer: "Transfer în așteptare", pending_payment: "Plată în așteptare", ...statusLabelsFromDb };
   const statusIcons: Record<string, any> = { pending: Clock, processing: Package, shipped: Truck, delivered: CheckCircle2, cancelled: XCircle };
 
   const progressToNext = nextLevel
@@ -262,7 +262,7 @@ export default function Account() {
 
   return (
     <Layout>
-      <div className="container py-6 md:py-10 max-w-6xl px-4">
+      <div className="container py-8 md:py-12 max-w-6xl px-6 md:px-12">
         {/* Personalized greeting */}
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
@@ -310,7 +310,7 @@ export default function Account() {
           <div>
             <Tabs defaultValue="orders">
               {/* Scrollable tab bar */}
-              <ScrollArea className="w-full overflow-x-auto">
+              <div className="w-full overflow-x-auto scrollbar-hide -mx-1 px-1">
                 <TabsList className="inline-flex w-max gap-1 p-1 mb-1">
                   <TabsTrigger value="orders" className="gap-1.5 text-xs"><Package className="h-3.5 w-3.5" /> Comenzi</TabsTrigger>
                   <TabsTrigger value="invoices" className="gap-1.5 text-xs"><FileText className="h-3.5 w-3.5" /> Facturi</TabsTrigger>
@@ -325,8 +325,7 @@ export default function Account() {
                   <TabsTrigger value="profile" className="gap-1.5 text-xs"><UserIcon className="h-3.5 w-3.5" /> Profil</TabsTrigger>
                   <TabsTrigger value="preferences" className="gap-1.5 text-xs"><Settings className="h-3.5 w-3.5" /> Preferințe</TabsTrigger>
                 </TabsList>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
+              </div>
 
               {/* ORDERS TAB */}
               <TabsContent value="orders" className="mt-4 space-y-3">
@@ -354,8 +353,11 @@ export default function Account() {
                         <div className="flex items-center gap-3">
                           <div className="text-right">
                             <p className="font-bold text-primary">{format(Number(o.total))}</p>
-                            <Badge variant={o.status === "delivered" ? "default" : "secondary"} className="text-xs"
-                              style={statusColorsFromDb[o.status] ? { borderColor: statusColorsFromDb[o.status], color: statusColorsFromDb[o.status], backgroundColor: `${statusColorsFromDb[o.status]}15` } : {}}>
+                            <Badge
+                              variant={o.status === "delivered" ? "default" : "secondary"}
+                              className={`text-xs ${o.status === "payment_failed" ? "bg-destructive/10 text-destructive border-destructive/30" : ""}`}
+                              style={statusColorsFromDb[o.status] ? { borderColor: statusColorsFromDb[o.status], color: statusColorsFromDb[o.status], backgroundColor: `${statusColorsFromDb[o.status]}15` } : {}}
+                            >
                               {statusLabels[o.status] || o.status}
                             </Badge>
                           </div>

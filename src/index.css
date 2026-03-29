@@ -217,4 +217,12 @@
   .admin-sidebar ::-webkit-scrollbar-thumb {
     background: hsl(222 30% 30%);
   }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
