@@ -42,6 +42,7 @@ export default function Layout({ children, hideHeader }: { children: React.React
       <NewsletterPopup />
       <SocialProofPopup />
       <LiveChat />
+      <ExitIntentPopup />
 
       {/* Mobile bottom navigation */}
       {!isAdmin && (
