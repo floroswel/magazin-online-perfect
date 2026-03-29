@@ -21,7 +21,7 @@ const BRAND = {
   textColor: "#1C1917", // stone-900
   mutedColor: "#78716C", // stone-500
   font: "'Georgia', 'Times New Roman', serif",
-  fromEmail: "no-reply@ventuza.ro",
+  fromEmail: "no-reply@mamalucica.ro",
   fromName: "VENTUZA",
   cui: "RO12345678",
   address: "București, România",
