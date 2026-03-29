@@ -1,69 +1,112 @@
 
 
-# Ce aș adăuga la marketplace-ul MamaLucica
+# Status complet — ce e gata, ce lipsește
 
-Am analizat magazinul și iată ce lipsește pentru a fi cu adevărat competitiv ca marketplace multi-vendor:
+## IMPLEMENTAT COMPLET (funcțional)
+- Exit Intent Popup cu cod 10% + timer 30 min
+- Recently Viewed Products (carusel persistent)
+- Stock Urgency (badge roșu sub 5 buc)
+- Free Shipping Progress Bar (header + coș)
+- Frequently Bought Together (pe pagina produs)
+- Trust Badge Page (/de-incredere)
+- Live Chat WhatsApp bubble
+- Verified Reviews cu foto upload
+- Wishlist cu alerte de preț
+- Loyalty Gamification (puncte, nivele, badges)
+- Referral Program (link personal, recompense)
+- Blog CMS (articole SEO)
+- FAQ cu Schema.org markup
+- Google Shopping Feed (edge function)
+- Candle Mood Selector (homepage)
+- Scent Pairing (pe produs)
+- Candle Calculator (ore ardere)
+- Pagina /nou cu countdown
+- Transparency Dashboard (/despre-noi/numere)
+- Predictive Search (autocomplete instant)
+- One-Click Reorder
+- Burn Log (jurnal ardere)
+- Candle Club / Loyalty
+- PWA (/install)
+- Gift Card Digital (cumpărare + cod)
+- Flash Sale cu acces anticipat
+- Predictive Stock (analiză viteză vânzări)
+- Calculare Profit (cost_price + marje)
+- Mega-Menu cu imagini
+- Cupoane vizibile pe homepage
+- Comparator vendori pe produs
+- Segmentare automată clienți
+- Remarketing / Retargeting (UI construită)
+- Abandon Cart 3 emailuri (edge function)
+- Reconciliere bancară (UI + export CSV)
+- TVA calculat automat (rapoarte financiare)
+- Pachete/Bundles (admin complet)
+
+## PARȚIAL — necesită configurare/API keys
+| Feature | Status | Ce lipsește |
+|---------|--------|-------------|
+| SmartBill facturare | UI + edge function gata | API key (email, token, CIF) |
+| Clarity Heatmaps | Script Manager gata | Clarity ID configurat din Admin → Pixeli |
+| Sameday AWB | Edge function gata | SAMEDAY_API_KEY |
+| WhatsApp notificări | Toggle în Admin → General | WhatsApp Business API key |
+| Retargeting dinamic | UI construită | Meta/TikTok Pixel IDs active |
+| Lookalike Audiences | Buton export existent | Pixel IDs + datele reale |
+
+## LIPSEȘTE COMPLET — de implementat
+
+### Prioritate mare (CONVERSIE + RETENȚIE)
+1. **Post-Purchase Email Flow** — secvență de 3 emailuri automate (confirmare + ghid îngrijire, tracking update, cerere recenzie la 14 zile). Edge function `request-reviews` există dar trimite doar cererea de recenzie, nu întreaga secvență.
+
+2. **Personalizare Homepage după comportament** — mesaj "Bun revenit!" cu produsul vizitat ultima dată, recomandări bazate pe localStorage. Nu e implementat deloc.
+
+3. **Raport Săptămânal Automat** — email luni dimineața cu KPI-uri (vânzări, top produse, coșuri abandonate, clienți noi vs reveniri). Necesită edge function + cron job.
+
+### Prioritate medie (MARKETING + SEO)
+4. **SEO Programatic** — pagini auto-generate per oraș + categorie ("Lumânări parfumate Cluj", "Cadouri lumânări București"). Rută dinamică `/l/:city/:category` cu conținut generat. Nu există.
+
+5. **Pachete Sezoniere dedicate** — colecții cu countdown și stoc limitat (Valentine's, Crăciun, 8 Martie). Categoria "Sezoniere" există dar fără UI de countdown/stoc limitat dedicat.
+
+### Prioritate scăzută (AVANSAT)
+6. **Virtual Try-On Room** — upload poză cameră + overlay lumânare via Canvas. Complex, zero implementare.
+
+7. **QR Code pe colet** — pagină personalizată post-livrare + generare QR în PDF/label. Necesită edge function nouă.
+
+8. **YouTube/TikTok Content Funnel** — strategie de conținut, nu implementare tehnică.
 
 ---
 
-## Ca proprietar de magazin, aș adăuga:
+## Plan de implementare recomandat
 
-### 1. Pagina de Vendor / Magazin Individual
-Fiecare vendor ar avea propria pagină (`/vendor/:slug`) cu logo, descriere, rating, produsele sale, politici de retur. La fel ca pe eMAG unde dai click pe "Vândut de X".
+### Pas 1 — Post-Purchase Email Flow
+- Creez edge function `post-purchase-flow` cu logica celor 3 emailuri
+- Email 1 (imediat la confirmare): confirmare + ghid îngrijire lumânări
+- Email 2 (ziua 3): "Comanda ta e pe drum" cu link tracking
+- Email 3 (ziua 14): cerere recenzie cu link direct (integrare cu `request-reviews` existent)
+- Cron job care verifică zilnic comenzile și trimite emailul potrivit
 
-### 2. Sistem de Cupoane și Vouchere vizibil pe homepage
-O secțiune "Cupoane disponibile" pe homepage unde clientul vede reduceri active pe care le poate "colecta" cu un click — exact ca pe AliExpress.
+### Pas 2 — Personalizare Homepage
+- Componentă `WelcomeBack.tsx` pe homepage
+- Salvează în localStorage ultimele produse vizitate + timestamp vizită
+- La a 2-a vizită: "Bun revenit! Ai vizitat [produs] data trecută"
+- La a 3-a+: recomandări bazate pe categoriile vizitate
 
-### 3. Bara de progres "Mai adaugă X lei pentru livrare gratuită"
-Pe header și în coș — motivează clientul să mai adauge produse.
+### Pas 3 — Raport Săptămânal
+- Edge function `weekly-report` care agregă date din ultimele 7 zile
+- Cron job luni la 08:00
+- Trimite email cu: venituri, top 5 produse, coșuri abandonate, clienți noi, comparație cu săptămâna anterioară
 
-### 4. Secțiune "Cumpără din nou" pentru clienții logați
-Produse comandate anterior, afișate pe homepage — crește rata de revenire.
+### Pas 4 — SEO Programatic
+- Rută `/l/:city/:category` cu componentă `LandingPage.tsx`
+- Generează conținut din template: "Cele mai bune {category} din {city}"
+- Schema.org LocalBusiness + Product markup
+- Sitemap dinamic actualizat
 
-### 5. Mega-Menu cu imagini pe categorii
-Când hover pe "Categorii", un dropdown mare cu subcategorii + imagini promoționale pe fiecare coloană (stil eMAG).
+### Fișiere afectate
+- `supabase/functions/post-purchase-flow/index.ts` (nou)
+- `src/components/home/WelcomeBack.tsx` (nou)
+- `src/pages/Index.tsx` (integrare WelcomeBack)
+- `supabase/functions/weekly-report/index.ts` (nou)
+- `src/pages/SeoLanding.tsx` (nou)
+- `src/App.tsx` (rute noi)
 
-### 6. Comparator de prețuri între vendori
-Pe pagina de produs, să vezi toți vendorii care vând același produs, cu prețul și rating-ul fiecăruia.
-
----
-
-## Ca client, mi-ar lipsi:
-
-### 7. Secțiune "Produse văzute recent" persistentă
-Un carusel sticky pe homepage și pe pagina de produs cu ultimele produse vizitate.
-
-### 8. Estimare livrare pe card-ul de produs
-Text mic "Livrare în 1-2 zile" sau "Livrare mâine" direct pe card, nu doar pe pagina de produs.
-
-### 9. Filtre rapide pe homepage
-Butoane tip chip: "Sub 50 lei", "Reduceri > 30%", "Livrare mâine", "Rating 4+" — direct deasupra grid-ului de produse.
-
-### 10. Notificări de preț (Price Drop Alert)
-Buton "Anunță-mă când scade prețul" pe pagina de produs.
-
-### 11. Secțiune "Top vendori" pe homepage
-Card-uri cu cei mai bine cotați vendori, cu rating, nr. de produse, badge "Vendor de încredere".
-
-### 12. Pagină dedicată de oferte/reduceri
-O rută `/oferte` cu toate produsele la reducere, filtrabile pe categorie și procent reducere.
-
----
-
-## Plan de implementare (prioritizat)
-
-| Prioritate | Feature | Fișiere noi/modificate |
-|---|---|---|
-| 1 | Mega-Menu cu imagini | `Header.tsx`, `MegaMenu.tsx` |
-| 2 | Pagina Vendor | nou: `pages/VendorStore.tsx`, `App.tsx` |
-| 3 | Pagina Oferte | nou: `pages/Oferte.tsx`, `App.tsx` |
-| 4 | Filtre rapide homepage | `Index.tsx`, nou: `QuickFilters.tsx` |
-| 5 | Free Shipping Progress Bar | `Header.tsx`, `Cart.tsx` |
-| 6 | Cupoane vizibile homepage | nou: `CouponCollector.tsx` |
-| 7 | Comparator vendori pe produs | `ProductDetail.tsx` |
-| 8 | Cumpără din nou | nou: `BuyAgain.tsx` |
-| 9 | Price Drop Alert | `ProductDetail.tsx` |
-| 10 | Top Vendori secțiune | nou: `TopVendors.tsx` |
-
-Toate fără a modifica panoul de admin existent.
+**Total: 8 features lipsesc complet, 6 necesită doar configurare API keys.**
 
