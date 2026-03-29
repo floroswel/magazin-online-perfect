@@ -58,6 +58,7 @@ export default function ProductDetail() {
   const [restockEmail, setRestockEmail] = useState("");
   const [restockSubmitting, setRestockSubmitting] = useState(false);
   const [restockDone, setRestockDone] = useState(false);
+  const [selectedSize, setSelectedSize] = useState<{ id: string; label: string; weight_grams: number; price: number } | null>(null);
 
   useEffect(() => {
     async function load() {
