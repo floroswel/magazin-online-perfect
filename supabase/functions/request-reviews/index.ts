@@ -175,7 +175,7 @@ Deno.serve(async (req) => {
           <p>${((settings as any).reminder_body || "Îți reamintim că poți lăsa o recenzie.")
             .replace("{{customer_name}}", customerName)}</p>
           <p style="text-align: center; margin: 20px 0;">
-            <a href="${Deno.env.get("SUPABASE_URL")?.replace('.supabase.co', '.lovable.app') || '#'}" 
+            <a href="${Deno.env.get("SITE_URL") || Deno.env.get("SUPABASE_URL")?.replace('.supabase.co', '.lovable.app') || '#'}" 
                style="background: #2563eb; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none;">
               Scrie o recenzie
             </a>
