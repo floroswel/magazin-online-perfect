@@ -9,7 +9,7 @@ const slides = [
     cta: "DESCOPERĂ COLECȚIA",
     link: "/catalog",
     image: "https://images.unsplash.com/photo-1602607167093-5ac4af65e1cd?w=1200&h=500&fit=crop",
-    bg: "from-primary/90 to-primary/60",
+    bg: "from-primary/30 to-transparent",
   },
   {
     title: "Colecția de Sezon",
@@ -17,7 +17,7 @@ const slides = [
     cta: "VEZI NOUTĂȚILE",
     link: "/catalog?sort=newest",
     image: "https://images.unsplash.com/photo-1603006905003-be475563bc59?w=1200&h=500&fit=crop",
-    bg: "from-foreground/80 to-foreground/50",
+    bg: "from-foreground/30 to-transparent",
   },
   {
     title: "Seturi Cadou Premium",
@@ -25,7 +25,7 @@ const slides = [
     cta: "ALEGE CADOUL",
     link: "/catalog?category=cadouri-seturi",
     image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=1200&h=500&fit=crop",
-    bg: "from-accent/90 to-accent/60",
+    bg: "from-accent/30 to-transparent",
   },
 ];
 
