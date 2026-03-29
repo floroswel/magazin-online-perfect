@@ -42,7 +42,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const config = pm.config_json as Record<string, any>;
-    const apiKey = config.api_key || Deno.env.get("NETOPIA_API_KEY") || "";
+    const apiKey = Deno.env.get("NETOPIA_API_KEY") || config.api_key || "";
     const posSignature = config.pos_signature || config.merchant_id || "";
     const isSandbox = config.sandbox === "true" || config.sandbox === true;
 
