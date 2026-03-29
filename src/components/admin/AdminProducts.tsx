@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils";
 import AIGeneratorModal from "@/components/admin/products/AIGeneratorModal";
 import AttributeExtractorModal from "@/components/admin/products/AttributeExtractorModal";
 import { processProductImage, formatBytes } from "@/lib/imageResize";
+import ProductSizesEditor from "@/components/admin/products/ProductSizesEditor";
 
 // ─── Types ───
 interface BundleComponent {
