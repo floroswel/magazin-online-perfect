@@ -25,7 +25,7 @@ const categories = [
 export default function Header() {
   const { user, signOut } = useAuth();
   const { isAdmin } = useAdmin();
-  const { totalItems } = useCart();
+  const { totalItems, totalPrice } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
   const { isDark, toggle: toggleDarkMode } = useDarkMode();
