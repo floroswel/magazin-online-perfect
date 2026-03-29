@@ -12,6 +12,7 @@ import ReviewsSection from "@/components/home/ReviewsSection";
 import NewsletterDiscount from "@/components/home/NewsletterDiscount";
 import FlashDeals from "@/components/home/FlashDeals";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
+import PersonalizedRecommendations from "@/components/home/PersonalizedRecommendations";
 import WelcomeBack from "@/components/home/WelcomeBack";
 import InstagramFeed from "@/components/home/InstagramFeed";
 import BrandLogosCarousel from "@/components/home/BrandLogosCarousel";
@@ -32,7 +33,7 @@ import type { Tables } from "@/integrations/supabase/types";
 const DEFAULT_ORDER = [
   "hero_section", "social_proof_bar", "quick_filters", "mood_selector", "collections_grid",
   "coupon_collector", "flash_deals", "scent_guide_teaser",
-  "featured_products", "top_vendors", "brand_story_section",
+  "featured_products", "personalized_recommendations", "top_vendors", "brand_story_section",
   "bestsellers_section", "buy_again", "instagram_feed",
   "reviews_section", "brand_logos",
   "recently_viewed", "newsletter_section",
@@ -154,6 +155,7 @@ export default function Index() {
     instagram_feed: <InstagramFeed key="instagram_feed" />,
     brand_logos: <BrandLogosCarousel key="brand_logos" />,
     recently_viewed: <RecentlyViewed key="recently_viewed" />,
+    personalized_recommendations: <PersonalizedRecommendations key="personalized_recommendations" />,
     newsletter_section: <NewsletterDiscount key="newsletter_section" />,
     quick_filters: <QuickFilters key="quick_filters" />,
     coupon_collector: <CouponCollector key="coupon_collector" />,
