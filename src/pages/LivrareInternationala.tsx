@@ -54,7 +54,7 @@ export default function LivrareInternationala() {
 
         <div className="text-center">
           <Link to="/catalog">
-            <Button className="rounded-none px-12 text-xs tracking-wider uppercase h-12 bg-primary text-primary-foreground">
+            <Button className="px-12 text-xs tracking-wider uppercase h-12 bg-primary text-primary-foreground">
               Comandă Acum
             </Button>
           </Link>

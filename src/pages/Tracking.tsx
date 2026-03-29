@@ -38,9 +38,9 @@ export default function Tracking() {
 
       <div className="container py-16 max-w-xl">
         <form onSubmit={handleSearch} className="space-y-4 mb-12">
-          <Input value={orderId} onChange={e => setOrderId(e.target.value)} placeholder="Numărul comenzii (ex: abc12345)" className="rounded-none border-foreground/20 h-12" />
-          <Input value={email} onChange={e => setEmail(e.target.value)} placeholder="Adresa de email (opțional)" type="email" className="rounded-none border-foreground/20 h-12" />
-          <Button type="submit" disabled={loading} className="w-full rounded-none h-12 bg-primary text-primary-foreground text-xs tracking-wider uppercase">
+          <Input value={orderId} onChange={e => setOrderId(e.target.value)} placeholder="Numărul comenzii (ex: abc12345)" className="border-foreground/20 h-12" />
+          <Input value={email} onChange={e => setEmail(e.target.value)} placeholder="Adresa de email (opțional)" type="email" className="border-foreground/20 h-12" />
+          <Button type="submit" disabled={loading} className="w-full h-12 bg-primary text-primary-foreground text-xs tracking-wider uppercase">
             {loading ? "Se caută..." : "Urmărește Comanda"}
           </Button>
         </form>
