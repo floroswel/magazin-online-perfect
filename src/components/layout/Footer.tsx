@@ -135,7 +135,7 @@ export default function Footer() {
     <footer className="bg-foreground text-background mt-auto overflow-hidden">
       <div className="container py-10 md:py-14 px-4 max-w-[1200px] mx-auto">
         {showColumns !== false && (
-          <div className={`grid grid-cols-2 md:grid-cols-2 ${footerColsClass} gap-8`}>
+          <div className={`grid grid-cols-1 sm:grid-cols-2 ${footerColsClass} gap-6 md:gap-8`}>
             {/* Brand + Social */}
             <div className="col-span-2 lg:col-span-1">
               <h4 className="text-lg font-extrabold mb-3">{texts.col1_title}</h4>

@@ -29,7 +29,7 @@ export default function RecentlyViewed() {
   return (
     <section className="container px-4 py-8">
       <h2 className="text-xl md:text-2xl font-bold text-foreground mb-5">👁️ Vizualizate Recent</h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         {products.map(p => <ProductCard key={p.id} product={p} />)}
       </div>
     </section>

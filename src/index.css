@@ -133,6 +133,12 @@
 }
 
 @layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
   * {
     @apply border-border;
   }
@@ -142,6 +148,12 @@
     font-family: 'Inter', 'Roboto', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  img, video, svg {
+    max-width: 100%;
+    height: auto;
   }
 
   h1, h2, h3, h4, h5, h6 {

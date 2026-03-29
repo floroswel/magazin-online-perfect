@@ -202,6 +202,7 @@ function ProductCardInner({ product, eager = false }: Props) {
             )}
           </button>
         )}
+        </div>
       </div>
     </Link>
   );
