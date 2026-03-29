@@ -52,7 +52,7 @@ export default function AdminReports() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("id, total, status, created_at, payment_method, user_id, discount_amount, order_items(quantity, price, product_id, products(name, category_id, brand, price))")
+        .select("id, total, status, created_at, payment_method, user_id, discount_amount, order_items(quantity, price, product_id, products(name, category_id, brand, price, cost_price))")
         .gte("created_at", prevCutoff)
         .order("created_at", { ascending: true });
       if (error) throw error;
@@ -62,7 +62,7 @@ export default function AdminReports() {
 
   const { data: products = [] } = useQuery({
     queryKey: ["admin-reports-products"],
-    queryFn: async () => { const { data } = await supabase.from("products").select("id, name, stock, price, category_id") as any; return data || []; },
+    queryFn: async () => { const { data } = await supabase.from("products").select("id, name, stock, price, cost_price, category_id") as any; return data || []; },
   });
 
   const { data: categories = [] } = useQuery({
@@ -97,8 +97,14 @@ export default function AdminReports() {
   const conversionRate = totalOrdersCount > 0 ? (deliveredOrders / totalOrdersCount) * 100 : 0;
   const totalDiscount = currentOrders.reduce((s: number, o: any) => s + Number(o.discount_amount || 0), 0);
 
-  // Profit calculation (estimated - no cost_price column yet)
-  const totalCost = totalRevenue * 0.6; // placeholder 60% cost estimate
+  // Real profit calculation using cost_price from products
+  const totalCost = currentOrders.reduce((s: number, o: any) => {
+    return s + (o.order_items || []).reduce((is: number, item: any) => {
+      const costPrice = item.products?.cost_price;
+      const itemCost = costPrice ? costPrice * item.quantity : Number(item.price) * item.quantity * 0.6;
+      return is + itemCost;
+    }, 0);
+  }, 0);
   const grossProfit = totalRevenue - totalCost;
   const profitMargin = totalRevenue > 0 ? (grossProfit / totalRevenue) * 100 : 0;
 
@@ -109,7 +115,11 @@ export default function AdminReports() {
     if (!dailyMap[day]) dailyMap[day] = { date: day, revenue: 0, orders: 0, profit: 0 };
     dailyMap[day].revenue += Number(o.total);
     dailyMap[day].orders += 1;
-    dailyMap[day].profit += Number(o.total) * 0.4; // estimated profit
+    const orderCost = (o.order_items || []).reduce((is: number, item: any) => {
+      const cp = item.products?.cost_price;
+      return is + (cp ? cp * item.quantity : Number(item.price) * item.quantity * 0.6);
+    }, 0);
+    dailyMap[day].profit += Number(o.total) - orderCost;
   });
   const dailyChart = Object.values(dailyMap).sort((a, b) => a.date.localeCompare(b.date));
 

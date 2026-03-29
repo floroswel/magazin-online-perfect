@@ -92,6 +92,7 @@ const menuSections: { title?: string; items: MenuItem[] }[] = [
           { label: "Expirări", path: "/admin/stock/expiry" },
           { label: "Picking list", path: "/admin/stock/picking" },
           { label: "Alerte stoc", path: "/admin/stock/alerts" },
+          { label: "🔮 Predicție stoc", path: "/admin/stock/predictive" },
           { label: "Furnizori", path: "/admin/stock/suppliers" },
           { label: "📋 Comenzi Furnizor", path: "/admin/stock/purchase-orders" },
           { label: "Aprovizionare", path: "/admin/stock/reorder" },

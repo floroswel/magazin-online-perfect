@@ -16,6 +16,7 @@ const AdminStockOverview = lazy(() => import("./stock/AdminStockOverview"));
 const AdminStockManager = lazy(() => import("./stock/AdminStockManager"));
 const AdminStockMovements = lazy(() => import("./stock/AdminStockMovements"));
 const AdminStockAlerts = lazy(() => import("./stock/AdminStockAlerts"));
+const AdminPredictiveStock = lazy(() => import("./stock/AdminPredictiveStock"));
 const AdminInventory = lazy(() => import("./stock/AdminInventory"));
 const AdminCustomers = lazy(() => import("./customers/AdminCustomers"));
 const AdminCustomerDetail = lazy(() => import("./customers/AdminCustomerDetail"));
@@ -243,6 +244,7 @@ export default function AdminRoutes() {
         <Route path="stock/expiry" element={<AdminExpiry />} />
         <Route path="stock/picking" element={<AdminPicking />} />
         <Route path="stock/alerts" element={<AdminStockAlerts />} />
+        <Route path="stock/predictive" element={<AdminPredictiveStock />} />
         <Route path="stock/suppliers" element={<AdminSuppliers />} />
         <Route path="stock/reorder" element={<AdminReorder />} />
         <Route path="stock/price-lists" element={<AdminPriceLists />} />
