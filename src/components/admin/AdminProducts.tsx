@@ -1220,8 +1220,8 @@ export default function AdminProducts() {
             </div>
 
             {/* Size editor - only for existing products */}
-            {editProduct && (
-              <ProductSizesEditor productId={editProduct.id} />
+            {editingId && (
+              <ProductSizesEditor productId={editingId} />
             )}
 
             <div className="pt-2 border-t border-border space-y-3">
