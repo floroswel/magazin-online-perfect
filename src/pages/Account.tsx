@@ -325,8 +325,7 @@ export default function Account() {
                   <TabsTrigger value="profile" className="gap-1.5 text-xs"><UserIcon className="h-3.5 w-3.5" /> Profil</TabsTrigger>
                   <TabsTrigger value="preferences" className="gap-1.5 text-xs"><Settings className="h-3.5 w-3.5" /> Preferințe</TabsTrigger>
                 </TabsList>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
+              </div>
 
               {/* ORDERS TAB */}
               <TabsContent value="orders" className="mt-4 space-y-3">
