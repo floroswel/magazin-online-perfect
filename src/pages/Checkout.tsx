@@ -299,16 +299,30 @@ export default function Checkout() {
         const { data: netopiaData, error: netopiaError } = await supabase.functions.invoke("netopia-payment", {
           body: { orderId: order.id },
         });
-        if (netopiaError || !netopiaData?.redirectUrl) {
+        if (netopiaError || !netopiaData?.envKey || !netopiaData?.data || !netopiaData?.url) {
           const errMsg = netopiaData?.error || "Eroare la inițierea plății cu cardul.";
           toast.error(typeof errMsg === "string" ? errMsg : "Eroare la inițierea plății cu cardul.");
-          // Mark order as failed since payment couldn't start
           await supabase.from("orders").update({ status: "payment_failed", payment_status: "failed" }).eq("id", order.id);
           setSubmitting(false);
           return;
         } else {
           await clearCart();
-          window.location.href = netopiaData.redirectUrl;
+          // Create and auto-submit a form to Netopia (official flow: POST env_key + data)
+          const form = document.createElement("form");
+          form.method = "POST";
+          form.action = netopiaData.url;
+          const envKeyInput = document.createElement("input");
+          envKeyInput.type = "hidden";
+          envKeyInput.name = "env_key";
+          envKeyInput.value = netopiaData.envKey;
+          form.appendChild(envKeyInput);
+          const dataInput = document.createElement("input");
+          dataInput.type = "hidden";
+          dataInput.name = "data";
+          dataInput.value = netopiaData.data;
+          form.appendChild(dataInput);
+          document.body.appendChild(form);
+          form.submit();
         }
       } catch (err) {
         console.error("Netopia connection error:", err);
