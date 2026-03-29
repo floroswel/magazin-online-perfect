@@ -10,6 +10,7 @@ import { usePromotions } from "@/hooks/usePromotions";
 import CountdownTimer from "@/components/products/CountdownTimer";
 import FreeShippingBar from "@/components/cart/FreeShippingBar";
 import CartCrossSell from "@/components/cart/CartCrossSell";
+import CartRecommendations from "@/components/cart/CartRecommendations";
 
 export default function Cart() {
   const { user } = useAuth();
@@ -120,6 +121,12 @@ export default function Cart() {
 
             {/* Cross-sell suggestions */}
             <CartCrossSell cartProductIds={items.map(i => i.product_id)} />
+
+            {/* More recommendations */}
+            <CartRecommendations
+              cartProductIds={items.map(i => i.product_id)}
+              cartCategoryIds={[...new Set(items.map(i => i.product.category_id).filter(Boolean) as string[])]}
+            />
           </div>
 
           <div className="bg-card rounded-lg border p-6 h-fit sticky top-24 space-y-3">
