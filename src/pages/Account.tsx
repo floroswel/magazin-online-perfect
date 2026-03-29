@@ -782,8 +782,31 @@ export default function Account() {
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Mobile-only: Security & GDPR (sidebar hidden on mobile) */}
+                <div className="lg:hidden space-y-4 mt-4">
+                  <Card>
+                    <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Shield className="w-4 h-4" /> Securitate</CardTitle></CardHeader>
+                    <CardContent className="space-y-2">
+                      <Button variant="outline" size="sm" className="w-full justify-start gap-2 text-xs" onClick={() => setShowChangePassword(true)}>
+                        <KeyRound className="w-3.5 h-3.5" /> Schimbă parola
+                      </Button>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><DatabaseBackup className="w-4 h-4" /> Datele mele (GDPR)</CardTitle></CardHeader>
+                    <CardContent className="space-y-2">
+                      <Button variant="outline" size="sm" className="w-full justify-start gap-2 text-xs" onClick={handleExportData} disabled={exportingData}>
+                        <Download className="w-3.5 h-3.5" /> {exportingData ? "Se exportă..." : "Exportă datele personale"}
+                      </Button>
+                      <Separator />
+                      <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-xs text-destructive hover:text-destructive" onClick={() => setShowDeleteConfirm(true)}>
+                        <UserX className="w-3.5 h-3.5" /> Șterge contul
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
               </TabsContent>
-            </Tabs>
           </div>
 
           {/* RIGHT SIDEBAR — hidden on mobile, info already in stats */}
