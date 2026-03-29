@@ -6,34 +6,16 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-// NETOPIA error code descriptions
-const ERROR_MESSAGES: Record<string, string> = {
-  "16": "Cardul prezintă un risc de securitate",
-  "17": "Număr card incorect",
-  "18": "Card închis",
-  "19": "Card expirat",
-  "20": "Fonduri insuficiente",
-  "21": "Cod CVV2 incorect",
-  "35": "Tranzacție refuzată",
-};
-
-function mapActionToStatus(action: string, errorCode: string): string {
-  if (action === "paid" && errorCode === "0") return "confirmed";
-  if (action === "confirmed" && errorCode === "0") return "settled";
-  if (action === "confirmed_pending" && errorCode === "0") return "processing";
-  if (action === "paid_pending" && errorCode === "0") return "processing";
-  if (action === "credit") return "refunded";
-  if (action === "canceled" || errorCode !== "0") return "failed";
-  return "pending";
-}
-
-function mapActionToOrderStatus(action: string, errorCode: string): string {
-  if (action === "paid" && errorCode === "0") return "confirmed";
-  if (action === "confirmed" && errorCode === "0") return "confirmed";
-  if (action === "confirmed_pending" && errorCode === "0") return "pending_payment";
-  if (action === "paid_pending" && errorCode === "0") return "pending_payment";
-  if (action === "credit") return "refunded";
-  return "payment_failed";
+function mapStatusToOrderStatus(status: number): { orderStatus: string; paymentStatus: string } {
+  // Netopia V2 payment statuses:
+  // 3 = paid/confirmed, 5 = confirmed/settled, 12 = declined, 15 = 3DS pending
+  switch (status) {
+    case 3: return { orderStatus: "confirmed", paymentStatus: "confirmed" };
+    case 5: return { orderStatus: "confirmed", paymentStatus: "settled" };
+    case 12: return { orderStatus: "payment_failed", paymentStatus: "failed" };
+    case 15: return { orderStatus: "pending_payment", paymentStatus: "pending_3ds" };
+    default: return { orderStatus: "pending_payment", paymentStatus: "pending" };
+  }
 }
 
 Deno.serve(async (req: Request) => {
@@ -46,97 +28,69 @@ Deno.serve(async (req: Request) => {
   const supabase = createClient(supabaseUrl, serviceKey);
 
   try {
-    // NETOPIA sends form-urlencoded with env_key, data, cipher, iv
-    const formData = await req.formData();
-    const envKey = formData.get("env_key") as string;
-    const data = formData.get("data") as string;
-    const cipher = formData.get("cipher") as string;
-    const iv = formData.get("iv") as string;
+    // Netopia V2 sends JSON callbacks to notifyUrl
+    let body: any;
+    const contentType = req.headers.get("content-type") || "";
 
-    if (!envKey || !data) {
-      return new Response(
-        buildMerchantResponse("1", "Missing required IPN fields"),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/xml" } }
-      );
+    if (contentType.includes("application/json")) {
+      body = await req.json();
+    } else if (contentType.includes("form")) {
+      // Legacy V1 form-urlencoded
+      const formData = await req.formData();
+      body = Object.fromEntries(formData.entries());
+    } else {
+      const text = await req.text();
+      try {
+        body = JSON.parse(text);
+      } catch {
+        body = { raw: text };
+      }
     }
 
-    // In production, decrypt data using merchant .key file from storage
-    // For now, we parse assuming decrypted XML is available
-    // The actual RSA decryption would require the merchant private key from storage
-    // This is a placeholder for the decryption logic
+    console.log("Netopia IPN received:", JSON.stringify(body).slice(0, 2000));
 
-    // Load settings to get key path
-    const { data: settings } = await supabase
-      .from("netopia_settings")
-      .select("merchant_key_path")
-      .limit(1)
-      .maybeSingle();
-
-    if (!settings?.merchant_key_path) {
-      return new Response(
-        buildMerchantResponse("1", "Merchant key not configured"),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/xml" } }
-      );
-    }
-
-    // NOTE: Full RSA decryption requires crypto libraries
-    // In a production implementation, you would:
-    // 1. Download the .key file from storage
-    // 2. Use RSA to decrypt env_key → get symmetric key
-    // 3. Use symmetric key (AES-256-CBC or RC4) to decrypt data
-    // 4. Parse the resulting XML
-    
-    // For the IPN handler structure, we process the parsed XML fields:
-    // This demonstrates the status handling logic
-    // In production, extract these from decrypted XML
-    const action = ""; // parsed from XML: order.mobilpay.@_attributes.action
-    const errorCode = "0"; // parsed from XML
-    const errorMessage = ""; // parsed from XML
-    const orderId = ""; // parsed from XML: params → order_id
-    const purchaseId = ""; // parsed from XML: order.mobilpay.@_attributes.id
-    const originalAmount = 0; // parsed from XML
-    const processedAmount = 0; // parsed from XML
-    const panMasked = ""; // parsed from XML
-    const tokenId = ""; // parsed from XML
-    const crc = ""; // parsed from XML for response
+    // V2 callback structure: { order: { orderID, ... }, payment: { status, ntpID, ... }, ... }
+    const orderId = body?.order?.orderID || body?.orderID || "";
+    const paymentStatus = body?.payment?.status ?? -1;
+    const ntpID = body?.payment?.ntpID || "";
+    const errorCode = body?.error?.code ?? "0";
+    const errorMessage = body?.error?.message || "";
 
     if (!orderId) {
+      console.error("IPN missing orderID:", JSON.stringify(body));
       return new Response(
-        buildMerchantResponse("1", "Missing order_id in IPN"),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/xml" } }
+        JSON.stringify({ errorCode: 1, errorMessage: "Missing orderID" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Check for idempotency — same order + same action = skip
+    const { orderStatus, paymentStatus: mappedPaymentStatus } = mapStatusToOrderStatus(paymentStatus);
+    const now = new Date().toISOString();
+
+    // Check for idempotency
     const { data: existingTx } = await supabase
       .from("netopia_transactions")
-      .select("id, action, status")
+      .select("id, status")
       .eq("order_id", orderId)
       .maybeSingle();
 
-    if (existingTx && existingTx.action === action) {
-      // Already processed this action
+    if (existingTx && existingTx.status === mappedPaymentStatus) {
+      console.log("IPN already processed for order:", orderId, "status:", mappedPaymentStatus);
       return new Response(
-        buildMerchantResponse("0", "", crc),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/xml" } }
+        JSON.stringify({ errorCode: 0 }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const newStatus = mapActionToStatus(action, errorCode);
-    const now = new Date().toISOString();
-
+    // Update or insert transaction
     const txPayload = {
       order_id: orderId,
-      netopia_purchase_id: purchaseId || null,
-      action,
-      error_code: errorCode,
-      error_message: errorMessage || ERROR_MESSAGES[errorCode] || null,
-      original_amount: originalAmount || null,
-      processed_amount: processedAmount || null,
-      pan_masked: panMasked || null,
-      token_id: tokenId || null,
-      status: newStatus,
-      ipn_raw_xml: data, // store encrypted payload for debugging
+      netopia_purchase_id: ntpID || null,
+      action: String(paymentStatus),
+      error_code: String(errorCode),
+      error_message: errorMessage || null,
+      status: mappedPaymentStatus,
+      ipn_raw_xml: JSON.stringify(body),
       ipn_received_at: now,
       updated_at: now,
     };
@@ -153,36 +107,84 @@ Deno.serve(async (req: Request) => {
     }
 
     // Update order status
-    const orderStatus = mapActionToOrderStatus(action, errorCode);
     await supabase
       .from("orders")
       .update({
         status: orderStatus,
-        payment_status: newStatus,
+        payment_status: mappedPaymentStatus,
         updated_at: now,
       })
       .eq("id", orderId);
 
+    console.log("IPN processed — order:", orderId, "status:", orderStatus, "payment:", mappedPaymentStatus);
+
+    // If payment confirmed, send confirmation email
+    if (orderStatus === "confirmed") {
+      try {
+        const { data: order } = await supabase
+          .from("orders")
+          .select("*, order_items(*, products(name, price, image_url))")
+          .eq("id", orderId)
+          .single();
+
+        if (order?.user_email) {
+          const shippingAddr = (order.shipping_address as any) || {};
+          await supabase.functions.invoke("send-email", {
+            body: {
+              type: "order_placed",
+              to: order.user_email,
+              data: {
+                orderId: order.id,
+                customerName: shippingAddr.fullName || shippingAddr.full_name || "Client",
+                total: order.total,
+                paymentMethod: "card_online",
+                items: (order.order_items || []).map((i: any) => ({
+                  name: i.products?.name || "Produs",
+                  quantity: i.quantity,
+                  price: i.price || i.products?.price,
+                  image_url: i.products?.image_url,
+                })),
+                shippingAddress: shippingAddr,
+              },
+            },
+          });
+
+          // Admin notification
+          await supabase.functions.invoke("send-email", {
+            body: {
+              type: "admin_new_order",
+              to: "admin@ventuza.ro",
+              data: {
+                orderId: order.id,
+                customerName: shippingAddr.fullName || shippingAddr.full_name || "Client",
+                total: order.total,
+                paymentMethod: "card_online",
+                email: order.user_email,
+                items: (order.order_items || []).map((i: any) => ({
+                  name: i.products?.name || "Produs",
+                  quantity: i.quantity,
+                  price: i.price || i.products?.price,
+                })),
+                shippingAddress: shippingAddr,
+              },
+            },
+          });
+        }
+      } catch (emailErr) {
+        console.error("IPN email notification failed:", emailErr);
+      }
+    }
+
+    // Respond to Netopia with success
     return new Response(
-      buildMerchantResponse("0", "", crc),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/xml" } }
+      JSON.stringify({ errorCode: 0 }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
     console.error("NETOPIA IPN error:", err);
     return new Response(
-      buildMerchantResponse("1", "Internal server error"),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/xml" } }
+      JSON.stringify({ errorCode: 1, errorMessage: "Internal server error" }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });
-
-function buildMerchantResponse(
-  errorType: string,
-  message: string,
-  crc?: string
-): string {
-  if (errorType === "0") {
-    return `<?xml version="1.0" encoding="utf-8"?><crc>${crc || ""}</crc>`;
-  }
-  return `<?xml version="1.0" encoding="utf-8"?><crc error_type="${errorType}" error_code="0">${message}</crc>`;
-}
