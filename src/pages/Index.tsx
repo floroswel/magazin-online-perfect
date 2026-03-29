@@ -148,6 +148,10 @@ export default function Index() {
     brand_logos: <BrandLogosCarousel key="brand_logos" />,
     recently_viewed: <RecentlyViewed key="recently_viewed" />,
     newsletter_section: <NewsletterDiscount key="newsletter_section" />,
+    quick_filters: <QuickFilters key="quick_filters" />,
+    coupon_collector: <CouponCollector key="coupon_collector" />,
+    top_vendors: <TopVendors key="top_vendors" />,
+    buy_again: <BuyAgain key="buy_again" />,
   }), [featured, loading, featuredRef]);
 
   return (

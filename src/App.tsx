@@ -104,6 +104,8 @@ const App = () => (
               <Route path="/povestea-noastra" element={<ErrorBoundary><PovesteaNoastra /></ErrorBoundary>} />
               <Route path="/recenzii" element={<ErrorBoundary><Recenzii /></ErrorBoundary>} />
               <Route path="/unsubscribe" element={<ErrorBoundary><Unsubscribe /></ErrorBoundary>} />
+              <Route path="/vendor/:slug" element={<ErrorBoundary><VendorStore /></ErrorBoundary>} />
+              <Route path="/oferte" element={<ErrorBoundary><Oferte /></ErrorBoundary>} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<ErrorBoundary><NotFound /></ErrorBoundary>} />
             </Routes>
