@@ -31,6 +31,18 @@ function highlightMatch(text: string, query: string) {
   ).join('');
 }
 
+const RECENT_KEY = "recent_searches";
+function getRecentSearches(): string[] {
+  try { return JSON.parse(localStorage.getItem(RECENT_KEY) || "[]").slice(0, 5); } catch { return []; }
+}
+function addRecentSearch(q: string) {
+  const recent = getRecentSearches().filter(s => s !== q);
+  recent.unshift(q);
+  localStorage.setItem(RECENT_KEY, JSON.stringify(recent.slice(0, 5)));
+}
+
+const TRENDING = ["vanilie", "lavandă", "set cadou", "aromaterapie", "personalizare"];
+
 export default function SearchAutocomplete({ className }: { className?: string }) {
   const navigate = useNavigate();
   const { format } = useCurrency();
@@ -38,6 +50,7 @@ export default function SearchAutocomplete({ className }: { className?: string }
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [activeIdx, setActiveIdx] = useState(-1);
   const ref = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
 
