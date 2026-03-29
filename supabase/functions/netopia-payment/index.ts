@@ -135,6 +135,8 @@ Deno.serve(async (req: Request) => {
 
     console.log("1. Config loaded - signature:", posSignature, "sandbox:", isSandbox, "url:", gatewayUrl);
     console.log("   public_key starts with:", publicKey.substring(0, 30));
+    console.log("   public_key line 2:", publicKey.split('\n')[1]?.substring(0, 20));
+    console.log("   private_key present:", privateKey.length > 0, "length:", privateKey.length);
 
     if (!posSignature || !publicKey) {
       console.error("Netopia config incomplete. Keys present:", Object.keys(config));
