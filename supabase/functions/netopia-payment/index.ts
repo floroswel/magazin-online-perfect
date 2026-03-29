@@ -1,87 +1,10 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import forge from "npm:node-forge@1.3.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
-
-function buildOrderXml(params: {
-  orderId: string;
-  timestamp: number;
-  signature: string;
-  returnUrl: string;
-  confirmUrl: string;
-  amount: number;
-  currency: string;
-  details: string;
-  firstName: string;
-  lastName: string;
-  address: string;
-  email: string;
-  phone: string;
-}): string {
-  const esc = (s: string) =>
-    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-     .replace(/"/g, "&quot;").replace(/'/g, "&apos;");
-
-  return `<?xml version="1.0" encoding="utf-8"?>
-<order type="card" id="${esc(params.orderId)}" timestamp="${params.timestamp}">
-  <signature>${esc(params.signature)}</signature>
-  <url>
-    <return>${esc(params.returnUrl)}</return>
-    <confirm>${esc(params.confirmUrl)}</confirm>
-  </url>
-  <invoice currency="${esc(params.currency)}" amount="${params.amount.toFixed(2)}">
-    <details><![CDATA[${params.details}]]></details>
-    <contact_info>
-      <billing type="person">
-        <first_name><![CDATA[${params.firstName}]]></first_name>
-        <last_name><![CDATA[${params.lastName}]]></last_name>
-        <address><![CDATA[${params.address}]]></address>
-        <email><![CDATA[${params.email}]]></email>
-        <mobile_phone><![CDATA[${params.phone}]]></mobile_phone>
-      </billing>
-    </contact_info>
-  </invoice>
-  <ipn_cipher>aes-256-cbc</ipn_cipher>
-</order>`;
-}
-
-function encryptForNetopia(
-  publicKeyPem: string,
-  xmlData: string
-): { envKey: string; envData: string } {
-  const aesKeyBytes = forge.random.getBytesSync(32);
-  const iv = forge.random.getBytesSync(16);
-
-  const cipher = forge.cipher.createCipher("AES-CBC", aesKeyBytes);
-  cipher.start({ iv });
-  cipher.update(forge.util.createBuffer(xmlData, "utf8"));
-  cipher.finish();
-  const encryptedXml = cipher.output.getBytes();
-
-  // IV prepended to ciphertext
-  const combined = iv + encryptedXml;
-
-  // Extract public key from certificate
-  let publicKey: forge.pki.rsa.PublicKey;
-  if (publicKeyPem.includes("CERTIFICATE")) {
-    const cert = forge.pki.certificateFromPem(publicKeyPem);
-    publicKey = cert.publicKey as forge.pki.rsa.PublicKey;
-  } else {
-    publicKey = forge.pki.publicKeyFromPem(publicKeyPem);
-  }
-
-  // RSA PKCS1 v1.5 (NOT OAEP) — matches Netopia PHP SDK
-  const encryptedKey = publicKey.encrypt(aesKeyBytes, "RSAES-PKCS1-V1_5");
-
-  return {
-    envKey: forge.util.encode64(encryptedKey),
-    envData: forge.util.encode64(combined),
-  };
-}
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -104,7 +27,7 @@ Deno.serve(async (req: Request) => {
     // 1. Load config
     const { data: pm, error: pmError } = await supabase
       .from("payment_methods")
-      .select("config_json, sandbox_mode")
+      .select("config_json")
       .eq("key", "card_online")
       .eq("is_active", true)
       .single();
@@ -117,31 +40,21 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const config = pm.config_json as Record<string, string>;
+    const config = pm.config_json as Record<string, any>;
+    const apiKey = config.api_key || Deno.env.get("NETOPIA_API_KEY") || "";
     const posSignature = config.pos_signature || config.merchant_id || "";
-    // Normalize PEM keys: fix literal \n to real newlines
-    const rawPublicKey = config.public_key || "";
-    const rawPrivateKey = config.private_key || "";
-    const publicKey = rawPublicKey.includes('\\n')
-      ? rawPublicKey.replace(/\\n/g, '\n')
-      : rawPublicKey;
-    const privateKey = rawPrivateKey.includes('\\n')
-      ? rawPrivateKey.replace(/\\n/g, '\n')
-      : rawPrivateKey;
-    const isSandbox = config.sandbox === "true" || config.sandbox === true as any;
+    const isSandbox = config.sandbox === "true" || config.sandbox === true;
+
     const gatewayUrl = isSandbox
-      ? (config.sandbox_url || "https://sandboxsecure.mobilpay.ro")
-      : (config.live_url || "https://secure.mobilpay.ro");
+      ? "https://secure.sandbox.netopia-payments.com/payment/card/start"
+      : "https://secure.mobilpay.ro/pay/payment/card/start";
 
-    console.log("1. Config loaded - signature:", posSignature, "sandbox:", isSandbox, "url:", gatewayUrl);
-    console.log("   public_key starts with:", publicKey.substring(0, 30));
-    console.log("   public_key line 2:", publicKey.split('\n')[1]?.substring(0, 20));
-    console.log("   private_key present:", privateKey.length > 0, "length:", privateKey.length);
+    console.log("V2 Config — posSignature:", posSignature, "sandbox:", isSandbox, "url:", gatewayUrl, "apiKey present:", !!apiKey);
 
-    if (!posSignature || !publicKey) {
-      console.error("Netopia config incomplete. Keys present:", Object.keys(config));
+    if (!posSignature || !apiKey) {
+      console.error("Netopia V2 config incomplete. Keys:", Object.keys(config));
       return new Response(
-        JSON.stringify({ error: "Configurare Netopia incompletă" }),
+        JSON.stringify({ error: "Configurare Netopia incompletă (lipsește api_key sau pos_signature)" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -163,65 +76,151 @@ Deno.serve(async (req: Request) => {
     const shippingAddr = (order.shipping_address as Record<string, any>) || {};
     const siteUrl = Deno.env.get("SITE_URL") || "https://your-emag-clone.lovable.app";
     const returnUrl = `${siteUrl}/order-confirmation/${orderId}`;
-    const confirmUrl = `${supabaseUrl}/functions/v1/netopia-ipn`;
+    const notifyUrl = `${supabaseUrl}/functions/v1/netopia-ipn`;
 
     const fullName = shippingAddr.fullName || shippingAddr.full_name || "Client";
     const nameParts = fullName.split(" ");
     const firstName = nameParts[0] || "Client";
-    const lastName = nameParts.slice(1).join(" ") || "";
+    const lastName = nameParts.slice(1).join(" ") || "Client";
 
-    // 3. Build XML
-    const xml = buildOrderXml({
-      orderId,
-      timestamp: Date.now(),
-      signature: posSignature,
-      returnUrl,
-      confirmUrl,
-      amount: Number(order.total),
-      currency: "RON",
-      details: `Comandă VENTUZA #${orderId.slice(0, 8)}`,
-      firstName,
-      lastName,
-      address: shippingAddr.address || "",
-      email: order.user_email || shippingAddr.email || "",
-      phone: shippingAddr.phone || "",
+    // 3. Build V2 JSON request
+    const requestBody = {
+      config: {
+        emailTemplate: "",
+        notifyUrl,
+        redirectUrl: returnUrl,
+        language: "ro",
+      },
+      payment: {
+        options: {
+          installments: 0,
+          bonus: 0,
+        },
+        instrument: {
+          type: "card",
+        },
+        data: {
+          BROWSER_USER_AGENT: "",
+          OS: "",
+          OS_VERSION: "",
+          MOBILE: "false",
+          SCREEN_POINT: "",
+          SCREEN_PRINT: "",
+          BROWSER_COLOR_DEPTH: "24",
+          BROWSER_SCREEN_HEIGHT: "900",
+          BROWSER_SCREEN_WIDTH: "1440",
+          BROWSER_PLUGINS: "",
+          BROWSER_JAVA_ENABLED: "false",
+          BROWSER_LANGUAGE: "ro",
+          BROWSER_TZ: "Europe/Bucharest",
+          BROWSER_TZ_OFFSET: "-120",
+          IP_ADDRESS: "",
+        },
+      },
+      order: {
+        ntpID: "",
+        posSignature,
+        dateTime: new Date().toISOString(),
+        description: `Comanda VENTUZA #${orderId.slice(0, 8)}`,
+        orderID: orderId,
+        amount: Number(order.total),
+        currency: "RON",
+        billing: {
+          email: order.user_email || shippingAddr.email || "",
+          phone: shippingAddr.phone || "0700000000",
+          firstName,
+          lastName,
+          city: shippingAddr.city || "Bucuresti",
+          country: 642,
+          state: shippingAddr.county || "Ilfov",
+          postalCode: shippingAddr.postalCode || shippingAddr.postal_code || "077190",
+          details: shippingAddr.address || "",
+        },
+        shipping: {
+          email: order.user_email || shippingAddr.email || "",
+          phone: shippingAddr.phone || "0700000000",
+          firstName,
+          lastName,
+          city: shippingAddr.city || "Bucuresti",
+          country: 642,
+          state: shippingAddr.county || "Ilfov",
+          postalCode: shippingAddr.postalCode || shippingAddr.postal_code || "077190",
+          details: shippingAddr.address || "",
+        },
+        products: [],
+        installments: {
+          selected: 0,
+          available: [0],
+        },
+        data: {},
+      },
+    };
+
+    console.log("Netopia V2 request — amount:", order.total, "orderID:", orderId);
+
+    // 4. Call Netopia V2 API
+    const netopiaResponse = await fetch(gatewayUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: apiKey,
+      },
+      body: JSON.stringify(requestBody),
     });
 
-    console.log("2. XML built - length:", xml.length);
-    console.log("3. XML first 300 chars:", xml.substring(0, 300));
+    const responseText = await netopiaResponse.text();
+    console.log("Netopia V2 response status:", netopiaResponse.status);
+    console.log("Netopia V2 response:", responseText.slice(0, 2000));
 
-    // 4. Encrypt
-    const { envKey, envData } = encryptForNetopia(publicKey, xml);
+    let responseData: any;
+    try {
+      responseData = JSON.parse(responseText);
+    } catch {
+      console.error("Non-JSON response from Netopia:", responseText.slice(0, 500));
+      return new Response(
+        JSON.stringify({ error: "Răspuns invalid de la Netopia" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
-    console.log("4. Encryption done - envKey:", envKey.length, "data:", envData.length);
-    console.log("5. Returning url:", gatewayUrl);
+    // 5. Extract payment URL
+    if (responseData.payment?.paymentURL) {
+      // Store transaction
+      await supabase.from("netopia_transactions").upsert({
+        order_id: orderId,
+        netopia_order_id: responseData.payment?.ntpID || orderId,
+        action: "started",
+        status: "pending",
+        original_amount: order.total,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: "order_id" });
 
-    // Store transaction
-    await supabase.from("netopia_transactions").upsert({
-      order_id: orderId,
-      action: "started",
-      status: "pending",
-      original_amount: order.total,
-      updated_at: new Date().toISOString(),
-    }, { onConflict: "order_id" });
+      // Update order status
+      await supabase.from("orders").update({
+        payment_status: "pending",
+        status: "pending_payment",
+        updated_at: new Date().toISOString(),
+      }).eq("id", orderId);
 
-    // Update order status
-    await supabase.from("orders").update({
-      payment_status: "pending",
-      status: "pending_payment",
-      updated_at: new Date().toISOString(),
-    }).eq("id", orderId);
+      console.log("V2 success — paymentURL:", responseData.payment.paymentURL);
 
+      return new Response(
+        JSON.stringify({
+          paymentUrl: responseData.payment.paymentURL,
+          ntpID: responseData.payment.ntpID,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Error from Netopia
+    console.error("No paymentURL in Netopia response:", JSON.stringify(responseData));
     return new Response(
-      JSON.stringify({
-        envKey,
-        data: envData,
-        url: gatewayUrl,
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      JSON.stringify({ error: responseData.error?.message || responseData.message || "Eroare Netopia V2" }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
-    console.error("Netopia payment error:", err);
+    console.error("Netopia V2 payment error:", err);
     return new Response(
       JSON.stringify({ error: err instanceof Error ? err.message : "Eroare internă server" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
