@@ -164,6 +164,7 @@ export default function Index() {
 
   return (
     <Layout>
+      <WelcomeBack />
       {sectionOrder.map((key) => {
         if (visibilityMap[key] === false) return null;
         return sectionComponents[key] || null;

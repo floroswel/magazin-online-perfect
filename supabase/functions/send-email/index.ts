@@ -388,6 +388,22 @@ serve(async (req) => {
         subject = "✅ Email de test — VENTUZA";
         html = testHTML(data);
         break;
+      case "care_guide":
+        subject = `Ghid de îngrijire pentru comanda #${(data.orderNumber || data.orderId || "").slice(0, 8)} 🕯️ — VENTUZA`;
+        html = careGuideHTML(data);
+        break;
+      case "tracking_update":
+        subject = `Comanda #${(data.orderNumber || data.orderId || "").slice(0, 8)} — actualizare status 📦`;
+        html = trackingUpdateHTML(data);
+        break;
+      case "review_request":
+        subject = `Cum a fost experiența cu comanda #${(data.orderNumber || data.orderId || "").slice(0, 8)}? ⭐`;
+        html = reviewRequestHTML(data);
+        break;
+      case "weekly_report":
+        subject = `📊 Raport săptămânal VENTUZA — ${new Date().toLocaleDateString("ro-RO")}`;
+        html = weeklyReportHTML(data);
+        break;
       default:
         throw new Error(`Unknown email type: ${type}`);
     }

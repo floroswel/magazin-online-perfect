@@ -115,6 +115,7 @@ const App = () => (
               <Route path="/nou" element={<ErrorBoundary><NouLansari /></ErrorBoundary>} />
               <Route path="/card-cadou" element={<ErrorBoundary><GiftCards /></ErrorBoundary>} />
               <Route path="/despre-noi/numere" element={<ErrorBoundary><TransparencyDashboard /></ErrorBoundary>} />
+              <Route path="/l/:city/:category" element={<ErrorBoundary><SeoLanding /></ErrorBoundary>} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<ErrorBoundary><NotFound /></ErrorBoundary>} />
             </Routes>
