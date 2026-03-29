@@ -266,7 +266,7 @@ export default function Account() {
         {/* Personalized greeting */}
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-serif text-3xl font-medium">Bună, {profile?.full_name?.split(" ")[0] || "acolo"} 👋</h1>
+            <h1 className="text-3xl font-bold">Bună, {(profile?.full_name && !profile.full_name.includes("DELETED") ? profile.full_name.split(" ")[0] : null) || "acolo"} 👋</h1>
             <p className="text-sm text-muted-foreground mt-1">Gestionează contul, comenzile și preferințele tale.</p>
           </div>
           <Button variant="outline" size="sm" className="gap-2 text-muted-foreground hover:text-destructive" onClick={handleLogout}>
