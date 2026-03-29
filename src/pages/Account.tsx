@@ -234,7 +234,7 @@ export default function Account() {
       const exportData: any = { profile, addresses, orders: orders.map(o => ({ id: o.id, total: o.total, status: o.status, created_at: o.created_at, items: o.order_items?.length || 0 })), loyalty_points: pointsHistory, exported_at: new Date().toISOString() };
       const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a"); a.href = url; a.download = `ventuza-date-personale-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+      const a = document.createElement("a"); a.href = url; a.download = `mamalucica-date-personale-${new Date().toISOString().slice(0, 10)}.json`; a.click();
       URL.revokeObjectURL(url);
       toast.success("Datele au fost exportate!");
     } catch { toast.error("Eroare la export"); }

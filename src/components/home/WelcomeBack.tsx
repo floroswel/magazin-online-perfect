@@ -14,7 +14,7 @@ export default function WelcomeBack() {
   const [visitCount, setVisitCount] = useState(0);
 
   useEffect(() => {
-    const key = "ventuza_visit_data";
+    const key = "ml_visit_data";
     const raw = localStorage.getItem(key);
     const now = Date.now();
     let data: VisitData = raw

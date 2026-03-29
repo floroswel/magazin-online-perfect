@@ -178,13 +178,13 @@ export default function Catalog() {
   // Dynamic SEO via usePageSeo
   usePageSeo({
     title: currentCategory
-      ? `${currentCategory.name} — Lumânări VENTUZA`
+      ? `${currentCategory.name} — Lumânări MamaLucica`
       : searchQuery
-        ? `Căutare: ${searchQuery} | VENTUZA`
-        : "Catalog — Lumânări Artizanale | VENTUZA",
+        ? `Căutare: ${searchQuery} | MamaLucica`
+        : "Catalog — Lumânări Artizanale | MamaLucica",
     description: currentCategory
       ? `Colecția ${currentCategory.name} — ${totalCount} produse artizanale. Ingrediente naturale, parfumuri unice.`
-      : "Explorează toate lumânările artizanale VENTUZA. Ingrediente naturale, parfumuri rare.",
+      : "Explorează toate lumânările artizanale MamaLucica. Ingrediente naturale, parfumuri rare.",
     canonicalOverride: "/catalog",
   });
 

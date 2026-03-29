@@ -113,7 +113,7 @@ export default function AdminGeneralSettings() {
                 <div><Label>EUIPO Trademark</Label><Input value={(settings.company as any).euipo || ""} onChange={e => updateCompany("euipo", e.target.value)} placeholder="#019130214" /></div>
                 <div><Label>IBAN</Label><Input value={(settings.company as any).iban || ""} onChange={e => updateCompany("iban", e.target.value)} placeholder="RO00XXXX0000000000000000" /></div>
                 <div><Label>Bancă</Label><Input value={(settings.company as any).bank || ""} onChange={e => updateCompany("bank", e.target.value)} placeholder="ING Bank" /></div>
-                <div><Label>Website</Label><Input value={(settings.company as any).website || ""} onChange={e => updateCompany("website", e.target.value)} placeholder="https://ventuza.ro" /></div>
+                <div><Label>Website</Label><Input value={(settings.company as any).website || ""} onChange={e => updateCompany("website", e.target.value)} placeholder="https://mamalucica.ro" /></div>
                 <div><Label>Țara</Label><Input value={settings.company.country} onChange={e => updateCompany("country", e.target.value)} /></div>
                 <div><Label>Județ</Label><Input value={settings.company.county} onChange={e => updateCompany("county", e.target.value)} placeholder="București" /></div>
                 <div><Label>Oraș</Label><Input value={settings.company.city} onChange={e => updateCompany("city", e.target.value)} placeholder="Sector 1" /></div>

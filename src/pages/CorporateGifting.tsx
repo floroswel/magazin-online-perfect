@@ -53,7 +53,7 @@ export default function CorporateGifting() {
     <Layout>
       <div className="container py-10 max-w-2xl">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground">🏢 Cadouri Corporate VENTUZA</h1>
+          <h1 className="text-3xl font-bold text-foreground">🏢 Cadouri Corporate MamaLucica</h1>
           <p className="text-muted-foreground mt-2">
             Pachete personalizate cu logo-ul companiei tale pentru parteneri și angajați
           </p>

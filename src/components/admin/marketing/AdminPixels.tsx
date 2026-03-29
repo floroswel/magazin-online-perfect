@@ -14,7 +14,7 @@ const pixelProviders = [
   { key: "gtm", name: "Google Tag Manager", placeholder: "GTM-XXXXXXX", desc: "Container GTM pentru toate tag-urile", category: "analytics", testFn: () => !!(window as any).google_tag_manager },
   { key: "clarity", name: "Microsoft Clarity", placeholder: "abcdef1234", desc: "Heatmaps și înregistrări sesiuni", category: "analytics", testFn: () => typeof (window as any).clarity === "function" },
   { key: "meta_pixel", name: "Meta (Facebook) Pixel", placeholder: "123456789012345", desc: "Urmărire conversii Facebook & Instagram Ads", category: "marketing", testFn: () => typeof (window as any).fbq === "function" },
-  { key: "tiktok_pixel", name: "TikTok Pixel", placeholder: "ABCDEFGH12345", desc: "Urmărire conversii TikTok Ads — CRITIC pentru campanii VENTUZA", category: "marketing", testFn: () => typeof (window as any).ttq !== "undefined" && (window as any).ttq },
+  { key: "tiktok_pixel", name: "TikTok Pixel", placeholder: "ABCDEFGH12345", desc: "Urmărire conversii TikTok Ads — CRITIC pentru campanii MamaLucica", category: "marketing", testFn: () => typeof (window as any).ttq !== "undefined" && (window as any).ttq },
   { key: "google_ads", name: "Google Ads", placeholder: "AW-123456789", desc: "Urmărire conversii Google Ads", category: "marketing", testFn: () => typeof (window as any).gtag === "function" },
   { key: "pinterest_tag", name: "Pinterest Tag", placeholder: "1234567890", desc: "Urmărire conversii Pinterest Ads", category: "marketing", testFn: () => typeof (window as any).pintrk === "function" },
 ];

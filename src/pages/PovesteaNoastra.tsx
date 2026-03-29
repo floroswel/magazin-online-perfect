@@ -6,8 +6,8 @@ export default function PovesteaNoastra() {
       {/* Hero */}
       <section className="bg-secondary text-secondary-foreground py-20 md:py-28">
         <div className="container max-w-3xl text-center">
-          <p className="text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-4 font-medium">Despre Noi</p>
-          <h1 className="font-serif text-4xl md:text-5xl font-medium leading-tight mb-6">Povestea VENTUZA</h1>
+          <p className="text-xs tracking-[0.3em] uppercase text-accent mb-4 font-medium">Despre Noi</p>
+          <h1 className="font-serif text-4xl md:text-5xl font-medium leading-tight mb-6">Povestea MamaLucica</h1>
           <p className="text-secondary-foreground/60 text-lg leading-relaxed">
             De la pasiune la parfumuri care transformă fiecare moment
           </p>
@@ -19,13 +19,13 @@ export default function PovesteaNoastra() {
           <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">Cum a Început</p>
           <h2 className="font-serif text-2xl md:text-3xl font-medium text-foreground mb-6">O Pasiune Născută Acasă</h2>
           <p className="text-muted-foreground leading-relaxed text-lg">
-            VENTUZA s-a născut dintr-o pasiune simplă: dorința de a crea ceva frumos, cu mâinile proprii, din ingrediente naturale. 
+            MamaLucica s-a născut dintr-o pasiune simplă: dorința de a crea ceva frumos, cu mâinile proprii, din ingrediente naturale. 
             Totul a început acasă, în bucătărie, cu primele experimente cu ceară de soia și uleiuri esențiale. 
-            Astăzi, fiecare lumânare VENTUZA poartă aceeași dragoste și atenție la detalii din primele zile.
+            Astăzi, fiecare lumânare MamaLucica poartă aceeași dragoste și atenție la detalii din primele zile.
           </p>
         </section>
 
-        <div className="ventuza-divider" />
+        <div className="border-t border-border my-8" />
 
         <section>
           <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">Ingrediente</p>
@@ -45,7 +45,7 @@ export default function PovesteaNoastra() {
           </div>
         </section>
 
-        <div className="ventuza-divider" />
+        <div className="border-t border-border my-8" />
 
         <section>
           <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">Principii</p>
@@ -68,13 +68,13 @@ export default function PovesteaNoastra() {
           </div>
         </section>
 
-        <div className="ventuza-divider" />
+        <div className="border-t border-border my-8" />
 
         <section className="text-center">
           <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">Angajament</p>
           <h2 className="font-serif text-2xl md:text-3xl font-medium text-foreground mb-6">Promisiunea Noastră</h2>
           <p className="text-muted-foreground leading-relaxed text-lg max-w-xl mx-auto">
-            Fiecare lumânare VENTUZA este o mică operă de artă. Promitem să folosim mereu ingrediente naturale, 
+            Fiecare lumânare MamaLucica este o mică operă de artă. Promitem să folosim mereu ingrediente naturale, 
             să respectăm mediul și să creăm produse care aduc bucurie în fiecare casă.
           </p>
           <p className="text-xs text-primary tracking-wide mt-8">Handmade cu dragoste în România 🇷🇴</p>

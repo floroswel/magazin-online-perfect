@@ -93,7 +93,7 @@ const PAYMENT_PRESETS: Partial<LogoItem>[] = [
 ];
 
 const DEFAULT_TEXTS: FooterTexts = {
-  col1_title: "VENTUZA", col1_description: "Lumânări handmade realizate cu pasiune în România. Ceară naturală, parfumuri premium.",
+  col1_title: "MamaLucica", col1_description: "Lumânări handmade realizate cu pasiune în România. Ceară naturală, parfumuri premium.",
   col2_title: "Navigare", col2_links: [
     { label: "Acasă", url: "/", active: true },
     { label: "Produse", url: "/catalog", active: true },
@@ -111,7 +111,7 @@ const DEFAULT_TEXTS: FooterTexts = {
   ],
   col4_title: "Contact", col4_email: "", col4_phone: "", col4_address: "", col4_hours: "",
   col4_show_email: true, col4_show_phone: true, col4_show_address: true, col4_show_hours: true,
-  copyright: "© {year} VENTUZA. Toate drepturile rezervate.",
+  copyright: "© {year} MamaLucica. Toate drepturile rezervate.",
   extra_legal: "", show_made_in: true,
   delivery_section_title: "Livrare prin",
   payment_section_title: "Metode de plată",
@@ -535,7 +535,7 @@ export default function AdminFooterSettings() {
                     <Label className="text-xs">Email</Label>
                     <Switch checked={footerTexts.col4_show_email} onCheckedChange={v => updateText("col4_show_email", v)} />
                   </div>
-                  <Input value={footerTexts.col4_email} onChange={e => updateText("col4_email", e.target.value)} placeholder="contact@ventuza.ro" />
+                  <Input value={footerTexts.col4_email} onChange={e => updateText("col4_email", e.target.value)} placeholder="contact@mamalucica.ro" />
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1">

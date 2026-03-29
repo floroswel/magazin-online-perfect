@@ -403,7 +403,7 @@ function SMSTab() {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [form, setForm] = useState({ name: "", message: "", trigger_type: "manual" });
-  const [smsSettings, setSmsSettings] = useState({ provider: "twilio", api_key: "", sender_name: "VENTUZA" });
+  const [smsSettings, setSmsSettings] = useState({ provider: "twilio", api_key: "", sender_name: "MamaLucica" });
   const [settingsSaving, setSettingsSaving] = useState(false);
 
   useEffect(() => {

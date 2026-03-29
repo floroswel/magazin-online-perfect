@@ -60,7 +60,7 @@ const DEFAULT_ELEMENTS: Omit<VisibilityRow, "id" | "updated_at" | "updated_by">[
   { element_key: "section_quiz", is_active: true, category: "sections", label: "Quiz Parfum", path_label: "Homepage > Quiz", scheduled_from: null, scheduled_until: null },
   { element_key: "section_featured", is_active: true, category: "sections", label: "Produse Recomandate", path_label: "Homepage > Featured", scheduled_from: null, scheduled_until: null },
   { element_key: "section_bestsellers", is_active: true, category: "sections", label: "Bestsellers", path_label: "Homepage > Bestsellers", scheduled_from: null, scheduled_until: null },
-  { element_key: "section_why_ventuza", is_active: true, category: "sections", label: "De Ce VENTUZA", path_label: "Homepage > Why", scheduled_from: null, scheduled_until: null },
+  { element_key: "section_why_ventuza", is_active: true, category: "sections", label: "De Ce MamaLucica", path_label: "Homepage > Why", scheduled_from: null, scheduled_until: null },
   { element_key: "section_process", is_active: true, category: "sections", label: "Procesul Nostru", path_label: "Homepage > Proces", scheduled_from: null, scheduled_until: null },
   { element_key: "section_testimonials", is_active: true, category: "sections", label: "Testimoniale", path_label: "Homepage > Testimoniale", scheduled_from: null, scheduled_until: null },
   { element_key: "quick_filters", is_active: true, category: "sections", label: "Filtre Rapide", path_label: "Homepage > Filtre Rapide", scheduled_from: null, scheduled_until: null },

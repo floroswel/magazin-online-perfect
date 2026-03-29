@@ -31,7 +31,7 @@ export default function ComenziEvenimente() {
     <Layout>
       <section className="bg-secondary text-secondary-foreground py-16 md:py-20">
         <div className="container max-w-3xl text-center">
-          <p className="text-xs tracking-[0.3em] uppercase text-ventuza-gold mb-4 font-medium">Evenimente</p>
+          <p className="text-xs tracking-[0.3em] uppercase text-accent mb-4 font-medium">Evenimente</p>
           <h1 className="font-serif text-4xl font-medium mb-4">Lumânări pentru Evenimente</h1>
           <p className="text-secondary-foreground/60">Nuntă · Botez · Corporate · Aniversare</p>
         </div>
@@ -40,7 +40,7 @@ export default function ComenziEvenimente() {
       <div className="container py-16 max-w-3xl">
         <div className="grid md:grid-cols-2 gap-12 mb-16">
           <div>
-            <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">De ce VENTUZA</p>
+            <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">De ce MamaLucica</p>
             <h2 className="font-serif text-2xl font-medium text-foreground mb-6">Momente Speciale, Lumânări Unice</h2>
             <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
               <p>Fiecare eveniment merită o atingere personală. Creăm lumânări handmade pentru momentele care contează — de la nunți elegante la botezuri emoționante.</p>
@@ -88,7 +88,7 @@ export default function ComenziEvenimente() {
           </div>
         </div>
 
-        <div className="ventuza-divider mb-12" />
+        <div className="border-t border-border my-8 mb-12" />
 
         <div className="text-center">
           <p className="text-xs tracking-[0.3em] uppercase text-primary mb-3 font-medium">Proces</p>

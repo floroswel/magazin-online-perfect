@@ -68,7 +68,7 @@ export default function AdminEmailSettings() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div><Label>Email expeditor</Label><Input value={settings.from_email} onChange={e => set("from_email", e.target.value)} placeholder="noreply@magazin.ro" /></div>
-          <div><Label>Nume expeditor</Label><Input value={settings.from_name} onChange={e => set("from_name", e.target.value)} placeholder="VENTUZA" /></div>
+          <div><Label>Nume expeditor</Label><Input value={settings.from_name} onChange={e => set("from_name", e.target.value)} placeholder="MamaLucica" /></div>
           <div><Label>Reply-To</Label><Input value={settings.reply_to} onChange={e => set("reply_to", e.target.value)} placeholder="contact@magazin.ro" /></div>
         </div>
 

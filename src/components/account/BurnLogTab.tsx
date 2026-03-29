@@ -85,7 +85,7 @@ export default function BurnLogTab() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="font-serif text-xl font-normal flex items-center gap-2">
-          <Flame className="h-5 w-5 text-ventuza-amber" /> Jurnalul Lumânărilor
+          <Flame className="h-5 w-5 text-accent" /> Jurnalul Lumânărilor
         </h2>
         <Button size="sm" onClick={() => setDialogOpen(true)}>
           <Plus className="h-4 w-4 mr-1" /> Adaugă sesiune
@@ -95,17 +95,17 @@ export default function BurnLogTab() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         <Card><CardContent className="p-3 text-center">
-          <Flame className="h-4 w-4 mx-auto text-ventuza-amber mb-1" />
+          <Flame className="h-4 w-4 mx-auto text-accent mb-1" />
           <p className="text-lg font-bold">{totalBurns}</p>
           <p className="text-[10px] text-muted-foreground">Sesiuni</p>
         </CardContent></Card>
         <Card><CardContent className="p-3 text-center">
-          <Clock className="h-4 w-4 mx-auto text-ventuza-amber mb-1" />
+          <Clock className="h-4 w-4 mx-auto text-accent mb-1" />
           <p className="text-lg font-bold">{totalHours}h</p>
           <p className="text-[10px] text-muted-foreground">Total ars</p>
         </CardContent></Card>
         <Card><CardContent className="p-3 text-center">
-          <Star className="h-4 w-4 mx-auto text-ventuza-amber mb-1" />
+          <Star className="h-4 w-4 mx-auto text-accent mb-1" />
           <p className="text-lg font-bold">{logs.length > 0 ? (logs.reduce((s: number, l: any) => s + (l.rating || 0), 0) / logs.filter((l: any) => l.rating).length || 0).toFixed(1) : "—"}</p>
           <p className="text-[10px] text-muted-foreground">Rating mediu</p>
         </CardContent></Card>
@@ -140,7 +140,7 @@ export default function BurnLogTab() {
                   {log.rating && (
                     <div className="flex items-center gap-0.5">
                       {Array.from({ length: log.rating }).map((_, i) => (
-                        <Star key={i} className="h-3 w-3 fill-ventuza-amber text-ventuza-amber" />
+                        <Star key={i} className="h-3 w-3 fill-accent text-accent" />
                       ))}
                     </div>
                   )}
@@ -185,7 +185,7 @@ export default function BurnLogTab() {
               <div className="flex gap-1 mt-1">
                 {[1, 2, 3, 4, 5].map(n => (
                   <button key={n} onClick={() => setForm(f => ({ ...f, rating: String(n) }))} className="p-1">
-                    <Star className={`h-5 w-5 ${n <= parseInt(form.rating) ? "fill-ventuza-amber text-ventuza-amber" : "text-muted-foreground"}`} />
+                    <Star className={`h-5 w-5 ${n <= parseInt(form.rating) ? "fill-accent text-accent" : "text-muted-foreground"}`} />
                   </button>
                 ))}
               </div>

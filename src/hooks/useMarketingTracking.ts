@@ -15,7 +15,7 @@ async function loadConsent(): Promise<{ analytics: boolean; marketing: boolean }
   }
   _consentLoading = true;
   try {
-    const consentId = localStorage.getItem("ventuza_consent_id");
+    const consentId = localStorage.getItem("ml_consent_id");
     if (!consentId) {
       _consentCache = { analytics: false, marketing: false };
     } else {
@@ -52,7 +52,7 @@ export function refreshConsentCache() {
 }
 
 // ========== UTM ==========
-const UTM_KEY = "ventuza_utm";
+const UTM_KEY = "ml_utm";
 
 export function captureUtmParams() {
   try {
