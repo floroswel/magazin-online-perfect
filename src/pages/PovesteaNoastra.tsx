@@ -4,17 +4,17 @@ export default function PovesteaNoastra() {
   return (
     <Layout>
       {/* Hero */}
-      <section className="bg-secondary text-secondary-foreground py-20 md:py-28">
-        <div className="container max-w-3xl text-center">
+      <section className="bg-secondary text-secondary-foreground py-16 md:py-28 px-4">
+        <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs tracking-[0.3em] uppercase text-accent mb-4 font-medium">Despre Noi</p>
-          <h1 className="font-serif text-4xl md:text-5xl font-medium leading-tight mb-6">Povestea MamaLucica</h1>
-          <p className="text-secondary-foreground/60 text-lg leading-relaxed">
+          <h1 className="font-serif text-3xl md:text-5xl font-medium leading-tight mb-6">Povestea MamaLucica</h1>
+          <p className="text-secondary-foreground/60 text-base md:text-lg leading-relaxed">
             De la pasiune la parfumuri care transformă fiecare moment
           </p>
         </div>
       </section>
 
-      <div className="container py-16 md:py-24 max-w-3xl space-y-20">
+      <div className="max-w-3xl mx-auto py-12 md:py-24 px-4 space-y-16 md:space-y-20">
         <section>
           <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">Cum a Început</p>
           <h2 className="font-serif text-2xl md:text-3xl font-medium text-foreground mb-6">O Pasiune Născută Acasă</h2>

@@ -42,7 +42,7 @@ export default function HeroSlider() {
 
   return (
     <section className="relative w-full overflow-hidden bg-card">
-      <div className="relative h-[200px] sm:h-[300px] md:h-[400px]">
+      <div className="relative h-[240px] sm:h-[340px] md:h-[440px]">
         {slides.map((slide, i) => (
           <div
             key={i}
@@ -54,19 +54,21 @@ export default function HeroSlider() {
               className="absolute inset-0 w-full h-full object-cover"
               loading={i === 0 ? "eager" : "lazy"}
             />
+            {/* Dark overlay for text readability */}
+            <div className="absolute inset-0 bg-black/40" />
             <div className={`absolute inset-0 bg-gradient-to-r ${slide.bg}`} />
-            <div className="relative z-10 h-full flex items-center">
-              <div className="container px-4 md:px-8">
-                <div className="max-w-lg text-primary-foreground">
-                  <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold mb-2 md:mb-4 leading-tight">
+            <div className="relative z-10 h-full flex items-center justify-center text-center">
+              <div className="container px-4 md:px-8 max-w-3xl mx-auto">
+                <div className="text-primary-foreground">
+                  <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold mb-2 md:mb-4 leading-tight drop-shadow-lg">
                     {slide.title}
                   </h2>
-                  <p className="text-sm sm:text-base md:text-lg opacity-90 mb-4 md:mb-6">
+                  <p className="text-sm sm:text-base md:text-lg opacity-90 mb-4 md:mb-6 drop-shadow-md">
                     {slide.subtitle}
                   </p>
                   <Link
                     to={slide.link}
-                    className="inline-block bg-primary-foreground text-foreground font-bold text-sm px-6 py-3 rounded-lg hover:opacity-90 transition-opacity"
+                    className="inline-block bg-primary-foreground text-foreground font-bold text-sm px-6 py-3 rounded-lg hover:opacity-90 transition-opacity min-h-[48px] flex items-center justify-center"
                   >
                     {slide.cta}
                   </Link>

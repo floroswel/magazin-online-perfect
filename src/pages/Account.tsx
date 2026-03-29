@@ -262,22 +262,22 @@ export default function Account() {
 
   return (
     <Layout>
-      <div className="container py-6 max-w-6xl">
+      <div className="container py-6 md:py-10 max-w-6xl px-4">
         {/* Personalized greeting */}
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">Bună, {(profile?.full_name && !profile.full_name.includes("DELETED") ? profile.full_name.split(" ")[0] : null) || "acolo"} 👋</h1>
-            <p className="text-sm text-muted-foreground mt-1">Gestionează contul, comenzile și preferințele tale.</p>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Bună, {(profile?.full_name && !profile.full_name.includes("DELETED") ? profile.full_name.split(" ")[0] : null) || "acolo"} 👋</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">Gestionează contul, comenzile și preferințele tale.</p>
           </div>
-          <Button variant="outline" size="sm" className="gap-2 text-muted-foreground hover:text-destructive self-start" onClick={handleLogout}>
+          <Button variant="outline" size="sm" className="gap-2 text-muted-foreground hover:text-destructive self-start min-h-[44px]" onClick={handleLogout}>
             <LogOut className="w-4 h-4" /> Deconectare
           </Button>
         </div>
 
         {/* Quick stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-          <Card className="group hover:border-primary/30 transition-colors">
-            <CardContent className="p-3 text-center">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <Card className="group hover:border-primary/30 transition-colors overflow-hidden">
+            <CardContent className="p-3 sm:p-4 text-center">
               <Package className="w-4 h-4 mx-auto mb-1 text-muted-foreground group-hover:text-primary transition-colors" />
               <p className="text-lg font-bold">{orders.length}</p>
               <p className="text-[10px] text-muted-foreground">Comenzi</p>
@@ -310,8 +310,8 @@ export default function Account() {
           <div>
             <Tabs defaultValue="orders">
               {/* Scrollable tab bar */}
-              <ScrollArea className="w-full">
-                <TabsList className="inline-flex w-max gap-1 p-1">
+              <ScrollArea className="w-full overflow-x-auto">
+                <TabsList className="inline-flex w-max gap-1 p-1 mb-1">
                   <TabsTrigger value="orders" className="gap-1.5 text-xs"><Package className="h-3.5 w-3.5" /> Comenzi</TabsTrigger>
                   <TabsTrigger value="invoices" className="gap-1.5 text-xs"><FileText className="h-3.5 w-3.5" /> Facturi</TabsTrigger>
                   <TabsTrigger value="addresses" className="gap-1.5 text-xs"><MapPin className="h-3.5 w-3.5" /> Adrese</TabsTrigger>

@@ -459,7 +459,7 @@ export default function Catalog() {
 
           <div className="flex-1">
             {loading ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Array.from({ length: 6 }).map((_, i) => (<div key={i} className="h-80 bg-muted rounded-lg animate-pulse" />))}
               </div>
             ) : filteredBySpecs.length === 0 ? (
@@ -469,7 +469,7 @@ export default function Catalog() {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filteredBySpecs.map(p => <ProductCard key={p.id} product={p} />)}
                 </div>
                 {totalPages > 1 && (
