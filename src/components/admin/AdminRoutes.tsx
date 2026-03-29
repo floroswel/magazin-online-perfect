@@ -184,6 +184,9 @@ const Admin360SliderSettings = lazy(() => import("./settings/Admin360SliderSetti
 const AdminCustom404Settings = lazy(() => import("./settings/AdminCustom404Settings"));
 const AdminControlCenter = lazy(() => import("./control/AdminControlCenter"));
 const AdminConfiguratorSettings = lazy(() => import("./settings/AdminConfiguratorSettings"));
+const AdminHeroSlides = lazy(() => import("./content/AdminHeroSlides"));
+const AdminPersonalizationOptions = lazy(() => import("./content/AdminPersonalizationOptions"));
+const AdminStaticPages = lazy(() => import("./content/AdminStaticPages"));
 
 export default function AdminRoutes() {
   return (
@@ -312,6 +315,9 @@ export default function AdminRoutes() {
         <Route path="content/email-templates" element={<AdminEmailTemplates />} />
         <Route path="content/seo" element={<AdminSeoSettings />} />
         <Route path="content/legal" element={<AdminCmsPages filterLegal />} />
+        <Route path="content/hero-slides" element={<AdminHeroSlides />} />
+        <Route path="content/personalization" element={<AdminPersonalizationOptions />} />
+        <Route path="content/static-pages" element={<AdminStaticPages />} />
 
         {/* ═══════════ PLĂȚI ═══════════ */}
         <Route path="payments/methods" element={<AdminPaymentMethods />} />

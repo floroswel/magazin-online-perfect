@@ -1,34 +1,16 @@
+import { useState, useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import { usePageSeo } from "@/components/SeoHead";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
-const sections = [
-  {
-    icon: "🔥",
-    title: "Prima ardere — Memory Burn",
-    content: "La prima utilizare, lasă lumânarea să ardă suficient de mult încât toată suprafața de ceară de sus să se topească uniform. Acest lucru previne formarea unui tunel și asigură o ardere uniformă pe toată durata de viață a lumânării.",
-  },
-  {
-    icon: "✂️",
-    title: "Tunsul fitilului",
-    content: "Înainte de fiecare utilizare, taie fitilul la aproximativ 5mm. Un fitil prea lung produce fum, o flacără prea mare și poate întuneca recipientul. Folosește un tunzător special de fitil sau o foarfecă.",
-  },
-  {
-    icon: "⏱️",
-    title: "Durata sesiunilor de ardere",
-    content: "Nu lăsa lumânarea să ardă mai mult de 4 ore continuu. După 4 ore, stinge-o, lasă-o să se răcească complet (cel puțin 2 ore), apoi poți reaprinde. Sesiunile ideale sunt de 2-3 ore.",
-  },
-  {
-    icon: "🏠",
-    title: "Depozitare",
-    content: "Păstrează lumânările într-un loc răcoros, uscat și departe de lumina directă a soarelui. Temperatura ideală de depozitare este între 15-25°C. Evită locurile cu umiditate mare.",
-  },
-  {
-    icon: "🛡️",
-    title: "Siguranță",
-    content: "Nu lăsa niciodată o lumânare aprinsă nesupravegheată. Plasează lumânarea pe o suprafață stabilă, rezistentă la căldură. Menține distanța față de materiale inflamabile, copii și animale de companie.",
-  },
+const defaultSections = [
+  { icon: "🔥", title: "Prima ardere — Memory Burn", content: "La prima utilizare, lasă lumânarea să ardă suficient de mult încât toată suprafața de ceară de sus să se topească uniform. Acest lucru previne formarea unui tunel și asigură o ardere uniformă pe toată durata de viață a lumânării." },
+  { icon: "✂️", title: "Tunsul fitilului", content: "Înainte de fiecare utilizare, taie fitilul la aproximativ 5mm. Un fitil prea lung produce fum, o flacără prea mare și poate întuneca recipientul. Folosește un tunzător special de fitil sau o foarfecă." },
+  { icon: "⏱️", title: "Durata sesiunilor de ardere", content: "Nu lăsa lumânarea să ardă mai mult de 4 ore continuu. După 4 ore, stinge-o, lasă-o să se răcească complet (cel puțin 2 ore), apoi poți reaprinde. Sesiunile ideale sunt de 2-3 ore." },
+  { icon: "🏠", title: "Depozitare", content: "Păstrează lumânările într-un loc răcoros, uscat și departe de lumina directă a soarelui. Temperatura ideală de depozitare este între 15-25°C. Evită locurile cu umiditate mare." },
+  { icon: "🛡️", title: "Siguranță", content: "Nu lăsa niciodată o lumânare aprinsă nesupravegheată. Plasează lumânarea pe o suprafață stabilă, rezistentă la căldură. Menține distanța față de materiale inflamabile, copii și animale de companie." },
 ];
 
 const faqs = [
@@ -39,6 +21,17 @@ const faqs = [
 ];
 
 export default function IngrijireLumanari() {
+  const [sections, setSections] = useState(defaultSections);
+
+  useEffect(() => {
+    supabase.from("app_settings").select("value_json").eq("key", "static_page_ingrijire").maybeSingle()
+      .then(({ data }) => {
+        if (data?.value_json && Array.isArray(data.value_json) && data.value_json.length > 0) {
+          setSections(data.value_json as any);
+        }
+      });
+  }, []);
+
   usePageSeo({
     title: "Îngrijirea Lumânărilor — Ghid Complet | MamaLucica",
     description: "Sfaturi pentru arderea corectă a lumânărilor artizanale. Cum eviți tunelul, cum prelungești durata și cum te bucuri la maxim de lumânările tale.",

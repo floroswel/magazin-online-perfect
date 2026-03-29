@@ -1,9 +1,10 @@
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { usePageSeo } from "@/components/SeoHead";
+import { supabase } from "@/integrations/supabase/client";
 
-const faqSections = [
+const defaultFaqSections = [
   {
     title: "Comenzi & Livrare",
     items: [
@@ -53,6 +54,17 @@ const faqSections = [
 ];
 
 export default function FAQ() {
+  const [faqSections, setFaqSections] = useState(defaultFaqSections);
+
+  useEffect(() => {
+    supabase.from("app_settings").select("value_json").eq("key", "static_page_faq").maybeSingle()
+      .then(({ data }) => {
+        if (data?.value_json && Array.isArray(data.value_json) && data.value_json.length > 0) {
+          setFaqSections(data.value_json as any);
+        }
+      });
+  }, []);
+
   usePageSeo({
     title: "Întrebări Frecvente — FAQ | MamaLucica",
     description: "Răspunsuri la cele mai comune întrebări despre comenzi, livrare, plăți, retururi și lumânările handmade MamaLucica.",

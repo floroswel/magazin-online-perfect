@@ -10,6 +10,7 @@ import { useVisibility } from "@/hooks/useVisibility";
 import { useLayoutSettings } from "@/hooks/useLayoutSettings";
 import SearchAutocomplete from "@/components/SearchAutocomplete";
 import MegaMenu from "@/components/layout/MegaMenu";
+import { useStoreBranding } from "@/hooks/useStoreBranding";
 
 const categories = [
   { name: "Lumânări Parfumate", slug: "lumanari-parfumate", icon: "🕯️" },
@@ -30,6 +31,7 @@ export default function Header() {
   const location = useLocation();
   const { isDark, toggle: toggleDarkMode } = useDarkMode();
   const layout = useLayoutSettings();
+  const branding = useStoreBranding();
   const [mobileMenu, setMobileMenu] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
 
@@ -73,7 +75,7 @@ export default function Header() {
               <span className="hidden md:flex items-center gap-1 opacity-80"><RotateCcw className="w-3 h-3" /> Retur 30 zile</span>
             </div>
             <div className="flex items-center gap-4 ml-auto shrink-0">
-              <span className="hidden sm:flex items-center gap-1 opacity-80"><Headphones className="w-3 h-3" /> 0800-123-456</span>
+              {branding.phone && <span className="hidden sm:flex items-center gap-1 opacity-80"><Headphones className="w-3 h-3" /> {branding.phone}</span>}
               <button onClick={toggleDarkMode} className="opacity-70 hover:opacity-100 transition-opacity">
                 {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
               </button>
