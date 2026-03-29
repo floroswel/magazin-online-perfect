@@ -399,7 +399,7 @@ export default function Checkout() {
       await supabase.functions.invoke("send-email", {
         body: {
           type: "admin_new_order",
-          to: "admin@ventuza.ro",
+          to: "admin@mamalucica.ro",
           data: { orderId: order.id, customerName: form.fullName, total, paymentMethod, items: emailData.items, shippingAddress: form, email: user?.email || form.email },
         },
       });

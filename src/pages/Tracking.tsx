@@ -91,7 +91,7 @@ export default function Tracking() {
             </div>
 
             <p className="text-center text-xs text-muted-foreground">
-              Probleme cu comanda? <a href="mailto:contact@ventuza.ro" className="text-primary">Contactează-ne</a>
+              Probleme cu comanda? <a href="mailto:contact@mamalucica.ro" className="text-primary">Contactează-ne</a>
             </p>
           </div>
         )}

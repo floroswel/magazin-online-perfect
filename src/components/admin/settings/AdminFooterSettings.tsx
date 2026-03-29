@@ -535,7 +535,7 @@ export default function AdminFooterSettings() {
                     <Label className="text-xs">Email</Label>
                     <Switch checked={footerTexts.col4_show_email} onCheckedChange={v => updateText("col4_show_email", v)} />
                   </div>
-                  <Input value={footerTexts.col4_email} onChange={e => updateText("col4_email", e.target.value)} placeholder="contact@ventuza.ro" />
+                  <Input value={footerTexts.col4_email} onChange={e => updateText("col4_email", e.target.value)} placeholder="contact@mamalucica.ro" />
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1">

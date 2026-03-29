@@ -160,13 +160,13 @@ export default function SeoHead() {
     url: base,
     logo: base + "/og-homepage.jpg",
     sameAs: [
-      "https://www.tiktok.com/@ventuza",
-      "https://www.instagram.com/ventuza.ro",
-      "https://www.facebook.com/ventuza.ro"
+      "https://www.tiktok.com/@mamalucica",
+      "https://www.instagram.com/mamalucica.ro",
+      "https://www.facebook.com/mamalucica.ro"
     ],
     contactPoint: {
       "@type": "ContactPoint",
-      email: "contact@ventuza.ro",
+      email: "contact@mamalucica.ro",
       contactType: "customer service",
       availableLanguage: "Romanian"
     }

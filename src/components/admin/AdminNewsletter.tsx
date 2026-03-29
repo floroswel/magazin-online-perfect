@@ -445,7 +445,7 @@ export default function AdminNewsletter() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div><Label className="text-xs">Sender name</Label><Input value={cf.sender_name} onChange={e => setCf({ ...cf, sender_name: e.target.value })} placeholder="MamaLucica" /></div>
-              <div><Label className="text-xs">Sender email</Label><Input value={cf.sender_email} onChange={e => setCf({ ...cf, sender_email: e.target.value })} placeholder="news@ventuza.ro" /></div>
+              <div><Label className="text-xs">Sender email</Label><Input value={cf.sender_email} onChange={e => setCf({ ...cf, sender_email: e.target.value })} placeholder="news@mamalucica.ro" /></div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
