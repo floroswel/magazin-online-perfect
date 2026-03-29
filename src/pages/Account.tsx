@@ -787,7 +787,7 @@ export default function Account() {
           </div>
 
           {/* RIGHT SIDEBAR */}
-          <div className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+          <div className="space-y-4 lg:sticky lg:top-24 lg:self-start order-first lg:order-last">
             {/* Account Info Card */}
             <Card className="overflow-hidden">
               <div className="h-16 bg-gradient-to-r from-primary/20 to-primary/5" />
