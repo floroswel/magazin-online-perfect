@@ -38,7 +38,8 @@ Deno.serve(async (req: Request) => {
     }
 
     const shippingAddr = order.shipping_address as Record<string, any> || {};
-    const confirmUrl = `${supabaseUrl.replace(".supabase.co", ".lovable.app")}/order-confirmation/${orderId}`;
+    const siteUrl = Deno.env.get("SITE_URL") || supabaseUrl.replace(".supabase.co", ".lovable.app");
+    const confirmUrl = `${siteUrl}/order-confirmation/${orderId}`;
     const webhookUrl = `${supabaseUrl}/functions/v1/mokka-checkout`;
 
     // Mokka API — create checkout session
