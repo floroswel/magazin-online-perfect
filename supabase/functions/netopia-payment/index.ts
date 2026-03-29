@@ -101,8 +101,8 @@ async function encryptForNetopia(
   );
 
   return {
-    envKey: base64Encode(new Uint8Array(encryptedKey)),
-    envData: base64Encode(combined),
+    envKey: encodeBase64(new Uint8Array(encryptedKey)),
+    envData: encodeBase64(combined),
   };
 }
 
