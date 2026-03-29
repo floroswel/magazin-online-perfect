@@ -10,6 +10,7 @@ import UpgradeRecommendation from "@/components/products/UpgradeRecommendation";
 import VendorComparison from "@/components/products/VendorComparison";
 import PriceDropAlert from "@/components/products/PriceDropAlert";
 import ScentPairing from "@/components/products/ScentPairing";
+import SizeSelector from "@/components/products/SizeSelector";
 import CandleCalculator from "@/components/products/CandleCalculator";
 import { trackViewItem, trackAddToCart } from "@/hooks/useMarketingTracking";
 import { Button } from "@/components/ui/button";
@@ -57,6 +58,7 @@ export default function ProductDetail() {
   const [restockEmail, setRestockEmail] = useState("");
   const [restockSubmitting, setRestockSubmitting] = useState(false);
   const [restockDone, setRestockDone] = useState(false);
+  const [selectedSize, setSelectedSize] = useState<{ id: string; label: string; weight_grams: number; price: number } | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -196,7 +198,7 @@ export default function ProductDetail() {
     ? Math.min(...bundleComponents.map((bc: any) => Math.floor((bc.product?.stock || 0) / bc.quantity)))
     : null;
 
-  const activePrice = selectedVariant ? selectedVariant.price : product.price;
+  const activePrice = selectedSize ? selectedSize.price : (selectedVariant ? selectedVariant.price : product.price);
   const activeStock = isBundle ? (bundleStock ?? 0) : (selectedVariant ? selectedVariant.stock : product.stock);
   const activeImage = selectedVariant?.image_url || product.image_url;
   const specs = product.specs && typeof product.specs === "object" ? Object.entries(product.specs as Record<string, string>).filter(([k]) => !k.startsWith("_")) : [];
@@ -258,6 +260,7 @@ export default function ProductDetail() {
             )}
 
             <VariantSelector productId={product.id} basePrice={product.price} lowStockThreshold={product.low_stock_threshold || 5} onVariantSelect={setSelectedVariant} onHasVariants={setHasVariants} />
+            <SizeSelector productId={product.id} onSizeSelect={(size) => { if (size) setSelectedSize(size); else setSelectedSize(null); }} />
 
             {/* Bundle savings badge */}
             {isBundle && bundleSavings > 0 && (
