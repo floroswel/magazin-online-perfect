@@ -428,8 +428,8 @@ export default function Account() {
                             </div>
                           )}
 
-                          <div className="flex justify-between items-center">
-                            <div>
+                          <div className="flex flex-wrap justify-between items-center gap-2">
+                            <div className="flex gap-1">
                               <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={(e) => {
                                 e.stopPropagation();
                                 supabase.from("invoices").select("id").eq("order_id", o.id).limit(1).then(({ data }) => {
@@ -438,6 +438,25 @@ export default function Account() {
                                 });
                               }}>
                                 <FileText className="w-3 h-3" /> Factură
+                              </Button>
+                              <Button variant="outline" size="sm" className="text-xs gap-1" onClick={async (e) => {
+                                e.stopPropagation();
+                                const orderItems = o.order_items || [];
+                                let added = 0; const unavailable: string[] = [];
+                                for (const item of orderItems) {
+                                  const pid = item.product_id;
+                                  const { data: prod } = await supabase.from("products").select("stock").eq("id", pid).single();
+                                  if (prod && (prod.stock ?? 0) > 0) {
+                                    await addToCart(pid, item.quantity);
+                                    added++;
+                                  } else {
+                                    unavailable.push(item.products?.name || "Produs");
+                                  }
+                                }
+                                if (added > 0) toast.success(`${added} produse adăugate în coș!`);
+                                if (unavailable.length > 0) toast.error(`Indisponibile: ${unavailable.join(", ")}`);
+                              }}>
+                                <RefreshCw className="w-3 h-3" /> Comandă din nou
                               </Button>
                             </div>
                             <div>
