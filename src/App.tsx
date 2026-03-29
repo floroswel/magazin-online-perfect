@@ -41,6 +41,8 @@ import FAQ from "./pages/FAQ";
 import Tracking from "./pages/Tracking";
 import LivrareInternationala from "./pages/LivrareInternationala";
 import ComenziEvenimente from "./pages/ComenziEvenimente";
+import VendorStore from "./pages/VendorStore";
+import Oferte from "./pages/Oferte";
 import { useAffiliateTracking } from "./hooks/useAffiliateTracking";
 import { initTracking, trackPageView } from "./hooks/useMarketingTracking";
 import { useEffect } from "react";
