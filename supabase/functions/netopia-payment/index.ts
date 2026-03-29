@@ -6,6 +6,12 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// Sandbox mode — flip to false + swap certs for production
+const SANDBOX_MODE = true;
+const NETOPIA_BASE = SANDBOX_MODE
+  ? "https://sandboxsecure.mobilpay.ro"
+  : "https://secure.mobilpay.ro";
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -25,6 +31,25 @@ Deno.serve(async (req: Request) => {
       );
     }
 
+    // Read secrets
+    const signature = Deno.env.get("NETOPIA_SIGNATURE") || "";
+    const publicKeyPem = Deno.env.get("NETOPIA_PUBLIC_KEY") || "";
+    const _privateKeyPem = Deno.env.get("NETOPIA_PRIVATE_KEY") || "";
+
+    if (!signature) {
+      return new Response(
+        JSON.stringify({ error: "NETOPIA_SIGNATURE secret not configured" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (!publicKeyPem) {
+      return new Response(
+        JSON.stringify({ error: "NETOPIA_PUBLIC_KEY secret not configured" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Fetch order
     const { data: order, error: orderError } = await supabase
       .from("orders")
@@ -39,29 +64,12 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Fetch Netopia settings
-    const { data: settings } = await supabase
-      .from("netopia_settings")
-      .select("*")
-      .limit(1)
-      .maybeSingle();
-
-    const signature = Deno.env.get("NETOPIA_SIGNATURE") || settings?.merchant_id || "";
-    const apiKey = Deno.env.get("NETOPIA_API_KEY") || "";
-
-    if (!signature) {
-      return new Response(
-        JSON.stringify({ error: "Netopia not configured — missing signature" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    // Build Netopia V2 API payment request
-    const shippingAddr = order.shipping_address as Record<string, any> || {};
-    const confirmUrl = `${Deno.env.get("SITE_URL") || supabaseUrl.replace(".supabase.co", ".lovable.app")}/order-confirmation/${orderId}`;
+    const shippingAddr = (order.shipping_address as Record<string, any>) || {};
+    const siteUrl = Deno.env.get("SITE_URL") || supabaseUrl.replace(".supabase.co", ".lovable.app");
+    const confirmUrl = `${siteUrl}/order-confirmation/${orderId}`;
     const ipnUrl = `${supabaseUrl}/functions/v1/netopia-ipn`;
 
-    // Netopia V2 Start Payment
+    // Build Netopia V2 Start Payment payload
     const netopiaPayload = {
       config: {
         emailTemplate: "",
@@ -70,10 +78,7 @@ Deno.serve(async (req: Request) => {
         language: "ro",
       },
       payment: {
-        options: {
-          installments: 0,
-          bonus: 0,
-        },
+        options: { installments: 0, bonus: 0 },
         instrument: {
           type: "card",
           account: "",
@@ -121,15 +126,11 @@ Deno.serve(async (req: Request) => {
     };
 
     // Call Netopia V2 API
-    const netopiaBase = settings?.sandbox_mode
-      ? "https://sandbox.netopia-payments.com"
-      : "https://secure.mobilpay.ro";
-
-    const netopiaRes = await fetch(`${netopiaBase}/payment/card/start`, {
+    const netopiaRes = await fetch(`${NETOPIA_BASE}/payment/card/start`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: apiKey ? `Bearer ${apiKey}` : "",
+        Authorization: signature ? `${signature}` : "",
       },
       body: JSON.stringify(netopiaPayload),
     });
@@ -137,7 +138,6 @@ Deno.serve(async (req: Request) => {
     const netopiaData = await netopiaRes.json();
 
     if (netopiaData.error && netopiaData.error.code !== "0" && netopiaData.error.code !== 0) {
-      // Update order with failure
       await supabase.from("orders").update({
         payment_status: "failed",
         updated_at: new Date().toISOString(),
@@ -149,7 +149,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Store Netopia transaction
+    // Store transaction
     await supabase.from("netopia_transactions").upsert({
       order_id: orderId,
       netopia_purchase_id: netopiaData.payment?.ntpID || null,
@@ -159,14 +159,13 @@ Deno.serve(async (req: Request) => {
       updated_at: new Date().toISOString(),
     }, { onConflict: "order_id" });
 
-    // Update order status
+    // Update order
     await supabase.from("orders").update({
       payment_status: "pending",
       status: "pending_payment",
       updated_at: new Date().toISOString(),
     }).eq("id", orderId);
 
-    // Return redirect URL
     const redirectUrl = netopiaData.payment?.paymentURL || netopiaData.redirectUrl || confirmUrl;
 
     return new Response(
