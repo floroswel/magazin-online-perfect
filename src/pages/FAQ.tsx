@@ -1,5 +1,8 @@
+import { useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import Layout from "@/components/layout/Layout";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { usePageSeo } from "@/components/SeoHead";
 
 const faqSections = [
   {
