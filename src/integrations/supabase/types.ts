@@ -4372,6 +4372,7 @@ export type Database = {
           affiliate_id: string | null
           awb_generated_at: string | null
           billing_address: Json | null
+          care_guide_sent_at: string | null
           coupon_id: string | null
           courier: string | null
           courier_name: string | null
@@ -4406,6 +4407,7 @@ export type Database = {
           subtotal: number | null
           tax_total: number | null
           total: number
+          tracking_email_sent_at: string | null
           tracking_number: string | null
           tracking_url: string | null
           updated_at: string
@@ -4417,6 +4419,7 @@ export type Database = {
           affiliate_id?: string | null
           awb_generated_at?: string | null
           billing_address?: Json | null
+          care_guide_sent_at?: string | null
           coupon_id?: string | null
           courier?: string | null
           courier_name?: string | null
@@ -4451,6 +4454,7 @@ export type Database = {
           subtotal?: number | null
           tax_total?: number | null
           total?: number
+          tracking_email_sent_at?: string | null
           tracking_number?: string | null
           tracking_url?: string | null
           updated_at?: string
@@ -4462,6 +4466,7 @@ export type Database = {
           affiliate_id?: string | null
           awb_generated_at?: string | null
           billing_address?: Json | null
+          care_guide_sent_at?: string | null
           coupon_id?: string | null
           courier?: string | null
           courier_name?: string | null
@@ -4496,6 +4501,7 @@ export type Database = {
           subtotal?: number | null
           tax_total?: number | null
           total?: number
+          tracking_email_sent_at?: string | null
           tracking_number?: string | null
           tracking_url?: string | null
           updated_at?: string
