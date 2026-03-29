@@ -38,6 +38,8 @@ export default function Checkout() {
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({ fullName: "", phone: "", email: "", address: "", city: "", county: "", postalCode: "" });
+  const [shipToDifferent, setShipToDifferent] = useState(false);
+  const [shippingForm, setShippingForm] = useState({ fullName: "", phone: "", address: "", city: "", county: "", postalCode: "" });
   const [paymentMethod, setPaymentMethod] = useState("");
   const [installmentMonths, setInstallmentMonths] = useState("3");
   const [couponCode, setCouponCode] = useState("");
@@ -218,6 +220,13 @@ export default function Checkout() {
     if (!form.city.trim()) { toast.error("Completează orașul"); return; }
     if (!form.county.trim()) { toast.error("Completează județul"); return; }
     if (!user && (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))) { toast.error("Adresa de email nu este validă"); return; }
+    if (shipToDifferent) {
+      if (!shippingForm.fullName.trim() || shippingForm.fullName.trim().length < 3) { toast.error("Numele destinatarului trebuie să conțină minim 3 caractere"); return; }
+      if (!shippingForm.phone.trim() || !/^(\+?4)?0[0-9]{9}$/.test(shippingForm.phone.replace(/\s/g, ""))) { toast.error("Telefonul destinatarului nu este valid"); return; }
+      if (!shippingForm.address.trim() || shippingForm.address.trim().length < 5) { toast.error("Adresa de livrare trebuie să conțină minim 5 caractere"); return; }
+      if (!shippingForm.city.trim()) { toast.error("Completează orașul de livrare"); return; }
+      if (!shippingForm.county.trim()) { toast.error("Completează județul de livrare"); return; }
+    }
     if (!termsAccepted) { toast.error("Trebuie să accepți Termenii și Condițiile pentru a plasa comanda."); return; }
     setSubmitting(true);
 
@@ -243,7 +252,8 @@ export default function Checkout() {
       shipping_total: shipping,
       discount_total: couponDiscount + loyaltyDiscount + groupDiscount + pointsDiscount,
       payment_method: paymentMethod,
-      shipping_address: form,
+      shipping_address: shipToDifferent ? { ...shippingForm, email: user?.email || form.email } : form,
+      billing_address: wantInvoice ? invoiceForm : form,
       coupon_id: appliedCoupons[0]?.id || null,
       discount_amount: couponDiscount + loyaltyDiscount + groupDiscount + pointsDiscount,
       loyalty_points_earned: pointsEarned,
@@ -256,7 +266,6 @@ export default function Checkout() {
       gift_wrapping: giftOptions.isGift ? { wrapping: giftOptions.wrappingId, price: giftOptions.wrappingPrice, message: giftOptions.message } : null,
     };
     if (extraFee > 0) orderData.payment_fee = extraFee;
-    if (wantInvoice) orderData.billing_address = invoiceForm;
 
     const utmData = getUtmData();
     if (utmData) orderData.utm_data = utmData;
@@ -383,7 +392,7 @@ export default function Checkout() {
         paymentMethod,
         pointsEarned,
         items: items.map(i => ({ name: i.product.name, quantity: i.quantity, price: i.product.price, image_url: i.product.image_url })),
-        shippingAddress: form,
+        shippingAddress: shipToDifferent ? shippingForm : form,
       };
 
       // Add bank transfer details if applicable
@@ -400,7 +409,7 @@ export default function Checkout() {
         body: {
           type: "admin_new_order",
           to: "admin@mamalucica.ro",
-          data: { orderId: order.id, customerName: form.fullName, total, paymentMethod, items: emailData.items, shippingAddress: form, email: user?.email || form.email },
+          data: { orderId: order.id, customerName: form.fullName, total, paymentMethod, items: emailData.items, shippingAddress: shipToDifferent ? shippingForm : form, email: user?.email || form.email },
         },
       });
     } catch (emailErr) { console.error("Email notification failed:", emailErr); }
@@ -454,7 +463,7 @@ export default function Checkout() {
                 </div>
               )}
 
-              <h2 className="text-lg font-semibold">Adresa de livrare</h2>
+              <h2 className="text-lg font-semibold">Detalii de facturare</h2>
               <div className="space-y-3">
                 <div><Label>Nume complet *</Label><Input value={form.fullName} onChange={e => updateField("fullName", e.target.value)} required /></div>
                 {!user && <div><Label>Email *</Label><Input type="email" value={form.email} onChange={e => updateField("email", e.target.value)} required /></div>}
@@ -481,6 +490,27 @@ export default function Checkout() {
                       <div><Label>Reg. Com.</Label><Input value={invoiceForm.regCom} onChange={e => setInvoiceForm(p => ({ ...p, regCom: e.target.value }))} /></div>
                     </div>
                     <div><Label>Adresă sediu</Label><Input value={invoiceForm.address} onChange={e => setInvoiceForm(p => ({ ...p, address: e.target.value }))} /></div>
+                  </div>
+                )}
+              </div>
+
+              {/* Ship to different address */}
+              <div>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <Checkbox checked={shipToDifferent} onCheckedChange={v => setShipToDifferent(!!v)} />
+                  <span className="text-sm font-medium">Doresc livrarea la o altă adresă</span>
+                </label>
+                {shipToDifferent && (
+                  <div className="mt-3 space-y-3 pl-6 border-l-2 border-primary/20">
+                    <h3 className="text-sm font-semibold text-muted-foreground">Adresa de livrare</h3>
+                    <div><Label>Nume destinatar *</Label><Input value={shippingForm.fullName} onChange={e => setShippingForm(p => ({ ...p, fullName: e.target.value }))} /></div>
+                    <div><Label>Telefon destinatar *</Label><Input value={shippingForm.phone} onChange={e => setShippingForm(p => ({ ...p, phone: e.target.value }))} /></div>
+                    <div><Label>Adresă livrare *</Label><Input value={shippingForm.address} onChange={e => setShippingForm(p => ({ ...p, address: e.target.value }))} /></div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div><Label>Oraș *</Label><Input value={shippingForm.city} onChange={e => setShippingForm(p => ({ ...p, city: e.target.value }))} /></div>
+                      <div><Label>Județ *</Label><Input value={shippingForm.county} onChange={e => setShippingForm(p => ({ ...p, county: e.target.value }))} /></div>
+                    </div>
+                    <div><Label>Cod poștal</Label><Input value={shippingForm.postalCode} onChange={e => setShippingForm(p => ({ ...p, postalCode: e.target.value }))} /></div>
                   </div>
                 )}
               </div>
