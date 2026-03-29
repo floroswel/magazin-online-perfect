@@ -1,5 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
+import { publicEncrypt, createCipheriv, constants as cryptoConstants } from "node:crypto";
+import { randomBytes } from "node:crypto";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,6 +13,21 @@ const SANDBOX_MODE = true;
 const NETOPIA_URL = SANDBOX_MODE
   ? "https://sandboxsecure.mobilpay.ro"
   : "https://secure.mobilpay.ro";
+
+/**
+ * Fix PEM formatting — DB may store with spaces instead of newlines.
+ */
+function fixPem(pem: string): string {
+  // If it already has proper newlines, return as-is
+  if (pem.includes("\n")) return pem.trim();
+  
+  // Replace space-separated base64 blocks with newline-separated
+  return pem
+    .replace(/(-----BEGIN [^-]+-----)\s+/, "$1\n")
+    .replace(/\s+(-----END [^-]+-----)/, "\n$1")
+    .replace(/(.{64})\s/g, "$1\n")
+    .trim();
+}
 
 /**
  * Build XML from the Netopia order data structure.
@@ -31,7 +48,6 @@ function buildOrderXml(params: {
   email: string;
   phone: string;
 }): string {
-  // Escape XML special characters
   const esc = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
      .replace(/"/g, "&quot;").replace(/'/g, "&apos;");
@@ -60,170 +76,41 @@ function buildOrderXml(params: {
 }
 
 /**
- * Encrypt data using AES-256-CBC, then encrypt the AES key with RSA public key.
- * This matches the official Netopia Node.js SDK encrypt() function exactly.
+ * Encrypt data using AES-256-CBC, then encrypt AES key with RSA public cert.
+ * Uses node:crypto which handles X.509 certificates natively (like official SDK).
+ * Padding: RSA_PKCS1_PADDING (matching Netopia SDK exactly).
  */
-async function encryptForNetopia(
+function encryptForNetopia(
   publicKeyPem: string,
   xmlData: string
-): Promise<{ envKey: string; envData: string }> {
+): { envKey: string; envData: string } {
+  const fixedPem = fixPem(publicKeyPem);
+  
   // Generate random 32-byte AES key and 16-byte IV
-  const aesKey = crypto.getRandomValues(new Uint8Array(32));
-  const iv = crypto.getRandomValues(new Uint8Array(16));
+  const aesKey = randomBytes(32);
+  const iv = randomBytes(16);
 
-  // AES-256-CBC encrypt the XML data
-  const aesImportedKey = await crypto.subtle.importKey(
-    "raw",
-    aesKey,
-    { name: "AES-CBC" },
-    false,
-    ["encrypt"]
-  );
+  // AES-256-CBC encrypt the XML
+  const cipher = createCipheriv("aes-256-cbc", aesKey, iv);
+  const encrypted = Buffer.concat([cipher.update(xmlData, "utf8"), cipher.final()]);
 
-  const encoded = new TextEncoder().encode(xmlData);
-  const encrypted = await crypto.subtle.encrypt(
-    { name: "AES-CBC", iv },
-    aesImportedKey,
-    encoded
-  );
-
-  // Combine IV + encrypted data (Netopia expects IV prepended)
-  const combined = new Uint8Array(iv.length + encrypted.byteLength);
-  combined.set(iv, 0);
-  combined.set(new Uint8Array(encrypted), iv.length);
+  // Prepend IV to encrypted data (Netopia expects IV + ciphertext)
+  const combined = Buffer.concat([iv, encrypted]);
 
   // RSA encrypt the AES key using the public certificate
-  const rsaKey = await importPublicKey(publicKeyPem);
-  const encryptedKey = await crypto.subtle.encrypt(
-    { name: "RSA-OAEP" },
-    rsaKey,
+  // Using PKCS1 padding as per Netopia SDK
+  const encryptedKey = publicEncrypt(
+    {
+      key: fixedPem,
+      padding: cryptoConstants.RSA_PKCS1_PADDING,
+    },
     aesKey
   );
 
   return {
-    envKey: encodeBase64(new Uint8Array(encryptedKey)),
+    envKey: encodeBase64(encryptedKey),
     envData: encodeBase64(combined),
   };
-}
-
-/**
- * Import a PEM-encoded X.509 certificate's public key for RSA encryption.
- */
-async function importPublicKey(pem: string): Promise<CryptoKey> {
-  // Handle both certificate and raw public key formats
-  let cleanPem = pem.trim();
-  
-  let derBytes: Uint8Array;
-  
-  if (cleanPem.includes("BEGIN CERTIFICATE")) {
-    // X.509 certificate — extract public key using SubjectPublicKeyInfo
-    const b64 = cleanPem
-      .replace(/-----BEGIN CERTIFICATE-----/g, "")
-      .replace(/-----END CERTIFICATE-----/g, "")
-      .replace(/\s/g, "");
-    
-    const certDer = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
-    
-    // Parse X.509 certificate to extract SubjectPublicKeyInfo
-    derBytes = extractPublicKeyFromCert(certDer);
-  } else if (cleanPem.includes("BEGIN PUBLIC KEY")) {
-    const b64 = cleanPem
-      .replace(/-----BEGIN PUBLIC KEY-----/g, "")
-      .replace(/-----END PUBLIC KEY-----/g, "")
-      .replace(/\s/g, "");
-    derBytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
-  } else {
-    throw new Error("Unsupported key format. Expected PEM certificate or public key.");
-  }
-
-  return crypto.subtle.importKey(
-    "spki",
-    derBytes,
-    { name: "RSA-OAEP", hash: "SHA-1" },
-    false,
-    ["encrypt"]
-  );
-}
-
-/**
- * Extract SubjectPublicKeyInfo from a DER-encoded X.509 certificate.
- * Simple ASN.1 parser — walks the certificate structure to find the public key.
- */
-function extractPublicKeyFromCert(certDer: Uint8Array): Uint8Array {
-  // ASN.1 DER parsing helpers
-  let offset = 0;
-
-  function readTag(): number {
-    return certDer[offset++];
-  }
-
-  function readLength(): number {
-    let len = certDer[offset++];
-    if (len & 0x80) {
-      const numBytes = len & 0x7f;
-      len = 0;
-      for (let i = 0; i < numBytes; i++) {
-        len = (len << 8) | certDer[offset++];
-      }
-    }
-    return len;
-  }
-
-  function readSequence(): { start: number; length: number } {
-    const tag = readTag();
-    if ((tag & 0x1f) !== 0x10) {
-      throw new Error(`Expected SEQUENCE tag (0x30), got 0x${tag.toString(16)}`);
-    }
-    const length = readLength();
-    return { start: offset, length };
-  }
-
-  // Certificate ::= SEQUENCE { tbsCertificate, signatureAlgorithm, signatureValue }
-  readSequence(); // outer SEQUENCE
-  const tbs = readSequence(); // tbsCertificate SEQUENCE
-
-  // TBSCertificate fields:
-  // version [0] EXPLICIT (optional), serialNumber, signature, issuer, validity, subject, subjectPublicKeyInfo
-  const savedOffset = offset;
-
-  // Check if version is present (context tag [0])
-  if (certDer[offset] === 0xa0) {
-    offset++; // tag
-    const vLen = readLength();
-    offset += vLen; // skip version
-  }
-
-  // serialNumber (INTEGER)
-  readTag();
-  offset += readLength();
-
-  // signature (SEQUENCE)
-  readTag();
-  let sLen = readLength();
-  offset += sLen;
-
-  // issuer (SEQUENCE)
-  readTag();
-  sLen = readLength();
-  offset += sLen;
-
-  // validity (SEQUENCE)
-  readTag();
-  sLen = readLength();
-  offset += sLen;
-
-  // subject (SEQUENCE)
-  readTag();
-  sLen = readLength();
-  offset += sLen;
-
-  // subjectPublicKeyInfo (SEQUENCE) — this is what we want
-  const spkiStart = offset;
-  readTag(); // SEQUENCE tag
-  const spkiContentLen = readLength();
-  const spkiTotalLen = offset - spkiStart + spkiContentLen;
-
-  return certDer.slice(spkiStart, spkiStart + spkiTotalLen);
 }
 
 Deno.serve(async (req: Request) => {
@@ -256,7 +143,7 @@ Deno.serve(async (req: Request) => {
     if (pmError || !pm?.config_json) {
       console.error("payment_methods lookup error:", pmError);
       return new Response(
-        JSON.stringify({ error: "Netopia nu este configurată — metoda de plată lipsește sau este inactivă" }),
+        JSON.stringify({ error: "Netopia nu este configurată" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -264,20 +151,11 @@ Deno.serve(async (req: Request) => {
     const config = pm.config_json as Record<string, string>;
     const posSignature = config.pos_signature || config.merchant_id || "";
     const publicKey = config.public_key || "";
-    const privateKey = config.private_key || "";
 
-    if (!posSignature) {
-      console.error("Netopia config missing pos_signature:", Object.keys(config));
+    if (!posSignature || !publicKey) {
+      console.error("Netopia config incomplete. Keys present:", Object.keys(config));
       return new Response(
-        JSON.stringify({ error: "Configurare Netopia incompletă: lipsește pos_signature" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    if (!publicKey) {
-      console.error("Netopia config missing public_key");
-      return new Response(
-        JSON.stringify({ error: "Configurare Netopia incompletă: lipsește certificatul public (public_key)" }),
+        JSON.stringify({ error: "Configurare Netopia incompletă" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -324,12 +202,11 @@ Deno.serve(async (req: Request) => {
     });
 
     console.log("Netopia XML built for order:", orderId);
-    console.log("XML content:", xml.slice(0, 500));
 
-    // Encrypt the XML
-    const { envKey, envData } = await encryptForNetopia(publicKey, xml);
+    // Encrypt the XML using node:crypto
+    const { envKey, envData } = encryptForNetopia(publicKey, xml);
 
-    console.log("Netopia encryption successful. envKey length:", envKey.length, "envData length:", envData.length);
+    console.log("Netopia encryption OK. envKey length:", envKey.length, "envData length:", envData.length);
 
     // Store transaction record
     await supabase.from("netopia_transactions").upsert({
@@ -347,7 +224,7 @@ Deno.serve(async (req: Request) => {
       updated_at: new Date().toISOString(),
     }).eq("id", orderId);
 
-    // Return the encrypted data for the frontend to submit as a form
+    // Return encrypted data for frontend form POST
     return new Response(
       JSON.stringify({
         envKey,
