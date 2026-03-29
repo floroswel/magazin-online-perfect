@@ -319,8 +319,6 @@ export default function Checkout() {
 
         await clearCart();
 
-        // V2: simple redirect to Netopia hosted payment page
-        console.log("Redirecting to Netopia V2 URL:", netopiaData.paymentUrl);
         window.location.href = netopiaData.paymentUrl;
       } catch (err) {
         console.error("Netopia V2 connection error:", err);
