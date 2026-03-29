@@ -62,7 +62,7 @@ export default function AdminReports() {
 
   const { data: products = [] } = useQuery({
     queryKey: ["admin-reports-products"],
-    queryFn: async () => { const { data } = await supabase.from("products").select("id, name, stock, price, category_id") as any; return data || []; },
+    queryFn: async () => { const { data } = await supabase.from("products").select("id, name, stock, price, cost_price, category_id") as any; return data || []; },
   });
 
   const { data: categories = [] } = useQuery({
