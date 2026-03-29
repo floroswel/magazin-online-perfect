@@ -73,6 +73,28 @@ export default function Personalizare() {
     staleTime: 120_000,
   });
 
+  // Load personalization options from DB
+  const { data: dbScents } = useQuery({
+    queryKey: ["personalization-scents"],
+    queryFn: async () => {
+      const { data } = await supabase.from("app_settings").select("value_json").eq("key", "personalization_scents").maybeSingle();
+      return (data?.value_json && Array.isArray(data.value_json) && data.value_json.length > 0) ? data.value_json as any[] : null;
+    },
+    staleTime: 120_000,
+  });
+
+  const { data: dbColors } = useQuery({
+    queryKey: ["personalization-colors"],
+    queryFn: async () => {
+      const { data } = await supabase.from("app_settings").select("value_json").eq("key", "personalization_colors").maybeSingle();
+      return (data?.value_json && Array.isArray(data.value_json) && data.value_json.length > 0) ? data.value_json as any[] : null;
+    },
+    staleTime: 120_000,
+  });
+
+  const scents = dbScents || defaultScents;
+  const colors = dbColors || defaultColors;
+
   // Use DB prices if available, fallback to defaults
   const baseProducts = configSettings?.vessels?.length > 0
     ? configSettings.vessels.map((v: any) => ({ id: v.id, name: v.name, price: v.price, image: "🕯️" }))
