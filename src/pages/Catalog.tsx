@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import DOMPurify from "dompurify";
 import { useSearchParams, Link } from "react-router-dom";
 import { SlidersHorizontal, X, ChevronRight, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
