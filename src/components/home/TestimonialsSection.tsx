@@ -6,9 +6,9 @@ export default function TestimonialsSection() {
   const [reviews, setReviews] = useState<any[]>([]);
 
   useEffect(() => {
-    (supabase as any)
-      .from("reviews")
-      .select("*, products(name, image_url)")
+    supabase
+      .from("product_reviews")
+      .select("id, user_name, rating, body, product_id")
       .eq("status", "approved")
       .order("created_at", { ascending: false })
       .limit(3)
@@ -32,12 +32,9 @@ export default function TestimonialsSection() {
                 <Star key={i} className={`h-4 w-4 ${i < r.rating ? "fill-primary text-primary" : "text-border"}`} />
               ))}
             </div>
-            <p className="text-sm text-foreground/80 leading-relaxed mb-6 italic font-serif">"{r.comment}"</p>
+            <p className="text-sm text-foreground/80 leading-relaxed mb-6 italic font-serif">"{r.body}"</p>
             <div>
-              <p className="text-sm font-medium text-foreground">{r.reviewer_name || "Client Verificat"}</p>
-              {r.products?.name && (
-                <p className="text-xs text-muted-foreground mt-1">{r.products.name}</p>
-              )}
+              <p className="text-sm font-medium text-foreground">{r.user_name || "Client Verificat"}</p>
             </div>
           </div>
         ))}
