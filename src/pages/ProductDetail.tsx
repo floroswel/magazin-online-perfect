@@ -488,6 +488,15 @@ export default function ProductDetail() {
         {/* Upgrade recommendation (upsell) */}
         <UpgradeRecommendation productId={product.id} currentProduct={product} />
 
+        {/* Scent Pairing & Calculator */}
+        <div className="mt-8 grid md:grid-cols-2 gap-4">
+          <ScentPairing productName={product.name} tags={product.tags} />
+          <CandleCalculator
+            burnHours={product.burn_hours || (product.weight_kg ? Math.round(product.weight_kg * 100) : 40)}
+            productName={product.name}
+          />
+        </div>
+
         {/* Related products (manual selection) */}
         {relatedProducts.length > 0 && (
           <section className="mt-8">
