@@ -1219,6 +1219,11 @@ export default function AdminProducts() {
               </div>
             </div>
 
+            {/* Size editor - only for existing products */}
+            {editProduct && (
+              <ProductSizesEditor productId={editProduct.id} />
+            )}
+
             <div className="pt-2 border-t border-border space-y-3">
               <div className="flex items-center justify-between">
                 <Label className="text-base font-semibold">SEO</Label>
