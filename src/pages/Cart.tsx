@@ -121,6 +121,12 @@ export default function Cart() {
 
             {/* Cross-sell suggestions */}
             <CartCrossSell cartProductIds={items.map(i => i.product_id)} />
+
+            {/* More recommendations */}
+            <CartRecommendations
+              cartProductIds={items.map(i => i.product_id)}
+              cartCategoryIds={[...new Set(items.map(i => i.product.category_id).filter(Boolean) as string[])]}
+            />
           </div>
 
           <div className="bg-card rounded-lg border p-6 h-fit sticky top-24 space-y-3">

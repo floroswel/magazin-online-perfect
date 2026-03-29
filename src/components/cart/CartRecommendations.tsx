@@ -86,11 +86,11 @@ export default function CartRecommendations({ cartProductIds, cartCategoryIds }:
                 >
                   {p.name}
                 </Link>
-                {p.rating_avg && p.rating_avg > 0 && (
+                {(p as any).rating_avg && (p as any).rating_avg > 0 && (
                   <div className="flex items-center gap-1">
-                    <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                    <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
                     <span className="text-[10px] text-muted-foreground">
-                      {Number(p.rating_avg).toFixed(1)}
+                      {Number((p as any).rating_avg).toFixed(1)}
                     </span>
                   </div>
                 )}
