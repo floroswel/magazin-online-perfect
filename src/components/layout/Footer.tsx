@@ -6,6 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
 import React from "react";
+import { useVisibility } from "@/hooks/useVisibility";
+import { useLayoutSettings } from "@/hooks/useLayoutSettings";
 
 const emailSchema = z.string().trim().email("Adresa de email nu este validă").max(255);
 
@@ -54,6 +56,14 @@ export default function Footer() {
   const [footerScripts, setFooterScripts] = useState<string[]>([]);
   const footerScriptsRef = useRef<HTMLDivElement>(null);
   const [companyInfo, setCompanyInfo] = useState<any>({});
+  const layout = useLayoutSettings();
+
+  // Visibility hooks
+  const showColumns = useVisibility("footer_columns");
+  const showSocial = useVisibility("footer_social");
+  const showNewsletter = useVisibility("footer_newsletter");
+  const showSol = useVisibility("compliance_sol");
+  const showAnpc = useVisibility("compliance_anpc");
 
   useEffect(() => {
     Promise.all([
@@ -118,82 +128,88 @@ export default function Footer() {
 
   const copyrightText = texts.copyright.replace("{year}", String(new Date().getFullYear()));
 
+  const footerColsClass = layout.footer_columns === 2 ? "lg:grid-cols-2" : layout.footer_columns === 3 ? "lg:grid-cols-3" : layout.footer_columns === 5 ? "lg:grid-cols-5" : "lg:grid-cols-4";
+
   return (
     <footer className="bg-foreground text-background mt-auto">
       <div className="container py-10 md:py-14 px-4">
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-8">
-          {/* Brand + Newsletter */}
-          <div className="col-span-2 lg:col-span-1">
-            <h4 className="text-lg font-extrabold mb-3">{texts.col1_title}</h4>
-            <p className="text-background/60 text-sm mb-4">{texts.col1_description}</p>
-            <div className="flex gap-3 mb-4">
-              {(socialLinks.length > 0 ? socialLinks : [
-                { platform: "facebook", url: "#", icon: "facebook" },
-                { platform: "instagram", url: "#", icon: "instagram" },
-                { platform: "youtube", url: "#", icon: "youtube" },
-              ]).map((link, i) => (
-                <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full bg-background/10 flex items-center justify-center hover:bg-background/20 transition-colors"
-                  aria-label={link.platform}>
-                  <SocialIcon icon={link.icon} className="w-4 h-4" />
-                </a>
-              ))}
+        {showColumns !== false && (
+          <div className={`grid grid-cols-2 md:grid-cols-2 ${footerColsClass} gap-8`}>
+            {/* Brand + Social */}
+            <div className="col-span-2 lg:col-span-1">
+              <h4 className="text-lg font-extrabold mb-3">{texts.col1_title}</h4>
+              <p className="text-background/60 text-sm mb-4">{texts.col1_description}</p>
+              {showSocial !== false && (
+                <div className="flex gap-3 mb-4">
+                  {(socialLinks.length > 0 ? socialLinks : [
+                    { platform: "facebook", url: "#", icon: "facebook" },
+                    { platform: "instagram", url: "#", icon: "instagram" },
+                    { platform: "youtube", url: "#", icon: "youtube" },
+                  ]).map((link, i) => (
+                    <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
+                      className="w-9 h-9 rounded-full bg-background/10 flex items-center justify-center hover:bg-background/20 transition-colors"
+                      aria-label={link.platform}>
+                      <SocialIcon icon={link.icon} className="w-4 h-4" />
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Col 2 */}
+            <div>
+              <h4 className="font-bold text-sm mb-3">{texts.col2_title}</h4>
+              <ul className="space-y-2">
+                {col2Links.map((l, i) => (
+                  <li key={i}><Link to={l.url} className="text-sm text-background/60 hover:text-background transition-colors">{l.label}</Link></li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Col 3 */}
+            <div>
+              <h4 className="font-bold text-sm mb-3">{texts.col3_title}</h4>
+              <ul className="space-y-2">
+                {col3Links.map((l, i) => (
+                  <li key={i}><Link to={l.url} className="text-sm text-background/60 hover:text-background transition-colors">{l.label}</Link></li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Col 4 */}
+            <div>
+              <h4 className="font-bold text-sm mb-3">Companie</h4>
+              <ul className="space-y-2">
+                {col4Links.map((l, i) => (
+                  <li key={i}><Link to={l.url} className="text-sm text-background/60 hover:text-background transition-colors">{l.label}</Link></li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Col 5 - Contact */}
+            <div>
+              <h4 className="font-bold text-sm mb-3">Contact</h4>
+              {texts.col4_show_phone && texts.col4_phone && (
+                <div className="flex items-center gap-2 mb-2 text-background/60 text-sm">
+                  <Phone className="w-4 h-4 shrink-0" />
+                  <span>{texts.col4_phone}</span>
+                </div>
+              )}
+              {texts.col4_show_email && texts.col4_email && (
+                <div className="flex items-center gap-2 mb-2 text-background/60 text-sm">
+                  <Mail className="w-4 h-4 shrink-0" />
+                  <span>{texts.col4_email}</span>
+                </div>
+              )}
+              {texts.col4_show_address && texts.col4_address && (
+                <div className="flex items-center gap-2 text-background/60 text-sm">
+                  <MapPin className="w-4 h-4 shrink-0" />
+                  <span>{texts.col4_address}</span>
+                </div>
+              )}
             </div>
           </div>
-
-          {/* Col 2 */}
-          <div>
-            <h4 className="font-bold text-sm mb-3">{texts.col2_title}</h4>
-            <ul className="space-y-2">
-              {col2Links.map((l, i) => (
-                <li key={i}><Link to={l.url} className="text-sm text-background/60 hover:text-background transition-colors">{l.label}</Link></li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Col 3 */}
-          <div>
-            <h4 className="font-bold text-sm mb-3">{texts.col3_title}</h4>
-            <ul className="space-y-2">
-              {col3Links.map((l, i) => (
-                <li key={i}><Link to={l.url} className="text-sm text-background/60 hover:text-background transition-colors">{l.label}</Link></li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Col 4 */}
-          <div>
-            <h4 className="font-bold text-sm mb-3">Companie</h4>
-            <ul className="space-y-2">
-              {col4Links.map((l, i) => (
-                <li key={i}><Link to={l.url} className="text-sm text-background/60 hover:text-background transition-colors">{l.label}</Link></li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Col 5 - Contact */}
-          <div>
-            <h4 className="font-bold text-sm mb-3">Contact</h4>
-            {texts.col4_show_phone && texts.col4_phone && (
-              <div className="flex items-center gap-2 mb-2 text-background/60 text-sm">
-                <Phone className="w-4 h-4 shrink-0" />
-                <span>{texts.col4_phone}</span>
-              </div>
-            )}
-            {texts.col4_show_email && texts.col4_email && (
-              <div className="flex items-center gap-2 mb-2 text-background/60 text-sm">
-                <Mail className="w-4 h-4 shrink-0" />
-                <span>{texts.col4_email}</span>
-              </div>
-            )}
-            {texts.col4_show_address && texts.col4_address && (
-              <div className="flex items-center gap-2 text-background/60 text-sm">
-                <MapPin className="w-4 h-4 shrink-0" />
-                <span>{texts.col4_address}</span>
-              </div>
-            )}
-          </div>
-        </div>
+        )}
 
         {/* Bottom bar */}
         <div className="border-t border-background/10 mt-10 pt-6">
@@ -205,16 +221,20 @@ export default function Footer() {
               )}
             </div>
             <div className="flex items-center gap-3">
-              <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-background/50 hover:text-background transition-colors">
-                <ShieldCheck className="w-4 h-4" />
-                <span className="text-xs">ANPC</span>
-              </a>
-              <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-background/50 hover:text-background transition-colors">
-                <Globe className="w-4 h-4" />
-                <span className="text-xs">SOL</span>
-              </a>
+              {showAnpc !== false && (
+                <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-background/50 hover:text-background transition-colors">
+                  <ShieldCheck className="w-4 h-4" />
+                  <span className="text-xs">ANPC</span>
+                </a>
+              )}
+              {showSol !== false && (
+                <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-background/50 hover:text-background transition-colors">
+                  <Globe className="w-4 h-4" />
+                  <span className="text-xs">SOL</span>
+                </a>
+              )}
               <div ref={footerScriptsRef} className="inline-flex flex-row flex-wrap items-center gap-3 [&_a]:inline-flex [&_a]:items-center [&_a]:text-background/50 [&_a]:hover:text-background [&_a]:transition-colors [&_img]:h-5 [&_img]:!w-auto [&_img]:object-contain [&_img]:opacity-60 [&_img]:hover:opacity-100 [&_span]:text-xs [&_p]:text-xs [&_div]:contents" />
             </div>
           </div>
