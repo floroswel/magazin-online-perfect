@@ -4,7 +4,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { usePageSeo } from "@/components/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
 
-const faqSections = [
+const defaultFaqSections = [
   {
     title: "Comenzi & Livrare",
     items: [
