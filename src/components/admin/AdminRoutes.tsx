@@ -244,6 +244,7 @@ export default function AdminRoutes() {
         <Route path="stock/expiry" element={<AdminExpiry />} />
         <Route path="stock/picking" element={<AdminPicking />} />
         <Route path="stock/alerts" element={<AdminStockAlerts />} />
+        <Route path="stock/predictive" element={<AdminPredictiveStock />} />
         <Route path="stock/suppliers" element={<AdminSuppliers />} />
         <Route path="stock/reorder" element={<AdminReorder />} />
         <Route path="stock/price-lists" element={<AdminPriceLists />} />
