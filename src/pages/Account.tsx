@@ -307,32 +307,35 @@ export default function Account() {
 
         {/* Two-column layout */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 items-start">
-          <div className="min-w-0">
+          <div className="min-w-0 overflow-hidden">
             <Tabs defaultValue="orders">
               {/* Scrollable tab bar */}
-              <div
-                className="w-full scrollbar-hide"
-                style={{
-                  overflowX: 'auto',
-                  WebkitOverflowScrolling: 'touch',
-                  display: 'flex',
-                  flexWrap: 'nowrap',
-                }}
-              >
-                <TabsList className="inline-flex w-max gap-1 p-1 mb-1 flex-nowrap shrink-0">
-                  <TabsTrigger value="orders" className="gap-1.5 text-xs whitespace-nowrap"><Package className="h-3.5 w-3.5" /> Comenzi</TabsTrigger>
-                  <TabsTrigger value="invoices" className="gap-1.5 text-xs whitespace-nowrap"><FileText className="h-3.5 w-3.5" /> Facturi</TabsTrigger>
-                  <TabsTrigger value="addresses" className="gap-1.5 text-xs whitespace-nowrap"><MapPin className="h-3.5 w-3.5" /> Adrese</TabsTrigger>
-                  <TabsTrigger value="loyalty" className="gap-1.5 text-xs whitespace-nowrap"><Award className="h-3.5 w-3.5" /> Fidelitate</TabsTrigger>
-                  <TabsTrigger value="wishlists" className="gap-1.5 text-xs whitespace-nowrap"><Heart className="h-3.5 w-3.5" /> Wishlist</TabsTrigger>
-                  <TabsTrigger value="wallet" className="gap-1.5 text-xs whitespace-nowrap"><Wallet className="h-3.5 w-3.5" /> Wallet</TabsTrigger>
-                  <TabsTrigger value="giftcards" className="gap-1.5 text-xs whitespace-nowrap"><Gift className="h-3.5 w-3.5" /> Card cadou</TabsTrigger>
-                  <TabsTrigger value="referral" className="gap-1.5 text-xs whitespace-nowrap"><Share2 className="h-3.5 w-3.5" /> Recomandă</TabsTrigger>
-                  <TabsTrigger value="affiliate" className="gap-1.5 text-xs whitespace-nowrap"><TrendingUp className="h-3.5 w-3.5" /> Afiliere</TabsTrigger>
-                  <TabsTrigger value="burnlog" className="gap-1.5 text-xs whitespace-nowrap"><Flame className="h-3.5 w-3.5" /> Burn Log</TabsTrigger>
-                  <TabsTrigger value="profile" className="gap-1.5 text-xs whitespace-nowrap"><UserIcon className="h-3.5 w-3.5" /> Profil</TabsTrigger>
-                  <TabsTrigger value="preferences" className="gap-1.5 text-xs whitespace-nowrap"><Settings className="h-3.5 w-3.5" /> Preferințe</TabsTrigger>
-                </TabsList>
+              <div className="relative">
+                <div
+                  className="scrollbar-hide pb-2"
+                  style={{
+                    overflowX: 'auto',
+                    overflowY: 'hidden',
+                    WebkitOverflowScrolling: 'touch',
+                  }}
+                >
+                  <TabsList className="inline-flex w-max gap-1 p-1 flex-nowrap">
+                    <TabsTrigger value="orders" className="gap-1.5 text-xs whitespace-nowrap"><Package className="h-3.5 w-3.5" /> Comenzi</TabsTrigger>
+                    <TabsTrigger value="invoices" className="gap-1.5 text-xs whitespace-nowrap"><FileText className="h-3.5 w-3.5" /> Facturi</TabsTrigger>
+                    <TabsTrigger value="addresses" className="gap-1.5 text-xs whitespace-nowrap"><MapPin className="h-3.5 w-3.5" /> Adrese</TabsTrigger>
+                    <TabsTrigger value="loyalty" className="gap-1.5 text-xs whitespace-nowrap"><Award className="h-3.5 w-3.5" /> Fidelitate</TabsTrigger>
+                    <TabsTrigger value="wishlists" className="gap-1.5 text-xs whitespace-nowrap"><Heart className="h-3.5 w-3.5" /> Wishlist</TabsTrigger>
+                    <TabsTrigger value="wallet" className="gap-1.5 text-xs whitespace-nowrap"><Wallet className="h-3.5 w-3.5" /> Wallet</TabsTrigger>
+                    <TabsTrigger value="giftcards" className="gap-1.5 text-xs whitespace-nowrap"><Gift className="h-3.5 w-3.5" /> Card cadou</TabsTrigger>
+                    <TabsTrigger value="referral" className="gap-1.5 text-xs whitespace-nowrap"><Share2 className="h-3.5 w-3.5" /> Recomandă</TabsTrigger>
+                    <TabsTrigger value="affiliate" className="gap-1.5 text-xs whitespace-nowrap"><TrendingUp className="h-3.5 w-3.5" /> Afiliere</TabsTrigger>
+                    <TabsTrigger value="burnlog" className="gap-1.5 text-xs whitespace-nowrap"><Flame className="h-3.5 w-3.5" /> Burn Log</TabsTrigger>
+                    <TabsTrigger value="profile" className="gap-1.5 text-xs whitespace-nowrap"><UserIcon className="h-3.5 w-3.5" /> Profil</TabsTrigger>
+                    <TabsTrigger value="preferences" className="gap-1.5 text-xs whitespace-nowrap"><Settings className="h-3.5 w-3.5" /> Preferințe</TabsTrigger>
+                  </TabsList>
+                </div>
+                {/* Fade indicator for more tabs */}
+                <div className="absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" />
               </div>
 
               {/* ORDERS TAB */}
