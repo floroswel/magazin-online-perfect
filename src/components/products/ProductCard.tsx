@@ -115,7 +115,7 @@ function ProductCardInner({ product, eager = false }: Props) {
       </div>
 
       {/* Info */}
-      <div className="p-3">
+      <div className="p-3 flex flex-col flex-1">
         {/* Vendor */}
         <p className="text-[11px] text-muted-foreground mb-1 truncate">{vendorName}</p>
 
