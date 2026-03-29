@@ -10,6 +10,7 @@ import NewsletterPopup from "@/components/NewsletterPopup";
 import SeoHead from "@/components/SeoHead";
 import SocialProofPopup from "@/components/SocialProofPopup";
 import LiveChat from "@/components/LiveChat";
+import ExitIntentPopup from "@/components/ExitIntentPopup";
 import BannerRenderer from "./BannerRenderer";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
@@ -41,6 +42,7 @@ export default function Layout({ children, hideHeader }: { children: React.React
       <NewsletterPopup />
       <SocialProofPopup />
       <LiveChat />
+      <ExitIntentPopup />
 
       {/* Mobile bottom navigation */}
       {!isAdmin && (
