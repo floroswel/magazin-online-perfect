@@ -409,7 +409,7 @@ export default function Checkout() {
         body: {
           type: "admin_new_order",
           to: "admin@mamalucica.ro",
-          data: { orderId: order.id, customerName: form.fullName, total, paymentMethod, items: emailData.items, shippingAddress: form, email: user?.email || form.email },
+          data: { orderId: order.id, customerName: form.fullName, total, paymentMethod, items: emailData.items, shippingAddress: shipToDifferent ? shippingForm : form, email: user?.email || form.email },
         },
       });
     } catch (emailErr) { console.error("Email notification failed:", emailErr); }
