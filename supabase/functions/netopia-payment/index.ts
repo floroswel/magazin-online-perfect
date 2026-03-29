@@ -31,26 +31,42 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Read secrets
-    const signature = Deno.env.get("NETOPIA_SIGNATURE") || "";
-    const publicKeyPem = Deno.env.get("NETOPIA_PUBLIC_KEY") || "";
-    const _privateKeyPem = Deno.env.get("NETOPIA_PRIVATE_KEY") || "";
+    // ── Read credentials from payment_methods table ──
+    const { data: pm, error: pmError } = await supabase
+      .from("payment_methods")
+      .select("config_json, sandbox_mode")
+      .eq("key", "card_online")
+      .eq("is_active", true)
+      .single();
+
+    if (pmError || !pm?.config_json) {
+      console.error("payment_methods lookup error:", pmError);
+      return new Response(
+        JSON.stringify({ error: "Netopia not configured — payment method missing or inactive" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const config = pm.config_json as Record<string, string>;
+    const signature = config.merchant_id || "";
+    const publicKeyPem = config.public_key || "";
+    const _privateKeyPem = config.private_key || "";
 
     if (!signature) {
       return new Response(
-        JSON.stringify({ error: "NETOPIA_SIGNATURE secret not configured" }),
+        JSON.stringify({ error: "Netopia merchant_id not configured in payment method" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     if (!publicKeyPem) {
       return new Response(
-        JSON.stringify({ error: "NETOPIA_PUBLIC_KEY secret not configured" }),
+        JSON.stringify({ error: "Netopia public_key not configured in payment method" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Fetch order
+    // ── Fetch order ──
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .select("*")
@@ -69,7 +85,7 @@ Deno.serve(async (req: Request) => {
     const confirmUrl = `${siteUrl}/order-confirmation/${orderId}`;
     const ipnUrl = `${supabaseUrl}/functions/v1/netopia-ipn`;
 
-    // Build Netopia V2 Start Payment payload
+    // ── Build Netopia V2 Start Payment payload ──
     const netopiaPayload = {
       config: {
         emailTemplate: "",
@@ -125,17 +141,18 @@ Deno.serve(async (req: Request) => {
       },
     };
 
-    // Call Netopia V2 API
+    // ── Call Netopia V2 API ──
     const netopiaRes = await fetch(`${NETOPIA_BASE}/payment/card/start`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: signature ? `${signature}` : "",
+        Authorization: signature,
       },
       body: JSON.stringify(netopiaPayload),
     });
 
     const netopiaData = await netopiaRes.json();
+    console.log("Netopia response:", JSON.stringify(netopiaData));
 
     if (netopiaData.error && netopiaData.error.code !== "0" && netopiaData.error.code !== 0) {
       await supabase.from("orders").update({
@@ -149,7 +166,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Store transaction
+    // ── Store transaction ──
     await supabase.from("netopia_transactions").upsert({
       order_id: orderId,
       netopia_purchase_id: netopiaData.payment?.ntpID || null,
@@ -159,7 +176,7 @@ Deno.serve(async (req: Request) => {
       updated_at: new Date().toISOString(),
     }, { onConflict: "order_id" });
 
-    // Update order
+    // ── Update order ──
     await supabase.from("orders").update({
       payment_status: "pending",
       status: "pending_payment",
