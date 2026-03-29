@@ -69,6 +69,13 @@ export default function AdminTaxSettings() {
       <CardContent className="space-y-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
+            <div>
+              <Label>TVA activ</Label>
+              <p className="text-xs text-muted-foreground">Dezactivează pentru a ascunde complet TVA-ul din prețuri</p>
+            </div>
+            <Switch checked={settings.tax_enabled} onCheckedChange={v => setSettings(s => ({ ...s, tax_enabled: v }))} />
+          </div>
+          <div className="flex items-center justify-between">
             <Label>Prețurile includ TVA</Label>
             <Switch checked={settings.prices_include_tax} onCheckedChange={v => setSettings(s => ({ ...s, prices_include_tax: v }))} />
           </div>
@@ -76,6 +83,19 @@ export default function AdminTaxSettings() {
             <Label>Afișare TVA separat în coș</Label>
             <Switch checked={settings.display_tax_in_cart} onCheckedChange={v => setSettings(s => ({ ...s, display_tax_in_cart: v }))} />
           </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <Label>Afișează mesaj "Prețuri cu TVA inclus"</Label>
+              <p className="text-xs text-muted-foreground">Apare pe pagina de produs, coș și checkout</p>
+            </div>
+            <Switch checked={settings.show_tax_included_message} onCheckedChange={v => setSettings(s => ({ ...s, show_tax_included_message: v }))} />
+          </div>
+          {settings.show_tax_included_message && (
+            <div>
+              <Label>Mesaj TVA inclus</Label>
+              <Input value={settings.tax_included_message} onChange={e => setSettings(s => ({ ...s, tax_included_message: e.target.value }))} placeholder="Toate prețurile includ TVA" className="mt-1" />
+            </div>
+          )}
         </div>
 
         <div className="border-t pt-4">

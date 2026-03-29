@@ -147,6 +147,10 @@ function ProductCardInner({ product, eager = false }: Props) {
           )}
         </div>
 
+        {taxSettings.show_tax_included_message && (
+          <p className="text-[10px] text-muted-foreground">{taxSettings.tax_included_message}</p>
+        )}
+
         {promoDiscount && promoDiscount.savings > 0 && (
           <p className="text-[11px] text-primary font-medium mb-1">
             Economisești {format(promoDiscount.savings)}
