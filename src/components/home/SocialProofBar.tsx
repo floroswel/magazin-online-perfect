@@ -1,25 +1,25 @@
-import { Star } from "lucide-react";
+import { Truck, Leaf, RotateCcw, Headphones } from "lucide-react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
-const stats = [
-  { label: "Rating", value: "4.9", icon: <Star className="h-3.5 w-3.5 fill-primary text-primary" /> },
-  { label: "Comenzi", value: "12.000+" },
-  { label: "Natural", value: "100%" },
-  { label: "Livrare", value: "24-48h" },
+const values = [
+  { icon: Truck, title: "Transport Gratuit", desc: "La comenzi peste 200 lei" },
+  { icon: Leaf, title: "Produse Naturale", desc: "100% ingrediente naturale" },
+  { icon: RotateCcw, title: "Retururi 30 Zile", desc: "Garanție satisfacție" },
+  { icon: Headphones, title: "Suport 24/7", desc: "Suntem mereu aici" },
 ];
 
 export default function SocialProofBar() {
+  const ref = useScrollReveal();
+
   return (
-    <section className="bg-secondary border-y border-border">
-      <div className="container py-5 px-4">
-        <div className="flex items-center justify-center gap-8 md:gap-16 flex-wrap">
-          {stats.map((stat, i) => (
-            <div key={i} className="flex items-center gap-2">
-              {stat.icon}
-              <span className="font-serif text-lg font-normal text-foreground">{stat.value}</span>
-              <span className="font-sans text-xs text-muted-foreground tracking-wide">{stat.label}</span>
-              {i < stats.length - 1 && (
-                <div className="hidden md:block w-px h-5 bg-border ml-8" />
-              )}
+    <section className="border-y border-border py-10 md:py-12" ref={ref}>
+      <div className="container px-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {values.map((v, i) => (
+            <div key={i} className={`reveal stagger-${Math.min(i + 1, 4)} flex flex-col items-center text-center`}>
+              <v.icon className="h-7 w-7 text-primary mb-3" strokeWidth={1.5} />
+              <h4 className="font-sans text-sm font-medium text-foreground mb-1">{v.title}</h4>
+              <p className="font-sans text-xs text-muted-foreground">{v.desc}</p>
             </div>
           ))}
         </div>

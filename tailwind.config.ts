@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ["'Cormorant Garamond'", "Georgia", "serif"],
-        sans: ["'DM Sans'", "system-ui", "sans-serif"],
+        serif: ["'Playfair Display'", "Georgia", "serif"],
+        sans: ["'Poppins'", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -61,15 +61,13 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        ventuza: {
-          ivory: "hsl(var(--ventuza-ivory))",
-          cream: "hsl(var(--ventuza-cream))",
-          amber: "hsl(var(--ventuza-amber))",
-          "amber-dark": "hsl(var(--ventuza-amber-dark))",
-          dark: "hsl(var(--ventuza-dark))",
-          "dark-surface": "hsl(var(--ventuza-dark-surface))",
-          sage: "hsl(var(--ventuza-sage))",
-          rose: "hsl(var(--ventuza-rose))",
+        ml: {
+          terracotta: "hsl(var(--ml-terracotta))",
+          "terracotta-dark": "hsl(var(--ml-terracotta-dark))",
+          dark: "hsl(var(--ml-dark))",
+          "dark-surface": "hsl(var(--ml-dark-surface))",
+          "light-bg": "hsl(var(--ml-light-bg))",
+          "warm-bg": "hsl(var(--ml-warm-bg))",
         },
       },
       borderRadius: {
@@ -131,10 +129,6 @@ export default {
         "heart-pop": "heart-pop 0.4s ease-out",
         "bounce-count": "bounce-count 0.3s ease-out",
         "scroll-arrow": "scroll-arrow 2s ease-in-out infinite",
-      },
-      letterSpacing: {
-        luxury: "0.2em",
-        wide: "0.15em",
       },
     },
   },

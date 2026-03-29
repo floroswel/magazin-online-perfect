@@ -11,12 +11,12 @@ export interface StoreBranding {
 }
 
 const DEFAULTS: StoreBranding = {
-  name: "VENTUZA",
+  name: "Mama Lucica",
   emoji: "🕯️",
-  tagline: "Lumânări handmade din ceară de soia, create cu dragoste în România.",
+  tagline: "Lumânări artizanale din ceară de soia, create cu dragoste în România.",
   phone: "",
-  email: "contact@ventuza.ro",
-  copyright: `© ${new Date().getFullYear()} VENTUZA. Toate drepturile rezervate.`,
+  email: "contact@mamalucica.ro",
+  copyright: `© ${new Date().getFullYear()} Mama Lucica. Toate drepturile rezervate.`,
 };
 
 const StoreBrandingContext = createContext<StoreBranding>(DEFAULTS);

@@ -58,18 +58,17 @@ export default function FlashDeals({ title = "Oferte Limitate" }: { title?: stri
 
   return (
     <section className="py-16 md:py-20 border-y border-border">
-      <div className="container">
+      <div className="container px-4">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <p className="text-xs tracking-[0.3em] uppercase text-primary mb-2 font-medium">Timp Limitat</p>
-            <h2 className="font-serif text-3xl font-medium text-foreground">{title}</h2>
+            <h2 className="font-serif text-3xl text-foreground">{title}</h2>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1.5 text-sm font-mono text-foreground bg-muted px-4 py-2">
+            <div className="flex items-center gap-1.5 text-sm font-mono text-foreground bg-secondary px-4 py-2">
               <Clock className="h-3.5 w-3.5 text-primary" />
               <span>{pad(countdown.h)}</span>:<span>{pad(countdown.m)}</span>:<span>{pad(countdown.s)}</span>
             </div>
-            <Link to="/catalog" className="hidden md:flex text-sm text-primary hover:text-primary/80 font-medium items-center gap-1.5 tracking-wide transition-colors">
+            <Link to="/catalog" className="hidden md:flex text-sm text-primary hover:text-primary/80 font-medium items-center gap-1.5 transition-colors">
               Vezi toate <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

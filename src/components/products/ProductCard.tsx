@@ -1,6 +1,6 @@
 import { memo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ShoppingBag, Heart, Award, Check } from "lucide-react";
+import { ShoppingBag, Heart, Award, Check, Star } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useCurrency } from "@/hooks/useCurrency";
 import { usePricingRules } from "@/hooks/usePricingRules";
@@ -62,8 +62,9 @@ function ProductCardInner({ product, eager = false }: Props) {
     ? Math.round(((showOldPrice - effectivePrice) / showOldPrice) * 100)
     : 0;
 
-  // Get category name from product if available
   const categoryName = (product as any).category_name || (product as any).categories?.name;
+  const rating = (product as any).average_rating || 0;
+  const reviewCount = (product as any).review_count || 0;
 
   return (
     <Link
@@ -71,38 +72,38 @@ function ProductCardInner({ product, eager = false }: Props) {
       onMouseEnter={() => prefetchProduct(product.slug)}
       className="group block"
     >
-      <div className="h-full flex flex-col">
+      <div className="h-full flex flex-col bg-background">
         {/* Image */}
-        <div className="relative aspect-square overflow-hidden rounded-lg bg-secondary mb-3">
+        <div className="relative aspect-square overflow-hidden bg-secondary">
           {/* Badges */}
           <div className="absolute top-3 left-3 z-10 flex flex-col gap-1">
             {discount > 0 && (
-              <span className="bg-destructive text-destructive-foreground text-[10px] font-sans font-medium px-2.5 py-1 rounded-full tracking-wide">
+              <span className="bg-destructive text-destructive-foreground text-[10px] font-sans font-medium px-2.5 py-1">
                 -{discount}%
               </span>
             )}
             {(product as any).badge_new && (
-              <span className="bg-green-500 text-white text-[10px] font-sans font-medium px-2.5 py-1 rounded-full">NOU</span>
+              <span className="bg-foreground text-background text-[10px] font-sans font-medium px-2.5 py-1">NOU</span>
             )}
             {(product as any).badge_bestseller && (
-              <span className="bg-amber-500 text-white text-[10px] font-sans font-medium px-2.5 py-1 rounded-full">BESTSELLER</span>
+              <span className="bg-primary text-primary-foreground text-[10px] font-sans font-medium px-2.5 py-1">BESTSELLER</span>
             )}
             {(product as any).badge_exclusive && (
-              <span className="bg-purple-500 text-white text-[10px] font-sans font-medium px-2.5 py-1 rounded-full">EXCLUSIV</span>
+              <span className="bg-foreground text-background text-[10px] font-sans font-medium px-2.5 py-1">EXCLUSIV</span>
             )}
             {(product as any).badge_gift && (
-              <span className="bg-teal-500 text-white text-[10px] font-sans font-medium px-2.5 py-1 rounded-full">CADOU PERFECT</span>
+              <span className="bg-primary text-primary-foreground text-[10px] font-sans font-medium px-2.5 py-1">CADOU PERFECT</span>
             )}
             {(product as any).badge_low_stock && product.stock !== null && product.stock > 0 && product.stock < 10 && (
-              <span className="bg-orange-500 text-white text-[10px] font-sans font-medium px-2.5 py-1 rounded-full">EPUIZAT CURÂND</span>
+              <span className="bg-destructive text-destructive-foreground text-[10px] font-sans font-medium px-2.5 py-1">EPUIZAT CURÂND</span>
             )}
             {(product as any).badge_custom_text && (
-              <span className="text-white text-[10px] font-sans font-medium px-2.5 py-1 rounded-full" style={{ backgroundColor: (product as any).badge_custom_color || '#6b7280' }}>
+              <span className="text-white text-[10px] font-sans font-medium px-2.5 py-1" style={{ backgroundColor: (product as any).badge_custom_color || '#6b7280' }}>
                 {(product as any).badge_custom_text}
               </span>
             )}
             {promotion && !pricingDiscount && (
-              <span className="text-[10px] font-sans font-medium px-2.5 py-1 rounded-full text-accent-foreground"
+              <span className="text-[10px] font-sans font-medium px-2.5 py-1 text-primary-foreground"
                 style={{ backgroundColor: promotion.badgeColor || "hsl(var(--primary))" }}>
                 {promotion.badgeText}
               </span>
@@ -112,7 +113,7 @@ function ProductCardInner({ product, eager = false }: Props) {
           {/* Wishlist */}
           <button
             onClick={handleWishlist}
-            className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-card/80 backdrop-blur-sm hover:bg-card transition-colors"
+            className="absolute top-3 right-3 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-background/80 backdrop-blur-sm hover:bg-background transition-colors"
           >
             <Heart
               className={`h-4 w-4 transition-all ${liked ? "fill-destructive text-destructive animate-heart-pop" : "text-muted-foreground"}`}
@@ -121,30 +122,24 @@ function ProductCardInner({ product, eager = false }: Props) {
 
           <img
             src={product.image_url || "/placeholder.svg"}
-            alt={product.name || "Lumânare"}
+            alt={product.name || "Produs"}
             width={600}
             height={600}
             loading={eager ? "eager" : "lazy"}
             decoding={eager ? "sync" : "async"}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.08]"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.06]"
           />
 
-          {/* Add to cart overlay */}
+          {/* Add to cart overlay - desktop */}
           <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 md:block hidden">
             <button
               onClick={handleAddToCart}
-              className="btn-cta w-full bg-primary text-accent-foreground font-sans font-medium text-xs py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-ventuza-amber-dark transition-colors"
+              className="btn-cta w-full bg-foreground text-background font-sans font-medium text-xs py-3 flex items-center justify-center gap-2 hover:bg-foreground/90 transition-colors"
             >
               {addedToCart ? (
-                <>
-                  <Check className="h-3.5 w-3.5" />
-                  Adăugat!
-                </>
+                <><Check className="h-3.5 w-3.5" /> Adăugat!</>
               ) : (
-                <>
-                  <ShoppingBag className="h-3.5 w-3.5" />
-                  Adaugă în coș
-                </>
+                <><ShoppingBag className="h-3.5 w-3.5" /> Adaugă în coș</>
               )}
             </button>
           </div>
@@ -152,20 +147,31 @@ function ProductCardInner({ product, eager = false }: Props) {
           {/* Mobile always-visible button */}
           <button
             onClick={handleAddToCart}
-            className="md:hidden absolute bottom-3 right-3 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-primary text-accent-foreground shadow-lg"
+            className="md:hidden absolute bottom-3 right-3 z-10 w-10 h-10 flex items-center justify-center bg-primary text-primary-foreground shadow-lg"
           >
             {addedToCart ? <Check className="h-4 w-4" /> : <ShoppingBag className="h-4 w-4" />}
           </button>
         </div>
 
         {/* Info */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col pt-4 pb-2">
           {categoryName && (
             <p className="font-sans font-light text-[11px] text-muted-foreground uppercase tracking-[2px] mb-1">{categoryName}</p>
           )}
-          <h3 className="font-sans font-medium text-[15px] text-foreground mb-1.5 leading-snug line-clamp-2">{product.name}</h3>
+          <h3 className="font-sans font-medium text-sm text-foreground mb-2 leading-snug line-clamp-2">{product.name}</h3>
+
+          {/* Rating stars */}
+          {reviewCount > 0 && (
+            <div className="flex items-center gap-1 mb-2">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} className={`h-3 w-3 ${i < Math.round(rating) ? "fill-primary text-primary" : "text-border"}`} />
+              ))}
+              <span className="text-[10px] text-muted-foreground ml-1">({reviewCount})</span>
+            </div>
+          )}
+
           <div className="flex items-baseline gap-2 mt-auto">
-            <span className="font-serif text-xl text-primary">
+            <span className={`font-sans text-base font-semibold ${discount > 0 ? "text-primary" : "text-foreground"}`}>
               {format(effectivePrice)}
             </span>
             {showOldPrice && showOldPrice > effectivePrice && (
