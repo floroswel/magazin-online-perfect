@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Cookie } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-const CONSENT_ID_KEY = "ventuza_consent_id";
-const CONSENT_PREFS_KEY = "ventuza_consent_prefs";
-const SESSION_KEY = "ventuza_session_id";
+const CONSENT_ID_KEY = "ml_consent_id";
+const CONSENT_PREFS_KEY = "ml_consent_prefs";
+const SESSION_KEY = "ml_session_id";
 
 type CookiePrefs = {
   necessary: boolean;
