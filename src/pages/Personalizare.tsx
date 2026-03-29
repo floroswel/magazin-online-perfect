@@ -56,6 +56,10 @@ const fonts = [
 ];
 
 export default function Personalizare() {
+  usePageSeo({
+    title: "Personalizare Lumânări — Creează-ți Lumânarea Unică | MamaLucica",
+    description: "Personalizează-ți lumânarea: alege aromele, culoarea, recipientul și mesajul. Cadou unic și memorabil.",
+  });
   const { addToCart } = useCart();
   const { format } = useCurrency();
 

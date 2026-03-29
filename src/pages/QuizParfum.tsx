@@ -58,6 +58,10 @@ const questions = [
 ];
 
 export default function QuizParfum() {
+  usePageSeo({
+    title: "Quiz Parfum — Găsește Lumânarea Perfectă | MamaLucica",
+    description: "Răspunde la câteva întrebări și descoperă lumânarea artizanală ideală pentru tine. Recomandări personalizate pe gustul tău.",
+  });
   const [step, setStep] = useState(0);
   const [collectedTags, setCollectedTags] = useState<string[]>([]);
   const [recommendations, setRecommendations] = useState<Tables<"products">[]>([]);

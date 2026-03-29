@@ -11,6 +11,10 @@ import { toast } from "sonner";
 import { Check } from "lucide-react";
 
 export default function CorporateGifting() {
+  usePageSeo({
+    title: "Cadouri Corporate — Lumânări Artizanale pentru Companii | MamaLucica",
+    description: "Cadouri corporate personalizate cu lumânări artizanale. Brandare, ambalaj premium și livrare la birou.",
+  });
   const [form, setForm] = useState({
     company_name: "", contact_person: "", email: "", phone: "",
     units_needed: 10, personalization_details: "", desired_delivery_date: "",

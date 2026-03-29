@@ -8,6 +8,10 @@ import { usePageSeo } from "@/components/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Recenzii() {
+  usePageSeo({
+    title: "Recenzii Clienți — Ce Spun Clienții MamaLucica",
+    description: "Citește recenziile reale ale clienților MamaLucica. Peste 500 de recenzii verificate pentru lumânări artizanale handmade.",
+  });
   const [reviews, setReviews] = useState<any[]>([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);

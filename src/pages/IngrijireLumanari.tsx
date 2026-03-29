@@ -39,6 +39,10 @@ const faqs = [
 ];
 
 export default function IngrijireLumanari() {
+  usePageSeo({
+    title: "Îngrijirea Lumânărilor — Ghid Complet | MamaLucica",
+    description: "Sfaturi pentru arderea corectă a lumânărilor artizanale. Cum eviți tunelul, cum prelungești durata și cum te bucuri la maxim de lumânările tale.",
+  });
   return (
     <Layout>
       <div className="container py-10 max-w-3xl">

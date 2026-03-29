@@ -17,6 +17,10 @@ const countries = [
 ];
 
 export default function LivrareInternationala() {
+  usePageSeo({
+    title: "Livrare Internațională Lumânări — MamaLucica",
+    description: "Livrăm lumânări artizanale în toată Europa. Costuri și termene de livrare pentru Bulgaria, Ungaria, Germania și alte țări.",
+  });
   return (
     <Layout>
       <section className="bg-secondary text-secondary-foreground py-16 md:py-20">
