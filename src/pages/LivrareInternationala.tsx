@@ -22,7 +22,7 @@ export default function LivrareInternationala() {
         <div className="container max-w-3xl text-center">
           <p className="text-xs tracking-[0.3em] uppercase text-accent mb-4 font-medium">Livrare</p>
           <h1 className="font-serif text-4xl font-medium mb-4">Livrare Internațională</h1>
-          <p className="text-secondary-foreground/60">Livrăm lumânările VENTUZA în toată Europa</p>
+          <p className="text-secondary-foreground/60">Livrăm lumânările MamaLucica în toată Europa</p>
         </div>
       </section>
 

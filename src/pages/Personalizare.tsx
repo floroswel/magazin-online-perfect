@@ -42,7 +42,7 @@ const colors = [
 ];
 
 const packagingOptions = [
-  { id: "standard", name: "Standard VENTUZA", price: 0 },
+  { id: "standard", name: "Standard MamaLucica", price: 0 },
   { id: "kraft", name: "Cutie Kraft", price: 10 },
   { id: "alba", name: "Cutie Albă", price: 15 },
   { id: "lux", name: "Cutie Lux Neagră", price: 25 },
@@ -116,7 +116,7 @@ export default function Personalizare() {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground">✨ Creează Lumânarea Ta — Unică, Personală, Specială</h1>
           <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-            De la text gravat la parfumul ales de tine — totul realizat manual cu dragoste de echipa VENTUZA
+            De la text gravat la parfumul ales de tine — totul realizat manual cu dragoste de echipa MamaLucica
           </p>
         </div>
 

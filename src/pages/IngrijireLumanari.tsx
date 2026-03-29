@@ -33,7 +33,7 @@ const sections = [
 const faqs = [
   { q: "De ce apare un tunel în lumânare?", a: "Tunelul apare când prima ardere nu a durat suficient. Asigură-te că la prima utilizare toată suprafața de sus se topește uniform." },
   { q: "De ce lumânarea mea produce fum negru?", a: "Fitilul este prea lung. Taie-l la 5mm înainte de fiecare utilizare." },
-  { q: "Cât timp durează o lumânare VENTUZA?", a: "Lumânările noastre medii ard între 35-45 ore, în funcție de dimensiune și condițiile de utilizare." },
+  { q: "Cât timp durează o lumânare MamaLucica?", a: "Lumânările noastre medii ard între 35-45 ore, în funcție de dimensiune și condițiile de utilizare." },
   { q: "Pot reutiliza recipientul?", a: "Absolut! După ce lumânarea s-a consumat, curăță recipientul cu apă caldă și poți folosi pentru depozitare sau ca vas decorativ." },
 ];
 
@@ -43,7 +43,7 @@ export default function IngrijireLumanari() {
       <div className="container py-10 max-w-3xl">
         <div className="text-center mb-10">
           <h1 className="text-3xl font-bold text-foreground">🕯️ Ghid de Îngrijire Lumânări</h1>
-          <p className="text-muted-foreground mt-2">Sfaturi esențiale pentru a te bucura la maxim de lumânările VENTUZA</p>
+          <p className="text-muted-foreground mt-2">Sfaturi esențiale pentru a te bucura la maxim de lumânările MamaLucica</p>
         </div>
 
         <div className="space-y-6 mb-12">

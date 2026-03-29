@@ -21,7 +21,7 @@ const faqSections = [
       { q: "Cât durează prima ardere?", a: "Prima ardere este esențială. Lăsați lumânarea să ardă până când toată suprafața de ceară se topește uniform — de obicei 2-3 ore. Acest lucru previne formarea tunelului." },
       { q: "Cum tai fitilul corect?", a: "Tăiați fitilul la 5-6mm înainte de fiecare aprindere. Folosiți un tăietor de fitil sau foarfece. Un fitil prea lung produce fum și ardere inegală." },
       { q: "Cât durează o lumânare?", a: "Depinde de dimensiune: lumânările mici ard 20-30 ore, cele medii 40-50 ore, iar cele mari peste 60 ore. Timpul exact este indicat pe fiecare produs." },
-      { q: "Lumânările sunt vegane?", a: "Da, toate lumânările VENTUZA sunt 100% vegane. Folosim ceară de soia, parfumuri fără ingrediente de origine animală și fitiluri din bumbac natural." },
+      { q: "Lumânările sunt vegane?", a: "Da, toate lumânările MamaLucica sunt 100% vegane. Folosim ceară de soia, parfumuri fără ingrediente de origine animală și fitiluri din bumbac natural." },
     ],
   },
   {

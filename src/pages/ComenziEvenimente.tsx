@@ -40,7 +40,7 @@ export default function ComenziEvenimente() {
       <div className="container py-16 max-w-3xl">
         <div className="grid md:grid-cols-2 gap-12 mb-16">
           <div>
-            <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">De ce VENTUZA</p>
+            <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">De ce MamaLucica</p>
             <h2 className="font-serif text-2xl font-medium text-foreground mb-6">Momente Speciale, Lumânări Unice</h2>
             <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
               <p>Fiecare eveniment merită o atingere personală. Creăm lumânări handmade pentru momentele care contează — de la nunți elegante la botezuri emoționante.</p>
