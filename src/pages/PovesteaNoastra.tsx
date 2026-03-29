@@ -74,7 +74,7 @@ export default function PovesteaNoastra() {
             <p className="text-xs text-primary tracking-wide mt-8">Handmade cu dragoste în România 🇷🇴</p>
           </section>
         </div>
-      )
+      )}
     </Layout>
   );
 }
