@@ -7,6 +7,7 @@ import { usePricingRules } from "@/hooks/usePricingRules";
 import { usePromotions } from "@/hooks/usePromotions";
 import { useLoyalty } from "@/hooks/useLoyalty";
 import { usePrefetch } from "@/hooks/usePrefetch";
+import { useTaxSettings } from "@/hooks/useTaxSettings";
 import CountdownTimer from "./CountdownTimer";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
