@@ -36,7 +36,7 @@ function fetchTaxSettings(): Promise<TaxSettings> {
         : DEFAULTS;
       cachedSettings = s;
       return s;
-    });
+    }) as Promise<TaxSettings>;
   return fetchPromise;
 }
 
