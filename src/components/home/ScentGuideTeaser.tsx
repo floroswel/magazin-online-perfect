@@ -5,7 +5,7 @@ export default function ScentGuideTeaser() {
   const ref = useScrollReveal();
 
   return (
-    <section className="py-16 md:py-24" ref={ref}>
+    <section className="py-14 md:py-20" ref={ref}>
       <div className="container px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Link to="/catalog?category=barbati" className="group relative overflow-hidden aspect-[4/5] reveal stagger-1">

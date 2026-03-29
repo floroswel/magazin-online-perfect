@@ -23,7 +23,7 @@ export default function CollectionsGrid() {
   const ref = useScrollReveal();
 
   return (
-    <section className="container py-16 md:py-24 px-4" ref={ref}>
+    <section className="container py-14 md:py-20 px-4" ref={ref}>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {collections.map((col, i) => (
           <Link

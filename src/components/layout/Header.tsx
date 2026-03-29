@@ -40,9 +40,10 @@ export default function Header() {
     { to: "/faq", label: "CONTACT" },
   ];
 
-  // Transparent on home, solid when scrolled or on other pages
   const isTransparent = isHome && !scrolled;
-  const headerBg = isTransparent ? "bg-transparent absolute" : "bg-background shadow-sm border-b border-border sticky";
+  const headerBg = isTransparent
+    ? "bg-transparent absolute"
+    : "bg-background/95 backdrop-blur-sm shadow-sm border-b border-border sticky";
   const textColor = isTransparent ? "text-white" : "text-foreground";
   const mutedColor = isTransparent ? "text-white/70" : "text-muted-foreground";
   const logoColor = isTransparent ? "text-white" : "text-foreground";
@@ -51,22 +52,37 @@ export default function Header() {
     <>
       {/* Announcement Bar */}
       <div className="bg-foreground text-background relative z-[60]">
-        <div className="flex items-center justify-center h-10 px-4">
-          <p className="font-sans text-[12px] tracking-wide">
-            Reduceri de sezon până la 50%.{" "}
-            <Link to="/catalog" className="underline underline-offset-2 font-medium hover:opacity-80">
-              Cumpără acum
-            </Link>
-          </p>
+        <div className="flex items-center justify-center h-10 px-4 overflow-hidden">
+          <div className="animate-marquee whitespace-nowrap flex items-center gap-8">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <span key={i} className="flex items-center gap-8">
+                <span className="font-sans text-[11px] tracking-wide">
+                  Transport gratuit peste 200 lei
+                </span>
+                <span className="text-background/30">•</span>
+                <span className="font-sans text-[11px] tracking-wide">
+                  Livrare 24-48h
+                </span>
+                <span className="text-background/30">•</span>
+                <span className="font-sans text-[11px] tracking-wide">
+                  Retururi gratuite 30 zile
+                </span>
+                <span className="text-background/30">•</span>
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Main Header */}
       <header className={`${headerBg} top-0 left-0 right-0 z-50 transition-all duration-300`}>
         <div className="container flex items-center h-20 px-4">
-          {/* Logo - LEFT aligned, large */}
+          {/* Logo */}
           <Link to="/" className="mr-auto">
-            <span className={`font-serif text-3xl md:text-4xl font-bold ${logoColor} tracking-tight leading-none`}>
+            <span
+              className={`font-serif font-bold ${logoColor} tracking-tight leading-none`}
+              style={{ fontSize: "clamp(28px, 3vw, 38px)" }}
+            >
               Mama Lucica
             </span>
           </Link>
@@ -77,7 +93,7 @@ export default function Header() {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`font-sans text-[12px] font-medium tracking-[1.5px] transition-colors hover:opacity-70 ${
+                className={`font-sans text-[11px] font-medium tracking-[1.5px] transition-colors hover:opacity-70 ${
                   location.pathname === link.to ? (isTransparent ? "text-white" : "text-primary") : textColor
                 }`}
               >
@@ -93,7 +109,7 @@ export default function Header() {
               className={`hidden lg:flex w-10 h-10 items-center justify-center hover:opacity-70 transition-opacity ${mutedColor}`}
               aria-label="Cont"
             >
-              <User className="h-5 w-5" />
+              <User className="h-[18px] w-[18px]" />
             </button>
 
             <button
@@ -101,7 +117,7 @@ export default function Header() {
               className={`w-10 h-10 flex items-center justify-center hover:opacity-70 transition-opacity ${mutedColor}`}
               aria-label="Caută"
             >
-              <Search className="h-5 w-5" />
+              <Search className="h-[18px] w-[18px]" />
             </button>
 
             <button
@@ -109,17 +125,17 @@ export default function Header() {
               className={`hidden sm:flex w-10 h-10 items-center justify-center hover:opacity-70 transition-opacity ${mutedColor}`}
               aria-label={isDark ? "Mod luminos" : "Mod întunecat"}
             >
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              {isDark ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
             </button>
 
             {user && (
               <Link to="/favorites" className={`hidden sm:flex w-10 h-10 items-center justify-center hover:opacity-70 transition-opacity ${mutedColor}`}>
-                <Heart className="h-5 w-5" />
+                <Heart className="h-[18px] w-[18px]" />
               </Link>
             )}
 
             <Link to={user ? "/cart" : "/auth"} className={`relative w-10 h-10 flex items-center justify-center hover:opacity-70 transition-opacity ${mutedColor}`}>
-              <ShoppingBag className="h-5 w-5" />
+              <ShoppingBag className="h-[18px] w-[18px]" />
               {totalItems > 0 && (
                 <span className="absolute top-0.5 right-0 h-[18px] min-w-[18px] flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-sans font-medium px-1 animate-bounce-count">
                   {totalItems}

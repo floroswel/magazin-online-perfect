@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import ProductCard from "@/components/products/ProductCard";
 import HeroSlider from "@/components/home/HeroSlider";
@@ -14,6 +13,7 @@ import NewsletterDiscount from "@/components/home/NewsletterDiscount";
 import FlashDeals from "@/components/home/FlashDeals";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
 import InstagramFeed from "@/components/home/InstagramFeed";
+import BrandLogosCarousel from "@/components/home/BrandLogosCarousel";
 import { ProductCardSkeleton } from "@/components/ui/skeletons";
 import { supabase } from "@/integrations/supabase/client";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
@@ -25,11 +25,12 @@ import { useVisibility } from "@/hooks/useVisibility";
 import type { Tables } from "@/integrations/supabase/types";
 
 const DEFAULT_ORDER = [
-  "hero_section", "collections_grid",
-  "featured_products", "brand_story_section", "social_proof_bar",
-  "bestsellers_section", "reviews_section",
-  "flash_deals", "scent_guide_teaser",
-  "instagram_feed", "recently_viewed", "newsletter_section",
+  "hero_section", "social_proof_bar", "collections_grid",
+  "featured_products", "brand_story_section",
+  "bestsellers_section", "scent_guide_teaser",
+  "reviews_section", "flash_deals",
+  "brand_logos", "instagram_feed",
+  "recently_viewed", "newsletter_section",
 ];
 
 export default function Index() {
@@ -117,6 +118,7 @@ export default function Index() {
     recently_viewed: showRecentlyViewed,
     newsletter_section: showNewsletter,
     instagram_feed: showInstagram,
+    brand_logos: true,
   };
 
   const sectionComponents: Record<string, React.ReactNode> = useMemo(() => ({
@@ -124,9 +126,9 @@ export default function Index() {
     social_proof_bar: <SocialProofBar key="social_proof_bar" />,
     collections_grid: <CollectionsGrid key="collections_grid" />,
     featured_products: (
-      <section key="featured_products" className="container py-16 md:py-24 px-4" ref={featuredRef}>
+      <section key="featured_products" className="container py-14 md:py-20 px-4" ref={featuredRef}>
         <div className="text-center mb-10 reveal stagger-1">
-          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">Produse Recomandate</h2>
+          <h2 className="font-serif text-3xl md:text-4xl text-foreground">Produse Recomandate</h2>
         </div>
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
@@ -145,6 +147,7 @@ export default function Index() {
     scent_guide_teaser: <ScentGuideTeaser key="scent_guide_teaser" />,
     reviews_section: <ReviewsSection key="reviews_section" />,
     instagram_feed: <InstagramFeed key="instagram_feed" />,
+    brand_logos: <BrandLogosCarousel key="brand_logos" />,
     recently_viewed: <RecentlyViewed key="recently_viewed" />,
     newsletter_section: <NewsletterDiscount key="newsletter_section" />,
   }), [featured, loading, featuredRef]);

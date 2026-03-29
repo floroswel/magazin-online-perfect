@@ -1,6 +1,6 @@
 import { memo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ShoppingBag, Heart, Award, Check, Star } from "lucide-react";
+import { ShoppingBag, Heart, Award, Check } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useCurrency } from "@/hooks/useCurrency";
 import { usePricingRules } from "@/hooks/usePricingRules";
@@ -63,7 +63,6 @@ function ProductCardInner({ product, eager = false }: Props) {
     ? Math.round(((showOldPrice - effectivePrice) / showOldPrice) * 100)
     : 0;
 
-  const categoryName = (product as any).category_name || (product as any).categories?.name;
   const images = (product as any).images as string[] | null;
   const secondImage = images && images.length > 1 ? images[1] : null;
 

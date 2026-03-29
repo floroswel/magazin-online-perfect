@@ -6,8 +6,7 @@ export default function BrandStory() {
 
   return (
     <section className="py-0" ref={ref}>
-      {/* Full-width banner with text overlay */}
-      <div className="relative h-[500px] md:h-[600px] overflow-hidden reveal stagger-1">
+      <div className="relative h-[450px] md:h-[550px] overflow-hidden reveal stagger-1">
         <img
           src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1920&h=800&fit=crop"
           alt="Mama Lucica atelier"
@@ -17,14 +16,17 @@ export default function BrandStory() {
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 flex items-center justify-center text-center">
           <div className="max-w-xl px-6">
-            <h2 className="font-serif text-white text-3xl md:text-5xl font-bold mb-6 leading-tight">
+            <h2
+              className="font-serif text-white uppercase leading-[0.95] mb-6"
+              style={{ fontSize: "clamp(28px, 5vw, 52px)", fontWeight: 700, letterSpacing: "-0.01em" }}
+            >
               Produse Artizanale<br />Create pentru Tine
             </h2>
             <Link
               to="/povestea-noastra"
-              className="inline-block font-sans text-[12px] font-medium tracking-[2px] uppercase text-white border border-white px-8 py-3 hover:bg-white hover:text-foreground transition-all"
+              className="inline-block font-sans text-[12px] font-medium tracking-[2px] uppercase text-white border border-white px-8 py-3 hover:bg-white hover:text-foreground transition-all duration-300"
             >
-              Descoperă
+              Descoperă Povestea
             </Link>
           </div>
         </div>

@@ -4,9 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const PLACEHOLDER_REVIEWS = [
-  { id: "p1", user_name: "Maria P.", rating: 5, body: "Cel mai frumos cadou pe care l-am oferit. Parfumul de vanilie și santal a umplut întreaga cameră. Calitate excepțională!", created_at: "2025-02-14" },
-  { id: "p2", user_name: "Andrei T.", rating: 5, body: "Am comandat un set personalizat pentru aniversare. Ambalajul premium și aroma rafinată au depășit orice așteptări.", created_at: "2025-01-28" },
-  { id: "p3", user_name: "Elena D.", rating: 5, body: "A treia comandă la Mama Lucica. Lumânările ard uniform, parfumul e natural și durează mult. Recomand cu încredere!", created_at: "2025-03-05" },
+  { id: "p1", user_name: "Maria P.", rating: 5, body: "Cel mai frumos cadou pe care l-am oferit. Parfumul de vanilie și santal a umplut întreaga cameră. Calitate excepțională!" },
+  { id: "p2", user_name: "Andrei T.", rating: 5, body: "Am comandat un set personalizat pentru aniversare. Ambalajul premium și aroma rafinată au depășit orice așteptări." },
+  { id: "p3", user_name: "Elena D.", rating: 5, body: "A treia comandă la Mama Lucica. Lumânările ard uniform, parfumul e natural și durează mult. Recomand cu încredere!" },
 ];
 
 export default function ReviewsSection() {
@@ -26,14 +26,14 @@ export default function ReviewsSection() {
   }, []);
 
   return (
-    <section className="py-16 md:py-24" ref={ref}>
+    <section className="py-14 md:py-20 bg-secondary" ref={ref}>
       <div className="container px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          {reviews.map((r, i) => (
-            <div
-              key={r.id}
-              className={`reveal stagger-${Math.min(i + 1, 4)} text-center px-4`}
-            >
+        <div className="text-center mb-10 reveal stagger-1">
+          <h2 className="font-serif text-3xl md:text-4xl text-foreground">Ce spun clienții noștri</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto reveal stagger-2">
+          {reviews.map((r) => (
+            <div key={r.id} className="text-center px-4">
               <div className="flex justify-center gap-0.5 mb-5">
                 {Array.from({ length: 5 }).map((_, j) => (
                   <Star key={j} className={`h-4 w-4 ${j < r.rating ? "fill-foreground text-foreground" : "text-border"}`} />
