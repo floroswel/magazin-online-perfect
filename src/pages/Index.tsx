@@ -29,7 +29,7 @@ import { useVisibility } from "@/hooks/useVisibility";
 import type { Tables } from "@/integrations/supabase/types";
 
 const DEFAULT_ORDER = [
-  "hero_section", "social_proof_bar", "quick_filters", "collections_grid",
+  "hero_section", "social_proof_bar", "quick_filters", "mood_selector", "collections_grid",
   "coupon_collector", "flash_deals", "scent_guide_teaser",
   "featured_products", "top_vendors", "brand_story_section",
   "bestsellers_section", "buy_again", "instagram_feed",
