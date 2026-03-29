@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Ticket, Copy, Check, Gift } from "lucide-react";
+import { Ticket, Copy, Check, Gift, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -44,10 +44,9 @@ export default function CouponCollector() {
     } catch {}
   }, []);
 
-  // Fallback coupons if none in DB
   const displayCoupons: Coupon[] = coupons.length > 0 ? coupons : [
     { id: "1", code: "WELCOME10", discount_type: "percentage", discount_value: 10, min_order: 100, description: "10% reducere la prima comandă" },
-    { id: "2", code: "LIVRARE0", discount_type: "free_shipping", discount_value: 0, min_order: 150, description: "Transport gratuit" },
+    { id: "2", code: "LIVRARE0", discount_type: "free_shipping", discount_value: 0, min_order: 150, description: "Transport gratuit la comenzi peste 150 lei" },
     { id: "3", code: "VARA25", discount_type: "percentage", discount_value: 25, min_order: 300, description: "25% reducere la comenzi peste 300 lei" },
   ];
 
@@ -57,58 +56,81 @@ export default function CouponCollector() {
     next.add(coupon.id);
     setCollected(next);
     localStorage.setItem("collected_coupons", JSON.stringify([...next]));
-    toast.success(`Cupon ${coupon.code} copiat!`);
+    toast.success(`Cupon ${coupon.code} copiat în clipboard!`);
+  };
+
+  const getDiscountLabel = (coupon: Coupon) => {
+    if (coupon.discount_type === "percentage") return `-${coupon.discount_value}%`;
+    if (coupon.discount_type === "free_shipping") return "GRATUIT";
+    return `-${coupon.discount_value} lei`;
+  };
+
+  const getDiscountColor = (coupon: Coupon) => {
+    if (coupon.discount_value >= 25 || coupon.discount_type === "free_shipping") return "bg-primary text-primary-foreground";
+    if (coupon.discount_value >= 15) return "bg-accent text-accent-foreground";
+    return "bg-muted text-foreground";
   };
 
   if (displayCoupons.length === 0) return null;
 
   return (
-    <section className="container px-4 py-6">
-      <div className="flex items-center gap-2 mb-4">
+    <section className="container px-4 py-8">
+      <div className="flex items-center gap-2 mb-1">
         <Gift className="w-5 h-5 text-primary" />
-        <h2 className="text-xl font-bold text-foreground">Cupoane Disponibile</h2>
+        <h2 className="text-xl md:text-2xl font-bold text-foreground">Cupoane Disponibile</h2>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <p className="text-sm text-muted-foreground mb-5">Colectează și folosește la checkout pentru reduceri instant</p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
         {displayCoupons.map((coupon) => {
           const isCollected = collected.has(coupon.id);
           return (
             <div
               key={coupon.id}
-              className="relative flex items-center bg-card border-2 border-dashed border-primary/30 rounded-lg p-4 hover:border-primary transition-colors overflow-hidden"
+              className={`group relative bg-card border rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg ${
+                isCollected ? "border-primary/40" : "border-border hover:border-primary/60"
+              }`}
             >
-              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary rounded-l-lg" />
+              {/* Top accent bar */}
+              <div className="h-1 bg-gradient-to-r from-primary to-accent" />
 
-              <div className="flex-1 ml-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <Ticket className="w-4 h-4 text-primary" />
-                  <span className="font-bold text-primary text-lg tracking-wider">
-                    {coupon.discount_type === "percentage"
-                      ? `-${coupon.discount_value}%`
-                      : coupon.discount_type === "free_shipping"
-                      ? "TRANSPORT GRATUIT"
-                      : `-${coupon.discount_value} lei`}
-                  </span>
+              <div className="p-4 flex items-center gap-4">
+                {/* Discount badge */}
+                <div className={`shrink-0 w-16 h-16 rounded-xl flex flex-col items-center justify-center ${getDiscountColor(coupon)}`}>
+                  <Sparkles className="w-3.5 h-3.5 mb-0.5 opacity-70" />
+                  <span className="text-sm font-extrabold leading-tight">{getDiscountLabel(coupon)}</span>
                 </div>
-                <p className="text-sm text-muted-foreground">{coupon.description || coupon.code}</p>
-                {coupon.min_order && (
-                  <p className="text-xs text-muted-foreground mt-0.5">Min. comandă: {coupon.min_order} lei</p>
-                )}
-              </div>
 
-              <button
-                onClick={() => handleCollect(coupon)}
-                className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                  isCollected
-                    ? "bg-primary/10 text-primary border border-primary/30"
-                    : "bg-primary text-primary-foreground hover:opacity-90"
-                }`}
-              >
-                {isCollected ? (
-                  <><Check className="w-4 h-4" /> Copiat</>
-                ) : (
-                  <><Copy className="w-4 h-4" /> Colectează</>
-                )}
-              </button>
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Ticket className="w-3.5 h-3.5 text-primary shrink-0" />
+                    <code className="text-xs font-bold tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded">
+                      {coupon.code}
+                    </code>
+                  </div>
+                  <p className="text-sm text-card-foreground line-clamp-1">{coupon.description || coupon.code}</p>
+                  {coupon.min_order && (
+                    <p className="text-[11px] text-muted-foreground mt-0.5">Min. comandă: {coupon.min_order} lei</p>
+                  )}
+                </div>
+
+                {/* Collect button */}
+                <button
+                  onClick={() => handleCollect(coupon)}
+                  className={`shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all min-h-[40px] ${
+                    isCollected
+                      ? "bg-primary/10 text-primary border border-primary/30"
+                      : "bg-primary text-primary-foreground hover:opacity-90 active:scale-95"
+                  }`}
+                >
+                  {isCollected ? (
+                    <><Check className="w-3.5 h-3.5" /> Copiat</>
+                  ) : (
+                    <><Copy className="w-3.5 h-3.5" /> Ia cupon</>
+                  )}
+                </button>
+              </div>
             </div>
           );
         })}

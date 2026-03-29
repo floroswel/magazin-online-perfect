@@ -56,36 +56,42 @@ export default function Header() {
       {showFreeShipping !== false && (
         <div className="bg-foreground text-background relative z-[60]">
           <div className="container flex items-center justify-between h-8 px-4 text-[11px]">
-            <div className="hidden md:flex items-center gap-4">
+            {/* Mobile: show shipping info too */}
+            <div className="flex items-center gap-4">
               {totalPrice > 0 && totalPrice < 200 ? (
                 <span className="flex items-center gap-1 opacity-90">
-                  <Truck className="w-3 h-3" />
-                  Mai adaugă <strong className="text-accent mx-0.5">{(200 - totalPrice).toFixed(0)} lei</strong> pentru livrare GRATUITĂ!
+                  <Truck className="w-3 h-3 shrink-0" />
+                  <span className="hidden sm:inline">Mai adaugă</span> <strong className="text-accent mx-0.5">{(200 - totalPrice).toFixed(0)} lei</strong> <span className="hidden xs:inline">pentru</span> livrare GRATUITĂ!
                 </span>
               ) : totalPrice >= 200 ? (
                 <span className="flex items-center gap-1 opacity-90">
-                  <Truck className="w-3 h-3" /> 🎉 Ai transport gratuit!
+                  <Truck className="w-3 h-3" /> 🎉 Transport gratuit!
                 </span>
               ) : (
                 <span className="flex items-center gap-1 opacity-80"><Truck className="w-3 h-3" /> Livrare gratuită peste 200 lei</span>
               )}
-              <span className="flex items-center gap-1 opacity-80"><RotateCcw className="w-3 h-3" /> Retur 30 zile</span>
+              <span className="hidden md:flex items-center gap-1 opacity-80"><RotateCcw className="w-3 h-3" /> Retur 30 zile</span>
             </div>
-            <div className="flex items-center gap-4 ml-auto">
-              <span className="flex items-center gap-1 opacity-80"><Headphones className="w-3 h-3" /> Suport: 0800-123-456</span>
+            <div className="flex items-center gap-4 ml-auto shrink-0">
+              <span className="hidden sm:flex items-center gap-1 opacity-80"><Headphones className="w-3 h-3" /> 0800-123-456</span>
               <button onClick={toggleDarkMode} className="opacity-70 hover:opacity-100 transition-opacity">
                 {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
               </button>
             </div>
           </div>
-          {/* Free shipping progress bar */}
+          {/* Free shipping progress bar - visible when cart has items */}
           {totalPrice > 0 && totalPrice < 200 && (
-            <div className="h-0.5 bg-background/20">
+            <div className="h-1 bg-background/20">
               <div
-                className="h-full bg-accent transition-all duration-500"
+                className={`h-full transition-all duration-700 ease-out rounded-r-full ${
+                  totalPrice / 200 < 0.4 ? "bg-destructive" : totalPrice / 200 < 0.75 ? "bg-accent" : "bg-primary"
+                }`}
                 style={{ width: `${Math.min(100, (totalPrice / 200) * 100)}%` }}
               />
             </div>
+          )}
+          {totalPrice >= 200 && (
+            <div className="h-1 bg-primary" />
           )}
         </div>
       )}
