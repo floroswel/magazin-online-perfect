@@ -9,11 +9,8 @@ const corsHeaders = {
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
-  }
-    const apiKey = Deno.env.get("NETOPIA_API_KEY") || "";
-    console.log("DIAG api_key_length:", apiKey.length);
-    console.log("DIAG api_key_first15:", apiKey.substring(0, 15));
-    const testBody = {
+
+
       config: { emailTemplate: "", notifyUrl: "https://example.com/ipn", redirectUrl: "https://example.com/return", language: "ro" },
       payment: { options: { installments: 0, bonus: 0 }, instrument: { type: "card" }, data: {} },
       order: { ntpID: "", posSignature: "3BBD-XEHU-UYUY-4VLV-UQPW", dateTime: new Date().toISOString(), description: "Test diagnostic", orderID: "diag-001", amount: 1, currency: "RON", billing: { email: "test@test.com", phone: "0700000000", firstName: "Test", lastName: "User", city: "Bucuresti", country: 642, state: "B", postalCode: "010101", details: "test" }, shipping: { email: "test@test.com", phone: "0700000000", firstName: "Test", lastName: "User", city: "Bucuresti", country: 642, state: "B", postalCode: "010101", details: "test" }, products: [], installments: { selected: 0, available: [0] }, data: {} }
