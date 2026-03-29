@@ -56,6 +56,14 @@ export default function Footer() {
   const [footerScripts, setFooterScripts] = useState<string[]>([]);
   const footerScriptsRef = useRef<HTMLDivElement>(null);
   const [companyInfo, setCompanyInfo] = useState<any>({});
+  const layout = useLayoutSettings();
+
+  // Visibility hooks
+  const showColumns = useVisibility("footer_columns");
+  const showSocial = useVisibility("footer_social");
+  const showNewsletter = useVisibility("footer_newsletter");
+  const showSol = useVisibility("compliance_sol");
+  const showAnpc = useVisibility("compliance_anpc");
 
   useEffect(() => {
     Promise.all([
