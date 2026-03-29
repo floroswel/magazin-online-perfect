@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import DOMPurify from "dompurify";
 import { useSearchParams, Link } from "react-router-dom";
 import { SlidersHorizontal, X, ChevronRight, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -297,7 +298,7 @@ export default function Catalog() {
               <div>
                 <h1 className="font-serif text-3xl font-medium text-foreground">{currentCategory.name}</h1>
                 {currentCategory.description && (
-                  <div className="text-sm text-muted-foreground mt-1 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: currentCategory.description }} />
+                  <div className="text-sm text-muted-foreground mt-1 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(currentCategory.description) }} />
                 )}
               </div>
             </div>

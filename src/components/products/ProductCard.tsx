@@ -175,7 +175,7 @@ function ProductCardInner({ product, eager = false }: Props) {
           }
           return (
             <div className="flex items-center gap-1 text-[11px] text-muted-foreground mt-2">
-              <Truck className="w-3 h-3 text-[hsl(var(--marketplace-success,142_71%_45%))]" />
+              <Truck className="w-3 h-3 text-[hsl(var(--store-success,142_71%_45%))]" />
               <span>Livrare în 1-2 zile</span>
             </div>
           );

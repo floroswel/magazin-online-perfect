@@ -41,7 +41,7 @@ export default function PriceDropAlert({ productId, productName, currentPrice }:
 
   if (submitted) {
     return (
-      <div className="flex items-center gap-2 text-sm text-[hsl(var(--marketplace-success))]">
+      <div className="flex items-center gap-2 text-sm text-[hsl(var(--store-success))]">
         <Check className="w-4 h-4" />
         <span>Vei fi notificat când scade prețul</span>
       </div>
