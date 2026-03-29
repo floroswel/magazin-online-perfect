@@ -12,6 +12,7 @@ import ReviewsSection from "@/components/home/ReviewsSection";
 import NewsletterDiscount from "@/components/home/NewsletterDiscount";
 import FlashDeals from "@/components/home/FlashDeals";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
+import WelcomeBack from "@/components/home/WelcomeBack";
 import InstagramFeed from "@/components/home/InstagramFeed";
 import BrandLogosCarousel from "@/components/home/BrandLogosCarousel";
 import QuickFilters from "@/components/home/QuickFilters";
@@ -163,6 +164,7 @@ export default function Index() {
 
   return (
     <Layout>
+      <WelcomeBack />
       {sectionOrder.map((key) => {
         if (visibilityMap[key] === false) return null;
         return sectionComponents[key] || null;

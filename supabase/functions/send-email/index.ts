@@ -256,6 +256,70 @@ function testHTML(data: Record<string, any>) {
   ${footer()}`;
 }
 
+function careGuideHTML(data: Record<string, any>) {
+  return `${header("Ghid de Îngrijire 🕯️", "📖")}
+    <p style="color:${BRAND.textColor};font-size:15px">Bună, <strong>${data.name || "Client"}</strong>!</p>
+    <p style="color:${BRAND.mutedColor};font-size:14px">Mulțumim pentru comanda <strong>#${(data.orderNumber || data.orderId || "").slice(0, 8)}</strong>! Iată câteva sfaturi pentru a te bucura la maxim de lumânările tale:</p>
+    <div style="background:#fff;padding:20px;border-radius:8px;margin:16px 0;border:1px solid #F5E6D3">
+      <h3 style="color:${BRAND.color};margin:0 0 12px">✨ Sfaturi esențiale</h3>
+      <ul style="padding-left:18px;color:${BRAND.textColor};font-size:14px;line-height:1.8">
+        <li><strong>Prima ardere:</strong> Lasă lumânarea să ardă 1-2 ore sau până când toată suprafața este topită. Previne formarea "tunelului".</li>
+        <li><strong>Tăierea fitilului:</strong> Înainte de fiecare utilizare, taie fitilul la ~5mm pentru o ardere curată și uniformă.</li>
+        <li><strong>Durata recomandată:</strong> Nu lăsa lumânarea să ardă mai mult de 4 ore consecutive.</li>
+        <li><strong>Suprafață stabilă:</strong> Poziționează lumânarea pe o suprafață plană, departe de curenți de aer.</li>
+        <li><strong>Stingerea:</strong> Folosește un capac sau o linguriță pentru a stinge — nu sufla, pentru a evita fumul.</li>
+      </ul>
+    </div>
+    <div style="text-align:center;margin-top:20px">
+      ${btn("Citește ghidul complet →", "https://mamalucica.ro/ingrijire-lumanari")}
+    </div>
+  ${footer()}`;
+}
+
+function trackingUpdateHTML(data: Record<string, any>) {
+  return `${header("Comanda ta e pe drum!", "🚚")}
+    <p style="color:${BRAND.textColor};font-size:15px">Bună, <strong>${data.name || "Client"}</strong>!</p>
+    <p style="color:${BRAND.mutedColor};font-size:14px">Comanda <strong>#${(data.orderNumber || data.orderId || "").slice(0, 8)}</strong> este în curs de procesare.</p>
+    ${data.trackingNumber ? `
+      <div style="background:#EDE9FE;padding:16px;border-radius:8px;margin:16px 0;text-align:center;border:1px solid #C4B5FD">
+        <p style="margin:0 0 6px;font-weight:bold;color:#5B21B6">📦 Număr tracking</p>
+        <p style="margin:0;font-size:20px;font-family:monospace;font-weight:bold;color:#5B21B6">${data.trackingNumber}</p>
+      </div>
+    ` : `
+      <div style="background:#FEF3C7;padding:16px;border-radius:8px;margin:16px 0;text-align:center;border:1px solid #F59E0B">
+        <p style="margin:0;color:${BRAND.color}">📦 Status: <strong>${data.status === "shipped" ? "Expediat" : data.status === "processing" ? "În procesare" : "Confirmat"}</strong></p>
+        <p style="margin:8px 0 0;color:${BRAND.mutedColor};font-size:13px">Vei primi AWB-ul de urmărire imediat ce coletul este predat curierului.</p>
+      </div>
+    `}
+    <div style="text-align:center;margin-top:20px">
+      ${btn("Verifică statusul →", data.trackingUrl || "https://mamalucica.ro/tracking")}
+    </div>
+  ${footer()}`;
+}
+
+function reviewRequestHTML(data: Record<string, any>) {
+  const productList = (data.products || []).map((name: string) => `<li style="margin:4px 0">${name}</li>`).join("");
+  return `${header("Cum a fost experiența?", "⭐")}
+    <p style="color:${BRAND.textColor};font-size:15px">Bună, <strong>${data.name || "Client"}</strong>!</p>
+    <p style="color:${BRAND.mutedColor};font-size:14px">Au trecut câteva zile de când ai primit comanda <strong>#${(data.orderNumber || data.orderId || "").slice(0, 8)}</strong>. Ne-ar bucura enorm să ne spui ce părere ai!</p>
+    ${productList ? `<div style="background:#fff;padding:16px;border-radius:8px;margin:16px 0;border:1px solid #F5E6D3">
+      <p style="margin:0 0 8px;font-weight:bold;color:${BRAND.color}">Produse de evaluat:</p>
+      <ul style="padding-left:18px;color:${BRAND.textColor};font-size:14px">${productList}</ul>
+    </div>` : ""}
+    <div style="text-align:center;margin:24px 0">
+      <p style="font-size:32px;margin:0">⭐⭐⭐⭐⭐</p>
+    </div>
+    <div style="text-align:center">
+      ${btn("Scrie o recenzie →", data.reviewUrl || "https://mamalucica.ro/account")}
+    </div>
+    <p style="color:${BRAND.mutedColor};font-size:13px;text-align:center;margin-top:16px">Recenziile tale ajută alți clienți să aleagă! 💛</p>
+  ${footer()}`;
+}
+
+function weeklyReportHTML(data: Record<string, any>) {
+  return data.html || `${header("Raport Săptămânal", "📊")}<p>Raport gol</p>${footer()}`;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -323,6 +387,22 @@ serve(async (req) => {
       case "test":
         subject = "✅ Email de test — VENTUZA";
         html = testHTML(data);
+        break;
+      case "care_guide":
+        subject = `Ghid de îngrijire pentru comanda #${(data.orderNumber || data.orderId || "").slice(0, 8)} 🕯️ — VENTUZA`;
+        html = careGuideHTML(data);
+        break;
+      case "tracking_update":
+        subject = `Comanda #${(data.orderNumber || data.orderId || "").slice(0, 8)} — actualizare status 📦`;
+        html = trackingUpdateHTML(data);
+        break;
+      case "review_request":
+        subject = `Cum a fost experiența cu comanda #${(data.orderNumber || data.orderId || "").slice(0, 8)}? ⭐`;
+        html = reviewRequestHTML(data);
+        break;
+      case "weekly_report":
+        subject = `📊 Raport săptămânal VENTUZA — ${new Date().toLocaleDateString("ro-RO")}`;
+        html = weeklyReportHTML(data);
         break;
       default:
         throw new Error(`Unknown email type: ${type}`);
