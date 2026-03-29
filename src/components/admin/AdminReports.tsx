@@ -115,7 +115,11 @@ export default function AdminReports() {
     if (!dailyMap[day]) dailyMap[day] = { date: day, revenue: 0, orders: 0, profit: 0 };
     dailyMap[day].revenue += Number(o.total);
     dailyMap[day].orders += 1;
-    dailyMap[day].profit += Number(o.total) * 0.4; // estimated profit
+    const orderCost = (o.order_items || []).reduce((is: number, item: any) => {
+      const cp = item.products?.cost_price;
+      return is + (cp ? cp * item.quantity : Number(item.price) * item.quantity * 0.6);
+    }, 0);
+    dailyMap[day].profit += Number(o.total) - orderCost;
   });
   const dailyChart = Object.values(dailyMap).sort((a, b) => a.date.localeCompare(b.date));
 
