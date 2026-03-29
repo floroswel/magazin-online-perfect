@@ -309,10 +309,7 @@ export default function Checkout() {
           body: { orderId: order.id },
         });
 
-        console.log("NETOPIA V2 RESPONSE:", JSON.stringify(netopiaData));
-
         if (netopiaError || !netopiaData?.paymentUrl) {
-          console.error("NETOPIA V2 ERROR:", netopiaError, netopiaData);
           const errMsg = netopiaData?.error || "Eroare la inițierea plății cu cardul.";
           toast.error(typeof errMsg === "string" ? errMsg : "Eroare la inițierea plății cu cardul.");
           await supabase.from("orders").update({ status: "payment_failed", payment_status: "failed" }).eq("id", order.id);
