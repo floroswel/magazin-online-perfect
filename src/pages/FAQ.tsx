@@ -53,6 +53,37 @@ const faqSections = [
 ];
 
 export default function FAQ() {
+  usePageSeo({
+    title: "Întrebări Frecvente — FAQ | MamaLucica",
+    description: "Răspunsuri la cele mai comune întrebări despre comenzi, livrare, plăți, retururi și lumânările handmade MamaLucica.",
+  });
+
+  // Schema.org FAQPage structured data
+  useEffect(() => {
+    const allItems = faqSections.flatMap(s => s.items);
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: allItems.map(item => ({
+        "@type": "Question",
+        name: item.q,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: item.a,
+        },
+      })),
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.text = JSON.stringify(schema);
+    script.id = "faq-schema";
+    document.head.appendChild(script);
+    return () => {
+      const el = document.getElementById("faq-schema");
+      if (el) el.remove();
+    };
+  }, []);
+
   return (
     <Layout>
       <section className="bg-secondary text-secondary-foreground py-16 md:py-20">
