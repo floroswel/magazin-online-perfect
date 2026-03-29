@@ -14,20 +14,13 @@ export default function InstagramFeed() {
   const ref = useScrollReveal();
 
   return (
-    <section className="py-16 md:py-20" ref={ref}>
-      <div className="container px-4 text-center mb-8 reveal stagger-1">
-        <h2 className="font-serif text-3xl md:text-4xl text-foreground mb-2">Urmărește-ne pe Instagram</h2>
-        <a
-          href="https://instagram.com/mamalucica"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 font-sans text-sm text-primary hover:underline"
-        >
-          <Instagram className="h-4 w-4" />
+    <section ref={ref}>
+      <div className="text-center py-8 reveal stagger-1">
+        <p className="font-sans text-[11px] font-medium tracking-[3px] uppercase text-muted-foreground">
           @mamalucica
-        </a>
+        </p>
       </div>
-      <div className="grid grid-cols-3 md:grid-cols-6 gap-1 reveal stagger-2">
+      <div className="grid grid-cols-3 md:grid-cols-6 reveal stagger-2">
         {images.map((img, i) => (
           <a
             key={i}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Star, BadgeCheck } from "lucide-react";
+import { Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
@@ -26,29 +26,25 @@ export default function ReviewsSection() {
   }, []);
 
   return (
-    <section className="bg-background py-16 md:py-24" ref={ref}>
+    <section className="py-16 md:py-24" ref={ref}>
       <div className="container px-4">
-        <div className="text-center mb-12 reveal stagger-1">
-          <h2 className="font-serif text-3xl md:text-4xl text-foreground">Ce spun clienții noștri</h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {reviews.map((r, i) => (
             <div
               key={r.id}
-              className={`reveal stagger-${Math.min(i + 2, 4)} bg-background border border-border p-6 md:p-8`}
+              className={`reveal stagger-${Math.min(i + 1, 4)} text-center px-4`}
             >
-              <div className="flex gap-0.5 mb-4">
+              <div className="flex justify-center gap-0.5 mb-5">
                 {Array.from({ length: 5 }).map((_, j) => (
-                  <Star key={j} className={`h-4 w-4 ${j < r.rating ? "fill-primary text-primary" : "text-border"}`} />
+                  <Star key={j} className={`h-4 w-4 ${j < r.rating ? "fill-foreground text-foreground" : "text-border"}`} />
                 ))}
               </div>
-              <p className="font-sans text-sm text-foreground/80 leading-relaxed mb-6 italic">"{r.body || r.comment}"</p>
-              <div className="flex items-center gap-2">
-                <p className="font-sans text-sm font-medium text-foreground">{r.user_name || r.reviewer_name || "Client"}</p>
-                <BadgeCheck className="h-3.5 w-3.5 text-primary" />
-                <span className="font-sans text-[10px] text-muted-foreground">Cumpărare verificată</span>
-              </div>
+              <p className="font-serif text-base text-foreground/80 leading-relaxed mb-6 italic">
+                "{r.body || r.comment}"
+              </p>
+              <p className="font-sans text-[12px] font-medium tracking-[1px] uppercase text-muted-foreground">
+                {r.user_name || r.reviewer_name || "Client"}
+              </p>
             </div>
           ))}
         </div>
