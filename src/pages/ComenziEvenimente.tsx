@@ -88,7 +88,7 @@ export default function ComenziEvenimente() {
           </div>
         </div>
 
-        <div className="ventuza-divider mb-12" />
+        <div className="border-t border-border my-8 mb-12" />
 
         <div className="text-center">
           <p className="text-xs tracking-[0.3em] uppercase text-primary mb-3 font-medium">Proces</p>

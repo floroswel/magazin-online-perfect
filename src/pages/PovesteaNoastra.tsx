@@ -25,7 +25,7 @@ export default function PovesteaNoastra() {
           </p>
         </section>
 
-        <div className="ventuza-divider" />
+        <div className="border-t border-border my-8" />
 
         <section>
           <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">Ingrediente</p>
@@ -45,7 +45,7 @@ export default function PovesteaNoastra() {
           </div>
         </section>
 
-        <div className="ventuza-divider" />
+        <div className="border-t border-border my-8" />
 
         <section>
           <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">Principii</p>
@@ -68,7 +68,7 @@ export default function PovesteaNoastra() {
           </div>
         </section>
 
-        <div className="ventuza-divider" />
+        <div className="border-t border-border my-8" />
 
         <section className="text-center">
           <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">Angajament</p>

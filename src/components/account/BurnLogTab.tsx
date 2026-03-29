@@ -140,7 +140,7 @@ export default function BurnLogTab() {
                   {log.rating && (
                     <div className="flex items-center gap-0.5">
                       {Array.from({ length: log.rating }).map((_, i) => (
-                        <Star key={i} className="h-3 w-3 fill-ventuza-amber text-accent" />
+                        <Star key={i} className="h-3 w-3 fill-accent text-accent" />
                       ))}
                     </div>
                   )}
@@ -185,7 +185,7 @@ export default function BurnLogTab() {
               <div className="flex gap-1 mt-1">
                 {[1, 2, 3, 4, 5].map(n => (
                   <button key={n} onClick={() => setForm(f => ({ ...f, rating: String(n) }))} className="p-1">
-                    <Star className={`h-5 w-5 ${n <= parseInt(form.rating) ? "fill-ventuza-amber text-accent" : "text-muted-foreground"}`} />
+                    <Star className={`h-5 w-5 ${n <= parseInt(form.rating) ? "fill-accent text-accent" : "text-muted-foreground"}`} />
                   </button>
                 ))}
               </div>
