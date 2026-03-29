@@ -102,6 +102,7 @@ export default function Footer() {
     { label: "Devino Artizan", url: "/page/vinde", active: true },
     { label: "Portal Artizani", url: "/page/portal-vendori", active: true },
     { label: "Reguli & Politici", url: "/page/reguli", active: true },
+    { label: "Instalează Aplicația", url: "/install", active: true },
   ];
 
   const col4Links = [

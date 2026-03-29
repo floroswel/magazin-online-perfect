@@ -31,6 +31,18 @@ function highlightMatch(text: string, query: string) {
   ).join('');
 }
 
+const RECENT_KEY = "recent_searches";
+function getRecentSearches(): string[] {
+  try { return JSON.parse(localStorage.getItem(RECENT_KEY) || "[]").slice(0, 5); } catch { return []; }
+}
+function addRecentSearch(q: string) {
+  const recent = getRecentSearches().filter(s => s !== q);
+  recent.unshift(q);
+  localStorage.setItem(RECENT_KEY, JSON.stringify(recent.slice(0, 5)));
+}
+
+const TRENDING = ["vanilie", "lavandă", "set cadou", "aromaterapie", "personalizare"];
+
 export default function SearchAutocomplete({ className }: { className?: string }) {
   const navigate = useNavigate();
   const { format } = useCurrency();
@@ -38,6 +50,7 @@ export default function SearchAutocomplete({ className }: { className?: string }
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [activeIdx, setActiveIdx] = useState(-1);
   const ref = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
 
@@ -76,8 +89,23 @@ export default function SearchAutocomplete({ className }: { className?: string }
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
+      addRecentSearch(query.trim());
       setOpen(false);
       navigate(`/catalog?search=${encodeURIComponent(query.trim())}`);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!open) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIdx(prev => Math.min(prev + 1, suggestions.length));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIdx(prev => Math.max(prev - 1, -1));
+    } else if (e.key === "Enter" && activeIdx >= 0 && activeIdx < suggestions.length) {
+      e.preventDefault();
+      goToProduct(suggestions[activeIdx].slug);
     }
   };
 
@@ -94,7 +122,8 @@ export default function SearchAutocomplete({ className }: { className?: string }
           <Input
             value={query}
             onChange={(e) => search(e.target.value)}
-            onFocus={() => suggestions.length > 0 && setOpen(true)}
+            onFocus={() => setOpen(true)}
+            onKeyDown={handleKeyDown}
             placeholder="Caută lumânări..."
             className="w-full pr-16 bg-card border-none h-11 rounded-lg text-foreground placeholder:text-muted-foreground"
           />
@@ -116,18 +145,46 @@ export default function SearchAutocomplete({ className }: { className?: string }
       </form>
 
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-xl z-50 overflow-hidden">
-          {loading ? (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-xl z-50 overflow-hidden max-h-[400px] overflow-y-auto">
+          {query.trim().length < 3 ? (
+            <div className="p-3">
+              {getRecentSearches().length > 0 && (
+                <div className="mb-3">
+                  <p className="text-xs font-semibold text-muted-foreground mb-2 px-1">Căutări recente</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {getRecentSearches().map(s => (
+                      <button key={s} className="text-xs px-2.5 py-1 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors"
+                        onClick={() => { setQuery(s); search(s); }}>
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div>
+                <p className="text-xs font-semibold text-muted-foreground mb-2 px-1">Populare</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {TRENDING.map(t => (
+                    <button key={t} className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                      onClick={() => { setQuery(t); search(t); }}>
+                      🔥 {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : loading ? (
             <div className="p-4 text-center text-sm text-muted-foreground">Se caută...</div>
           ) : suggestions.length === 0 ? (
             <div className="p-4 text-center text-sm text-muted-foreground">Niciun rezultat pentru „{query}"</div>
           ) : (
             <>
-              {suggestions.map((s) => (
+              {suggestions.map((s, idx) => (
                 <button
                   key={s.id}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-muted transition-colors text-left"
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-muted transition-colors text-left ${activeIdx === idx ? "bg-muted" : ""}`}
                   onClick={() => goToProduct(s.slug)}
+                  onMouseEnter={() => setActiveIdx(idx)}
                 >
                   <img
                     src={s.image_url || "/placeholder.svg"}
@@ -155,7 +212,7 @@ export default function SearchAutocomplete({ className }: { className?: string }
                 </button>
               ))}
               <button
-                className="w-full px-4 py-2.5 text-center text-sm text-primary hover:bg-muted transition-colors font-medium border-t border-border"
+                className={`w-full px-4 py-2.5 text-center text-sm text-primary hover:bg-muted transition-colors font-medium border-t border-border ${activeIdx === suggestions.length ? "bg-muted" : ""}`}
                 onClick={handleSubmit as any}
               >
                 Vezi toate rezultatele pentru „{query}"
