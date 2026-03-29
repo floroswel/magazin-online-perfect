@@ -310,8 +310,8 @@ export default function Account() {
           <div>
             <Tabs defaultValue="orders">
               {/* Scrollable tab bar */}
-              <ScrollArea className="w-full">
-                <TabsList className="inline-flex w-max gap-1 p-1">
+              <ScrollArea className="w-full overflow-x-auto">
+                <TabsList className="inline-flex w-max gap-1 p-1 mb-1">
                   <TabsTrigger value="orders" className="gap-1.5 text-xs"><Package className="h-3.5 w-3.5" /> Comenzi</TabsTrigger>
                   <TabsTrigger value="invoices" className="gap-1.5 text-xs"><FileText className="h-3.5 w-3.5" /> Facturi</TabsTrigger>
                   <TabsTrigger value="addresses" className="gap-1.5 text-xs"><MapPin className="h-3.5 w-3.5" /> Adrese</TabsTrigger>
