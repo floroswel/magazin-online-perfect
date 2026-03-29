@@ -12,7 +12,7 @@ export default function Recenzii() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let q = (supabase as any).from("reviews").select("*, products(name, slug, image_url)").eq("status", "approved").order("created_at", { ascending: false }).limit(50);
+    let q = supabase.from("product_reviews").select("*, products(name, slug, image_url)").eq("status", "approved").order("created_at", { ascending: false }).limit(50);
     if (filter !== "all") q = q.eq("rating", parseInt(filter));
     q.then(({ data }: any) => { setReviews(data || []); setLoading(false); });
   }, [filter]);
