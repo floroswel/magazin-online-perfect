@@ -306,7 +306,7 @@ export default function Account() {
         </div>
 
         {/* Two-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 items-start">
           <div>
             <Tabs defaultValue="orders">
               {/* Scrollable tab bar */}
