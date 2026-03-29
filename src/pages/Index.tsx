@@ -116,11 +116,11 @@ export default function Index() {
     recently_viewed: showRecentlyViewed,
     newsletter_section: showNewsletter,
     instagram_feed: showInstagram,
-    brand_logos: true,
-    quick_filters: true,
-    coupon_collector: true,
-    top_vendors: true,
-    buy_again: true,
+    brand_logos: showBrandLogos,
+    quick_filters: showQuickFilters,
+    coupon_collector: showCouponCollector,
+    top_vendors: showTopVendors,
+    buy_again: showBuyAgain,
   };
 
   const sectionComponents: Record<string, React.ReactNode> = useMemo(() => ({
