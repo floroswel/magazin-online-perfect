@@ -9,6 +9,8 @@ import FrequentlyBoughtTogether from "@/components/products/FrequentlyBoughtToge
 import UpgradeRecommendation from "@/components/products/UpgradeRecommendation";
 import VendorComparison from "@/components/products/VendorComparison";
 import PriceDropAlert from "@/components/products/PriceDropAlert";
+import ScentPairing from "@/components/products/ScentPairing";
+import CandleCalculator from "@/components/products/CandleCalculator";
 import { trackViewItem, trackAddToCart } from "@/hooks/useMarketingTracking";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
