@@ -23,7 +23,7 @@ const defaultBaseProducts = [
   { id: "set", name: "Set Cadou", price: 89, image: "🎁" },
 ];
 
-const scents = [
+const defaultScents = [
   { id: "vanilie", name: "Vanilie ☁️", color: "#F5E6D3", intensity: 2, top: "Bergamot", mid: "Vanilie", base: "Mosc" },
   { id: "lavanda", name: "Lavandă 💜", color: "#D4B8E0", intensity: 2, top: "Lavandă", mid: "Eucalipt", base: "Cedru" },
   { id: "trandafir", name: "Trandafir 🌹", color: "#F5C3C2", intensity: 3, top: "Bergamot, Lămâie", mid: "Trandafir, Iasomie", base: "Mosc, Santal" },
@@ -34,7 +34,7 @@ const scents = [
   { id: "cafea", name: "Cafea ☕", color: "#6F4E37", intensity: 3, top: "Espresso", mid: "Ciocolată", base: "Lemn" },
 ];
 
-const colors = [
+const defaultColors = [
   "#FFFFFF", "#F5F5DC", "#FFF0F5", "#F5C3C2", "#FFB6C1", "#FF69B4",
   "#DDA0DD", "#D4B8E0", "#E6E6FA", "#B0E0E6", "#A8D5E2", "#87CEEB",
   "#98FB98", "#8FBC8F", "#F0E68C", "#FFD700", "#FFA07A", "#FF6347",

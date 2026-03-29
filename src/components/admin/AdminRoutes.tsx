@@ -315,6 +315,9 @@ export default function AdminRoutes() {
         <Route path="content/email-templates" element={<AdminEmailTemplates />} />
         <Route path="content/seo" element={<AdminSeoSettings />} />
         <Route path="content/legal" element={<AdminCmsPages filterLegal />} />
+        <Route path="content/hero-slides" element={<AdminHeroSlides />} />
+        <Route path="content/personalization" element={<AdminPersonalizationOptions />} />
+        <Route path="content/static-pages" element={<AdminStaticPages />} />
 
         {/* ═══════════ PLĂȚI ═══════════ */}
         <Route path="payments/methods" element={<AdminPaymentMethods />} />
