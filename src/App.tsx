@@ -119,6 +119,9 @@ const App = () => (
               <Route path="/card-cadou" element={<ErrorBoundary><GiftCards /></ErrorBoundary>} />
               <Route path="/despre-noi/numere" element={<ErrorBoundary><TransparencyDashboard /></ErrorBoundary>} />
               <Route path="/l/:city/:category" element={<ErrorBoundary><SeoLanding /></ErrorBoundary>} />
+              <Route path="/colectii-sezoniere" element={<ErrorBoundary><SeasonalCollections /></ErrorBoundary>} />
+              <Route path="/virtual-try-on" element={<ErrorBoundary><VirtualTryOn /></ErrorBoundary>} />
+              <Route path="/post-delivery/:token" element={<ErrorBoundary><PostDelivery /></ErrorBoundary>} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<ErrorBoundary><NotFound /></ErrorBoundary>} />
             </Routes>
