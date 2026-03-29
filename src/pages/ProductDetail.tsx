@@ -389,6 +389,11 @@ export default function ProductDetail() {
           </div>
         </div>
 
+        {/* Vendor Comparison */}
+        <div className="mt-8">
+          <VendorComparison productName={product.name} />
+        </div>
+
         {/* Tabs */}
         <Tabs defaultValue="description" className="mt-8">
           <TabsList>
