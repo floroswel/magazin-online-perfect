@@ -463,7 +463,7 @@ export default function Checkout() {
                 </div>
               )}
 
-              <h2 className="text-lg font-semibold">Adresa de livrare</h2>
+              <h2 className="text-lg font-semibold">Detalii de facturare</h2>
               <div className="space-y-3">
                 <div><Label>Nume complet *</Label><Input value={form.fullName} onChange={e => updateField("fullName", e.target.value)} required /></div>
                 {!user && <div><Label>Email *</Label><Input type="email" value={form.email} onChange={e => updateField("email", e.target.value)} required /></div>}
@@ -490,6 +490,27 @@ export default function Checkout() {
                       <div><Label>Reg. Com.</Label><Input value={invoiceForm.regCom} onChange={e => setInvoiceForm(p => ({ ...p, regCom: e.target.value }))} /></div>
                     </div>
                     <div><Label>Adresă sediu</Label><Input value={invoiceForm.address} onChange={e => setInvoiceForm(p => ({ ...p, address: e.target.value }))} /></div>
+                  </div>
+                )}
+              </div>
+
+              {/* Ship to different address */}
+              <div>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <Checkbox checked={shipToDifferent} onCheckedChange={v => setShipToDifferent(!!v)} />
+                  <span className="text-sm font-medium">Doresc livrarea la o altă adresă</span>
+                </label>
+                {shipToDifferent && (
+                  <div className="mt-3 space-y-3 pl-6 border-l-2 border-primary/20">
+                    <h3 className="text-sm font-semibold text-muted-foreground">Adresa de livrare</h3>
+                    <div><Label>Nume destinatar *</Label><Input value={shippingForm.fullName} onChange={e => setShippingForm(p => ({ ...p, fullName: e.target.value }))} /></div>
+                    <div><Label>Telefon destinatar *</Label><Input value={shippingForm.phone} onChange={e => setShippingForm(p => ({ ...p, phone: e.target.value }))} /></div>
+                    <div><Label>Adresă livrare *</Label><Input value={shippingForm.address} onChange={e => setShippingForm(p => ({ ...p, address: e.target.value }))} /></div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div><Label>Oraș *</Label><Input value={shippingForm.city} onChange={e => setShippingForm(p => ({ ...p, city: e.target.value }))} /></div>
+                      <div><Label>Județ *</Label><Input value={shippingForm.county} onChange={e => setShippingForm(p => ({ ...p, county: e.target.value }))} /></div>
+                    </div>
+                    <div><Label>Cod poștal</Label><Input value={shippingForm.postalCode} onChange={e => setShippingForm(p => ({ ...p, postalCode: e.target.value }))} /></div>
                   </div>
                 )}
               </div>
