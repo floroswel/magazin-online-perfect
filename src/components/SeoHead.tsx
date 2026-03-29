@@ -15,7 +15,7 @@ interface SeoSettings {
 }
 
 const defaults: SeoSettings = {
-  site_title: "VENTUZA",
+  site_title: "MamaLucica",
   site_description: "Descoperă lumânări artizanale create din ingrediente naturale, parfumuri rare și cere de soia. Livrare în 24-48h.",
   og_image: "/og-homepage.jpg",
   google_verification: "",
@@ -99,7 +99,7 @@ export function usePageSeo(data: PageSeoData) {
     setMeta("og:type", data.ogType || "website", "property");
     setMeta("og:image", data.ogImage || seo.og_image || "/og-homepage.jpg", "property");
     setMeta("og:url", base + location.pathname, "property");
-    setMeta("og:site_name", "VENTUZA", "property");
+    setMeta("og:site_name", "MamaLucica", "property");
     setMeta("og:locale", "ro_RO", "property");
 
     // Product-specific OG
@@ -156,7 +156,7 @@ export default function SeoHead() {
   const orgSchema = safeJsonLd({
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "VENTUZA SRL",
+    name: "MamaLucica SRL",
     url: base,
     logo: base + "/og-homepage.jpg",
     sameAs: [

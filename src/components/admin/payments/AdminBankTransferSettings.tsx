@@ -229,7 +229,7 @@ export default function AdminBankTransferSettings() {
               <Input
                 value={form.company_name || ""}
                 onChange={(e) => setForm((p: any) => ({ ...p, company_name: e.target.value }))}
-                placeholder="SC VENTUZA SRL"
+                placeholder="SC MamaLucica SRL"
               />
             </div>
             <div className="space-y-2">
@@ -290,7 +290,7 @@ export default function AdminBankTransferSettings() {
                 </div>
                 <div className="space-y-2">
                   <Label>Titular cont *</Label>
-                  <Input value={acc.account_holder} onChange={(e) => updateAccount(acc.id, "account_holder", e.target.value)} placeholder="SC VENTUZA SRL" />
+                  <Input value={acc.account_holder} onChange={(e) => updateAccount(acc.id, "account_holder", e.target.value)} placeholder="SC MamaLucica SRL" />
                 </div>
                 <div className="space-y-2">
                   <Label>Monedă</Label>
