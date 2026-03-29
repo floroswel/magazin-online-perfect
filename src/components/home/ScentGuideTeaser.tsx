@@ -3,18 +3,18 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const promos = [
   {
-    title: "Reduceri de Primăvară",
-    subtitle: "Până la -50%",
-    cta: "Cumpără Acum",
-    link: "/catalog?badge=deals",
-    image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&h=300&fit=crop",
+    title: "Lumânări de Sezon",
+    subtitle: "Arome noi de toamnă",
+    cta: "Descoperă Colecția",
+    link: "/catalog?category=colectii-sezoniere",
+    image: "https://images.unsplash.com/photo-1605651531144-51381895e23a?w=600&h=300&fit=crop",
   },
   {
-    title: "Produse Noi",
-    subtitle: "Descoperă Colecția",
-    cta: "Vezi Noutățile",
-    link: "/catalog?sort=newest",
-    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&h=300&fit=crop",
+    title: "Personalizează-ți Lumânarea",
+    subtitle: "Gravură, arome, culori la alegere",
+    cta: "Creează Acum",
+    link: "/personalizare",
+    image: "https://images.unsplash.com/photo-1608181831718-3b43e628bba2?w=600&h=300&fit=crop",
   },
 ];
 

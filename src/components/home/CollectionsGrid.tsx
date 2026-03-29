@@ -2,14 +2,14 @@ import { Link } from "react-router-dom";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const collections = [
-  { name: "Electronice", slug: "electronice", image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=300&fit=crop", count: "2.500+" },
-  { name: "Modă", slug: "moda", image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop", count: "5.000+" },
-  { name: "Casa & Grădină", slug: "casa-gradina", image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop", count: "3.200+" },
-  { name: "Sport", slug: "sport", image: "https://images.unsplash.com/photo-1461896836934-bd45ba8fcf9b?w=400&h=300&fit=crop", count: "1.800+" },
-  { name: "Auto", slug: "auto", image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&h=300&fit=crop", count: "900+" },
-  { name: "Copii", slug: "copii", image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=300&fit=crop", count: "2.100+" },
-  { name: "Sănătate", slug: "sanatate", image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=400&h=300&fit=crop", count: "1.400+" },
-  { name: "Cărți", slug: "carti", image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=300&fit=crop", count: "4.000+" },
+  { name: "Parfumate", slug: "lumanari-parfumate", image: "https://images.unsplash.com/photo-1602607167093-5ac4af65e1cd?w=400&h=300&fit=crop", count: "120+" },
+  { name: "Decorative", slug: "lumanari-decorative", image: "https://images.unsplash.com/photo-1603006905003-be475563bc59?w=400&h=300&fit=crop", count: "85+" },
+  { name: "Cadouri", slug: "cadouri-seturi", image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=300&fit=crop", count: "60+" },
+  { name: "Aromaterapie", slug: "aromaterapie", image: "https://images.unsplash.com/photo-1545231027-637d2f6210f8?w=400&h=300&fit=crop", count: "45+" },
+  { name: "Eveniment", slug: "lumanari-eveniment", image: "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=400&h=300&fit=crop", count: "70+" },
+  { name: "Personalizare", slug: "personalizare", image: "https://images.unsplash.com/photo-1608181831718-3b43e628bba2?w=400&h=300&fit=crop", count: "30+" },
+  { name: "Accesorii", slug: "accesorii", image: "https://images.unsplash.com/photo-1572726729207-a78d6feb18d7?w=400&h=300&fit=crop", count: "40+" },
+  { name: "Sezoniere", slug: "colectii-sezoniere", image: "https://images.unsplash.com/photo-1605651531144-51381895e23a?w=400&h=300&fit=crop", count: "25+" },
 ];
 
 export default function CollectionsGrid() {
@@ -18,7 +18,7 @@ export default function CollectionsGrid() {
   return (
     <section className="container py-8 md:py-12 px-4" ref={ref}>
       <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 reveal stagger-1">
-        Cumpără pe Categorii
+        Explorează Colecțiile
       </h2>
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 reveal stagger-2">
         {collections.map((col) => (
