@@ -6,6 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
 import React from "react";
+import { useVisibility } from "@/hooks/useVisibility";
+import { useLayoutSettings } from "@/hooks/useLayoutSettings";
 
 const emailSchema = z.string().trim().email("Adresa de email nu este validă").max(255);
 

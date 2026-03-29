@@ -6,6 +6,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useCart } from "@/hooks/useCart";
 import { useDarkMode } from "@/hooks/useDarkMode";
+import { useVisibility } from "@/hooks/useVisibility";
+import { useLayoutSettings } from "@/hooks/useLayoutSettings";
 import SearchAutocomplete from "@/components/SearchAutocomplete";
 import MegaMenu from "@/components/layout/MegaMenu";
 
@@ -27,8 +29,17 @@ export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isDark, toggle: toggleDarkMode } = useDarkMode();
+  const layout = useLayoutSettings();
   const [mobileMenu, setMobileMenu] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
+
+  // Visibility hooks
+  const showLogo = useVisibility("header_logo");
+  const showSearch = useVisibility("header_search");
+  const showCart = useVisibility("header_cart");
+  const showMenu = useVisibility("header_menu");
+  const showMegaMenu = useVisibility("mega_menu");
+  const showFreeShipping = useVisibility("free_shipping_bar");
 
   useEffect(() => {
     if (mobileMenu) document.body.style.overflow = "hidden";
@@ -36,43 +47,54 @@ export default function Header() {
     return () => { document.body.style.overflow = ""; };
   }, [mobileMenu]);
 
+  const headerHeightClass = layout.header_height === "compact" ? "h-12 md:h-12" : layout.header_height === "tall" ? "h-16 md:h-20" : "h-14 md:h-16";
+  const stickyClass = layout.header_sticky ? "sticky top-0" : "";
+
   return (
     <>
       {/* Top info bar */}
-      <div className="bg-foreground text-background relative z-[60]">
-        <div className="container flex items-center justify-between h-8 px-4 text-[11px]">
-          <div className="hidden md:flex items-center gap-4">
-            <span className="flex items-center gap-1 opacity-80"><Truck className="w-3 h-3" /> Livrare gratuită peste 200 lei</span>
-            <span className="flex items-center gap-1 opacity-80"><RotateCcw className="w-3 h-3" /> Retur 30 zile</span>
-          </div>
-          <div className="flex items-center gap-4 ml-auto">
-            <span className="flex items-center gap-1 opacity-80"><Headphones className="w-3 h-3" /> Suport: 0800-123-456</span>
-            <button onClick={toggleDarkMode} className="opacity-70 hover:opacity-100 transition-opacity">
-              {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-            </button>
+      {showFreeShipping !== false && (
+        <div className="bg-foreground text-background relative z-[60]">
+          <div className="container flex items-center justify-between h-8 px-4 text-[11px]">
+            <div className="hidden md:flex items-center gap-4">
+              <span className="flex items-center gap-1 opacity-80"><Truck className="w-3 h-3" /> Livrare gratuită peste 200 lei</span>
+              <span className="flex items-center gap-1 opacity-80"><RotateCcw className="w-3 h-3" /> Retur 30 zile</span>
+            </div>
+            <div className="flex items-center gap-4 ml-auto">
+              <span className="flex items-center gap-1 opacity-80"><Headphones className="w-3 h-3" /> Suport: 0800-123-456</span>
+              <button onClick={toggleDarkMode} className="opacity-70 hover:opacity-100 transition-opacity">
+                {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Header */}
-      <header className="bg-primary sticky top-0 z-50 shadow-md">
-        <div className="container flex items-center h-14 md:h-16 px-4 gap-3 md:gap-5">
+      <header className={`bg-primary ${stickyClass} z-50 shadow-md`}>
+        <div className={`container flex items-center ${headerHeightClass} px-4 gap-3 md:gap-5`}>
           {/* Hamburger mobile */}
-          <button className="lg:hidden text-primary-foreground" onClick={() => setMobileMenu(true)} aria-label="Meniu">
-            <Menu className="h-6 w-6" />
-          </button>
+          {showMenu !== false && (
+            <button className="lg:hidden text-primary-foreground" onClick={() => setMobileMenu(true)} aria-label="Meniu">
+              <Menu className="h-6 w-6" />
+            </button>
+          )}
 
           {/* Logo */}
-          <Link to="/" className="shrink-0">
-            <span className="text-primary-foreground font-extrabold text-xl md:text-2xl tracking-tight">
-              MamaLucica
-            </span>
-          </Link>
+          {showLogo !== false && (
+            <Link to="/" className="shrink-0">
+              <span className="text-primary-foreground font-extrabold text-xl md:text-2xl tracking-tight">
+                MamaLucica
+              </span>
+            </Link>
+          )}
 
           {/* Search bar */}
-          <div className="flex-1 max-w-2xl hidden md:block">
-            <SearchAutocomplete className="[&_input]:bg-primary-foreground [&_input]:text-foreground [&_input]:placeholder:text-muted-foreground [&_input]:rounded-lg [&_input]:h-10 [&_input]:border-0" />
-          </div>
+          {showSearch !== false && (
+            <div className="flex-1 max-w-2xl hidden md:block">
+              <SearchAutocomplete className="[&_input]:bg-primary-foreground [&_input]:text-foreground [&_input]:placeholder:text-muted-foreground [&_input]:rounded-lg [&_input]:h-10 [&_input]:border-0" />
+            </div>
+          )}
 
           {/* Right actions */}
           <div className="flex items-center gap-1 ml-auto md:ml-0">
@@ -91,69 +113,89 @@ export default function Header() {
               </Link>
             )}
 
-            <Link to={user ? "/cart" : "/auth"} className="relative flex flex-col items-center px-3 text-primary-foreground/90 hover:text-primary-foreground transition-colors">
-              <div className="relative">
-                <ShoppingBag className="h-5 w-5" />
-                {totalItems > 0 && (
-                  <span className="absolute -top-1.5 -right-2 h-[18px] min-w-[18px] flex items-center justify-center rounded-full bg-accent text-accent-foreground text-[10px] font-bold px-1">
-                    {totalItems}
-                  </span>
-                )}
-              </div>
-              <span className="text-[10px] mt-0.5 hidden md:block">Coș</span>
-            </Link>
+            {showCart !== false && (
+              <Link to={user ? "/cart" : "/auth"} className="relative flex flex-col items-center px-3 text-primary-foreground/90 hover:text-primary-foreground transition-colors">
+                <div className="relative">
+                  <ShoppingBag className="h-5 w-5" />
+                  {totalItems > 0 && (
+                    <span className="absolute -top-1.5 -right-2 h-[18px] min-w-[18px] flex items-center justify-center rounded-full bg-accent text-accent-foreground text-[10px] font-bold px-1">
+                      {totalItems}
+                    </span>
+                  )}
+                </div>
+                <span className="text-[10px] mt-0.5 hidden md:block">Coș</span>
+              </Link>
+            )}
 
             {/* Mobile search */}
-            <Link to="/catalog" className="md:hidden text-primary-foreground/90 px-2">
-              <Search className="h-5 w-5" />
-            </Link>
+            {showSearch !== false && (
+              <Link to="/catalog" className="md:hidden text-primary-foreground/90 px-2">
+                <Search className="h-5 w-5" />
+              </Link>
+            )}
           </div>
+
+          {/* Header CTA button from layout settings */}
+          {layout.header_cta_show && layout.header_cta_text && (
+            <Link
+              to={layout.header_cta_url || "/"}
+              className="hidden lg:inline-flex items-center bg-accent text-accent-foreground px-4 py-1.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+            >
+              {layout.header_cta_text}
+            </Link>
+          )}
         </div>
 
         {/* Category navigation bar */}
-        <div className="hidden lg:block bg-primary border-t border-primary-foreground/10">
-          <div className="container flex items-center h-10 px-4">
-            {/* Categories mega-menu dropdown */}
-            <div className="relative" onMouseEnter={() => setShowCategories(true)} onMouseLeave={() => setShowCategories(false)}>
-              <button className="flex items-center gap-1.5 text-primary-foreground text-sm font-medium h-10 px-4 hover:bg-primary-foreground/10 transition-colors">
-                <Menu className="w-4 h-4" />
-                Categorii
-                <ChevronDown className="w-3 h-3" />
-              </button>
-              {showCategories && (
-                <div className="absolute top-full left-0 z-50 animate-fade-in" style={{ width: 720 }}>
-                  <MegaMenu />
+        {showMenu !== false && (
+          <div className="hidden lg:block bg-primary border-t border-primary-foreground/10">
+            <div className="container flex items-center h-10 px-4">
+              {/* Categories mega-menu dropdown */}
+              {showMegaMenu !== false && (
+                <div className="relative" onMouseEnter={() => setShowCategories(true)} onMouseLeave={() => setShowCategories(false)}>
+                  <button className="flex items-center gap-1.5 text-primary-foreground text-sm font-medium h-10 px-4 hover:bg-primary-foreground/10 transition-colors">
+                    <Menu className="w-4 h-4" />
+                    Categorii
+                    <ChevronDown className="w-3 h-3" />
+                  </button>
+                  {showCategories && (
+                    <div className="absolute top-full left-0 z-50 animate-fade-in" style={{ width: 720 }}>
+                      <MegaMenu />
+                    </div>
+                  )}
                 </div>
               )}
-            </div>
 
-            {/* Quick links */}
-            <nav className="flex items-center gap-0">
-              {[
-                { to: "/catalog?sort=newest", label: "Noutăți" },
-                { to: "/catalog?sort=popular", label: "Populare" },
-                { to: "/oferte", label: "🔥 Oferte" },
-                { to: "/catalog", label: "Toate Produsele" },
-                { to: "/povestea-noastra", label: "Despre Noi" },
-                { to: "/faq", label: "Ajutor" },
-              ].map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className="text-primary-foreground/80 hover:text-primary-foreground text-sm px-3 h-10 flex items-center transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
+              {/* Quick links */}
+              <nav className="flex items-center gap-0">
+                {[
+                  { to: "/catalog?sort=newest", label: "Noutăți" },
+                  { to: "/catalog?sort=popular", label: "Populare" },
+                  { to: "/oferte", label: "🔥 Oferte" },
+                  { to: "/catalog", label: "Toate Produsele" },
+                  { to: "/povestea-noastra", label: "Despre Noi" },
+                  { to: "/faq", label: "Ajutor" },
+                ].map((link) => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className="text-primary-foreground/80 hover:text-primary-foreground text-sm px-3 h-10 flex items-center transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
           </div>
-        </div>
+        )}
       </header>
 
       {/* Mobile search bar */}
-      <div className="md:hidden bg-card px-4 py-2 border-b border-border sticky top-14 z-40">
-        <SearchAutocomplete className="[&_input]:h-9 [&_input]:text-sm [&_input]:rounded-lg" />
-      </div>
+      {showSearch !== false && (
+        <div className="md:hidden bg-card px-4 py-2 border-b border-border sticky top-14 z-40">
+          <SearchAutocomplete className="[&_input]:h-9 [&_input]:text-sm [&_input]:rounded-lg" />
+        </div>
+      )}
 
       {/* Mobile fullscreen overlay */}
       <div
