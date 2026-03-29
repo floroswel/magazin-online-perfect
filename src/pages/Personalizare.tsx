@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Layout from "@/components/layout/Layout";
+import { usePageSeo } from "@/components/SeoHead";
 import { useCart } from "@/hooks/useCart";
 import { useCurrency } from "@/hooks/useCurrency";
 import { supabase } from "@/integrations/supabase/client";
@@ -55,6 +56,10 @@ const fonts = [
 ];
 
 export default function Personalizare() {
+  usePageSeo({
+    title: "Personalizare Lumânări — Creează-ți Lumânarea Unică | MamaLucica",
+    description: "Personalizează-ți lumânarea: alege aromele, culoarea, recipientul și mesajul. Cadou unic și memorabil.",
+  });
   const { addToCart } = useCart();
   const { format } = useCurrency();
 

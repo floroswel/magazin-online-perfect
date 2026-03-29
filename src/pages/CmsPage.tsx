@@ -3,10 +3,12 @@ import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
 import { useStoreBranding } from "@/hooks/useStoreBranding";
+import { usePageSeo } from "@/components/SeoHead";
 import { Loader2 } from "lucide-react";
 import DOMPurify from "dompurify";
 
 export default function CmsPage() {
+  usePageSeo({ title: "MamaLucica", description: "Magazin de lumânări artizanale handmade." });
   const { slug } = useParams<{ slug: string }>();
   const branding = useStoreBranding();
   const [page, setPage] = useState<{ title: string; body_html: string | null; meta_title: string | null; meta_description: string | null } | null>(null);

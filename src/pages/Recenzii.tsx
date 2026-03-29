@@ -4,9 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Layout from "@/components/layout/Layout";
+import { usePageSeo } from "@/components/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Recenzii() {
+  usePageSeo({
+    title: "Recenzii Clienți — Ce Spun Clienții MamaLucica",
+    description: "Citește recenziile reale ale clienților MamaLucica. Peste 500 de recenzii verificate pentru lumânări artizanale handmade.",
+  });
   const [reviews, setReviews] = useState<any[]>([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);

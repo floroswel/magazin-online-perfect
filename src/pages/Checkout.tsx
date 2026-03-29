@@ -24,12 +24,14 @@ import { toast } from "sonner";
 import { getAffiliateCode } from "@/hooks/useAffiliateTracking";
 import { trackBeginCheckout, trackAddPaymentInfo, trackPurchase, getUtmData } from "@/hooks/useMarketingTracking";
 import type { Tables } from "@/integrations/supabase/types";
+import { usePageSeo } from "@/components/SeoHead";
 
 const methodIcons: Record<string, any> = {
   cash: Banknote, card: CreditCard, bank_transfer: Building2, wallet: Wallet, installments: CreditCard, pickup: Store,
 };
 
 export default function Checkout() {
+  usePageSeo({ title: "Finalizare Comandă — MamaLucica", description: "Completează datele pentru a finaliza comanda.", noindex: true });
   const { user } = useAuth();
   const { items, totalPrice, clearCart } = useCart();
   const { totalPoints, currentLevel, addPoints, config: loyaltyConfig, pointsToValue, maxRedeemablePoints } = useLoyalty();

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ProductCard from "@/components/products/ProductCard";
 import Layout from "@/components/layout/Layout";
+import { usePageSeo } from "@/components/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -57,6 +58,10 @@ const questions = [
 ];
 
 export default function QuizParfum() {
+  usePageSeo({
+    title: "Quiz Parfum — Găsește Lumânarea Perfectă | MamaLucica",
+    description: "Răspunde la câteva întrebări și descoperă lumânarea artizanală ideală pentru tine. Recomandări personalizate pe gustul tău.",
+  });
   const [step, setStep] = useState(0);
   const [collectedTags, setCollectedTags] = useState<string[]>([]);
   const [recommendations, setRecommendations] = useState<Tables<"products">[]>([]);

@@ -1,6 +1,11 @@
 import Layout from "@/components/layout/Layout";
+import { usePageSeo } from "@/components/SeoHead";
 
 export default function PovesteaNoastra() {
+  usePageSeo({
+    title: "Povestea MamaLucica — Lumânări Artizanale din România",
+    description: "Descoperă cum a început MamaLucica și pasiunea noastră pentru lumânări artizanale din ingrediente naturale.",
+  });
   return (
     <Layout>
       {/* Hero */}

@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Download, Smartphone, Check, Share } from "lucide-react";
 import { useStoreBranding } from "@/hooks/useStoreBranding";
+import { usePageSeo } from "@/components/SeoHead";
 
 export default function Install() {
+  usePageSeo({ title: "Instalează Aplicația — MamaLucica", description: "Instalează aplicația MamaLucica pe telefonul tău.", noindex: true });
   const branding = useStoreBranding();
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [installed, setInstalled] = useState(false);

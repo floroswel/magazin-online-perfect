@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { usePageSeo } from "@/components/SeoHead";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,6 +41,7 @@ interface Settings404 {
 }
 
 const NotFound = () => {
+  usePageSeo({ title: "Pagina nu a fost găsită — MamaLucica", description: "Pagina pe care o cauți nu există.", noindex: true });
   const location = useLocation();
   const navigate = useNavigate();
   const [settings, setSettings] = useState<Settings404 | null>(null);

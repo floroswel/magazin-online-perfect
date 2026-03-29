@@ -6,8 +6,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MailX, CheckCircle } from "lucide-react";
+import { usePageSeo } from "@/components/SeoHead";
 
 export default function Unsubscribe() {
+  usePageSeo({ title: "Dezabonare Newsletter — MamaLucica", description: "Gestionează preferințele de email.", noindex: true });
   const [params] = useSearchParams();
   const email = params.get("email") || "";
   const token = params.get("token") || "";

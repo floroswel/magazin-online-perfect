@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePageSeo } from "@/components/SeoHead";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +9,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export default function ComenziEvenimente() {
+  usePageSeo({
+    title: "Comenzi pentru Evenimente — Lumânări Corporate & Nuntă | MamaLucica",
+    description: "Comandă lumânări artizanale personalizate pentru nunți, botezuri, evenimente corporate. Oferte speciale pentru cantități mari.",
+  });
   const [form, setForm] = useState({ name: "", email: "", phone: "", eventType: "", quantity: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
 

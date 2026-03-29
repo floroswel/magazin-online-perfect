@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { usePageSeo } from "@/components/SeoHead";
 
 export default function Tracking() {
+  usePageSeo({ title: "Urmărire Comandă — MamaLucica", description: "Verifică statusul comenzii tale.", noindex: true });
   const [orderId, setOrderId] = useState("");
   const [email, setEmail] = useState("");
   const [order, setOrder] = useState<any>(null);

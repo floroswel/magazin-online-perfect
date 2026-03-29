@@ -1,4 +1,5 @@
 import Layout from "@/components/layout/Layout";
+import { usePageSeo } from "@/components/SeoHead";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -16,6 +17,10 @@ const countries = [
 ];
 
 export default function LivrareInternationala() {
+  usePageSeo({
+    title: "Livrare Internațională Lumânări — MamaLucica",
+    description: "Livrăm lumânări artizanale în toată Europa. Costuri și termene de livrare pentru Bulgaria, Ungaria, Germania și alte țări.",
+  });
   return (
     <Layout>
       <section className="bg-secondary text-secondary-foreground py-16 md:py-20">

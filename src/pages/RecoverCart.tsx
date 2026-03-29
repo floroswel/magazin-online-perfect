@@ -5,8 +5,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { Loader2, ShoppingCart, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/layout/Layout";
+import { usePageSeo } from "@/components/SeoHead";
 
 export default function RecoverCart() {
+  usePageSeo({ title: "Recuperare Coș — MamaLucica", description: "Recuperează produsele din coșul tău.", noindex: true });
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();

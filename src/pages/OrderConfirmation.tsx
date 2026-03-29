@@ -8,9 +8,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCurrency } from "@/hooks/useCurrency";
 import { useCart } from "@/hooks/useCart";
 import { toast } from "sonner";
+import { usePageSeo } from "@/components/SeoHead";
 import type { Tables } from "@/integrations/supabase/types";
 
 export default function OrderConfirmation() {
+  usePageSeo({ title: "Confirmare Comandă — MamaLucica", description: "Comanda ta a fost plasată cu succes.", noindex: true });
   const { orderId } = useParams();
   const { format } = useCurrency();
   const { addToCart } = useCart();

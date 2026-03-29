@@ -9,8 +9,10 @@ import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useCurrency } from "@/hooks/useCurrency";
 import { toast } from "sonner";
+import { usePageSeo } from "@/components/SeoHead";
 
 export default function Compare() {
+  usePageSeo({ title: "Comparație Produse — MamaLucica", description: "Compară produsele selectate.", noindex: true });
   const { user } = useAuth();
   const { comparisonItems, removeFromComparison, clearComparison, loading } = useComparison();
   const { addToCart } = useCart();
