@@ -392,7 +392,7 @@ export default function Checkout() {
         paymentMethod,
         pointsEarned,
         items: items.map(i => ({ name: i.product.name, quantity: i.quantity, price: i.product.price, image_url: i.product.image_url })),
-        shippingAddress: form,
+        shippingAddress: shipToDifferent ? shippingForm : form,
       };
 
       // Add bank transfer details if applicable
