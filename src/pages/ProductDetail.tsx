@@ -492,7 +492,11 @@ export default function ProductDetail() {
         <div className="mt-8 grid md:grid-cols-2 gap-4">
           <ScentPairing productName={product.name} tags={product.tags} />
           <CandleCalculator
-            burnHours={product.burn_hours || (product.weight_kg ? Math.round(product.weight_kg * 100) : 40)}
+            burnHours={product.burn_hours || (() => {
+              const match = product.name.match(/(\d+)\s*h\b/i);
+              if (match) return parseInt(match[1], 10);
+              return product.weight_kg ? Math.round(product.weight_kg * 100) : 40;
+            })()}
             productName={product.name}
           />
         </div>

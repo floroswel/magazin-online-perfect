@@ -1,0 +1,1 @@
+UPDATE products SET burn_hours = 12 WHERE slug = 'lumanare-parfumata-pahar-iasomie-roz-12-h' AND burn_hours IS NULL;
