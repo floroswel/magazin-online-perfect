@@ -46,6 +46,7 @@ import Oferte from "./pages/Oferte";
 import DeIncredere from "./pages/DeIncredere";
 import NouLansari from "./pages/NouLansari";
 import TransparencyDashboard from "./pages/TransparencyDashboard";
+import GiftCards from "./pages/GiftCards";
 import { useAffiliateTracking } from "./hooks/useAffiliateTracking";
 import { initTracking, trackPageView } from "./hooks/useMarketingTracking";
 import { useEffect } from "react";
