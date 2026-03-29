@@ -75,7 +75,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const shippingAddr = (order.shipping_address as Record<string, any>) || {};
-    const siteUrl = Deno.env.get("SITE_URL") || "https://your-emag-clone.lovable.app"; // TODO: set SITE_URL secret
+    const siteUrl = Deno.env.get("SITE_URL") || "https://mamalucica.ro";
     const returnUrl = `${siteUrl}/order-confirmation/${orderId}`;
     const notifyUrl = `${supabaseUrl}/functions/v1/netopia-ipn`;
 
