@@ -248,9 +248,9 @@ export default function SocialProofPopup() {
 
       // Review notifications
       if (settings.reviews_enabled) {
-        const { data: reviews } = await supabase
-          .from("reviews")
-          .select("id, rating, comment, customer_name, created_at, products(name, image_url)")
+        const { data: reviews } = await (supabase as any)
+          .from("product_reviews")
+          .select("id, rating, body, user_name, created_at, products(name, image_url)")
           .gte("rating", settings.reviews_min_stars)
           .order("created_at", { ascending: false })
           .limit(20);

@@ -69,7 +69,7 @@ export default function Recenzii() {
                     </div>
                     <span className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("ro-RO")}</span>
                   </div>
-                  <p className="text-sm text-foreground mb-2">{r.comment}</p>
+                  <p className="text-sm text-foreground mb-2">{r.body || r.comment}</p>
                   {r.products && (
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       {r.products.image_url && <img src={r.products.image_url} alt="" className="w-8 h-8 rounded object-cover" />}
