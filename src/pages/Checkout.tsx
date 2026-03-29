@@ -266,7 +266,6 @@ export default function Checkout() {
       gift_wrapping: giftOptions.isGift ? { wrapping: giftOptions.wrappingId, price: giftOptions.wrappingPrice, message: giftOptions.message } : null,
     };
     if (extraFee > 0) orderData.payment_fee = extraFee;
-    if (wantInvoice) orderData.billing_address = invoiceForm;
 
     const utmData = getUtmData();
     if (utmData) orderData.utm_data = utmData;
