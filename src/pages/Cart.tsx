@@ -20,6 +20,7 @@ export default function Cart() {
   const { items, totalPrice, updateQuantity, removeFromCart } = useCart();
   const { format } = useCurrency();
   const { getCartPromotions, hasFreeShipping } = usePromotions();
+  const taxSettings = useTaxSettings();
 
   if (items.length === 0) {
     return (
