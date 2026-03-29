@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import forge from "npm:node-forge@1.3.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -10,107 +11,6 @@ const SANDBOX_MODE = true;
 const NETOPIA_URL = SANDBOX_MODE
   ? "https://sandboxsecure.mobilpay.ro"
   : "https://secure.mobilpay.ro";
-
-/* ── Deno-safe helpers ─────────────────────────────── */
-
-function utf8ToBytes(str: string): Uint8Array {
-  return new TextEncoder().encode(str);
-}
-
-function bytesToBase64(bytes: Uint8Array): string {
-  let binary = "";
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
-}
-
-function concatUint8Arrays(a: Uint8Array, b: Uint8Array): Uint8Array {
-  const result = new Uint8Array(a.length + b.length);
-  result.set(a, 0);
-  result.set(b, a.length);
-  return result;
-}
-
-/**
- * Convert PEM (PUBLIC KEY or CERTIFICATE) to raw DER ArrayBuffer.
- * Strips all headers/footers and whitespace, then base64-decodes.
- */
-function pemToArrayBuffer(pem: string): ArrayBuffer {
-  const base64 = pem
-    .replace(/-----BEGIN [A-Z ]+-----/g, "")
-    .replace(/-----END [A-Z ]+-----/g, "")
-    .replace(/\s/g, "");
-  const binary = atob(base64);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) {
-    bytes[i] = binary.charCodeAt(i);
-  }
-  return bytes.buffer;
-}
-
-/**
- * Extract the SubjectPublicKeyInfo (SPKI) from an X.509 DER certificate.
- * X.509 structure: SEQUENCE { tbsCertificate SEQUENCE { ... subjectPublicKeyInfo SEQUENCE ... } ... }
- * We find the SPKI by parsing the ASN.1 TBS certificate fields.
- */
-function extractSpkiFromCertDer(certDer: Uint8Array): Uint8Array {
-  // Parse outer SEQUENCE
-  let offset = 0;
-  if (certDer[offset] !== 0x30) throw new Error("Not a valid DER certificate");
-  const outerLen = readAsn1Length(certDer, offset + 1);
-  offset = outerLen.nextOffset;
-
-  // Parse tbsCertificate SEQUENCE
-  if (certDer[offset] !== 0x30) throw new Error("Invalid TBS certificate");
-  const tbsLen = readAsn1Length(certDer, offset + 1);
-  const tbsStart = tbsLen.nextOffset;
-
-  // Inside TBS: skip version (context [0]), serialNumber, signature, issuer, validity, subject
-  let pos = tbsStart;
-
-  // version — optional, context-specific [0]
-  if (certDer[pos] === 0xa0) {
-    const vLen = readAsn1Length(certDer, pos + 1);
-    pos = vLen.nextOffset + vLen.length;
-  }
-
-  // serialNumber (INTEGER)
-  pos = skipAsn1Element(certDer, pos);
-  // signature (SEQUENCE)
-  pos = skipAsn1Element(certDer, pos);
-  // issuer (SEQUENCE)
-  pos = skipAsn1Element(certDer, pos);
-  // validity (SEQUENCE)
-  pos = skipAsn1Element(certDer, pos);
-  // subject (SEQUENCE)
-  pos = skipAsn1Element(certDer, pos);
-
-  // subjectPublicKeyInfo (SEQUENCE) — this is what we want
-  const spkiTag = certDer[pos];
-  if (spkiTag !== 0x30) throw new Error("Expected SPKI SEQUENCE at offset " + pos);
-  const spkiLen = readAsn1Length(certDer, pos + 1);
-  const totalSpkiLen = (spkiLen.nextOffset - pos) + spkiLen.length;
-  return certDer.slice(pos, pos + totalSpkiLen);
-}
-
-function readAsn1Length(data: Uint8Array, offset: number): { length: number; nextOffset: number } {
-  const first = data[offset];
-  if (first < 0x80) {
-    return { length: first, nextOffset: offset + 1 };
-  }
-  const numBytes = first & 0x7f;
-  let length = 0;
-  for (let i = 0; i < numBytes; i++) {
-    length = (length << 8) | data[offset + 1 + i];
-  }
-  return { length, nextOffset: offset + 1 + numBytes };
-}
-
-function skipAsn1Element(data: Uint8Array, offset: number): number {
-  const lenInfo = readAsn1Length(data, offset + 1);
-  return lenInfo.nextOffset + lenInfo.length;
-}
 
 /* ── XML builder ───────────────────────────────────── */
 
@@ -156,76 +56,41 @@ function buildOrderXml(params: {
 </order>`;
 }
 
-/* ── Encryption (pure Web Crypto) ──────────────────── */
+/* ── Encryption (node-forge, RSA PKCS1 v1.5) ──────── */
 
-async function encryptForNetopia(
+function encryptForNetopia(
   publicKeyPem: string,
   xmlData: string
-): Promise<{ envKey: string; envData: string }> {
-  // 1. Generate random AES-256 key (32 bytes) and IV (16 bytes)
-  const aesKeyRaw = new Uint8Array(32);
-  crypto.getRandomValues(aesKeyRaw);
-  const iv = new Uint8Array(16);
-  crypto.getRandomValues(iv);
+): { envKey: string; envData: string } {
+  // 1. Generate random AES key (32 bytes) and IV (16 bytes)
+  const aesKeyBytes = forge.random.getBytesSync(32);
+  const iv = forge.random.getBytesSync(16);
 
   // 2. AES-256-CBC encrypt the XML
-  const aesKey = await crypto.subtle.importKey(
-    "raw",
-    aesKeyRaw,
-    { name: "AES-CBC" },
-    false,
-    ["encrypt"]
-  );
-  const xmlBytes = utf8ToBytes(xmlData);
-  const encryptedXml = new Uint8Array(
-    await crypto.subtle.encrypt({ name: "AES-CBC", iv }, aesKey, xmlBytes)
-  );
+  const cipher = forge.cipher.createCipher("AES-CBC", aesKeyBytes);
+  cipher.start({ iv });
+  cipher.update(forge.util.createBuffer(xmlData, "utf8"));
+  cipher.finish();
+  const encryptedXml = cipher.output.getBytes();
 
-  // 3. Prepend IV to ciphertext (Netopia expects IV + ciphertext)
-  const combined = concatUint8Arrays(iv, encryptedXml);
+  // 3. Combine IV + encrypted XML (Netopia expects IV prepended)
+  const combined = iv + encryptedXml;
 
-  // 4. Import public key — handle both "BEGIN PUBLIC KEY" (SPKI) and "BEGIN CERTIFICATE" (X.509)
-  let spkiDer: ArrayBuffer;
-  const isCertificate = publicKeyPem.includes("BEGIN CERTIFICATE");
-
-  if (isCertificate) {
-    // X.509 certificate → extract SPKI from the DER
-    const certDer = new Uint8Array(pemToArrayBuffer(publicKeyPem));
-    const spkiBytes = extractSpkiFromCertDer(certDer);
-    spkiDer = spkiBytes.buffer.slice(spkiBytes.byteOffset, spkiBytes.byteOffset + spkiBytes.byteLength);
-    console.log("Netopia: extracted SPKI from X.509 certificate, SPKI length:", spkiBytes.length);
+  // 4. Extract public key from certificate or use directly
+  let publicKey: forge.pki.rsa.PublicKey;
+  if (publicKeyPem.includes("CERTIFICATE")) {
+    const cert = forge.pki.certificateFromPem(publicKeyPem);
+    publicKey = cert.publicKey as forge.pki.rsa.PublicKey;
   } else {
-    spkiDer = pemToArrayBuffer(publicKeyPem);
-    console.log("Netopia: using raw SPKI public key, DER length:", spkiDer.byteLength);
+    publicKey = forge.pki.publicKeyFromPem(publicKeyPem);
   }
 
-  let rsaKey: CryptoKey;
-  try {
-    rsaKey = await crypto.subtle.importKey(
-      "spki",
-      spkiDer,
-      { name: "RSA-OAEP", hash: "SHA-1" },
-      false,
-      ["encrypt"]
-    );
-  } catch (importErr) {
-    console.error("PUBLIC_KEY_IMPORT_FAILED:", importErr);
-    console.error("Key type:", isCertificate ? "X.509 CERTIFICATE" : "PUBLIC KEY",
-      "PEM length:", publicKeyPem.length);
-    throw new Error(
-      `PUBLIC_KEY_IMPORT_FAILED: ${importErr instanceof Error ? importErr.message : String(importErr)}. ` +
-      `Key type: ${isCertificate ? "X.509 CERTIFICATE" : "PUBLIC KEY"}`
-    );
-  }
-
-  // 5. RSA-OAEP encrypt the AES key
-  const encryptedKeyBuf = new Uint8Array(
-    await crypto.subtle.encrypt({ name: "RSA-OAEP" }, rsaKey, aesKeyRaw)
-  );
+  // 5. RSA PKCS1 v1.5 encrypt the AES key (NOT OAEP — matches Netopia PHP SDK)
+  const encryptedKey = publicKey.encrypt(aesKeyBytes, "RSAES-PKCS1-V1_5");
 
   return {
-    envKey: bytesToBase64(encryptedKeyBuf),
-    envData: bytesToBase64(combined),
+    envKey: forge.util.encode64(encryptedKey),
+    envData: forge.util.encode64(combined),
   };
 }
 
@@ -321,10 +186,10 @@ Deno.serve(async (req: Request) => {
 
     console.log("Netopia XML built for order:", orderId);
 
-    // Encrypt the XML using Web Crypto
-    const { envKey, envData } = await encryptForNetopia(publicKey, xml);
+    // Encrypt using node-forge (RSA PKCS1 v1.5 — matches Netopia PHP SDK)
+    const { envKey, envData } = encryptForNetopia(publicKey, xml);
 
-    console.log("Netopia encryption OK. envKey length:", envKey.length, "envData length:", envData.length);
+    console.log("Netopia encryption OK (PKCS1v1.5). envKey length:", envKey.length, "envData length:", envData.length);
 
     // Store transaction record
     await supabase.from("netopia_transactions").upsert({
