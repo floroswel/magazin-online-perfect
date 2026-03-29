@@ -29,7 +29,7 @@ export default function VendorReviews({ brandId, rating, reviewCount }: VendorRe
       .eq("status", "approved")
       .order("created_at", { ascending: false })
       .limit(10)
-      .then(async ({ data }) => {
+      .then(({ data }: any) => {
         if (!data || data.length === 0) return;
 
         // Get product names for these reviews
