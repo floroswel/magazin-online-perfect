@@ -44,6 +44,8 @@ import ComenziEvenimente from "./pages/ComenziEvenimente";
 import VendorStore from "./pages/VendorStore";
 import Oferte from "./pages/Oferte";
 import DeIncredere from "./pages/DeIncredere";
+import NouLansari from "./pages/NouLansari";
+import TransparencyDashboard from "./pages/TransparencyDashboard";
 import { useAffiliateTracking } from "./hooks/useAffiliateTracking";
 import { initTracking, trackPageView } from "./hooks/useMarketingTracking";
 import { useEffect } from "react";
@@ -108,6 +110,8 @@ const App = () => (
               <Route path="/vendor/:slug" element={<ErrorBoundary><VendorStore /></ErrorBoundary>} />
               <Route path="/oferte" element={<ErrorBoundary><Oferte /></ErrorBoundary>} />
               <Route path="/de-incredere" element={<ErrorBoundary><DeIncredere /></ErrorBoundary>} />
+              <Route path="/nou" element={<ErrorBoundary><NouLansari /></ErrorBoundary>} />
+              <Route path="/despre-noi/numere" element={<ErrorBoundary><TransparencyDashboard /></ErrorBoundary>} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<ErrorBoundary><NotFound /></ErrorBoundary>} />
             </Routes>

@@ -9,6 +9,8 @@ import FrequentlyBoughtTogether from "@/components/products/FrequentlyBoughtToge
 import UpgradeRecommendation from "@/components/products/UpgradeRecommendation";
 import VendorComparison from "@/components/products/VendorComparison";
 import PriceDropAlert from "@/components/products/PriceDropAlert";
+import ScentPairing from "@/components/products/ScentPairing";
+import CandleCalculator from "@/components/products/CandleCalculator";
 import { trackViewItem, trackAddToCart } from "@/hooks/useMarketingTracking";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -485,6 +487,15 @@ export default function ProductDetail() {
 
         {/* Upgrade recommendation (upsell) */}
         <UpgradeRecommendation productId={product.id} currentProduct={product} />
+
+        {/* Scent Pairing & Calculator */}
+        <div className="mt-8 grid md:grid-cols-2 gap-4">
+          <ScentPairing productName={product.name} tags={product.tags} />
+          <CandleCalculator
+            burnHours={product.burn_hours || (product.weight_kg ? Math.round(product.weight_kg * 100) : 40)}
+            productName={product.name}
+          />
+        </div>
 
         {/* Related products (manual selection) */}
         {relatedProducts.length > 0 && (

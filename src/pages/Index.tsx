@@ -16,6 +16,7 @@ import InstagramFeed from "@/components/home/InstagramFeed";
 import BrandLogosCarousel from "@/components/home/BrandLogosCarousel";
 import QuickFilters from "@/components/home/QuickFilters";
 import CouponCollector from "@/components/home/CouponCollector";
+import CandleMoodSelector from "@/components/home/CandleMoodSelector";
 import TopVendors from "@/components/home/TopVendors";
 import BuyAgain from "@/components/home/BuyAgain";
 import { ProductCardSkeleton } from "@/components/ui/skeletons";
@@ -28,7 +29,7 @@ import { useVisibility } from "@/hooks/useVisibility";
 import type { Tables } from "@/integrations/supabase/types";
 
 const DEFAULT_ORDER = [
-  "hero_section", "social_proof_bar", "quick_filters", "collections_grid",
+  "hero_section", "social_proof_bar", "quick_filters", "mood_selector", "collections_grid",
   "coupon_collector", "flash_deals", "scent_guide_teaser",
   "featured_products", "top_vendors", "brand_story_section",
   "bestsellers_section", "buy_again", "instagram_feed",
@@ -157,6 +158,7 @@ export default function Index() {
     coupon_collector: <CouponCollector key="coupon_collector" />,
     top_vendors: <TopVendors key="top_vendors" />,
     buy_again: <BuyAgain key="buy_again" />,
+    mood_selector: <CandleMoodSelector key="mood_selector" />,
   }), [featured, loading, featuredRef]);
 
   return (
