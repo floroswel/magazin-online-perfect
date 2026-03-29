@@ -184,7 +184,8 @@ Deno.serve(async (req: Request) => {
       phone: shippingAddr.phone || "",
     });
 
-    console.log("Netopia XML built for order:", orderId);
+    console.log("Netopia XML built for order:", orderId, "signature:", posSignature, "amount:", order.total);
+    console.log("XML preview:", xml.substring(0, 300));
 
     // Encrypt using node-forge (RSA PKCS1 v1.5 — matches Netopia PHP SDK)
     const { envKey, envData } = encryptForNetopia(publicKey, xml);

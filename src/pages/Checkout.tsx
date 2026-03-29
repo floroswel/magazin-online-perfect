@@ -306,6 +306,11 @@ export default function Checkout() {
           setSubmitting(false);
           return;
         } else {
+          console.log("Posting to Netopia:", {
+            url: netopiaData.url,
+            env_key: netopiaData.envKey.substring(0, 20) + "...",
+            data: netopiaData.data.substring(0, 20) + "...",
+          });
           await clearCart();
           // Create and auto-submit a form to Netopia (official flow: POST env_key + data)
           const form = document.createElement("form");
