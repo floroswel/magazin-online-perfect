@@ -97,8 +97,14 @@ export default function AdminReports() {
   const conversionRate = totalOrdersCount > 0 ? (deliveredOrders / totalOrdersCount) * 100 : 0;
   const totalDiscount = currentOrders.reduce((s: number, o: any) => s + Number(o.discount_amount || 0), 0);
 
-  // Profit calculation (estimated - no cost_price column yet)
-  const totalCost = totalRevenue * 0.6; // placeholder 60% cost estimate
+  // Real profit calculation using cost_price from products
+  const totalCost = currentOrders.reduce((s: number, o: any) => {
+    return s + (o.order_items || []).reduce((is: number, item: any) => {
+      const costPrice = item.products?.cost_price;
+      const itemCost = costPrice ? costPrice * item.quantity : Number(item.price) * item.quantity * 0.6;
+      return is + itemCost;
+    }, 0);
+  }, 0);
   const grossProfit = totalRevenue - totalCost;
   const profitMargin = totalRevenue > 0 ? (grossProfit / totalRevenue) * 100 : 0;
 
