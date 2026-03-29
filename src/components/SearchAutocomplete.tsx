@@ -122,7 +122,8 @@ export default function SearchAutocomplete({ className }: { className?: string }
           <Input
             value={query}
             onChange={(e) => search(e.target.value)}
-            onFocus={() => suggestions.length > 0 && setOpen(true)}
+            onFocus={() => setOpen(true)}
+            onKeyDown={handleKeyDown}
             placeholder="Caută lumânări..."
             className="w-full pr-16 bg-card border-none h-11 rounded-lg text-foreground placeholder:text-muted-foreground"
           />
