@@ -17,15 +17,14 @@ export default function CouponCollector() {
   const [collected, setCollected] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    (supabase as any)
+    supabase
       .from("coupons")
       .select("id, code, discount_type, discount_value, min_order_value, description")
-      .eq("active", true)
-      .eq("public_visible", true)
+      .eq("is_active", true)
       .order("created_at", { ascending: false })
       .limit(6)
-      .then(({ data }: any) => {
-        if (data) {
+      .then(({ data }) => {
+        if (data && data.length > 0) {
           setCoupons(
             data.map((c: any) => ({
               id: c.id,
@@ -39,14 +38,13 @@ export default function CouponCollector() {
         }
       });
 
-    // Load collected from localStorage
     try {
       const saved = JSON.parse(localStorage.getItem("collected_coupons") || "[]");
       setCollected(new Set(saved));
     } catch {}
   }, []);
 
-  // Show some fallback coupons if none in DB
+  // Fallback coupons if none in DB
   const displayCoupons: Coupon[] = coupons.length > 0 ? coupons : [
     { id: "1", code: "WELCOME10", discount_type: "percentage", discount_value: 10, min_order: 100, description: "10% reducere la prima comandă" },
     { id: "2", code: "LIVRARE0", discount_type: "free_shipping", discount_value: 0, min_order: 150, description: "Transport gratuit" },
@@ -78,7 +76,6 @@ export default function CouponCollector() {
               key={coupon.id}
               className="relative flex items-center bg-card border-2 border-dashed border-primary/30 rounded-lg p-4 hover:border-primary transition-colors overflow-hidden"
             >
-              {/* Left accent */}
               <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary rounded-l-lg" />
 
               <div className="flex-1 ml-3">
@@ -102,18 +99,14 @@ export default function CouponCollector() {
                 onClick={() => handleCollect(coupon)}
                 className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                   isCollected
-                    ? "bg-[hsl(var(--marketplace-success))]/10 text-[hsl(var(--marketplace-success))] border border-[hsl(var(--marketplace-success))]/30"
+                    ? "bg-primary/10 text-primary border border-primary/30"
                     : "bg-primary text-primary-foreground hover:opacity-90"
                 }`}
               >
                 {isCollected ? (
-                  <>
-                    <Check className="w-4 h-4" /> Copiat
-                  </>
+                  <><Check className="w-4 h-4" /> Copiat</>
                 ) : (
-                  <>
-                    <Copy className="w-4 h-4" /> Colectează
-                  </>
+                  <><Copy className="w-4 h-4" /> Colectează</>
                 )}
               </button>
             </div>

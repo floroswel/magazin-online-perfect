@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-interface SubCategory {
+interface Category {
+  id: string;
   name: string;
   slug: string;
+  icon: string | null;
+  image_url: string | null;
+  parent_id: string | null;
+  display_order: number;
 }
 
 interface MegaCategory {
@@ -12,114 +18,69 @@ interface MegaCategory {
   slug: string;
   icon: string;
   image: string;
-  subs: SubCategory[];
+  subs: { name: string; slug: string }[];
 }
 
-const megaCategories: MegaCategory[] = [
-  {
-    name: "Lumânări Parfumate",
-    slug: "lumanari-parfumate",
-    icon: "🕯️",
-    image: "https://images.unsplash.com/photo-1602607167093-5ac4af65e1cd?w=300&h=200&fit=crop",
-    subs: [
-      { name: "Lumânări din Soia", slug: "lumanari-soia" },
-      { name: "Lumânări din Ceară de Albine", slug: "lumanari-ceara-albine" },
-      { name: "Lumânări din Parafină", slug: "lumanari-parafina" },
-      { name: "Lumânări cu Uleiuri Esențiale", slug: "lumanari-uleiuri-esentiale" },
-      { name: "Lumânări de Lux", slug: "lumanari-lux" },
-      { name: "Lumânări Naturale", slug: "lumanari-naturale" },
-    ],
-  },
-  {
-    name: "Lumânări Decorative",
-    slug: "lumanari-decorative",
-    icon: "✨",
-    image: "https://images.unsplash.com/photo-1603006905003-be475563bc59?w=300&h=200&fit=crop",
-    subs: [
-      { name: "Lumânări Sculptate", slug: "lumanari-sculptate" },
-      { name: "Lumânări în Forme", slug: "lumanari-forme" },
-      { name: "Lumânări Colorate", slug: "lumanari-colorate" },
-      { name: "Lumânări Rustice", slug: "lumanari-rustice" },
-      { name: "Lumânări cu Flori Uscate", slug: "lumanari-flori" },
-    ],
-  },
-  {
-    name: "Cadouri & Seturi",
-    slug: "cadouri-seturi",
-    icon: "🎁",
-    image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=300&h=200&fit=crop",
-    subs: [
-      { name: "Seturi Cadou", slug: "seturi-cadou" },
-      { name: "Cutii Premium", slug: "cutii-premium" },
-      { name: "Cadouri Personalizate", slug: "cadouri-personalizate" },
-      { name: "Gift Cards", slug: "gift-cards" },
-    ],
-  },
-  {
-    name: "Aromaterapie",
-    slug: "aromaterapie",
-    icon: "🌿",
-    image: "https://images.unsplash.com/photo-1545231027-637d2f6210f8?w=300&h=200&fit=crop",
-    subs: [
-      { name: "Difuzoare & Arome", slug: "difuzoare-arome" },
-      { name: "Uleiuri Esențiale", slug: "uleiuri-esentiale" },
-      { name: "Bețișoare Parfumate", slug: "betisoare-parfumate" },
-      { name: "Ceară pentru Difuzor", slug: "ceara-difuzor" },
-    ],
-  },
-  {
-    name: "Lumânări de Eveniment",
-    slug: "lumanari-eveniment",
-    icon: "🎉",
-    image: "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=300&h=200&fit=crop",
-    subs: [
-      { name: "Lumânări Botez", slug: "lumanari-botez" },
-      { name: "Lumânări Nuntă", slug: "lumanari-nunta" },
-      { name: "Lumânări Aniversare", slug: "lumanari-aniversare" },
-      { name: "Comenzi Corporate", slug: "comenzi-corporate" },
-    ],
-  },
-  {
-    name: "Personalizare",
-    slug: "personalizare",
-    icon: "🎨",
-    image: "https://images.unsplash.com/photo-1608181831718-3b43e628bba2?w=300&h=200&fit=crop",
-    subs: [
-      { name: "Gravură Laser", slug: "gravura-laser" },
-      { name: "Etichete Custom", slug: "etichete-custom" },
-      { name: "Arome la Cerere", slug: "arome-cerere" },
-      { name: "Culori Personalizate", slug: "culori-personalizate" },
-    ],
-  },
-  {
-    name: "Accesorii",
-    slug: "accesorii",
-    icon: "🔧",
-    image: "https://images.unsplash.com/photo-1572726729207-a78d6feb18d7?w=300&h=200&fit=crop",
-    subs: [
-      { name: "Suporturi Lumânări", slug: "suporturi" },
-      { name: "Fitiluri & Materiale", slug: "fitiluri-materiale" },
-      { name: "Capace & Stingătoare", slug: "capace-stingatoare" },
-      { name: "Kituri DIY", slug: "kituri-diy" },
-    ],
-  },
-  {
-    name: "Colecții Sezoniere",
-    slug: "colectii-sezoniere",
-    icon: "🍂",
-    image: "https://images.unsplash.com/photo-1605651531144-51381895e23a?w=300&h=200&fit=crop",
-    subs: [
-      { name: "Colecția de Crăciun", slug: "craciun" },
-      { name: "Colecția de Vară", slug: "vara" },
-      { name: "Colecția de Toamnă", slug: "toamna" },
-      { name: "Ediții Limitate", slug: "editii-limitate" },
-    ],
-  },
-];
+const FALLBACK_IMAGES: Record<string, string> = {
+  "lumanari-parfumate": "https://images.unsplash.com/photo-1602607167093-5ac4af65e1cd?w=300&h=200&fit=crop",
+  "lumanari-decorative": "https://images.unsplash.com/photo-1603006905003-be475563bc59?w=300&h=200&fit=crop",
+  "cadouri-seturi": "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=300&h=200&fit=crop",
+  "aromaterapie": "https://images.unsplash.com/photo-1545231027-637d2f6210f8?w=300&h=200&fit=crop",
+};
+
+const FALLBACK_ICONS: Record<string, string> = {
+  "lumanari-parfumate": "🕯️",
+  "lumanari-decorative": "✨",
+  "cadouri-seturi": "🎁",
+  "aromaterapie": "🌿",
+  "lumanari-eveniment": "🎉",
+  "personalizare": "🎨",
+  "accesorii": "🔧",
+  "colectii-sezoniere": "🍂",
+};
+
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1602607167093-5ac4af65e1cd?w=300&h=200&fit=crop";
 
 export default function MegaMenu() {
   const [activeCat, setActiveCat] = useState<string | null>(null);
-  const active = megaCategories.find((c) => c.slug === activeCat);
+  const [megaCategories, setMegaCategories] = useState<MegaCategory[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("categories")
+      .select("id, name, slug, icon, image_url, parent_id, display_order")
+      .eq("visible", true)
+      .order("display_order", { ascending: true })
+      .then(({ data }) => {
+        if (!data || data.length === 0) return;
+        const cats = data as Category[];
+        const parents = cats.filter((c) => !c.parent_id);
+        const built: MegaCategory[] = parents.map((p) => ({
+          name: p.name,
+          slug: p.slug,
+          icon: p.icon || FALLBACK_ICONS[p.slug] || "📦",
+          image: p.image_url || FALLBACK_IMAGES[p.slug] || DEFAULT_IMAGE,
+          subs: cats
+            .filter((c) => c.parent_id === p.id)
+            .sort((a, b) => a.display_order - b.display_order)
+            .map((c) => ({ name: c.name, slug: c.slug })),
+        }));
+        if (built.length > 0) setMegaCategories(built);
+      });
+  }, []);
+
+  // Fallback if DB is empty
+  const categories = megaCategories.length > 0 ? megaCategories : [
+    { name: "Lumânări Parfumate", slug: "lumanari-parfumate", icon: "🕯️", image: FALLBACK_IMAGES["lumanari-parfumate"]!, subs: [{ name: "Din Soia", slug: "lumanari-soia" }, { name: "Din Ceară de Albine", slug: "lumanari-ceara-albine" }, { name: "Uleiuri Esențiale", slug: "lumanari-uleiuri-esentiale" }, { name: "De Lux", slug: "lumanari-lux" }] },
+    { name: "Lumânări Decorative", slug: "lumanari-decorative", icon: "✨", image: FALLBACK_IMAGES["lumanari-decorative"]!, subs: [{ name: "Sculptate", slug: "lumanari-sculptate" }, { name: "Colorate", slug: "lumanari-colorate" }, { name: "Cu Flori Uscate", slug: "lumanari-flori" }] },
+    { name: "Cadouri & Seturi", slug: "cadouri-seturi", icon: "🎁", image: FALLBACK_IMAGES["cadouri-seturi"]!, subs: [{ name: "Seturi Cadou", slug: "seturi-cadou" }, { name: "Gift Cards", slug: "gift-cards" }] },
+    { name: "Aromaterapie", slug: "aromaterapie", icon: "🌿", image: FALLBACK_IMAGES["aromaterapie"]!, subs: [{ name: "Difuzoare", slug: "difuzoare-arome" }, { name: "Bețișoare", slug: "betisoare-parfumate" }] },
+    { name: "Eveniment", slug: "lumanari-eveniment", icon: "🎉", image: DEFAULT_IMAGE, subs: [{ name: "Botez", slug: "lumanari-botez" }, { name: "Nuntă", slug: "lumanari-nunta" }] },
+    { name: "Personalizare", slug: "personalizare", icon: "🎨", image: DEFAULT_IMAGE, subs: [{ name: "Gravură Laser", slug: "gravura-laser" }, { name: "Etichete Custom", slug: "etichete-custom" }] },
+    { name: "Accesorii", slug: "accesorii", icon: "🔧", image: DEFAULT_IMAGE, subs: [{ name: "Suporturi", slug: "suporturi" }, { name: "Kituri DIY", slug: "kituri-diy" }] },
+  ];
+
+  const active = categories.find((c) => c.slug === activeCat);
 
   return (
     <div
@@ -129,7 +90,7 @@ export default function MegaMenu() {
     >
       {/* Left: category list */}
       <div className="w-56 bg-muted/60 border-r border-border py-1 shrink-0">
-        {megaCategories.map((cat) => (
+        {categories.map((cat) => (
           <button
             key={cat.slug}
             onMouseEnter={() => setActiveCat(cat.slug)}
