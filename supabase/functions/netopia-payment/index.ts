@@ -1,7 +1,4 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
-import { publicEncrypt, createCipheriv, constants as cryptoConstants } from "node:crypto";
-import { randomBytes } from "node:crypto";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,25 +11,109 @@ const NETOPIA_URL = SANDBOX_MODE
   ? "https://sandboxsecure.mobilpay.ro"
   : "https://secure.mobilpay.ro";
 
-/**
- * Fix PEM formatting — DB may store with spaces instead of newlines.
- */
-function fixPem(pem: string): string {
-  // If it already has proper newlines, return as-is
-  if (pem.includes("\n")) return pem.trim();
-  
-  // Replace space-separated base64 blocks with newline-separated
-  return pem
-    .replace(/(-----BEGIN [^-]+-----)\s+/, "$1\n")
-    .replace(/\s+(-----END [^-]+-----)/, "\n$1")
-    .replace(/(.{64})\s/g, "$1\n")
-    .trim();
+/* ── Deno-safe helpers ─────────────────────────────── */
+
+function utf8ToBytes(str: string): Uint8Array {
+  return new TextEncoder().encode(str);
+}
+
+function bytesToBase64(bytes: Uint8Array): string {
+  let binary = "";
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
+function concatUint8Arrays(a: Uint8Array, b: Uint8Array): Uint8Array {
+  const result = new Uint8Array(a.length + b.length);
+  result.set(a, 0);
+  result.set(b, a.length);
+  return result;
 }
 
 /**
- * Build XML from the Netopia order data structure.
- * Matches the official mobilpay XML schema exactly.
+ * Convert PEM (PUBLIC KEY or CERTIFICATE) to raw DER ArrayBuffer.
+ * Strips all headers/footers and whitespace, then base64-decodes.
  */
+function pemToArrayBuffer(pem: string): ArrayBuffer {
+  const base64 = pem
+    .replace(/-----BEGIN [A-Z ]+-----/g, "")
+    .replace(/-----END [A-Z ]+-----/g, "")
+    .replace(/\s/g, "");
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
+/**
+ * Extract the SubjectPublicKeyInfo (SPKI) from an X.509 DER certificate.
+ * X.509 structure: SEQUENCE { tbsCertificate SEQUENCE { ... subjectPublicKeyInfo SEQUENCE ... } ... }
+ * We find the SPKI by parsing the ASN.1 TBS certificate fields.
+ */
+function extractSpkiFromCertDer(certDer: Uint8Array): Uint8Array {
+  // Parse outer SEQUENCE
+  let offset = 0;
+  if (certDer[offset] !== 0x30) throw new Error("Not a valid DER certificate");
+  const outerLen = readAsn1Length(certDer, offset + 1);
+  offset = outerLen.nextOffset;
+
+  // Parse tbsCertificate SEQUENCE
+  if (certDer[offset] !== 0x30) throw new Error("Invalid TBS certificate");
+  const tbsLen = readAsn1Length(certDer, offset + 1);
+  const tbsStart = tbsLen.nextOffset;
+
+  // Inside TBS: skip version (context [0]), serialNumber, signature, issuer, validity, subject
+  let pos = tbsStart;
+
+  // version — optional, context-specific [0]
+  if (certDer[pos] === 0xa0) {
+    const vLen = readAsn1Length(certDer, pos + 1);
+    pos = vLen.nextOffset + vLen.length;
+  }
+
+  // serialNumber (INTEGER)
+  pos = skipAsn1Element(certDer, pos);
+  // signature (SEQUENCE)
+  pos = skipAsn1Element(certDer, pos);
+  // issuer (SEQUENCE)
+  pos = skipAsn1Element(certDer, pos);
+  // validity (SEQUENCE)
+  pos = skipAsn1Element(certDer, pos);
+  // subject (SEQUENCE)
+  pos = skipAsn1Element(certDer, pos);
+
+  // subjectPublicKeyInfo (SEQUENCE) — this is what we want
+  const spkiTag = certDer[pos];
+  if (spkiTag !== 0x30) throw new Error("Expected SPKI SEQUENCE at offset " + pos);
+  const spkiLen = readAsn1Length(certDer, pos + 1);
+  const totalSpkiLen = (spkiLen.nextOffset - pos) + spkiLen.length;
+  return certDer.slice(pos, pos + totalSpkiLen);
+}
+
+function readAsn1Length(data: Uint8Array, offset: number): { length: number; nextOffset: number } {
+  const first = data[offset];
+  if (first < 0x80) {
+    return { length: first, nextOffset: offset + 1 };
+  }
+  const numBytes = first & 0x7f;
+  let length = 0;
+  for (let i = 0; i < numBytes; i++) {
+    length = (length << 8) | data[offset + 1 + i];
+  }
+  return { length, nextOffset: offset + 1 + numBytes };
+}
+
+function skipAsn1Element(data: Uint8Array, offset: number): number {
+  const lenInfo = readAsn1Length(data, offset + 1);
+  return lenInfo.nextOffset + lenInfo.length;
+}
+
+/* ── XML builder ───────────────────────────────────── */
+
 function buildOrderXml(params: {
   orderId: string;
   timestamp: number;
@@ -75,43 +156,80 @@ function buildOrderXml(params: {
 </order>`;
 }
 
-/**
- * Encrypt data using AES-256-CBC, then encrypt AES key with RSA public cert.
- * Uses node:crypto which handles X.509 certificates natively (like official SDK).
- * Padding: RSA_PKCS1_PADDING (matching Netopia SDK exactly).
- */
-function encryptForNetopia(
+/* ── Encryption (pure Web Crypto) ──────────────────── */
+
+async function encryptForNetopia(
   publicKeyPem: string,
   xmlData: string
-): { envKey: string; envData: string } {
-  const fixedPem = fixPem(publicKeyPem);
-  
-  // Generate random 32-byte AES key and 16-byte IV
-  const aesKey = randomBytes(32);
-  const iv = randomBytes(16);
+): Promise<{ envKey: string; envData: string }> {
+  // 1. Generate random AES-256 key (32 bytes) and IV (16 bytes)
+  const aesKeyRaw = new Uint8Array(32);
+  crypto.getRandomValues(aesKeyRaw);
+  const iv = new Uint8Array(16);
+  crypto.getRandomValues(iv);
 
-  // AES-256-CBC encrypt the XML
-  const cipher = createCipheriv("aes-256-cbc", aesKey, iv);
-  const encrypted = Buffer.concat([cipher.update(xmlData, "utf8"), cipher.final()]);
+  // 2. AES-256-CBC encrypt the XML
+  const aesKey = await crypto.subtle.importKey(
+    "raw",
+    aesKeyRaw,
+    { name: "AES-CBC" },
+    false,
+    ["encrypt"]
+  );
+  const xmlBytes = utf8ToBytes(xmlData);
+  const encryptedXml = new Uint8Array(
+    await crypto.subtle.encrypt({ name: "AES-CBC", iv }, aesKey, xmlBytes)
+  );
 
-  // Prepend IV to encrypted data (Netopia expects IV + ciphertext)
-  const combined = Buffer.concat([iv, encrypted]);
+  // 3. Prepend IV to ciphertext (Netopia expects IV + ciphertext)
+  const combined = concatUint8Arrays(iv, encryptedXml);
 
-  // RSA encrypt the AES key using the public certificate
-  // Using PKCS1 padding as per Netopia SDK
-  const encryptedKey = publicEncrypt(
-    {
-      key: fixedPem,
-      padding: cryptoConstants.RSA_PKCS1_PADDING,
-    },
-    aesKey
+  // 4. Import public key — handle both "BEGIN PUBLIC KEY" (SPKI) and "BEGIN CERTIFICATE" (X.509)
+  let spkiDer: ArrayBuffer;
+  const isCertificate = publicKeyPem.includes("BEGIN CERTIFICATE");
+
+  if (isCertificate) {
+    // X.509 certificate → extract SPKI from the DER
+    const certDer = new Uint8Array(pemToArrayBuffer(publicKeyPem));
+    const spkiBytes = extractSpkiFromCertDer(certDer);
+    spkiDer = spkiBytes.buffer.slice(spkiBytes.byteOffset, spkiBytes.byteOffset + spkiBytes.byteLength);
+    console.log("Netopia: extracted SPKI from X.509 certificate, SPKI length:", spkiBytes.length);
+  } else {
+    spkiDer = pemToArrayBuffer(publicKeyPem);
+    console.log("Netopia: using raw SPKI public key, DER length:", spkiDer.byteLength);
+  }
+
+  let rsaKey: CryptoKey;
+  try {
+    rsaKey = await crypto.subtle.importKey(
+      "spki",
+      spkiDer,
+      { name: "RSA-OAEP", hash: "SHA-1" },
+      false,
+      ["encrypt"]
+    );
+  } catch (importErr) {
+    console.error("PUBLIC_KEY_IMPORT_FAILED:", importErr);
+    console.error("Key type:", isCertificate ? "X.509 CERTIFICATE" : "PUBLIC KEY",
+      "PEM length:", publicKeyPem.length);
+    throw new Error(
+      `PUBLIC_KEY_IMPORT_FAILED: ${importErr instanceof Error ? importErr.message : String(importErr)}. ` +
+      `Key type: ${isCertificate ? "X.509 CERTIFICATE" : "PUBLIC KEY"}`
+    );
+  }
+
+  // 5. RSA-OAEP encrypt the AES key
+  const encryptedKeyBuf = new Uint8Array(
+    await crypto.subtle.encrypt({ name: "RSA-OAEP" }, rsaKey, aesKeyRaw)
   );
 
   return {
-    envKey: encodeBase64(encryptedKey),
-    envData: encodeBase64(combined),
+    envKey: bytesToBase64(encryptedKeyBuf),
+    envData: bytesToBase64(combined),
   };
 }
+
+/* ── Main handler ──────────────────────────────────── */
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -203,8 +321,8 @@ Deno.serve(async (req: Request) => {
 
     console.log("Netopia XML built for order:", orderId);
 
-    // Encrypt the XML using node:crypto
-    const { envKey, envData } = encryptForNetopia(publicKey, xml);
+    // Encrypt the XML using Web Crypto
+    const { envKey, envData } = await encryptForNetopia(publicKey, xml);
 
     console.log("Netopia encryption OK. envKey length:", envKey.length, "envData length:", envData.length);
 
