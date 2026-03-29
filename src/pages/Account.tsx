@@ -55,6 +55,7 @@ export default function Account() {
   const { user } = useAuth();
   const { totalPoints, currentLevel, nextLevel, levels, loading: loyaltyLoading, config: loyaltyConfig, pointsToValue } = useLoyalty();
   const { format } = useCurrency();
+  const { addToCart } = useCart();
   const [profile, setProfile] = useState<Tables<"profiles"> | null>(null);
   const [orders, setOrders] = useState<any[]>([]);
   const [existingReturns, setExistingReturns] = useState<Tables<"returns">[]>([]);
