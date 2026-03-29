@@ -48,6 +48,7 @@ import NouLansari from "./pages/NouLansari";
 import TransparencyDashboard from "./pages/TransparencyDashboard";
 import GiftCards from "./pages/GiftCards";
 import SeoLanding from "./pages/SeoLanding";
+import SeoHub from "./pages/SeoHub";
 import SeasonalCollections from "./pages/SeasonalCollections";
 import VirtualTryOn from "./pages/VirtualTryOn";
 import PostDelivery from "./pages/PostDelivery";
@@ -118,6 +119,7 @@ const App = () => (
               <Route path="/nou" element={<ErrorBoundary><NouLansari /></ErrorBoundary>} />
               <Route path="/card-cadou" element={<ErrorBoundary><GiftCards /></ErrorBoundary>} />
               <Route path="/despre-noi/numere" element={<ErrorBoundary><TransparencyDashboard /></ErrorBoundary>} />
+              <Route path="/l" element={<ErrorBoundary><SeoHub /></ErrorBoundary>} />
               <Route path="/l/:city/:category" element={<ErrorBoundary><SeoLanding /></ErrorBoundary>} />
               <Route path="/colectii-sezoniere" element={<ErrorBoundary><SeasonalCollections /></ErrorBoundary>} />
               <Route path="/virtual-try-on" element={<ErrorBoundary><VirtualTryOn /></ErrorBoundary>} />
