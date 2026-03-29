@@ -5653,6 +5653,44 @@ export type Database = {
           },
         ]
       }
+      product_sizes: {
+        Row: {
+          created_at: string
+          id: string
+          label: string
+          price: number
+          product_id: string
+          sort_order: number
+          weight_grams: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label: string
+          price?: number
+          product_id: string
+          sort_order?: number
+          weight_grams?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string
+          price?: number
+          product_id?: string
+          sort_order?: number
+          weight_grams?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_sizes_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_variants: {
         Row: {
           attributes: Json
