@@ -184,6 +184,9 @@ const Admin360SliderSettings = lazy(() => import("./settings/Admin360SliderSetti
 const AdminCustom404Settings = lazy(() => import("./settings/AdminCustom404Settings"));
 const AdminControlCenter = lazy(() => import("./control/AdminControlCenter"));
 const AdminConfiguratorSettings = lazy(() => import("./settings/AdminConfiguratorSettings"));
+const AdminHeroSlides = lazy(() => import("./content/AdminHeroSlides"));
+const AdminPersonalizationOptions = lazy(() => import("./content/AdminPersonalizationOptions"));
+const AdminStaticPages = lazy(() => import("./content/AdminStaticPages"));
 
 export default function AdminRoutes() {
   return (
