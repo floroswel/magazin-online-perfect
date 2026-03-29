@@ -8,8 +8,10 @@ import Layout from "@/components/layout/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Mail } from "lucide-react";
+import { usePageSeo } from "@/components/SeoHead";
 
 export default function ForgotPassword() {
+  usePageSeo({ title: "Resetare Parolă — MamaLucica", description: "Solicită un link de resetare a parolei.", noindex: true });
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);

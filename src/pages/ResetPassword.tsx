@@ -8,8 +8,10 @@ import Layout from "@/components/layout/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { KeyRound, Eye, EyeOff } from "lucide-react";
+import { usePageSeo } from "@/components/SeoHead";
 
 export default function ResetPassword() {
+  usePageSeo({ title: "Parolă Nouă — MamaLucica", description: "Setează o parolă nouă pentru contul tău.", noindex: true });
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
