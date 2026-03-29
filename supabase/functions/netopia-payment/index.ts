@@ -119,7 +119,15 @@ Deno.serve(async (req: Request) => {
 
     const config = pm.config_json as Record<string, string>;
     const posSignature = config.pos_signature || config.merchant_id || "";
-    const publicKey = config.public_key || "";
+    // Normalize PEM keys: fix literal \n to real newlines
+    const rawPublicKey = config.public_key || "";
+    const rawPrivateKey = config.private_key || "";
+    const publicKey = rawPublicKey.includes('\\n')
+      ? rawPublicKey.replace(/\\n/g, '\n')
+      : rawPublicKey;
+    const privateKey = rawPrivateKey.includes('\\n')
+      ? rawPrivateKey.replace(/\\n/g, '\n')
+      : rawPrivateKey;
     const isSandbox = config.sandbox === "true" || config.sandbox === true as any;
     const gatewayUrl = isSandbox
       ? (config.sandbox_url || "https://sandboxsecure.mobilpay.ro")
