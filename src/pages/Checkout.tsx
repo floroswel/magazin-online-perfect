@@ -321,28 +321,37 @@ export default function Checkout() {
 
         await clearCart();
 
-        // Create and submit form
-        const form = document.createElement("form");
-        form.method = "POST";
+        const form = document.createElement('form');
+        form.method = 'POST';
         form.action = url;
 
-        const envKeyInput = document.createElement("input");
-        envKeyInput.type = "hidden";
-        envKeyInput.name = "env_key";
+        const envKeyInput = document.createElement('input');
+        envKeyInput.type = 'hidden';
+        envKeyInput.name = 'env_key';
         envKeyInput.value = envKey;
         form.appendChild(envKeyInput);
 
-        const dataInput = document.createElement("input");
-        dataInput.type = "hidden";
-        dataInput.name = "data";
+        const dataInput = document.createElement('input');
+        dataInput.type = 'hidden';
+        dataInput.name = 'data';
         dataInput.value = data;
         form.appendChild(dataInput);
 
         document.body.appendChild(form);
 
-        console.log("SUBMITTING FORM TO:", url);
-        console.log("env_key value preview:", envKeyInput.value.substring(0, 30));
-        console.log("data value preview:", dataInput.value.substring(0, 30));
+        // LOG EVERYTHING BEFORE SUBMIT
+        console.log('=== NETOPIA FORM DEBUG ===');
+        console.log('Action URL:', form.action);
+        console.log('env_key length:', envKeyInput.value.length);
+        console.log('data length:', dataInput.value.length);
+        console.log('env_key first 40:', envKeyInput.value.substring(0,40));
+        console.log('data first 40:', dataInput.value.substring(0,40));
+        console.log('env_key last 10:', envKeyInput.value.slice(-10));
+        console.log('data last 10:', dataInput.value.slice(-10));
+        console.log('env_key has spaces:', envKeyInput.value.includes(' '));
+        console.log('data has spaces:', dataInput.value.includes(' '));
+        console.log('env_key is valid base64:', /^[A-Za-z0-9+/]+=*$/.test(envKeyInput.value));
+        console.log('data is valid base64:', /^[A-Za-z0-9+/]+=*$/.test(dataInput.value));
 
         form.submit();
       } catch (err) {
