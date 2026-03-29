@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
 import { useStoreBranding } from "@/hooks/useStoreBranding";
+import { usePageSeo } from "@/components/SeoHead";
 import { Loader2 } from "lucide-react";
 import DOMPurify from "dompurify";
 
