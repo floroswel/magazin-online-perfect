@@ -807,6 +807,7 @@ export default function Account() {
                   </Card>
                 </div>
               </TabsContent>
+            </Tabs>
           </div>
 
           {/* RIGHT SIDEBAR — hidden on mobile, info already in stats */}
