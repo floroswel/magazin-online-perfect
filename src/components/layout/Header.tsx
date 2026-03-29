@@ -10,14 +10,14 @@ import SearchAutocomplete from "@/components/SearchAutocomplete";
 import MegaMenu from "@/components/layout/MegaMenu";
 
 const categories = [
-  { name: "Electronice", slug: "electronice", icon: "💻" },
-  { name: "Modă", slug: "moda", icon: "👗" },
-  { name: "Casa & Grădină", slug: "casa-gradina", icon: "🏠" },
-  { name: "Sport", slug: "sport", icon: "⚽" },
-  { name: "Auto", slug: "auto", icon: "🚗" },
-  { name: "Copii", slug: "copii", icon: "🧸" },
-  { name: "Sănătate", slug: "sanatate", icon: "💊" },
-  { name: "Cărți", slug: "carti", icon: "📚" },
+  { name: "Lumânări Parfumate", slug: "lumanari-parfumate", icon: "🕯️" },
+  { name: "Decorative", slug: "lumanari-decorative", icon: "✨" },
+  { name: "Cadouri & Seturi", slug: "cadouri-seturi", icon: "🎁" },
+  { name: "Aromaterapie", slug: "aromaterapie", icon: "🌿" },
+  { name: "Eveniment", slug: "lumanari-eveniment", icon: "🎉" },
+  { name: "Personalizare", slug: "personalizare", icon: "🎨" },
+  { name: "Accesorii", slug: "accesorii", icon: "🔧" },
+  { name: "Sezoniere", slug: "colectii-sezoniere", icon: "🍂" },
 ];
 
 export default function Header() {

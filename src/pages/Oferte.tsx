@@ -22,8 +22,8 @@ export default function Oferte() {
   const [sortBy, setSortBy] = useState<string>("discount");
 
   usePageSeo({
-    title: "Oferte & Reduceri — MamaLucica Marketplace",
-    description: "Cele mai bune oferte și reduceri pe MamaLucica. Economisește la mii de produse de la vendori verificați.",
+    title: "Oferte & Reduceri Lumânări — MamaLucica",
+    description: "Cele mai bune oferte la lumânări artizanale. Economisește la lumânări parfumate, decorative și seturi cadou de la artizani verificați.",
   });
 
   useEffect(() => {

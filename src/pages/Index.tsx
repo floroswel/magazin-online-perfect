@@ -39,8 +39,8 @@ const DEFAULT_ORDER = [
 export default function Index() {
   const branding = useStoreBranding();
   usePageSeo({
-    title: "MamaLucica — Marketplace Online România",
-    description: "Cumpără mii de produse de la vendori verificați. Prețuri mici, livrare rapidă, plată securizată. Marketplace-ul tău de încredere.",
+    title: "MamaLucica — Marketplace de Lumânări Artizanale Handmade",
+    description: "Descoperă lumânări artizanale handmade de la artizani verificați. Lumânări parfumate, decorative, cadouri și seturi premium. Livrare rapidă în România.",
     ogImage: "/og-homepage.jpg",
   });
   const [featured, setFeatured] = useState<Tables<"products">[]>([]);

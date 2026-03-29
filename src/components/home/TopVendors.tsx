@@ -7,40 +7,40 @@ const vendors = [
     slug: "mama-lucica",
     name: "Mama Lucica",
     logo: "https://ui-avatars.com/api/?name=ML&background=dc2626&color=fff&size=64",
-    rating: 4.8,
-    products: 156,
+    rating: 4.9,
+    products: 86,
     badge: "Top Seller",
   },
   {
-    slug: "tech-zone",
-    name: "TechZone",
-    logo: "https://ui-avatars.com/api/?name=TZ&background=2563eb&color=fff&size=64",
-    rating: 4.7,
-    products: 342,
-    badge: "Vendor de încredere",
+    slug: "wax-and-soul",
+    name: "Wax & Soul",
+    logo: "https://ui-avatars.com/api/?name=WS&background=92400e&color=fff&size=64",
+    rating: 4.8,
+    products: 52,
+    badge: "Artizanal",
   },
   {
-    slug: "fashion-hub",
-    name: "FashionHub",
-    logo: "https://ui-avatars.com/api/?name=FH&background=7c3aed&color=fff&size=64",
-    rating: 4.6,
-    products: 89,
+    slug: "candela-ro",
+    name: "Candela.ro",
+    logo: "https://ui-avatars.com/api/?name=CR&background=7c3aed&color=fff&size=64",
+    rating: 4.7,
+    products: 120,
     badge: "Livrare rapidă",
   },
   {
-    slug: "home-deco",
-    name: "HomeDeco",
-    logo: "https://ui-avatars.com/api/?name=HD&background=059669&color=fff&size=64",
-    rating: 4.9,
-    products: 215,
-    badge: "Top Seller",
+    slug: "flacara-vie",
+    name: "Flacăra Vie",
+    logo: "https://ui-avatars.com/api/?name=FV&background=b45309&color=fff&size=64",
+    rating: 4.8,
+    products: 38,
+    badge: "Eco & Natural",
   },
   {
-    slug: "sport-max",
-    name: "SportMax",
-    logo: "https://ui-avatars.com/api/?name=SM&background=d97706&color=fff&size=64",
-    rating: 4.5,
-    products: 178,
+    slug: "lumina-pura",
+    name: "Lumina Pură",
+    logo: "https://ui-avatars.com/api/?name=LP&background=059669&color=fff&size=64",
+    rating: 4.6,
+    products: 64,
     badge: "Verificat",
   },
 ];
@@ -49,9 +49,9 @@ export default function TopVendors() {
   return (
     <section className="container px-4 py-8">
       <div className="flex items-center justify-between mb-5">
-        <h2 className="text-xl md:text-2xl font-bold text-foreground">🏆 Top Vendori</h2>
+        <h2 className="text-xl md:text-2xl font-bold text-foreground">🏆 Top Artizani</h2>
         <Link to="/catalog" className="text-primary text-sm font-medium hover:underline flex items-center gap-1">
-          Toți vendorii <ChevronRight className="w-4 h-4" />
+          Toți artizanii <ChevronRight className="w-4 h-4" />
         </Link>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
@@ -72,7 +72,7 @@ export default function TopVendors() {
               <span className="text-sm font-medium">{v.rating}</span>
             </div>
             <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-2">
-              <Package className="w-3 h-3" /> {v.products} produse
+              <Package className="w-3 h-3" /> {v.products} lumânări
             </div>
             <Badge variant="outline" className="text-[10px]">
               <Shield className="w-2.5 h-2.5 mr-1" /> {v.badge}
