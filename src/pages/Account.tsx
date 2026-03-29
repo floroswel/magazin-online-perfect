@@ -786,8 +786,8 @@ export default function Account() {
             </Tabs>
           </div>
 
-          {/* RIGHT SIDEBAR */}
-          <div className="space-y-4 lg:sticky lg:top-24 lg:self-start order-first lg:order-last">
+          {/* RIGHT SIDEBAR — hidden on mobile, info already in stats */}
+          <div className="hidden lg:block space-y-4 lg:sticky lg:top-24 lg:self-start">
             {/* Account Info Card */}
             <Card className="overflow-hidden">
               <div className="h-16 bg-gradient-to-r from-primary/20 to-primary/5" />
