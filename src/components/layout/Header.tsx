@@ -7,6 +7,7 @@ import { useAdmin } from "@/hooks/useAdmin";
 import { useCart } from "@/hooks/useCart";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import SearchAutocomplete from "@/components/SearchAutocomplete";
+import MegaMenu from "@/components/layout/MegaMenu";
 
 const categories = [
   { name: "Electronice", slug: "electronice", icon: "💻" },
@@ -112,7 +113,7 @@ export default function Header() {
         {/* Category navigation bar */}
         <div className="hidden lg:block bg-primary border-t border-primary-foreground/10">
           <div className="container flex items-center h-10 px-4">
-            {/* Categories dropdown */}
+            {/* Categories mega-menu dropdown */}
             <div className="relative" onMouseEnter={() => setShowCategories(true)} onMouseLeave={() => setShowCategories(false)}>
               <button className="flex items-center gap-1.5 text-primary-foreground text-sm font-medium h-10 px-4 hover:bg-primary-foreground/10 transition-colors">
                 <Menu className="w-4 h-4" />
@@ -120,17 +121,8 @@ export default function Header() {
                 <ChevronDown className="w-3 h-3" />
               </button>
               {showCategories && (
-                <div className="absolute top-full left-0 w-56 bg-card shadow-xl rounded-b-lg border border-border z-50 py-1 animate-fade-in">
-                  {categories.map((cat) => (
-                    <Link
-                      key={cat.slug}
-                      to={`/catalog?category=${cat.slug}`}
-                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-card-foreground hover:bg-muted transition-colors"
-                    >
-                      <span>{cat.icon}</span>
-                      <span>{cat.name}</span>
-                    </Link>
-                  ))}
+                <div className="absolute top-full left-0 z-50 animate-fade-in" style={{ width: 720 }}>
+                  <MegaMenu />
                 </div>
               )}
             </div>
@@ -140,7 +132,7 @@ export default function Header() {
               {[
                 { to: "/catalog?sort=newest", label: "Noutăți" },
                 { to: "/catalog?sort=popular", label: "Populare" },
-                { to: "/catalog?badge=deals", label: "🔥 Oferte" },
+                { to: "/oferte", label: "🔥 Oferte" },
                 { to: "/catalog", label: "Toate Produsele" },
                 { to: "/povestea-noastra", label: "Despre Noi" },
                 { to: "/faq", label: "Ajutor" },

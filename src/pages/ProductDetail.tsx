@@ -7,6 +7,8 @@ import VariantSelector from "@/components/products/VariantSelector";
 import CountdownTimer from "@/components/products/CountdownTimer";
 import FrequentlyBoughtTogether from "@/components/products/FrequentlyBoughtTogether";
 import UpgradeRecommendation from "@/components/products/UpgradeRecommendation";
+import VendorComparison from "@/components/products/VendorComparison";
+import PriceDropAlert from "@/components/products/PriceDropAlert";
 import { trackViewItem, trackAddToCart } from "@/hooks/useMarketingTracking";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -368,10 +370,13 @@ export default function ProductDetail() {
               }
             })()}
             {activeStock > 0 && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
-                <Truck className="h-4 w-4 text-primary flex-shrink-0" />
-                <span>Livrare estimată: <strong className="text-foreground">1-3 zile lucrătoare</strong></span>
-              </div>
+              <>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
+                  <Truck className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span>Livrare estimată: <strong className="text-foreground">1-3 zile lucrătoare</strong></span>
+                </div>
+                <PriceDropAlert productId={product.id} productName={product.name} currentPrice={finalPrice} />
+              </>
             )}
             <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
               {product.sku && <span className="flex items-center gap-1"><Package className="w-3 h-3" /> SKU: {product.sku}</span>}
@@ -382,6 +387,11 @@ export default function ProductDetail() {
               )}
             </div>
           </div>
+        </div>
+
+        {/* Vendor Comparison */}
+        <div className="mt-8">
+          <VendorComparison productName={product.name} />
         </div>
 
         {/* Tabs */}

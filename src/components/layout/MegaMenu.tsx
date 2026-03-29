@@ -1,117 +1,192 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import {
-  Flame, Sparkles, Gift, Paintbrush, Wrench, Package, ChevronRight, Zap
-} from "lucide-react";
-import { isCandleCollection } from "@/lib/candleCatalog";
+import { ChevronRight } from "lucide-react";
 
-const iconMap: Record<string, React.ElementType> = {
-  Flame, Sparkles, Gift, Paintbrush, Wrench,
-  "🕯️": Flame, "✨": Sparkles, "🎁": Gift, "🎨": Paintbrush, "🔧": Wrench,
-};
-
-interface Cat {
-  id: string;
+interface SubCategory {
   name: string;
   slug: string;
-  icon: string | null;
-  parent_id: string | null;
-  show_in_nav: boolean;
-  display_order: number;
 }
 
-interface DynCat {
-  id: string;
+interface MegaCategory {
   name: string;
   slug: string;
-  icon: string | null;
-  display_order: number;
+  icon: string;
+  image: string;
+  subs: SubCategory[];
 }
+
+const megaCategories: MegaCategory[] = [
+  {
+    name: "Electronice",
+    slug: "electronice",
+    icon: "💻",
+    image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=300&h=200&fit=crop",
+    subs: [
+      { name: "Telefoane", slug: "telefoane" },
+      { name: "Laptopuri", slug: "laptopuri" },
+      { name: "Tablete", slug: "tablete" },
+      { name: "TV & Audio", slug: "tv-audio" },
+      { name: "Accesorii", slug: "accesorii-electronice" },
+      { name: "Gaming", slug: "gaming" },
+    ],
+  },
+  {
+    name: "Modă",
+    slug: "moda",
+    icon: "👗",
+    image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=300&h=200&fit=crop",
+    subs: [
+      { name: "Femei", slug: "moda-femei" },
+      { name: "Bărbați", slug: "moda-barbati" },
+      { name: "Copii", slug: "moda-copii" },
+      { name: "Încălțăminte", slug: "incaltaminte" },
+      { name: "Accesorii", slug: "accesorii-moda" },
+    ],
+  },
+  {
+    name: "Casa & Grădină",
+    slug: "casa-gradina",
+    icon: "🏠",
+    image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&h=200&fit=crop",
+    subs: [
+      { name: "Mobilier", slug: "mobilier" },
+      { name: "Decorațiuni", slug: "decoratiuni" },
+      { name: "Bucătărie", slug: "bucatarie" },
+      { name: "Grădină", slug: "gradina" },
+      { name: "Iluminat", slug: "iluminat" },
+    ],
+  },
+  {
+    name: "Sport & Fitness",
+    slug: "sport",
+    icon: "⚽",
+    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop",
+    subs: [
+      { name: "Echipament fitness", slug: "fitness" },
+      { name: "Sporturi de echipă", slug: "sporturi-echipa" },
+      { name: "Outdoor", slug: "outdoor" },
+      { name: "Ciclism", slug: "ciclism" },
+    ],
+  },
+  {
+    name: "Auto & Moto",
+    slug: "auto",
+    icon: "🚗",
+    image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=300&h=200&fit=crop",
+    subs: [
+      { name: "Piese auto", slug: "piese-auto" },
+      { name: "Accesorii", slug: "accesorii-auto" },
+      { name: "Electronice auto", slug: "electronice-auto" },
+      { name: "Curățare", slug: "curatare-auto" },
+    ],
+  },
+  {
+    name: "Copii & Bebe",
+    slug: "copii",
+    icon: "🧸",
+    image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=300&h=200&fit=crop",
+    subs: [
+      { name: "Jucării", slug: "jucarii" },
+      { name: "Haine copii", slug: "haine-copii" },
+      { name: "Cărucioare", slug: "carucioare" },
+      { name: "Alimentație", slug: "alimentatie-copii" },
+    ],
+  },
+  {
+    name: "Sănătate",
+    slug: "sanatate",
+    icon: "💊",
+    image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=300&h=200&fit=crop",
+    subs: [
+      { name: "Vitamine", slug: "vitamine" },
+      { name: "Cosmetice", slug: "cosmetice" },
+      { name: "Îngrijire personală", slug: "ingrijire-personala" },
+      { name: "Aparatură medicală", slug: "aparatura-medicala" },
+    ],
+  },
+  {
+    name: "Cărți & Papetărie",
+    slug: "carti",
+    icon: "📚",
+    image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=300&h=200&fit=crop",
+    subs: [
+      { name: "Ficțiune", slug: "fictiune" },
+      { name: "Non-ficțiune", slug: "non-fictiune" },
+      { name: "Copii", slug: "carti-copii" },
+      { name: "Papetărie", slug: "papetarie" },
+    ],
+  },
+];
 
 export default function MegaMenu() {
-  const [categories, setCategories] = useState<Cat[]>([]);
-  const [dynCategories, setDynCategories] = useState<DynCat[]>([]);
-  const [hoveredCat, setHoveredCat] = useState<string | null>(null);
-
-  useEffect(() => {
-    supabase
-      .from("categories")
-      .select("id, name, slug, icon, parent_id, show_in_nav, display_order")
-      .eq("visible", true)
-      .order("display_order")
-      .order("name")
-      .then(({ data }) =>
-        setCategories(((data as Cat[]) || []).filter((cat) => isCandleCollection(cat)))
-      );
-
-    supabase
-      .from("dynamic_categories")
-      .select("id, name, slug, icon, display_order")
-      .eq("visible", true)
-      .order("display_order")
-      .then(({ data }) =>
-        setDynCategories(((data || []) as unknown as DynCat[]).filter((cat) => isCandleCollection(cat)))
-      );
-  }, []);
-
-  // Only show categories marked as show_in_nav
-  const navCategories = categories.filter(c => c.show_in_nav !== false && isCandleCollection(c));
-  const parents = navCategories.filter(c => !c.parent_id);
-  const getChildren = (parentId: string) => navCategories.filter(c => c.parent_id === parentId);
+  const [activeCat, setActiveCat] = useState<string | null>(null);
+  const active = megaCategories.find((c) => c.slug === activeCat);
 
   return (
-    <nav className="bg-white border-b-2 border-primary/20 shadow-sm relative">
-      <div className="container">
-        <ul className="hidden md:flex items-center gap-0 py-0 overflow-x-auto">
-          {parents.map(cat => {
-            const Icon = iconMap[cat.icon || ""] || Package;
-            const children = getChildren(cat.id);
-            const catLink = cat.slug.includes("personalizat") ? "/personalizare" : `/catalog?category=${cat.slug}`;
-            return (
-              <li
-                key={cat.slug}
-                className="relative group"
-                onMouseEnter={() => setHoveredCat(cat.id)}
-                onMouseLeave={() => setHoveredCat(null)}
-              >
-                <Link
-                  to={catLink}
-                  className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-foreground hover:text-primary border-b-2 border-transparent hover:border-primary transition-all whitespace-nowrap"
-                >
-                  <Icon className="h-4 w-4 text-primary" />
-                  {cat.name}
-                  {children.length > 0 && <ChevronRight className="h-3 w-3 ml-0.5 opacity-50" />}
-                </Link>
-                {children.length > 0 && hoveredCat === cat.id && (
-                  <div className="absolute left-0 top-full z-50 bg-card border border-border rounded-lg shadow-xl p-4 min-w-[200px] animate-in fade-in-0 slide-in-from-top-1 duration-150">
-                    {children.map(child => (
-                      <Link
-                        key={child.id}
-                        to={`/catalog?category=${child.slug}`}
-                        className="block px-3 py-2 text-sm text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
-                      >
-                        {child.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </li>
-            );
-          })}
-          {dynCategories.map(dcat => (
-            <li key={`dyn-${dcat.slug}`}>
-              <Link
-                to={`/catalog?smart=${dcat.slug}`}
-                className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-foreground hover:text-primary border-b-2 border-transparent hover:border-primary transition-all whitespace-nowrap"
-              >
-                {dcat.icon ? <span className="text-base">{dcat.icon}</span> : <Zap className="h-4 w-4 text-primary" />}
-                {dcat.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
+    <div
+      className="flex bg-card border border-border rounded-b-lg shadow-2xl overflow-hidden"
+      style={{ minHeight: 380 }}
+      onMouseLeave={() => setActiveCat(null)}
+    >
+      {/* Left: category list */}
+      <div className="w-56 bg-muted/60 border-r border-border py-1 shrink-0">
+        {megaCategories.map((cat) => (
+          <button
+            key={cat.slug}
+            onMouseEnter={() => setActiveCat(cat.slug)}
+            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors text-left ${
+              activeCat === cat.slug
+                ? "bg-primary text-primary-foreground font-semibold"
+                : "text-card-foreground hover:bg-muted"
+            }`}
+          >
+            <span className="text-base">{cat.icon}</span>
+            <span className="flex-1">{cat.name}</span>
+            <ChevronRight className="w-3.5 h-3.5 opacity-50" />
+          </button>
+        ))}
       </div>
-    </nav>
+
+      {/* Right: subcategories + promo image */}
+      {active && (
+        <div className="flex-1 p-6 flex gap-8 animate-fade-in">
+          <div className="flex-1">
+            <h3 className="text-lg font-bold text-card-foreground mb-4">{active.name}</h3>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-1">
+              {active.subs.map((sub) => (
+                <Link
+                  key={sub.slug}
+                  to={`/catalog?category=${sub.slug}`}
+                  className="py-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {sub.name}
+                </Link>
+              ))}
+            </div>
+            <Link
+              to={`/catalog?category=${active.slug}`}
+              className="inline-block mt-6 text-sm font-semibold text-primary hover:underline"
+            >
+              Vezi toate din {active.name} →
+            </Link>
+          </div>
+          <div className="w-64 shrink-0 hidden xl:block">
+            <img
+              src={active.image}
+              alt={active.name}
+              className="w-full h-44 object-cover rounded-lg"
+              loading="lazy"
+            />
+            <p className="text-xs text-muted-foreground mt-2 text-center">Descoperă colecția {active.name}</p>
+          </div>
+        </div>
+      )}
+
+      {!active && (
+        <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm p-8">
+          ← Selectează o categorie pentru a vedea subcategoriile
+        </div>
+      )}
+    </div>
   );
 }
