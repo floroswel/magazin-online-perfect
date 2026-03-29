@@ -10,6 +10,7 @@ import { useVisibility } from "@/hooks/useVisibility";
 import { useLayoutSettings } from "@/hooks/useLayoutSettings";
 import SearchAutocomplete from "@/components/SearchAutocomplete";
 import MegaMenu from "@/components/layout/MegaMenu";
+import { useStoreBranding } from "@/hooks/useStoreBranding";
 
 const categories = [
   { name: "Lumânări Parfumate", slug: "lumanari-parfumate", icon: "🕯️" },
