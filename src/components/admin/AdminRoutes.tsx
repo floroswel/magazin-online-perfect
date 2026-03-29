@@ -16,6 +16,7 @@ const AdminStockOverview = lazy(() => import("./stock/AdminStockOverview"));
 const AdminStockManager = lazy(() => import("./stock/AdminStockManager"));
 const AdminStockMovements = lazy(() => import("./stock/AdminStockMovements"));
 const AdminStockAlerts = lazy(() => import("./stock/AdminStockAlerts"));
+const AdminPredictiveStock = lazy(() => import("./stock/AdminPredictiveStock"));
 const AdminInventory = lazy(() => import("./stock/AdminInventory"));
 const AdminCustomers = lazy(() => import("./customers/AdminCustomers"));
 const AdminCustomerDetail = lazy(() => import("./customers/AdminCustomerDetail"));
