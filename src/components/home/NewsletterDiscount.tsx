@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
@@ -28,11 +29,11 @@ export default function NewsletterDiscount() {
 
   if (done) {
     return (
-      <section className="bg-ml-warm-bg py-16">
+      <section className="py-16">
         <div className="container text-center">
           <h2 className="font-serif text-2xl text-foreground mb-2">Mulțumim!</h2>
           <p className="text-muted-foreground font-sans text-sm">
-            Codul tău <span className="font-semibold tracking-wider bg-primary/10 text-primary px-3 py-1 text-sm">MAMALUCICA10</span> a fost trimis pe email.
+            Codul tău <span className="font-semibold">MAMALUCICA10</span> a fost trimis pe email.
           </p>
         </div>
       </section>
@@ -40,33 +41,29 @@ export default function NewsletterDiscount() {
   }
 
   return (
-    <section className="bg-ml-warm-bg py-16 md:py-20" ref={ref}>
+    <section className="py-16 md:py-20" ref={ref}>
       <div className="container px-4">
-        <div className="max-w-xl mx-auto text-center reveal stagger-1">
-          <h2 className="font-serif text-2xl md:text-4xl text-foreground mb-3">
-            Abonează-te și primești 10% reducere
-          </h2>
-          <p className="font-sans font-light text-sm text-muted-foreground mb-8">
-            Fii prima care află despre noutăți și oferte exclusive
+        <div className="max-w-md mx-auto reveal stagger-1">
+          <p className="font-sans text-sm text-muted-foreground mb-4 text-center md:text-left">
+            Abonează-te pentru noutăți și oferte!
           </p>
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row max-w-md mx-auto gap-0">
+          <form onSubmit={handleSubmit} className="flex">
             <Input
               type="email"
-              placeholder="Adresa ta de email"
+              placeholder="Adresa de email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="flex-1 bg-background text-foreground border border-border rounded-none h-12 px-5 font-sans text-sm input-glow"
+              className="flex-1 bg-background text-foreground border border-foreground rounded-none h-12 px-5 font-sans text-sm focus:ring-0 focus:border-foreground"
               required
             />
             <button
               type="submit"
               disabled={loading}
-              className="btn-cta bg-foreground text-background font-sans font-medium text-sm px-8 h-12 hover:opacity-90 transition-all disabled:opacity-50"
+              className="shrink-0 bg-foreground text-background h-12 w-12 flex items-center justify-center hover:opacity-80 transition-opacity disabled:opacity-50"
             >
-              Abonează-te
+              <ArrowRight className="h-4 w-4" />
             </button>
           </form>
-          <p className="font-sans text-[11px] text-muted-foreground mt-4">Fără spam. Dezabonare oricând.</p>
         </div>
       </div>
     </section>

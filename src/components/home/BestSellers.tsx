@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
 import ProductCard from "@/components/products/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
@@ -26,7 +25,7 @@ export default function BestSellers({ title = "Cele mai vândute" }: { title?: s
           .select("*")
           .in("category_id", ids)
           .order("review_count", { ascending: false })
-          .limit(8)
+          .limit(4)
           .then(({ data }) => setProducts(data || []));
       });
   }, []);
@@ -34,18 +33,21 @@ export default function BestSellers({ title = "Cele mai vândute" }: { title?: s
   if (products.length === 0) return null;
 
   return (
-    <section className="bg-foreground py-16 md:py-24" ref={ref}>
+    <section className="py-16 md:py-24" ref={ref}>
       <div className="container px-4">
-        <div className="flex items-end justify-between mb-10 reveal stagger-1">
-          <div>
-            <h2 className="font-serif text-3xl md:text-4xl text-background">{title}</h2>
-          </div>
-          <Link to="/catalog" className="font-sans text-sm text-primary hover:text-primary/80 font-medium flex items-center gap-1.5 transition-colors">
-            Vezi toate <ArrowRight className="h-4 w-4" />
-          </Link>
+        <div className="text-center mb-10 reveal stagger-1">
+          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">{title}</h2>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 reveal stagger-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 reveal stagger-2">
           {products.map(p => <ProductCard key={p.id} product={p} />)}
+        </div>
+        <div className="text-center mt-10">
+          <Link
+            to="/catalog"
+            className="inline-block font-sans text-[12px] font-medium tracking-[2px] uppercase border border-foreground text-foreground px-8 py-3 hover:bg-foreground hover:text-background transition-all"
+          >
+            Vezi toate produsele
+          </Link>
         </div>
       </div>
     </section>

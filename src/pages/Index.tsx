@@ -25,9 +25,10 @@ import { useVisibility } from "@/hooks/useVisibility";
 import type { Tables } from "@/integrations/supabase/types";
 
 const DEFAULT_ORDER = [
-  "hero_section", "social_proof_bar", "collections_grid",
-  "featured_products", "flash_deals", "bestsellers_section",
-  "brand_story_section", "scent_guide_teaser", "reviews_section",
+  "hero_section", "collections_grid",
+  "featured_products", "brand_story_section", "social_proof_bar",
+  "bestsellers_section", "reviews_section",
+  "flash_deals", "scent_guide_teaser",
   "instagram_feed", "recently_viewed", "newsletter_section",
 ];
 
@@ -98,7 +99,7 @@ export default function Index() {
           .select("*")
           .eq("featured", true)
           .in("category_id", ids)
-          .limit(8)
+          .limit(4)
           .then(({ data }) => { setFeatured(data || []); setLoading(false); });
       });
   }, []);
@@ -124,20 +125,15 @@ export default function Index() {
     collections_grid: <CollectionsGrid key="collections_grid" />,
     featured_products: (
       <section key="featured_products" className="container py-16 md:py-24 px-4" ref={featuredRef}>
-        <div className="flex items-end justify-between mb-10 reveal stagger-1">
-          <div>
-            <h2 className="font-serif text-3xl md:text-4xl text-foreground">Produse recomandate</h2>
-          </div>
-          <Link to="/catalog" className="font-sans text-sm text-primary hover:text-primary/80 font-medium flex items-center gap-1.5 transition-colors">
-            Vezi toate <ArrowRight className="h-4 w-4" />
-          </Link>
+        <div className="text-center mb-10 reveal stagger-1">
+          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">Produse Recomandate</h2>
         </div>
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
+            {Array.from({ length: 4 }).map((_, i) => <ProductCardSkeleton key={i} />)}
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 reveal stagger-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 reveal stagger-2">
             {featured.map((p, i) => <ProductCard key={p.id} product={p} eager={i < 4} />)}
           </div>
         )}

@@ -5,20 +5,34 @@ export default function ScentGuideTeaser() {
   const ref = useScrollReveal();
 
   return (
-    <section className="relative bg-foreground py-20 md:py-28 overflow-hidden" ref={ref}>
-      <div className="container px-4 relative z-10 text-center">
-        <div className="max-w-lg mx-auto reveal stagger-1">
-          <h2 className="font-serif text-background text-3xl md:text-5xl leading-tight mb-5">
-            Nu știi ce parfum să alegi?
-          </h2>
-          <p className="font-sans font-light text-background/55 text-base mb-10 leading-relaxed">
-            Răspunde la 5 întrebări și îți recomandăm lumânarea perfectă
-          </p>
-          <Link
-            to="/quiz-parfum"
-            className="btn-cta inline-flex items-center gap-2 font-sans text-sm font-medium border border-primary text-primary px-8 py-3 hover:bg-primary hover:text-primary-foreground transition-all"
-          >
-            Începe quizul →
+    <section className="py-16 md:py-24" ref={ref}>
+      <div className="container px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Link to="/catalog?category=barbati" className="group relative overflow-hidden aspect-[4/5] reveal stagger-1">
+            <img
+              src="https://images.unsplash.com/photo-1572726729207-a78d6feb18d7?w=800&h=1000&fit=crop"
+              alt="Lumânări pentru el"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              loading="lazy"
+            />
+            <div className="absolute bottom-6 left-6">
+              <span className="font-sans text-[12px] font-medium tracking-[2px] uppercase text-white bg-foreground px-6 py-3 inline-block hover:opacity-90 transition-opacity">
+                Lumânări pentru El
+              </span>
+            </div>
+          </Link>
+          <Link to="/catalog?category=femei" className="group relative overflow-hidden aspect-[4/5] reveal stagger-2">
+            <img
+              src="https://images.unsplash.com/photo-1608181831718-2501840ddf8c?w=800&h=1000&fit=crop"
+              alt="Lumânări pentru ea"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              loading="lazy"
+            />
+            <div className="absolute bottom-6 left-6">
+              <span className="font-sans text-[12px] font-medium tracking-[2px] uppercase text-white bg-foreground px-6 py-3 inline-block hover:opacity-90 transition-opacity">
+                Lumânări pentru Ea
+              </span>
+            </div>
           </Link>
         </div>
       </div>

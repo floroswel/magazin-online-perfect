@@ -19,8 +19,10 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
 
+  const isHome = location.pathname === "/";
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
+    const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -32,63 +34,51 @@ export default function Header() {
   }, [mobileMenu]);
 
   const navLinks = [
-    { to: "/", label: "Acasă" },
-    { to: "/catalog", label: "Colecții" },
-    { to: "/povestea-noastra", label: "Despre noi" },
-    { to: "/recenzii", label: "Blog" },
-    { to: "/faq", label: "Contact" },
+    { to: "/catalog", label: "COLECȚII" },
+    { to: "/povestea-noastra", label: "DESPRE NOI" },
+    { to: "/recenzii", label: "BLOG" },
+    { to: "/faq", label: "CONTACT" },
   ];
+
+  // Transparent on home, solid when scrolled or on other pages
+  const isTransparent = isHome && !scrolled;
+  const headerBg = isTransparent ? "bg-transparent absolute" : "bg-background shadow-sm border-b border-border sticky";
+  const textColor = isTransparent ? "text-white" : "text-foreground";
+  const mutedColor = isTransparent ? "text-white/70" : "text-muted-foreground";
+  const logoColor = isTransparent ? "text-white" : "text-foreground";
 
   return (
     <>
       {/* Announcement Bar */}
-      <div className="bg-foreground text-background relative z-[60] overflow-hidden">
-        <div className="flex items-center h-9">
-          <div className="animate-marquee flex items-center whitespace-nowrap gap-12 px-4">
-            {[
-              "Transport gratuit peste 200 lei",
-              "Livrare 24-48h",
-              "Retururi gratuite 30 zile",
-              "Transport gratuit peste 200 lei",
-              "Livrare 24-48h",
-              "Retururi gratuite 30 zile",
-            ].map((text, i) => (
-              <span key={i} className="flex items-center gap-12">
-                <span className="font-sans text-[11px] tracking-wide">{text}</span>
-                {i < 5 && <span className="text-[11px] opacity-30">|</span>}
-              </span>
-            ))}
-          </div>
+      <div className="bg-foreground text-background relative z-[60]">
+        <div className="flex items-center justify-center h-10 px-4">
+          <p className="font-sans text-[12px] tracking-wide">
+            Reduceri de sezon până la 50%.{" "}
+            <Link to="/catalog" className="underline underline-offset-2 font-medium hover:opacity-80">
+              Cumpără acum
+            </Link>
+          </p>
         </div>
       </div>
 
       {/* Main Header */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 bg-background ${scrolled ? "shadow-sm border-b border-border" : ""}`}>
-        <div className="container flex items-center justify-between h-16 md:h-[72px] px-4">
-          {/* Mobile hamburger */}
-          <button
-            className="lg:hidden p-2 -ml-2 text-foreground"
-            onClick={() => setMobileMenu(true)}
-            aria-label="Meniu"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-
-          {/* Logo */}
-          <Link to="/" className="lg:mr-12">
-            <span className="font-serif text-xl md:text-2xl font-semibold text-foreground tracking-wide">
+      <header className={`${headerBg} top-0 left-0 right-0 z-50 transition-all duration-300`}>
+        <div className="container flex items-center h-20 px-4">
+          {/* Logo - LEFT aligned, large */}
+          <Link to="/" className="mr-auto">
+            <span className={`font-serif text-3xl md:text-4xl font-bold ${logoColor} tracking-tight leading-none`}>
               Mama Lucica
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8 flex-1">
+          <nav className="hidden lg:flex items-center gap-7 mr-8">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
-                className={`font-sans text-[13px] font-medium tracking-wide transition-colors hover:text-primary ${
-                  location.pathname === link.to ? "text-primary" : "text-foreground"
+                className={`font-sans text-[12px] font-medium tracking-[1.5px] transition-colors hover:opacity-70 ${
+                  location.pathname === link.to ? (isTransparent ? "text-white" : "text-primary") : textColor
                 }`}
               >
                 {link.label}
@@ -97,47 +87,54 @@ export default function Header() {
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <button
-              onClick={toggleDarkMode}
-              className="hidden sm:flex w-9 h-9 items-center justify-center rounded-full hover:bg-muted transition-colors text-muted-foreground"
-              aria-label={isDark ? "Mod luminos" : "Mod întunecat"}
+              onClick={() => navigate(user ? "/account" : "/auth")}
+              className={`hidden lg:flex w-10 h-10 items-center justify-center hover:opacity-70 transition-opacity ${mutedColor}`}
+              aria-label="Cont"
             >
-              {isDark ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
+              <User className="h-5 w-5" />
             </button>
 
             <button
               onClick={() => setShowSearch(!showSearch)}
-              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-muted transition-colors text-muted-foreground"
+              className={`w-10 h-10 flex items-center justify-center hover:opacity-70 transition-opacity ${mutedColor}`}
               aria-label="Caută"
             >
-              <Search className="h-[18px] w-[18px]" />
+              <Search className="h-5 w-5" />
+            </button>
+
+            <button
+              onClick={toggleDarkMode}
+              className={`hidden sm:flex w-10 h-10 items-center justify-center hover:opacity-70 transition-opacity ${mutedColor}`}
+              aria-label={isDark ? "Mod luminos" : "Mod întunecat"}
+            >
+              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
 
             {user && (
-              <Link to="/favorites" className="hidden sm:flex w-9 h-9 items-center justify-center rounded-full hover:bg-muted transition-colors text-muted-foreground">
-                <Heart className="h-[18px] w-[18px]" />
+              <Link to="/favorites" className={`hidden sm:flex w-10 h-10 items-center justify-center hover:opacity-70 transition-opacity ${mutedColor}`}>
+                <Heart className="h-5 w-5" />
               </Link>
             )}
 
-            <Link to={user ? "/cart" : "/auth"} className="relative w-9 h-9 flex items-center justify-center rounded-full hover:bg-muted transition-colors text-muted-foreground">
-              <ShoppingBag className="h-[18px] w-[18px]" />
+            <Link to={user ? "/cart" : "/auth"} className={`relative w-10 h-10 flex items-center justify-center hover:opacity-70 transition-opacity ${mutedColor}`}>
+              <ShoppingBag className="h-5 w-5" />
               {totalItems > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 h-[18px] min-w-[18px] flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-sans font-medium px-1 animate-bounce-count">
+                <span className="absolute top-0.5 right-0 h-[18px] min-w-[18px] flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-sans font-medium px-1 animate-bounce-count">
                   {totalItems}
                 </span>
               )}
             </Link>
 
-            {user ? (
-              <Link to="/account" className="hidden sm:flex w-9 h-9 items-center justify-center rounded-full hover:bg-muted transition-colors text-muted-foreground">
-                <User className="h-[18px] w-[18px]" />
-              </Link>
-            ) : (
-              <Link to="/auth" className="hidden sm:flex w-9 h-9 items-center justify-center rounded-full hover:bg-muted transition-colors text-muted-foreground">
-                <User className="h-[18px] w-[18px]" />
-              </Link>
-            )}
+            {/* Mobile hamburger */}
+            <button
+              className={`lg:hidden w-10 h-10 flex items-center justify-center ${textColor}`}
+              onClick={() => setMobileMenu(true)}
+              aria-label="Meniu"
+            >
+              <Menu className="h-6 w-6" />
+            </button>
           </div>
         </div>
 
@@ -157,7 +154,7 @@ export default function Header() {
         style={{ willChange: "transform" }}
       >
         <div className="flex items-center justify-between px-6 h-16 border-b border-border">
-          <span className="font-serif text-xl font-semibold text-foreground">Mama Lucica</span>
+          <span className="font-serif text-2xl font-bold text-foreground">Mama Lucica</span>
           <button onClick={() => setMobileMenu(false)} className="text-foreground p-2 min-w-[44px] min-h-[44px] flex items-center justify-center">
             <X className="h-6 w-6" />
           </button>
@@ -177,7 +174,8 @@ export default function Header() {
 
         <nav className="flex-1 overflow-y-auto px-4 py-4">
           {[
-            ...navLinks,
+            { to: "/", label: "Acasă" },
+            ...navLinks.map(l => ({ ...l, label: l.label.charAt(0) + l.label.slice(1).toLowerCase() })),
             { to: "/personalizare", label: "Personalizare" },
             ...(user ? [{ to: "/account", label: "Contul meu" }, { to: "/favorites", label: "Favorite" }] : [{ to: "/auth", label: "Autentificare" }]),
             ...(isAdmin ? [{ to: "/admin", label: "Admin Panel" }] : []),
@@ -188,7 +186,7 @@ export default function Header() {
                 key={link.to}
                 to={link.to}
                 onClick={() => setMobileMenu(false)}
-                className={`flex items-center text-foreground text-lg font-light min-h-[52px] px-3 rounded-lg transition-colors ${isActive ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted"}`}
+                className={`flex items-center text-foreground text-lg font-light min-h-[52px] px-3 transition-colors ${isActive ? "text-primary font-medium" : "hover:bg-muted"}`}
               >
                 {link.label}
               </Link>
@@ -198,7 +196,7 @@ export default function Header() {
           <Link
             to="/cart"
             onClick={() => setMobileMenu(false)}
-            className="flex items-center justify-between text-foreground text-lg font-light min-h-[52px] px-3 rounded-lg hover:bg-muted mt-1"
+            className="flex items-center justify-between text-foreground text-lg font-light min-h-[52px] px-3 hover:bg-muted mt-1"
           >
             <span>Coș</span>
             {totalItems > 0 && (
