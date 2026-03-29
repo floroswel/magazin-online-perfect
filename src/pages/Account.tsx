@@ -821,16 +821,16 @@ export default function Account() {
           </div>
 
           {/* RIGHT SIDEBAR — hidden on mobile, info already in stats */}
-          <div className="hidden lg:block space-y-4 lg:sticky lg:top-24 lg:self-start">
+          <div className="hidden lg:block space-y-4 lg:sticky lg:top-24 lg:self-start min-w-0 max-w-[280px]">
             {/* Account Info Card */}
             <Card className="overflow-hidden">
               <div className="h-16 bg-gradient-to-r from-primary/20 to-primary/5" />
-              <CardContent className="p-4 text-center -mt-8">
+              <CardContent className="p-4 text-center -mt-8 overflow-hidden">
                 <div className="w-16 h-16 rounded-2xl bg-card border-4 border-card flex items-center justify-center mx-auto mb-2 shadow-sm">
                   <UserIcon className="w-8 h-8 text-primary" />
                 </div>
-                <p className="font-semibold text-sm">{profile?.full_name || "Utilizator"}</p>
-                <p className="text-xs text-muted-foreground">{user.email}</p>
+                <p className="font-semibold text-sm break-words">{profile?.full_name || "Utilizator"}</p>
+                <p className="text-xs text-muted-foreground break-all">{user.email}</p>
                 <p className="text-[10px] text-muted-foreground mt-1">Membru din {user.created_at ? new Date(user.created_at).toLocaleDateString("ro-RO", { month: "long", year: "numeric" }) : "—"}</p>
               </CardContent>
             </Card>
