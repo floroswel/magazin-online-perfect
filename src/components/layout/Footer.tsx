@@ -212,8 +212,21 @@ export default function Footer() {
           </div>
         )}
 
-        {/* Bottom bar */}
+        {/* SEO Programmatic Links */}
         <div className="border-t border-background/10 mt-10 pt-6">
+          <h4 className="font-bold text-xs mb-2 text-background/60">Lumânări pe orașe</h4>
+          <div className="flex flex-wrap gap-x-3 gap-y-1 mb-4">
+            {["bucuresti", "cluj-napoca", "timisoara", "iasi", "constanta", "brasov", "craiova", "oradea", "sibiu", "arad"].map(city => (
+              <Link key={city} to={`/l/${city}/lumanari-parfumate`} className="text-[11px] text-background/40 hover:text-background transition-colors">
+                {({"bucuresti":"București","cluj-napoca":"Cluj-Napoca","timisoara":"Timișoara","iasi":"Iași","constanta":"Constanța","brasov":"Brașov","craiova":"Craiova","oradea":"Oradea","sibiu":"Sibiu","arad":"Arad"} as Record<string,string>)[city]}
+              </Link>
+            ))}
+            <Link to="/l" className="text-[11px] text-primary/70 hover:text-primary transition-colors">Toate orașele →</Link>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="border-t border-background/10 mt-4 pt-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               <p className="text-xs text-background/50">{copyrightText}</p>
