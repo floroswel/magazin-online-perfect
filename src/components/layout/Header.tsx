@@ -57,7 +57,18 @@ export default function Header() {
         <div className="bg-foreground text-background relative z-[60]">
           <div className="container flex items-center justify-between h-8 px-4 text-[11px]">
             <div className="hidden md:flex items-center gap-4">
-              <span className="flex items-center gap-1 opacity-80"><Truck className="w-3 h-3" /> Livrare gratuită peste 200 lei</span>
+              {totalPrice > 0 && totalPrice < 200 ? (
+                <span className="flex items-center gap-1 opacity-90">
+                  <Truck className="w-3 h-3" />
+                  Mai adaugă <strong className="text-accent mx-0.5">{(200 - totalPrice).toFixed(0)} lei</strong> pentru livrare GRATUITĂ!
+                </span>
+              ) : totalPrice >= 200 ? (
+                <span className="flex items-center gap-1 opacity-90">
+                  <Truck className="w-3 h-3" /> 🎉 Ai transport gratuit!
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 opacity-80"><Truck className="w-3 h-3" /> Livrare gratuită peste 200 lei</span>
+              )}
               <span className="flex items-center gap-1 opacity-80"><RotateCcw className="w-3 h-3" /> Retur 30 zile</span>
             </div>
             <div className="flex items-center gap-4 ml-auto">
@@ -67,6 +78,15 @@ export default function Header() {
               </button>
             </div>
           </div>
+          {/* Free shipping progress bar */}
+          {totalPrice > 0 && totalPrice < 200 && (
+            <div className="h-0.5 bg-background/20">
+              <div
+                className="h-full bg-accent transition-all duration-500"
+                style={{ width: `${Math.min(100, (totalPrice / 200) * 100)}%` }}
+              />
+            </div>
+          )}
         </div>
       )}
 
