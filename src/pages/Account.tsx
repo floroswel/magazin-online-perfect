@@ -262,14 +262,14 @@ export default function Account() {
 
   return (
     <Layout>
-      <div className="container py-6 max-w-6xl">
+      <div className="container py-6 md:py-10 max-w-6xl px-4">
         {/* Personalized greeting */}
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">Bună, {(profile?.full_name && !profile.full_name.includes("DELETED") ? profile.full_name.split(" ")[0] : null) || "acolo"} 👋</h1>
-            <p className="text-sm text-muted-foreground mt-1">Gestionează contul, comenzile și preferințele tale.</p>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Bună, {(profile?.full_name && !profile.full_name.includes("DELETED") ? profile.full_name.split(" ")[0] : null) || "acolo"} 👋</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">Gestionează contul, comenzile și preferințele tale.</p>
           </div>
-          <Button variant="outline" size="sm" className="gap-2 text-muted-foreground hover:text-destructive self-start" onClick={handleLogout}>
+          <Button variant="outline" size="sm" className="gap-2 text-muted-foreground hover:text-destructive self-start min-h-[44px]" onClick={handleLogout}>
             <LogOut className="w-4 h-4" /> Deconectare
           </Button>
         </div>
