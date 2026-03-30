@@ -53,13 +53,17 @@ export default function AdminGeneralSettings() {
 
   const toggleMaintenance = async (value: boolean) => {
     setTogglingMaintenance(true);
-    await supabase
+    const { error } = await supabase
       .from("site_settings")
       .update({ value, updated_at: new Date().toISOString() })
       .eq("key", "is_maintenance_mode");
-    setMaintenanceMode(value);
+    if (error) {
+      toast.error("Eroare la schimbarea modului: " + error.message);
+    } else {
+      setMaintenanceMode(value);
+      toast.success(value ? "Magazinul este acum în modul mentenanță" : "Magazinul este activ!");
+    }
     setTogglingMaintenance(false);
-    toast.success(value ? "Magazinul este acum în modul mentenanță" : "Magazinul este activ!");
   };
 
   const loadSettings = async () => {
