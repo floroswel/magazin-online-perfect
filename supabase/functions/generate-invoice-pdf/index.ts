@@ -169,11 +169,11 @@ serve(async (req) => {
 
     <div class="totals">
       <div class="totals-box">
-        <div class="total-row"><span>Subtotal (fără TVA):</span><span>${Number(invoice.subtotal || 0).toFixed(2)} ${invoice.currency || "RON"}</span></div>
-        <div class="total-row"><span>TVA total:</span><span>${Number(invoice.vat_amount || 0).toFixed(2)} ${invoice.currency || "RON"}</span></div>
+        <div class="total-row"><span>Subtotal:</span><span>${Number(invoice.subtotal || 0).toFixed(2)} ${invoice.currency || "RON"}</span></div>
         ${invoice.discount_amount ? `<div class="total-row" style="color:green"><span>Discount:</span><span>-${Number(invoice.discount_amount).toFixed(2)} ${invoice.currency || "RON"}</span></div>` : ""}
         ${invoice.shipping_amount ? `<div class="total-row"><span>Transport:</span><span>${Number(invoice.shipping_amount).toFixed(2)} ${invoice.currency || "RON"}</span></div>` : ""}
         <div class="total-row grand"><span>TOTAL:</span><span>${Number(invoice.total || 0).toFixed(2)} ${invoice.currency || "RON"}</span></div>
+        <div style="font-size:10px;color:#888;text-align:right;margin-top:4px">Furnizor neplătitor de TVA</div>
       </div>
     </div>
 
