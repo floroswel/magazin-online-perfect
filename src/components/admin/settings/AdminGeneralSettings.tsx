@@ -37,8 +37,30 @@ export default function AdminGeneralSettings() {
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [togglingMaintenance, setTogglingMaintenance] = useState(false);
 
-  useEffect(() => { loadSettings(); }, []);
+  useEffect(() => { loadSettings(); loadMaintenance(); }, []);
+
+  const loadMaintenance = async () => {
+    const { data } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "is_maintenance_mode")
+      .maybeSingle();
+    if (data) setMaintenanceMode(data.value === true);
+  };
+
+  const toggleMaintenance = async (value: boolean) => {
+    setTogglingMaintenance(true);
+    await supabase
+      .from("site_settings")
+      .update({ value, updated_at: new Date().toISOString() })
+      .eq("key", "is_maintenance_mode");
+    setMaintenanceMode(value);
+    setTogglingMaintenance(false);
+    toast.success(value ? "Magazinul este acum în modul mentenanță" : "Magazinul este activ!");
+  };
 
   const loadSettings = async () => {
     const keys = ["company_info", "social_media", "tracking_analytics", "store_settings"];
