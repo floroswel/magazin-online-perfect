@@ -225,8 +225,15 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Tax disclaimer */}
+        <div className="border-t border-background/10 mt-4 pt-4">
+          <p className="text-[11px] text-background/50 text-center mb-4">
+            Prețurile sunt finale. Furnizor neplătitor de TVA conform legislației în vigoare.
+          </p>
+        </div>
+
         {/* Bottom bar */}
-        <div className="border-t border-background/10 mt-4 pt-6">
+        <div className="border-t border-background/10 pt-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               <p className="text-xs text-background/50">{copyrightText}</p>

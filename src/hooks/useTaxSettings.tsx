@@ -14,8 +14,8 @@ const DEFAULTS: TaxSettings = {
   prices_include_tax: true,
   display_tax_in_cart: true,
   tax_enabled: true,
-  tax_included_message: "Toate prețurile includ TVA",
-  show_tax_included_message: true,
+  tax_included_message: "Preț final",
+  show_tax_included_message: false,
   tax_rates: [],
 };
 
