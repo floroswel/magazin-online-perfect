@@ -170,7 +170,7 @@ function adminNewOrderHTML(data: Record<string, any>) {
 function welcomeHTML(data: Record<string, any>) {
   return `${header("Bine ai venit!", "🎊")}
     <p style="font-size:18px;color:${BRAND.textColor};text-align:center">Bună, <strong>${data.name || "Client"}</strong>!</p>
-    <p style="color:${BRAND.mutedColor};font-size:14px;text-align:center">Contul tău a fost creat cu succes. Ești gata să descoperi lumea VENTUZA!</p>
+    <p style="color:${BRAND.mutedColor};font-size:14px;text-align:center">Contul tău a fost creat cu succes. Ești gata să descoperi lumea Mama Lucica!</p>
     <div style="background:#FEF3C7;padding:16px;border-radius:8px;margin:20px 0;text-align:center;border:1px solid #F59E0B">
       <p style="margin:0;font-size:16px;color:${BRAND.color}">🎁 Cod reducere 10% prima comandă:</p>
       <p style="margin:8px 0;font-size:28px;font-weight:bold;font-family:monospace;letter-spacing:3px;color:${BRAND.color}">BINEAIVENIT10</p>
