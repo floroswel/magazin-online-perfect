@@ -33,6 +33,7 @@ import { toast } from "sonner";
 import { safeJsonLd, sanitizeForJsonLd } from "@/lib/sanitize-json-ld";
 import DOMPurify from "dompurify";
 import { useCurrency } from "@/hooks/useCurrency";
+import { useTaxSettings } from "@/hooks/useTaxSettings";
 import { usePageSeo } from "@/components/SeoHead";
 import type { Tables } from "@/integrations/supabase/types";
 
