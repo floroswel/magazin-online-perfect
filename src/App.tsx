@@ -129,6 +129,7 @@ const App = () => (
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<ErrorBoundary><NotFound /></ErrorBoundary>} />
             </Routes>
+            </MaintenanceGuard>
             </ErrorBoundary>
           </CartProvider>
           </CurrencyProvider>
