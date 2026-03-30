@@ -176,7 +176,7 @@ function welcomeHTML(data: Record<string, any>) {
       <p style="margin:8px 0;font-size:28px;font-weight:bold;font-family:monospace;letter-spacing:3px;color:${BRAND.color}">BINEAIVENIT10</p>
     </div>
     <div style="text-align:center;margin-top:20px">
-      ${btn("Explorează colecția →", "https://ventuza.ro/catalog")}
+      ${btn("Explorează colecția →", "https://mamalucica.ro/catalog")}
     </div>
   ${footer()}`;
 }
