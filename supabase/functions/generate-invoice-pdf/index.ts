@@ -75,8 +75,6 @@ serve(async (req) => {
         <td style="padding:8px;border:1px solid #ddd">${item.description}</td>
         <td style="padding:8px;border:1px solid #ddd;text-align:center">${item.quantity}</td>
         <td style="padding:8px;border:1px solid #ddd;text-align:right">${Number(item.unit_price).toFixed(2)}</td>
-        <td style="padding:8px;border:1px solid #ddd;text-align:center">${item.vat_rate || 19}%</td>
-        <td style="padding:8px;border:1px solid #ddd;text-align:right">${Number(item.vat_amount || 0).toFixed(2)}</td>
         <td style="padding:8px;border:1px solid #ddd;text-align:right;font-weight:600">${Number(item.total || item.quantity * item.unit_price).toFixed(2)}</td>
       </tr>`
       )
@@ -160,10 +158,8 @@ serve(async (req) => {
           <th style="width:40px;text-align:center">Nr.</th>
           <th>Descriere</th>
           <th style="width:60px;text-align:center">Cant.</th>
-          <th style="width:90px;text-align:right">Preț unit.</th>
-          <th style="width:60px;text-align:center">TVA%</th>
-          <th style="width:90px;text-align:right">TVA</th>
-          <th style="width:100px;text-align:right">Total</th>
+          <th style="width:100px;text-align:right">Preț unit.</th>
+          <th style="width:110px;text-align:right">Total</th>
         </tr>
       </thead>
       <tbody>
@@ -173,11 +169,11 @@ serve(async (req) => {
 
     <div class="totals">
       <div class="totals-box">
-        <div class="total-row"><span>Subtotal (fără TVA):</span><span>${Number(invoice.subtotal || 0).toFixed(2)} ${invoice.currency || "RON"}</span></div>
-        <div class="total-row"><span>TVA total:</span><span>${Number(invoice.vat_amount || 0).toFixed(2)} ${invoice.currency || "RON"}</span></div>
+        <div class="total-row"><span>Subtotal:</span><span>${Number(invoice.subtotal || 0).toFixed(2)} ${invoice.currency || "RON"}</span></div>
         ${invoice.discount_amount ? `<div class="total-row" style="color:green"><span>Discount:</span><span>-${Number(invoice.discount_amount).toFixed(2)} ${invoice.currency || "RON"}</span></div>` : ""}
         ${invoice.shipping_amount ? `<div class="total-row"><span>Transport:</span><span>${Number(invoice.shipping_amount).toFixed(2)} ${invoice.currency || "RON"}</span></div>` : ""}
         <div class="total-row grand"><span>TOTAL:</span><span>${Number(invoice.total || 0).toFixed(2)} ${invoice.currency || "RON"}</span></div>
+        <div style="font-size:10px;color:#888;text-align:right;margin-top:4px">Furnizor neplătitor de TVA</div>
       </div>
     </div>
 
