@@ -14,7 +14,7 @@ interface EmailRequest {
 }
 
 const BRAND = {
-  name: "VENTUZA",
+  name: "Mama Lucica",
   color: "#B45309", // amber-700
   bgColor: "#FFFBEB", // amber-50 / ivory
   accentColor: "#D97706", // amber-600
@@ -22,7 +22,7 @@ const BRAND = {
   mutedColor: "#78716C", // stone-500
   font: "'Georgia', 'Times New Roman', serif",
   fromEmail: "no-reply@mamalucica.ro",
-  fromName: "VENTUZA",
+  fromName: "Mama Lucica",
   cui: "RO12345678",
   address: "București, România",
   phone: "+40 700 000 000",
