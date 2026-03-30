@@ -45,7 +45,7 @@ Deno.serve(async (req: Request) => {
     const paypoPayload = {
       amount: order.total,
       currency: "RON",
-      description: `Comandă VENTUZA #${orderId.slice(0, 8)}`,
+      description: `Comandă Mama Lucica #${orderId.slice(0, 8)}`,
       externalOrderId: orderId,
       buyer: {
         email: order.user_email || shippingAddr.email || "",

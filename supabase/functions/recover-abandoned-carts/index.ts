@@ -51,8 +51,8 @@ Deno.serve(async (req) => {
       .eq("key", "store_settings")
       .maybeSingle();
     const store = (storeSettings?.value_json as any) || {};
-    const senderEmail = store.sender_email || "noreply@ventuza.ro";
-    const senderName = store.sender_name || store.store_name || "VENTUZA";
+    const senderEmail = store.sender_email || "no-reply@mamalucica.ro";
+    const senderName = store.sender_name || store.store_name || "Mama Lucica";
     const siteUrl = Deno.env.get("SITE_URL") || store.site_url || supabaseUrl.replace(".supabase.co", ".lovable.app");
 
     const now = new Date();

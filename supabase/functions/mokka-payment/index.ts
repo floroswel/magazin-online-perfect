@@ -46,7 +46,7 @@ Deno.serve(async (req: Request) => {
     const mokkaPayload = {
       amount: Math.round(order.total * 100), // cents
       currency: "RON",
-      description: `Comandă VENTUZA #${orderId.slice(0, 8)}`,
+      description: `Comandă Mama Lucica #${orderId.slice(0, 8)}`,
       external_id: orderId,
       customer: {
         email: order.user_email || shippingAddr.email || "",

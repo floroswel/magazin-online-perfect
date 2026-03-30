@@ -33,8 +33,8 @@ export default defineConfig(({ mode }) => ({
         ],
       },
       manifest: {
-        name: "VENTUZA - Lumânări Handmade",
-        short_name: "VENTUZA",
+        name: "Mama Lucica — Lumânări Artizanale",
+        short_name: "MamaLucica",
         description: "Lumânări handmade din ceară naturală, realizate cu pasiune în România",
         theme_color: "#0865F5",
         background_color: "#ffffff",

@@ -14,7 +14,7 @@ interface EmailRequest {
 }
 
 const BRAND = {
-  name: "VENTUZA",
+  name: "Mama Lucica",
   color: "#B45309", // amber-700
   bgColor: "#FFFBEB", // amber-50 / ivory
   accentColor: "#D97706", // amber-600
@@ -22,7 +22,7 @@ const BRAND = {
   mutedColor: "#78716C", // stone-500
   font: "'Georgia', 'Times New Roman', serif",
   fromEmail: "no-reply@mamalucica.ro",
-  fromName: "VENTUZA",
+  fromName: "Mama Lucica",
   cui: "RO12345678",
   address: "București, România",
   phone: "+40 700 000 000",
@@ -114,7 +114,7 @@ function orderPlacedHTML(data: Record<string, any>) {
     ${bankHTML}
     ${addressHTML}
     <div style="text-align:center;margin-top:24px">
-      ${btn("Urmărește comanda →", `https://ventuza.ro/account`)}
+      ${btn("Urmărește comanda →", `https://mamalucica.ro/account`)}
     </div>
     <p style="margin-top:20px;color:${BRAND.mutedColor};font-size:13px;text-align:center">Vei primi un email când comanda va fi expediată.</p>
   ${footer()}`;
@@ -162,7 +162,7 @@ function adminNewOrderHTML(data: Record<string, any>) {
     <p style="font-weight:bold;margin-top:16px;color:${BRAND.textColor}">Produse:</p>
     <ul style="padding-left:20px">${items}</ul>
     <div style="text-align:center;margin-top:20px">
-      ${btn("Vezi comanda în admin →", `https://ventuza.ro/admin/orders`)}
+      ${btn("Vezi comanda în admin →", `https://mamalucica.ro/admin/orders`)}
     </div>
   ${footer()}`;
 }
@@ -170,13 +170,13 @@ function adminNewOrderHTML(data: Record<string, any>) {
 function welcomeHTML(data: Record<string, any>) {
   return `${header("Bine ai venit!", "🎊")}
     <p style="font-size:18px;color:${BRAND.textColor};text-align:center">Bună, <strong>${data.name || "Client"}</strong>!</p>
-    <p style="color:${BRAND.mutedColor};font-size:14px;text-align:center">Contul tău a fost creat cu succes. Ești gata să descoperi lumea VENTUZA!</p>
+    <p style="color:${BRAND.mutedColor};font-size:14px;text-align:center">Contul tău a fost creat cu succes. Ești gata să descoperi lumea Mama Lucica!</p>
     <div style="background:#FEF3C7;padding:16px;border-radius:8px;margin:20px 0;text-align:center;border:1px solid #F59E0B">
       <p style="margin:0;font-size:16px;color:${BRAND.color}">🎁 Cod reducere 10% prima comandă:</p>
       <p style="margin:8px 0;font-size:28px;font-weight:bold;font-family:monospace;letter-spacing:3px;color:${BRAND.color}">BINEAIVENIT10</p>
     </div>
     <div style="text-align:center;margin-top:20px">
-      ${btn("Explorează colecția →", "https://ventuza.ro/catalog")}
+      ${btn("Explorează colecția →", "https://mamalucica.ro/catalog")}
     </div>
   ${footer()}`;
 }
@@ -203,7 +203,7 @@ function abandonedCartHTML(data: Record<string, any>) {
       <p style="margin:4px 0 0;color:${BRAND.mutedColor};font-size:12px">Valabil 24 ore</p>
     </div>` : ""}
     <div style="text-align:center;margin-top:20px">
-      ${btn("Finalizează comanda →", data.recoverUrl || "https://ventuza.ro/checkout")}
+      ${btn("Finalizează comanda →", data.recoverUrl || "https://mamalucica.ro/checkout")}
     </div>
   ${footer()}`;
 }
@@ -334,7 +334,7 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Dynamic sender settings (fallback to VENTUZA defaults)
+    // Dynamic sender settings (fallback to Mama Lucica defaults)
     let fromEmail = BRAND.fromEmail;
     let fromName = BRAND.fromName;
     try {
@@ -357,11 +357,11 @@ serve(async (req) => {
 
     switch (type) {
       case "order_placed":
-        subject = `Comandă confirmată #${(data.orderId || "").slice(0, 8)} — VENTUZA`;
+        subject = `Comandă confirmată #${(data.orderId || "").slice(0, 8)} — Mama Lucica`;
         html = orderPlacedHTML(data);
         break;
       case "order_status":
-        subject = `Actualizare comandă #${(data.orderId || "").slice(0, 8)} — VENTUZA`;
+        subject = `Actualizare comandă #${(data.orderId || "").slice(0, 8)} — Mama Lucica`;
         html = orderStatusHTML(data);
         break;
       case "shipping_update":
@@ -373,7 +373,7 @@ serve(async (req) => {
         html = adminNewOrderHTML(data);
         break;
       case "welcome":
-        subject = `Bun venit la VENTUZA, ${data.name || ""}! 🎊`;
+        subject = `Bun venit la Mama Lucica, ${data.name || ""}! 🎊`;
         html = welcomeHTML(data);
         break;
       case "abandoned_cart":
@@ -381,15 +381,15 @@ serve(async (req) => {
         html = abandonedCartHTML(data);
         break;
       case "return_status":
-        subject = `Actualizare retur #${(data.returnId || "").slice(0, 8)} — VENTUZA`;
+        subject = `Actualizare retur #${(data.returnId || "").slice(0, 8)} — Mama Lucica`;
         html = returnStatusHTML(data);
         break;
       case "test":
-        subject = "✅ Email de test — VENTUZA";
+        subject = "✅ Email de test — Mama Lucica";
         html = testHTML(data);
         break;
       case "care_guide":
-        subject = `Ghid de îngrijire pentru comanda #${(data.orderNumber || data.orderId || "").slice(0, 8)} 🕯️ — VENTUZA`;
+        subject = `Ghid de îngrijire pentru comanda #${(data.orderNumber || data.orderId || "").slice(0, 8)} 🕯️ — Mama Lucica`;
         html = careGuideHTML(data);
         break;
       case "tracking_update":
@@ -401,7 +401,7 @@ serve(async (req) => {
         html = reviewRequestHTML(data);
         break;
       case "weekly_report":
-        subject = `📊 Raport săptămânal VENTUZA — ${new Date().toLocaleDateString("ro-RO")}`;
+        subject = `📊 Raport săptămânal Mama Lucica — ${new Date().toLocaleDateString("ro-RO")}`;
         html = weeklyReportHTML(data);
         break;
       default:

@@ -162,7 +162,7 @@ Deno.serve(async (req: Request) => {
           await supabase.functions.invoke("send-email", {
             body: {
               type: "admin_new_order",
-              to: "admin@ventuza.ro",
+              to: "admin@mamalucica.ro",
               data: {
                 orderId: orderData.id,
                 customerName: shippingAddr.fullName || shippingAddr.full_name || "Client",
