@@ -158,10 +158,8 @@ serve(async (req) => {
           <th style="width:40px;text-align:center">Nr.</th>
           <th>Descriere</th>
           <th style="width:60px;text-align:center">Cant.</th>
-          <th style="width:90px;text-align:right">Preț unit.</th>
-          <th style="width:60px;text-align:center">TVA%</th>
-          <th style="width:90px;text-align:right">TVA</th>
-          <th style="width:100px;text-align:right">Total</th>
+          <th style="width:100px;text-align:right">Preț unit.</th>
+          <th style="width:110px;text-align:right">Total</th>
         </tr>
       </thead>
       <tbody>
