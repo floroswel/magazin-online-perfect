@@ -203,7 +203,7 @@ function abandonedCartHTML(data: Record<string, any>) {
       <p style="margin:4px 0 0;color:${BRAND.mutedColor};font-size:12px">Valabil 24 ore</p>
     </div>` : ""}
     <div style="text-align:center;margin-top:20px">
-      ${btn("Finalizează comanda →", data.recoverUrl || "https://ventuza.ro/checkout")}
+      ${btn("Finalizează comanda →", data.recoverUrl || "https://mamalucica.ro/checkout")}
     </div>
   ${footer()}`;
 }
