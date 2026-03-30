@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Building2, Globe, Share2, BarChart3, Settings, Save, Loader2 } from "lucide-react";
+import { Building2, Globe, Share2, BarChart3, Settings, Save, Loader2, PauseCircle } from "lucide-react";
 import { toast } from "sonner";
 
 const DEFAULT_SETTINGS = {
