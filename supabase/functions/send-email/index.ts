@@ -373,7 +373,7 @@ serve(async (req) => {
         html = adminNewOrderHTML(data);
         break;
       case "welcome":
-        subject = `Bun venit la VENTUZA, ${data.name || ""}! 🎊`;
+        subject = `Bun venit la Mama Lucica, ${data.name || ""}! 🎊`;
         html = welcomeHTML(data);
         break;
       case "abandoned_cart":
