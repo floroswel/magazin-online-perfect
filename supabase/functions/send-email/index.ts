@@ -381,7 +381,7 @@ serve(async (req) => {
         html = abandonedCartHTML(data);
         break;
       case "return_status":
-        subject = `Actualizare retur #${(data.returnId || "").slice(0, 8)} — VENTUZA`;
+        subject = `Actualizare retur #${(data.returnId || "").slice(0, 8)} — Mama Lucica`;
         html = returnStatusHTML(data);
         break;
       case "test":
