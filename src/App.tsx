@@ -27,6 +27,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import CustomScriptInjector from "./components/CustomScriptInjector";
 import ErrorBoundary from "./components/ErrorBoundary";
+import MaintenanceGuard from "./components/MaintenanceGuard";
 import Affiliates from "./pages/Affiliates";
 import RecoverCart from "./pages/RecoverCart";
 import Unsubscribe from "./pages/Unsubscribe";
