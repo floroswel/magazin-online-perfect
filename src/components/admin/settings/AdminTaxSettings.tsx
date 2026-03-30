@@ -12,16 +12,12 @@ interface TaxRate { name: string; rate: number; is_default: boolean; }
 
 const DEFAULTS = {
   prices_include_tax: true,
-  display_tax_in_cart: true,
-  tax_enabled: true,
-  tax_included_message: "Toate prețurile includ TVA",
-  show_tax_included_message: true,
+  display_tax_in_cart: false,
+  tax_enabled: false,
+  tax_included_message: "Preț final",
+  show_tax_included_message: false,
   tax_based_on: "shipping" as "shipping" | "billing" | "store",
-  tax_rates: [
-    { name: "TVA Standard", rate: 19, is_default: true },
-    { name: "TVA Redus", rate: 9, is_default: false },
-    { name: "TVA Redus Alimentar", rate: 5, is_default: false },
-  ] as TaxRate[],
+  tax_rates: [] as TaxRate[],
 };
 
 export default function AdminTaxSettings() {
