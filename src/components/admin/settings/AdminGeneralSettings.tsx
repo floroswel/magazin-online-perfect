@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Building2, Globe, Share2, BarChart3, Settings, Save, Loader2 } from "lucide-react";
+import { Building2, Globe, Share2, BarChart3, Settings, Save, Loader2, PauseCircle } from "lucide-react";
 import { toast } from "sonner";
 
 const DEFAULT_SETTINGS = {
@@ -37,8 +37,30 @@ export default function AdminGeneralSettings() {
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [togglingMaintenance, setTogglingMaintenance] = useState(false);
 
-  useEffect(() => { loadSettings(); }, []);
+  useEffect(() => { loadSettings(); loadMaintenance(); }, []);
+
+  const loadMaintenance = async () => {
+    const { data } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "is_maintenance_mode")
+      .maybeSingle();
+    if (data) setMaintenanceMode(data.value === true);
+  };
+
+  const toggleMaintenance = async (value: boolean) => {
+    setTogglingMaintenance(true);
+    await supabase
+      .from("site_settings")
+      .update({ value, updated_at: new Date().toISOString() })
+      .eq("key", "is_maintenance_mode");
+    setMaintenanceMode(value);
+    setTogglingMaintenance(false);
+    toast.success(value ? "Magazinul este acum în modul mentenanță" : "Magazinul este activ!");
+  };
 
   const loadSettings = async () => {
     const keys = ["company_info", "social_media", "tracking_analytics", "store_settings"];
@@ -93,6 +115,26 @@ export default function AdminGeneralSettings() {
           {saving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Se salvează...</> : <><Save className="w-4 h-4 mr-2" /> Salvează</>}
         </Button>
       </div>
+
+      {/* Maintenance Mode Card */}
+      <Card className={maintenanceMode ? "border-destructive bg-destructive/5" : "border-border"}>
+        <CardContent className="py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <PauseCircle className={`w-5 h-5 ${maintenanceMode ? "text-destructive" : "text-muted-foreground"}`} />
+            <div>
+              <p className="font-semibold text-sm">Mod Mentenanță</p>
+              <p className="text-xs text-muted-foreground">
+                {maintenanceMode ? "Magazinul este OPRIT. Doar adminii pot accesa site-ul." : "Magazinul este activ și vizibil pentru toți vizitatorii."}
+              </p>
+            </div>
+          </div>
+          <Switch
+            checked={maintenanceMode}
+            onCheckedChange={toggleMaintenance}
+            disabled={togglingMaintenance}
+          />
+        </CardContent>
+      </Card>
 
       <Tabs defaultValue="company">
         <TabsList className="w-full justify-start">

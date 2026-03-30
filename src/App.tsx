@@ -27,6 +27,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import CustomScriptInjector from "./components/CustomScriptInjector";
 import ErrorBoundary from "./components/ErrorBoundary";
+import MaintenanceGuard from "./components/MaintenanceGuard";
 import Affiliates from "./pages/Affiliates";
 import RecoverCart from "./pages/RecoverCart";
 import Unsubscribe from "./pages/Unsubscribe";
@@ -84,6 +85,7 @@ const App = () => (
             <AffiliateTracker />
             <TrackingInit />
             <ErrorBoundary>
+            <MaintenanceGuard>
             <Routes>
               <Route path="/" element={<ErrorBoundary><Index /></ErrorBoundary>} />
               <Route path="/catalog" element={<ErrorBoundary><Catalog /></ErrorBoundary>} />
@@ -127,6 +129,7 @@ const App = () => (
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<ErrorBoundary><NotFound /></ErrorBoundary>} />
             </Routes>
+            </MaintenanceGuard>
             </ErrorBoundary>
           </CartProvider>
           </CurrencyProvider>

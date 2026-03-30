@@ -7661,6 +7661,27 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          id: string
+          key: string
+          updated_at: string
+          value: boolean
+        }
+        Insert: {
+          id?: string
+          key: string
+          updated_at?: string
+          value?: boolean
+        }
+        Update: {
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: boolean
+        }
+        Relationships: []
+      }
       site_theme_settings: {
         Row: {
           id: string
