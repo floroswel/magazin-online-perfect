@@ -85,6 +85,7 @@ const App = () => (
             <AffiliateTracker />
             <TrackingInit />
             <ErrorBoundary>
+            <MaintenanceGuard>
             <Routes>
               <Route path="/" element={<ErrorBoundary><Index /></ErrorBoundary>} />
               <Route path="/catalog" element={<ErrorBoundary><Catalog /></ErrorBoundary>} />
