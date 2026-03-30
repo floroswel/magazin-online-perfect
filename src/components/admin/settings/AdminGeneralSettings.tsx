@@ -116,6 +116,26 @@ export default function AdminGeneralSettings() {
         </Button>
       </div>
 
+      {/* Maintenance Mode Card */}
+      <Card className={maintenanceMode ? "border-destructive bg-destructive/5" : "border-border"}>
+        <CardContent className="py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <PauseCircle className={`w-5 h-5 ${maintenanceMode ? "text-destructive" : "text-muted-foreground"}`} />
+            <div>
+              <p className="font-semibold text-sm">Mod Mentenanță</p>
+              <p className="text-xs text-muted-foreground">
+                {maintenanceMode ? "Magazinul este OPRIT. Doar adminii pot accesa site-ul." : "Magazinul este activ și vizibil pentru toți vizitatorii."}
+              </p>
+            </div>
+          </div>
+          <Switch
+            checked={maintenanceMode}
+            onCheckedChange={toggleMaintenance}
+            disabled={togglingMaintenance}
+          />
+        </CardContent>
+      </Card>
+
       <Tabs defaultValue="company">
         <TabsList className="w-full justify-start">
           <TabsTrigger value="company" className="gap-2"><Building2 className="w-4 h-4" /> Companie</TabsTrigger>
