@@ -7,6 +7,7 @@ import { usePricingRules } from "@/hooks/usePricingRules";
 import { usePromotions } from "@/hooks/usePromotions";
 import { useLoyalty } from "@/hooks/useLoyalty";
 import { usePrefetch } from "@/hooks/usePrefetch";
+import { useTaxSettings } from "@/hooks/useTaxSettings";
 import CountdownTimer from "./CountdownTimer";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
@@ -23,6 +24,7 @@ function ProductCardInner({ product, eager = false }: Props) {
   const { getProductPromotion } = usePromotions();
   const { calcPointsForPrice, config } = useLoyalty();
   const { prefetchProduct } = usePrefetch();
+  const taxSettings = useTaxSettings();
   const [addedToCart, setAddedToCart] = useState(false);
   const [liked, setLiked] = useState(false);
 
@@ -145,6 +147,10 @@ function ProductCardInner({ product, eager = false }: Props) {
             </span>
           )}
         </div>
+
+        {taxSettings.show_tax_included_message && (
+          <p className="text-[10px] text-muted-foreground">{taxSettings.tax_included_message}</p>
+        )}
 
         {promoDiscount && promoDiscount.savings > 0 && (
           <p className="text-[11px] text-primary font-medium mb-1">

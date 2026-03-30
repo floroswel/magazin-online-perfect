@@ -7,6 +7,7 @@ import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useCurrency } from "@/hooks/useCurrency";
 import { usePromotions } from "@/hooks/usePromotions";
+import { useTaxSettings } from "@/hooks/useTaxSettings";
 import CountdownTimer from "@/components/products/CountdownTimer";
 import FreeShippingBar from "@/components/cart/FreeShippingBar";
 import CartCrossSell from "@/components/cart/CartCrossSell";
@@ -19,6 +20,7 @@ export default function Cart() {
   const { items, totalPrice, updateQuantity, removeFromCart } = useCart();
   const { format } = useCurrency();
   const { getCartPromotions, hasFreeShipping } = usePromotions();
+  const taxSettings = useTaxSettings();
 
   if (items.length === 0) {
     return (
@@ -153,6 +155,9 @@ export default function Cart() {
               <span>Total</span>
               <span className="text-primary">{format(totalPrice - totalSavings + shipping)}</span>
             </div>
+            {taxSettings.show_tax_included_message && (
+              <p className="text-xs text-muted-foreground text-center">{taxSettings.tax_included_message}</p>
+            )}
             <Link to="/checkout" className="block">
               <Button className="w-full font-semibold" size="lg">Finalizează comanda</Button>
             </Link>

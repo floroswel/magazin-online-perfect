@@ -33,6 +33,7 @@ import { toast } from "sonner";
 import { safeJsonLd, sanitizeForJsonLd } from "@/lib/sanitize-json-ld";
 import DOMPurify from "dompurify";
 import { useCurrency } from "@/hooks/useCurrency";
+import { useTaxSettings } from "@/hooks/useTaxSettings";
 import { usePageSeo } from "@/components/SeoHead";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -43,6 +44,7 @@ export default function ProductDetail() {
   const { addToComparison, isInComparison } = useComparison();
   const { getProductDiscount } = usePricingRules();
   const { format, currency, convert } = useCurrency();
+  const taxSettings = useTaxSettings();
   const [product, setProduct] = useState<any>(null);
   const [similar, setSimilar] = useState<Tables<"products">[]>([]);
   const [relatedProducts, setRelatedProducts] = useState<Tables<"products">[]>([]);
@@ -249,6 +251,9 @@ export default function ProductDetail() {
                 </>
               )}
             </div>
+            {taxSettings.show_tax_included_message && (
+              <p className="text-xs text-muted-foreground">{taxSettings.tax_included_message}</p>
+            )}
             {promoDiscount && (
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge className="bg-destructive text-destructive-foreground">{promoDiscount.badgeText}</Badge>
