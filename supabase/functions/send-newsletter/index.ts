@@ -85,7 +85,7 @@ serve(async (req) => {
                 ${content}
               </div>
               <div style="padding:16px;background:#f5f5f5;text-align:center;font-size:12px;color:#999">
-                <p>Ai primit acest email pentru că ești abonat la newsletterul VENTUZA.</p>
+                <p>Ai primit acest email pentru că ești abonat la newsletterul Mama Lucica.</p>
               </div>
             </div>`,
         }),
