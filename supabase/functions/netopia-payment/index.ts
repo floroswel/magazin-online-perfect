@@ -122,7 +122,7 @@ Deno.serve(async (req: Request) => {
         ntpID: "",
         posSignature,
         dateTime: new Date().toISOString(),
-        description: `Comanda VENTUZA #${orderId.slice(0, 8)}`,
+        description: `Comanda Mama Lucica #${orderId.slice(0, 8)}`,
         orderID: orderId,
         amount: Number(order.total),
         currency: "RON",
