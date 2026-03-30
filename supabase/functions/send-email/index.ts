@@ -357,7 +357,7 @@ serve(async (req) => {
 
     switch (type) {
       case "order_placed":
-        subject = `Comandă confirmată #${(data.orderId || "").slice(0, 8)} — VENTUZA`;
+        subject = `Comandă confirmată #${(data.orderId || "").slice(0, 8)} — Mama Lucica`;
         html = orderPlacedHTML(data);
         break;
       case "order_status":
