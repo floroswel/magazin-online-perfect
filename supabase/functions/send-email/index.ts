@@ -162,7 +162,7 @@ function adminNewOrderHTML(data: Record<string, any>) {
     <p style="font-weight:bold;margin-top:16px;color:${BRAND.textColor}">Produse:</p>
     <ul style="padding-left:20px">${items}</ul>
     <div style="text-align:center;margin-top:20px">
-      ${btn("Vezi comanda în admin →", `https://ventuza.ro/admin/orders`)}
+      ${btn("Vezi comanda în admin →", `https://mamalucica.ro/admin/orders`)}
     </div>
   ${footer()}`;
 }
