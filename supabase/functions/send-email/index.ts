@@ -334,7 +334,7 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Dynamic sender settings (fallback to VENTUZA defaults)
+    // Dynamic sender settings (fallback to Mama Lucica defaults)
     let fromEmail = BRAND.fromEmail;
     let fromName = BRAND.fromName;
     try {
