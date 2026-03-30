@@ -251,6 +251,9 @@ export default function ProductDetail() {
                 </>
               )}
             </div>
+            {taxSettings.show_tax_included_message && (
+              <p className="text-xs text-muted-foreground">{taxSettings.tax_included_message}</p>
+            )}
             {promoDiscount && (
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge className="bg-destructive text-destructive-foreground">{promoDiscount.badgeText}</Badge>
