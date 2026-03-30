@@ -44,6 +44,7 @@ export default function ProductDetail() {
   const { addToComparison, isInComparison } = useComparison();
   const { getProductDiscount } = usePricingRules();
   const { format, currency, convert } = useCurrency();
+  const taxSettings = useTaxSettings();
   const [product, setProduct] = useState<any>(null);
   const [similar, setSimilar] = useState<Tables<"products">[]>([]);
   const [relatedProducts, setRelatedProducts] = useState<Tables<"products">[]>([]);
