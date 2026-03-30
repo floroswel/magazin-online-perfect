@@ -91,14 +91,20 @@ export default function AdminGeneralSettings() {
       { key: "store_settings", value_json: settings.store },
     ];
 
+    let hasError = false;
     for (const pair of pairs) {
-      await supabase.from("app_settings").upsert(
+      const { error } = await supabase.from("app_settings").upsert(
         { key: pair.key, value_json: pair.value_json, updated_at: new Date().toISOString() },
         { onConflict: "key" }
       );
+      if (error) {
+        toast.error(`Eroare la salvarea ${pair.key}: ${error.message}`);
+        hasError = true;
+        break;
+      }
     }
     setSaving(false);
-    toast.success("Setări salvate cu succes!");
+    if (!hasError) toast.success("Setări salvate cu succes!");
   };
 
   const updateCompany = (field: string, value: any) => setSettings(s => ({ ...s, company: { ...s.company, [field]: value } }));
