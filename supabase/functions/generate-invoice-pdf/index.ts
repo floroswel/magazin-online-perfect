@@ -75,8 +75,6 @@ serve(async (req) => {
         <td style="padding:8px;border:1px solid #ddd">${item.description}</td>
         <td style="padding:8px;border:1px solid #ddd;text-align:center">${item.quantity}</td>
         <td style="padding:8px;border:1px solid #ddd;text-align:right">${Number(item.unit_price).toFixed(2)}</td>
-        <td style="padding:8px;border:1px solid #ddd;text-align:center">${item.vat_rate || 19}%</td>
-        <td style="padding:8px;border:1px solid #ddd;text-align:right">${Number(item.vat_amount || 0).toFixed(2)}</td>
         <td style="padding:8px;border:1px solid #ddd;text-align:right;font-weight:600">${Number(item.total || item.quantity * item.unit_price).toFixed(2)}</td>
       </tr>`
       )
