@@ -73,7 +73,7 @@ serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "VENTUZA Newsletter <onboarding@resend.dev>",
+          from: "Mama Lucica Newsletter <no-reply@mamalucica.ro>",
           to: batch,
           subject,
           html: `
