@@ -79,7 +79,7 @@ serve(async (req) => {
           html: `
             <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden">
               <div style="background:#cc0000;padding:24px;text-align:center">
-                <h1 style="color:#fff;margin:0;font-size:22px">🛒 VENTUZA Newsletter</h1>
+                <h1 style="color:#fff;margin:0;font-size:22px">🕯️ Mama Lucica Newsletter</h1>
               </div>
               <div style="padding:24px">
                 ${content}
