@@ -389,7 +389,7 @@ serve(async (req) => {
         html = testHTML(data);
         break;
       case "care_guide":
-        subject = `Ghid de îngrijire pentru comanda #${(data.orderNumber || data.orderId || "").slice(0, 8)} 🕯️ — VENTUZA`;
+        subject = `Ghid de îngrijire pentru comanda #${(data.orderNumber || data.orderId || "").slice(0, 8)} 🕯️ — Mama Lucica`;
         html = careGuideHTML(data);
         break;
       case "tracking_update":
