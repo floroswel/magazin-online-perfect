@@ -385,7 +385,7 @@ serve(async (req) => {
         html = returnStatusHTML(data);
         break;
       case "test":
-        subject = "✅ Email de test — VENTUZA";
+        subject = "✅ Email de test — Mama Lucica";
         html = testHTML(data);
         break;
       case "care_guide":
