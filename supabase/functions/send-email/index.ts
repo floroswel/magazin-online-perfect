@@ -114,7 +114,7 @@ function orderPlacedHTML(data: Record<string, any>) {
     ${bankHTML}
     ${addressHTML}
     <div style="text-align:center;margin-top:24px">
-      ${btn("Urmărește comanda →", `https://ventuza.ro/account`)}
+      ${btn("Urmărește comanda →", `https://mamalucica.ro/account`)}
     </div>
     <p style="margin-top:20px;color:${BRAND.mutedColor};font-size:13px;text-align:center">Vei primi un email când comanda va fi expediată.</p>
   ${footer()}`;
