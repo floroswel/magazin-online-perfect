@@ -401,7 +401,7 @@ serve(async (req) => {
         html = reviewRequestHTML(data);
         break;
       case "weekly_report":
-        subject = `📊 Raport săptămânal VENTUZA — ${new Date().toLocaleDateString("ro-RO")}`;
+        subject = `📊 Raport săptămânal Mama Lucica — ${new Date().toLocaleDateString("ro-RO")}`;
         html = weeklyReportHTML(data);
         break;
       default:
