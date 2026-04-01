@@ -10,6 +10,7 @@ import { ro } from "date-fns/locale";
 import { Package, Search, RotateCcw, Eye, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { translateOrderStatus } from "@/lib/orderStatusLabels";
 
 const STATUS_MAP: Record<string, string> = {
   new: "pending",
@@ -141,7 +142,7 @@ export default function AdminFilteredOrders({ status, title, description }: Prop
                       <TableCell className="text-sm">{order.order_items?.length || 0}</TableCell>
                       <TableCell className="text-right font-semibold">{Number(order.total).toLocaleString("ro-RO")} RON</TableCell>
                       <TableCell>
-                        <Badge variant="outline" className={STATUS_COLORS[order.status] || ""}>{order.status}</Badge>
+                        <Badge variant="outline" className={STATUS_COLORS[order.status] || ""}>{translateOrderStatus(order.status)}</Badge>
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {format(new Date(order.created_at), "dd MMM yyyy", { locale: ro })}

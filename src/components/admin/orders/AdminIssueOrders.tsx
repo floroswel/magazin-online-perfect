@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AlertTriangle } from "lucide-react";
 import { format } from "date-fns";
+import { translateOrderStatus } from "@/lib/orderStatusLabels";
 
 export default function AdminIssueOrders() {
   const { data: orders = [], isLoading } = useQuery({
@@ -45,7 +46,7 @@ export default function AdminIssueOrders() {
                 <TableRow key={o.id}>
                   <TableCell className="font-mono text-xs">{o.id.slice(0, 8)}</TableCell>
                   <TableCell><Badge variant="destructive">{o.status === "payment_failed" ? "Plată eșuată" : o.status === "stock_issue" ? "Stoc insuficient" : "Anulată"}</Badge></TableCell>
-                  <TableCell><Badge variant="secondary">{o.status}</Badge></TableCell>
+                  <TableCell><Badge variant="secondary">{translateOrderStatus(o.status)}</Badge></TableCell>
                   <TableCell className="font-semibold">{o.total} RON</TableCell>
                   <TableCell className="text-xs text-muted-foreground">{format(new Date(o.created_at), "dd.MM.yyyy")}</TableCell>
                 </TableRow>

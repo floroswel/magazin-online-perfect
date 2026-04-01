@@ -29,10 +29,13 @@ import AdminOrderDetail from "./orders/AdminOrderDetail";
 const DEFAULT_STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   pending: { label: "În așteptare", color: "bg-yellow-500/15 text-yellow-600 border-yellow-500/30", icon: <Package className="w-3 h-3" /> },
   processing: { label: "În procesare", color: "bg-blue-500/15 text-blue-600 border-blue-500/30", icon: <CheckCircle2 className="w-3 h-3" /> },
-  shipped: { label: "Expediat", color: "bg-purple-500/15 text-purple-600 border-purple-500/30", icon: <Truck className="w-3 h-3" /> },
-  delivered: { label: "Livrat", color: "bg-green-500/15 text-green-600 border-green-500/30", icon: <CheckCircle2 className="w-3 h-3" /> },
-  cancelled: { label: "Anulat", color: "bg-red-500/15 text-red-600 border-red-500/30", icon: <XCircle className="w-3 h-3" /> },
-  refunded: { label: "Rambursat", color: "bg-orange-500/15 text-orange-600 border-orange-500/30", icon: <RotateCcw className="w-3 h-3" /> },
+  confirmed: { label: "Confirmată", color: "bg-teal-500/15 text-teal-600 border-teal-500/30", icon: <CheckCircle2 className="w-3 h-3" /> },
+  shipped: { label: "Expediată", color: "bg-purple-500/15 text-purple-600 border-purple-500/30", icon: <Truck className="w-3 h-3" /> },
+  delivered: { label: "Livrată", color: "bg-green-500/15 text-green-600 border-green-500/30", icon: <CheckCircle2 className="w-3 h-3" /> },
+  cancelled: { label: "Anulată", color: "bg-red-500/15 text-red-600 border-red-500/30", icon: <XCircle className="w-3 h-3" /> },
+  refunded: { label: "Rambursată", color: "bg-orange-500/15 text-orange-600 border-orange-500/30", icon: <RotateCcw className="w-3 h-3" /> },
+  returned: { label: "Returnată", color: "bg-amber-500/15 text-amber-600 border-amber-500/30", icon: <RotateCcw className="w-3 h-3" /> },
+  payment_failed: { label: "Plată eșuată", color: "bg-red-500/15 text-red-600 border-red-500/30", icon: <XCircle className="w-3 h-3" /> },
 };
 
 export { DEFAULT_STATUS_CONFIG as statusConfig };
@@ -429,7 +432,10 @@ export default function AdminOrders() {
         <CardHeader className="pb-2">
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base">Comenzi ({filtered.length})</CardTitle>
+              <div>
+                <CardTitle className="text-base">Comenzi ({filtered.length})</CardTitle>
+                <p className="text-xs text-muted-foreground mt-0.5">Total filtrat: {filtered.reduce((s: number, o: any) => s + Number(o.total), 0).toLocaleString("ro-RO", { minimumFractionDigits: 2 })} RON</p>
+              </div>
               <div className="flex gap-1.5">
                 <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)}>
                   <Search className="w-3.5 h-3.5 mr-1" />Filtre {showFilters ? "▲" : "▼"}

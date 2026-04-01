@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Building2, Search } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
+import { translateOrderStatus } from "@/lib/orderStatusLabels";
 
 export default function AdminB2BOrders() {
   const [search, setSearch] = useState("");
@@ -61,7 +62,7 @@ export default function AdminB2BOrders() {
                 <TableRow key={o.id}>
                   <TableCell className="font-mono text-xs">{o.id.slice(0, 8)}</TableCell>
                   <TableCell>{(() => { const b = o.billing_address as any; return b?.company_name ? `${b.company_name}${b.cui ? ` (${b.cui})` : ""}` : "—"; })()}</TableCell>
-                  <TableCell><Badge variant="secondary">{o.status}</Badge></TableCell>
+                  <TableCell><Badge variant="secondary">{translateOrderStatus(o.status)}</Badge></TableCell>
                   <TableCell className="font-semibold">{o.total} RON</TableCell>
                   <TableCell className="text-xs text-muted-foreground">{format(new Date(o.created_at), "dd.MM.yyyy")}</TableCell>
                 </TableRow>
