@@ -24,4 +24,4 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-Sitemap: https://ventuza.ro/sitemap.xml
+Sitemap: https://jkmiemvihdjwpcpgfleh.supabase.co/functions/v1/sitemap
