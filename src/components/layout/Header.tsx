@@ -165,11 +165,12 @@ export default function Header() {
               </Link>
             )}
           </div>
+
           {/* Header CTA button from layout settings */}
           {layout.header_cta_show && layout.header_cta_text && (
             <Link
               to={layout.header_cta_url || "/"}
-              className="hidden lg:inline-flex items-center bg-accent text-accent-foreground px-4 py-1.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+              className="hidden lg:inline-flex items-center bg-accent text-accent-foreground px-4 py-1.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity shrink-0"
             >
               {layout.header_cta_text}
             </Link>
