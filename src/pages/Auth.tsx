@@ -145,7 +145,7 @@ export default function Auth() {
                     <label className="flex items-start gap-2 cursor-pointer">
                       <input type="checkbox" checked={gdprConsent} onChange={e => setGdprConsent(e.target.checked)} className="mt-1 rounded" />
                       <span className="text-xs text-muted-foreground">
-                        Sunt de acord cu <Link to="/page/termeni-si-conditii" className="text-primary hover:underline" target="_blank">Termenii și Condițiile</Link> și <Link to="/page/politica-de-confidentialitate" className="text-primary hover:underline" target="_blank">Politica de Confidențialitate</Link>.
+                        Sunt de acord cu <Link to="/termeni-si-conditii" className="text-primary hover:underline" target="_blank">Termenii și Condițiile</Link> și <Link to="/politica-de-confidentialitate" className="text-primary hover:underline" target="_blank">Politica de Confidențialitate</Link>.
                       </span>
                     </label>
                     <Button type="submit" className="w-full" disabled={loading || !gdprConsent}>{loading ? "Se procesează..." : "Creează cont"}</Button>

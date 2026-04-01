@@ -130,6 +130,10 @@ const App = () => (
               <Route path="/colectii-sezoniere" element={<ErrorBoundary><SeasonalCollections /></ErrorBoundary>} />
               <Route path="/virtual-try-on" element={<ErrorBoundary><VirtualTryOn /></ErrorBoundary>} />
               <Route path="/post-delivery/:token" element={<ErrorBoundary><PostDelivery /></ErrorBoundary>} />
+              <Route path="/politica-de-confidentialitate" element={<ErrorBoundary><PoliticaConfidentialitate /></ErrorBoundary>} />
+              <Route path="/termeni-si-conditii" element={<ErrorBoundary><TermeniSiConditii /></ErrorBoundary>} />
+              <Route path="/politica-de-cookies" element={<ErrorBoundary><PoliticaCookies /></ErrorBoundary>} />
+              <Route path="/politica-de-retur" element={<ErrorBoundary><PoliticaRetur /></ErrorBoundary>} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<ErrorBoundary><NotFound /></ErrorBoundary>} />
             </Routes>
