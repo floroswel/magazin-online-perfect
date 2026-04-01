@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Building2, Search } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
+import { translateOrderStatus } from "@/lib/orderStatusLabels";
 
 export default function AdminB2BOrders() {
   const [search, setSearch] = useState("");
