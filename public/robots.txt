@@ -24,4 +24,4 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-Sitemap: https://ventuza.ro/sitemap.xml
+Sitemap: https://www.mamalucica.ro/sitemap.xml
