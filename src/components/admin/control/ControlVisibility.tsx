@@ -104,6 +104,7 @@ export default function ControlVisibility() {
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [selectMode, setSelectMode] = useState(false);
+  const [editingElement, setEditingElement] = useState<string | null>(null);
 
   const fetchRows = async () => {
     const { data } = await (supabase as any)
