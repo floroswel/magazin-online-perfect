@@ -103,9 +103,9 @@ const DEFAULT_TEXTS: FooterTexts = {
     { label: "Contact", url: "/page/contact", active: true },
   ],
   col3_title: "Informații", col3_links: [
-    { label: "Politica de confidențialitate", url: "/page/politica-de-confidentialitate", active: true },
-    { label: "Termeni și condiții", url: "/page/termeni-si-conditii", active: true },
-    { label: "Politica de retur", url: "/page/returnare", active: true },
+    { label: "Politica de confidențialitate", url: "/politica-de-confidentialitate", active: true },
+    { label: "Termeni și condiții", url: "/termeni-si-conditii", active: true },
+    { label: "Politica de retur", url: "/politica-de-retur", active: true },
     { label: "Livrare și transport", url: "/page/livrare", active: true },
     { label: "FAQ", url: "/page/faq", active: true },
   ],

@@ -935,9 +935,9 @@ export default function Account() {
             {/* Legal */}
             <div className="text-[10px] text-muted-foreground space-y-1 px-1">
               <p>Conform legislației UE (GDPR), ai dreptul la acces, rectificare, ștergere și portabilitatea datelor tale personale.</p>
-              <Link to="/page/politica-de-confidentialitate" className="hover:underline block">Politica de confidențialitate</Link>
-              <Link to="/page/termeni-si-conditii" className="hover:underline block">Termeni și condiții</Link>
-              <Link to="/page/politica-retur" className="hover:underline block">Politica de retur</Link>
+              <Link to="/politica-de-confidentialitate" className="hover:underline block">Politica de confidențialitate</Link>
+              <Link to="/termeni-si-conditii" className="hover:underline block">Termeni și condiții</Link>
+              <Link to="/politica-de-retur" className="hover:underline block">Politica de retur</Link>
             </div>
           </div>
         </div>

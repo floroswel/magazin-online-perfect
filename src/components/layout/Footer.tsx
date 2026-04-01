@@ -92,7 +92,7 @@ export default function Footer() {
     { label: "Cum Cumpăr", url: "/faq", active: true },
     { label: "Plăți & Rate", url: "/page/plati", active: true },
     { label: "Livrare", url: "/livrare-internationala", active: true },
-    { label: "Retururi", url: "/page/politica-retur", active: true },
+    { label: "Retururi", url: "/politica-de-retur", active: true },
     { label: "Garanție", url: "/page/garantie", active: true },
   ];
 
@@ -107,8 +107,10 @@ export default function Footer() {
     { label: "Despre Noi", url: "/povestea-noastra" },
     { label: "Blog", url: "/recenzii" },
     { label: "Cariere", url: "/page/cariere" },
-    { label: "Termeni & Condiții", url: "/page/termeni" },
-    { label: "Confidențialitate", url: "/page/politica-de-confidentialitate" },
+    { label: "Termeni & Condiții", url: "/termeni-si-conditii" },
+    { label: "Confidențialitate", url: "/politica-de-confidentialitate" },
+    { label: "Cookie-uri", url: "/politica-de-cookies" },
+    { label: "Politica de Retur", url: "/politica-de-retur" },
   ];
 
   const handleSubscribe = async (e: React.FormEvent) => {

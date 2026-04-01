@@ -53,6 +53,10 @@ import SeoHub from "./pages/SeoHub";
 import SeasonalCollections from "./pages/SeasonalCollections";
 import VirtualTryOn from "./pages/VirtualTryOn";
 import PostDelivery from "./pages/PostDelivery";
+import PoliticaConfidentialitate from "./pages/PoliticaConfidentialitate";
+import TermeniSiConditii from "./pages/TermeniSiConditii";
+import PoliticaCookies from "./pages/PoliticaCookies";
+import PoliticaRetur from "./pages/PoliticaRetur";
 import { useAffiliateTracking } from "./hooks/useAffiliateTracking";
 import { initTracking, trackPageView } from "./hooks/useMarketingTracking";
 import { useEffect } from "react";
@@ -126,6 +130,10 @@ const App = () => (
               <Route path="/colectii-sezoniere" element={<ErrorBoundary><SeasonalCollections /></ErrorBoundary>} />
               <Route path="/virtual-try-on" element={<ErrorBoundary><VirtualTryOn /></ErrorBoundary>} />
               <Route path="/post-delivery/:token" element={<ErrorBoundary><PostDelivery /></ErrorBoundary>} />
+              <Route path="/politica-de-confidentialitate" element={<ErrorBoundary><PoliticaConfidentialitate /></ErrorBoundary>} />
+              <Route path="/termeni-si-conditii" element={<ErrorBoundary><TermeniSiConditii /></ErrorBoundary>} />
+              <Route path="/politica-de-cookies" element={<ErrorBoundary><PoliticaCookies /></ErrorBoundary>} />
+              <Route path="/politica-de-retur" element={<ErrorBoundary><PoliticaRetur /></ErrorBoundary>} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<ErrorBoundary><NotFound /></ErrorBoundary>} />
             </Routes>
