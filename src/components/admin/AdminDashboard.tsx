@@ -528,7 +528,7 @@ export default function AdminDashboard() {
                       </div>
                       <div className="text-right shrink-0">
                         <p className="text-sm font-bold">{Number(order.total).toFixed(0)} RON</p>
-                        <Badge className={`text-[10px] ${statusColors[order.status] || ""}`}>{statusLabels[order.status] || order.status}</Badge>
+                        <Badge className={`text-[10px] ${statusColors[order.status] || ""}`}>{translateOrderStatus(order.status)}</Badge>
                       </div>
                     </div>
                   </Link>
