@@ -29,10 +29,13 @@ import AdminOrderDetail from "./orders/AdminOrderDetail";
 const DEFAULT_STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   pending: { label: "În așteptare", color: "bg-yellow-500/15 text-yellow-600 border-yellow-500/30", icon: <Package className="w-3 h-3" /> },
   processing: { label: "În procesare", color: "bg-blue-500/15 text-blue-600 border-blue-500/30", icon: <CheckCircle2 className="w-3 h-3" /> },
-  shipped: { label: "Expediat", color: "bg-purple-500/15 text-purple-600 border-purple-500/30", icon: <Truck className="w-3 h-3" /> },
-  delivered: { label: "Livrat", color: "bg-green-500/15 text-green-600 border-green-500/30", icon: <CheckCircle2 className="w-3 h-3" /> },
-  cancelled: { label: "Anulat", color: "bg-red-500/15 text-red-600 border-red-500/30", icon: <XCircle className="w-3 h-3" /> },
-  refunded: { label: "Rambursat", color: "bg-orange-500/15 text-orange-600 border-orange-500/30", icon: <RotateCcw className="w-3 h-3" /> },
+  confirmed: { label: "Confirmată", color: "bg-teal-500/15 text-teal-600 border-teal-500/30", icon: <CheckCircle2 className="w-3 h-3" /> },
+  shipped: { label: "Expediată", color: "bg-purple-500/15 text-purple-600 border-purple-500/30", icon: <Truck className="w-3 h-3" /> },
+  delivered: { label: "Livrată", color: "bg-green-500/15 text-green-600 border-green-500/30", icon: <CheckCircle2 className="w-3 h-3" /> },
+  cancelled: { label: "Anulată", color: "bg-red-500/15 text-red-600 border-red-500/30", icon: <XCircle className="w-3 h-3" /> },
+  refunded: { label: "Rambursată", color: "bg-orange-500/15 text-orange-600 border-orange-500/30", icon: <RotateCcw className="w-3 h-3" /> },
+  returned: { label: "Returnată", color: "bg-amber-500/15 text-amber-600 border-amber-500/30", icon: <RotateCcw className="w-3 h-3" /> },
+  payment_failed: { label: "Plată eșuată", color: "bg-red-500/15 text-red-600 border-red-500/30", icon: <XCircle className="w-3 h-3" /> },
 };
 
 export { DEFAULT_STATUS_CONFIG as statusConfig };

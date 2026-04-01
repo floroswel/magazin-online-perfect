@@ -46,7 +46,7 @@ export default function AdminIssueOrders() {
                 <TableRow key={o.id}>
                   <TableCell className="font-mono text-xs">{o.id.slice(0, 8)}</TableCell>
                   <TableCell><Badge variant="destructive">{o.status === "payment_failed" ? "Plată eșuată" : o.status === "stock_issue" ? "Stoc insuficient" : "Anulată"}</Badge></TableCell>
-                  <TableCell><Badge variant="secondary">{o.status}</Badge></TableCell>
+                  <TableCell><Badge variant="secondary">{translateOrderStatus(o.status)}</Badge></TableCell>
                   <TableCell className="font-semibold">{o.total} RON</TableCell>
                   <TableCell className="text-xs text-muted-foreground">{format(new Date(o.created_at), "dd.MM.yyyy")}</TableCell>
                 </TableRow>

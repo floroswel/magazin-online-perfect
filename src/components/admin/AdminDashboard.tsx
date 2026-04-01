@@ -46,14 +46,7 @@ import {
   BarChart,
 } from "recharts";
 import ManualOrderDialog from "./orders/ManualOrderDialog";
-
-const statusLabels: Record<string, string> = {
-  pending: "În așteptare",
-  processing: "În procesare",
-  shipped: "Expediat",
-  delivered: "Livrat",
-  cancelled: "Anulat",
-};
+import { translateOrderStatus } from "@/lib/orderStatusLabels";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
