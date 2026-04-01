@@ -312,7 +312,7 @@ export default function AdminDashboard() {
       items.push({
         type: "return", id: r.id,
         label: `Retur #${r.id.slice(0, 8)}`,
-        detail: `${r.reason || "Fără motiv"} — ${statusLabels[r.status] || r.status}`,
+        detail: `${r.reason || "Fără motiv"} — ${translateOrderStatus(r.status)}`,
         time: r.created_at, icon: "return",
       });
     });
