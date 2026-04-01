@@ -92,7 +92,7 @@ export default function Footer() {
     { label: "Cum Cumpăr", url: "/faq", active: true },
     { label: "Plăți & Rate", url: "/page/plati", active: true },
     { label: "Livrare", url: "/livrare-internationala", active: true },
-    { label: "Retururi", url: "/page/politica-retur", active: true },
+    { label: "Retururi", url: "/politica-de-retur", active: true },
     { label: "Garanție", url: "/page/garantie", active: true },
   ];
 
