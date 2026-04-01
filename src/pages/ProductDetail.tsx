@@ -409,6 +409,16 @@ export default function ProductDetail() {
                 <span className="flex items-center gap-1"><Ruler className="w-3 h-3" /> {product.length_cm}×{product.width_cm}×{product.height_cm} cm</span>
               )}
             </div>
+
+            {/* WhatsApp button */}
+            <a
+              href={`https://wa.me/40770123456?text=${encodeURIComponent(`Bună! Am o întrebare despre produsul "${product.name}" — ${window.location.href}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+            >
+              <MessageSquare className="w-4 h-4" /> Întreabă pe WhatsApp
+            </a>
           </div>
         </div>
 
