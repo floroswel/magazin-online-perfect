@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
   const supabase = createClient(supabaseUrl, serviceKey);
 
-  const siteUrl = Deno.env.get("SITE_URL") || "https://www.mamalucica.ro";
+  const siteUrl = (Deno.env.get("SITE_URL") || "https://www.mamalucica.ro").replace(/\/$/, "");
   const url = new URL(req.url);
   const page = url.searchParams.get("page");
 
