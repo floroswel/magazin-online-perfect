@@ -308,7 +308,7 @@ export default function Account() {
         </div>
 
         {/* Two-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 items-start">
           <div className="min-w-0">
             <Tabs defaultValue="orders">
               {/* Scrollable tab bar */}
