@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { useQuery } from "@tanstack/react-query";
@@ -59,13 +59,9 @@ const DEFAULT_CONFIG: LoyaltyConfig = {
 
 export function useLoyalty() {
   const { user } = useAuth();
-  const [totalPoints, setTotalPoints] = useState(0);
-  const [currentLevel, setCurrentLevel] = useState<LoyaltyLevel | null>(null);
-  const [nextLevel, setNextLevel] = useState<LoyaltyLevel | null>(null);
-  const [levels, setLevels] = useState<LoyaltyLevel[]>([]);
-  const [loading, setLoading] = useState(true);
+  const userId = user?.id;
 
-  // Load config from app_settings
+  // Load config from app_settings — shared across all components via queryKey
   const { data: config = DEFAULT_CONFIG } = useQuery({
     queryKey: ["loyalty-config"],
     queryFn: async () => {
@@ -75,68 +71,76 @@ export function useLoyalty() {
       }
       return DEFAULT_CONFIG;
     },
-    staleTime: 120_000,
+    staleTime: 5 * 60_000, // 5 minutes
+    gcTime: 10 * 60_000,
   });
 
-  const fetchData = useCallback(async () => {
-    if (!user) { setLoading(false); return; }
-    setLoading(true);
+  // Loyalty levels — same for all users, rarely changes
+  const { data: levels = [] } = useQuery<LoyaltyLevel[]>({
+    queryKey: ["loyalty-levels"],
+    queryFn: async () => {
+      const { data } = await supabase.from("loyalty_levels").select("*").order("min_points", { ascending: true });
+      return (data || []) as LoyaltyLevel[];
+    },
+    staleTime: 5 * 60_000,
+    gcTime: 10 * 60_000,
+  });
 
-    const [pointsRes, levelsRes] = await Promise.all([
-      supabase.from("loyalty_points").select("points").eq("user_id", user.id),
-      supabase.from("loyalty_levels").select("*").order("min_points", { ascending: true }),
-    ]);
+  // User points — per-user, only fetch when logged in
+  const { data: totalPoints = 0, refetch: refetchPoints } = useQuery({
+    queryKey: ["loyalty-points", userId],
+    queryFn: async () => {
+      if (!userId) return 0;
+      const { data } = await supabase.from("loyalty_points").select("points").eq("user_id", userId);
+      return (data || []).reduce((sum, p) => sum + p.points, 0);
+    },
+    enabled: !!userId,
+    staleTime: 60_000, // 1 minute
+    gcTime: 5 * 60_000,
+  });
 
-    const pts = (pointsRes.data || []).reduce((sum, p) => sum + p.points, 0);
-    setTotalPoints(pts);
+  // Derive current and next level from points + levels
+  const currentLevel = levels.length > 0
+    ? [...levels].reverse().find(l => totalPoints >= l.min_points) || levels[0] || null
+    : null;
 
-    const lvls = (levelsRes.data || []) as LoyaltyLevel[];
-    setLevels(lvls);
+  const nextLevel = (() => {
+    if (!currentLevel || levels.length === 0) return null;
+    const nextIdx = levels.findIndex(l => l.id === currentLevel.id) + 1;
+    return nextIdx < levels.length ? levels[nextIdx] : null;
+  })();
 
-    const current = [...lvls].reverse().find(l => pts >= l.min_points) || lvls[0] || null;
-    setCurrentLevel(current);
+  const loading = false; // React Query handles loading internally
 
-    const nextIdx = current ? lvls.findIndex(l => l.id === current.id) + 1 : 0;
-    setNextLevel(nextIdx < lvls.length ? lvls[nextIdx] : null);
-
-    setLoading(false);
-  }, [user]);
-
-  useEffect(() => { fetchData(); }, [fetchData]);
-
-  const addPoints = async (points: number, action: string, description: string, orderId?: string) => {
-    if (!user) return;
+  const addPoints = useCallback(async (points: number, action: string, description: string, orderId?: string) => {
+    if (!userId) return;
     await supabase.from("loyalty_points").insert({
-      user_id: user.id, points, action, description, order_id: orderId || null,
+      user_id: userId, points, action, description, order_id: orderId || null,
     });
-    await fetchData();
-  };
+    refetchPoints();
+  }, [userId, refetchPoints]);
 
-  // Calculate points earned for a given price
-  const calcPointsForPrice = (price: number): number => {
+  const calcPointsForPrice = useCallback((price: number): number => {
     if (!config.program_enabled || config.earn_rate_per_amount <= 0) return 0;
     let pts = Math.floor(price / config.earn_rate_per_amount) * config.earn_rate_points;
-    // Weekend multiplier
     if (config.weekend_enabled) {
       const day = new Date().getDay();
       if (day === 0 || day === 6) pts *= config.weekend_multiplier;
     }
     return pts;
-  };
+  }, [config]);
 
-  // Calculate redemption value in currency
-  const pointsToValue = (pts: number): number => {
+  const pointsToValue = useCallback((pts: number): number => {
     if (config.redeem_rate_points <= 0) return 0;
     return (pts / config.redeem_rate_points) * config.redeem_rate_value;
-  };
+  }, [config]);
 
-  // Max redeemable points for a given order total
-  const maxRedeemablePoints = (orderTotal: number): number => {
+  const maxRedeemablePoints = useCallback((orderTotal: number): number => {
     if (!config.program_enabled || totalPoints < config.min_points_redeem) return 0;
     const maxValueFromPercent = orderTotal * (config.max_redeem_percent / 100);
     const maxPointsFromPercent = Math.floor((maxValueFromPercent / config.redeem_rate_value) * config.redeem_rate_points);
     return Math.min(totalPoints, maxPointsFromPercent);
-  };
+  }, [config, totalPoints]);
 
   return {
     totalPoints, currentLevel, nextLevel, levels, loading, addPoints,
