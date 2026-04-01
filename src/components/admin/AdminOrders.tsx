@@ -432,7 +432,10 @@ export default function AdminOrders() {
         <CardHeader className="pb-2">
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base">Comenzi ({filtered.length})</CardTitle>
+              <div>
+                <CardTitle className="text-base">Comenzi ({filtered.length})</CardTitle>
+                <p className="text-xs text-muted-foreground mt-0.5">Total filtrat: {filtered.reduce((s: number, o: any) => s + Number(o.total), 0).toLocaleString("ro-RO", { minimumFractionDigits: 2 })} RON</p>
+              </div>
               <div className="flex gap-1.5">
                 <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)}>
                   <Search className="w-3.5 h-3.5 mr-1" />Filtre {showFilters ? "▲" : "▼"}
