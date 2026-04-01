@@ -214,7 +214,7 @@ export default function Account() {
     );
   };
 
-  const statusLabels: Record<string, string> = { pending: "În așteptare", processing: "Se procesează", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată", payment_failed: "Plată eșuată", refunded: "Rambursată", returned: "Returnată", on_hold: "În așteptare", pending_transfer: "Transfer în așteptare", pending_payment: "Plată în așteptare", ...statusLabelsFromDb };
+  const statusLabels: Record<string, string> = { pending: "În așteptare", processing: "În procesare", confirmed: "Confirmată", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată", payment_failed: "Plată eșuată", refunded: "Rambursată", returned: "Returnată", on_hold: "În așteptare", pending_transfer: "Transfer în așteptare", pending_payment: "Plată în așteptare", ...statusLabelsFromDb };
   const statusIcons: Record<string, any> = { pending: Clock, processing: Package, shipped: Truck, delivered: CheckCircle2, cancelled: XCircle };
 
   const progressToNext = nextLevel
