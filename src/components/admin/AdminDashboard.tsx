@@ -304,7 +304,7 @@ export default function AdminDashboard() {
       items.push({
         type: "order", id: o.id,
         label: `Comandă #${o.id.slice(0, 8)}`,
-        detail: `${Number(o.total).toFixed(0)} RON — ${statusLabels[o.status] || o.status}`,
+        detail: `${Number(o.total).toFixed(0)} RON — ${translateOrderStatus(o.status)}`,
         time: o.created_at, icon: "order",
       });
     });
