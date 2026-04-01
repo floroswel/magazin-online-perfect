@@ -62,8 +62,6 @@ export default function Footer() {
   const showColumns = useVisibility("footer_columns");
   const showSocial = useVisibility("footer_social");
   const showNewsletter = useVisibility("footer_newsletter");
-  const showSol = useVisibility("compliance_sol");
-  const showAnpc = useVisibility("compliance_anpc");
 
   useEffect(() => {
     Promise.all([

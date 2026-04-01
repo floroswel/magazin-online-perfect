@@ -24,7 +24,7 @@ const reasons = [
   },
 ];
 
-export default function WhyVentuza() {
+export default function WhyMamaLucica() {
   const ref = useScrollReveal();
 
   return (

@@ -125,7 +125,7 @@ export default function Header() {
           )}
 
           {/* Right actions */}
-          <div className="flex items-center gap-1 ml-auto md:ml-0">
+          <div className="flex items-center gap-2 ml-auto md:ml-0">
             <button
               onClick={() => navigate(user ? "/account" : "/auth")}
               className="hidden md:flex flex-col items-center px-3 text-primary-foreground/90 hover:text-primary-foreground transition-colors"
