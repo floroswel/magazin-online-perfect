@@ -10,6 +10,7 @@ import { ro } from "date-fns/locale";
 import { Package, Search, RotateCcw, Eye, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { translateOrderStatus } from "@/lib/orderStatusLabels";
 
 const STATUS_MAP: Record<string, string> = {
   new: "pending",
