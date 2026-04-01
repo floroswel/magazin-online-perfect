@@ -49,10 +49,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
   const abandonedCartTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fetchedRef = useRef(false);
+  const userIdRef = useRef<string | null>(null);
 
-  // ---- Abandoned cart sync ----
+  // Keep user ref in sync without triggering re-renders
+  const userRef = useRef(user);
+  userRef.current = user;
+
+  // ---- Abandoned cart sync (stable, uses ref) ----
   const syncAbandonedCart = useCallback(async (currentItems: CartItem[]) => {
-    if (!user || currentItems.length === 0) return;
+    const u = userRef.current;
+    if (!u || currentItems.length === 0) return;
     try {
       const cartData = currentItems.map(i => ({
         product_id: i.product_id,
@@ -63,11 +70,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }));
       const total = currentItems.reduce((s, i) => s + i.quantity * i.product.price, 0);
 
-      // Upsert abandoned cart for this user
       const { data: existing } = await supabase
         .from("abandoned_carts")
         .select("id")
-        .eq("user_id", user.id)
+        .eq("user_id", u.id)
         .eq("recovered", false)
         .order("created_at", { ascending: false })
         .limit(1)
@@ -78,12 +84,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           items: cartData as any,
           total,
           last_activity_at: new Date().toISOString(),
-          user_email: user.email || null,
+          user_email: u.email || null,
         }).eq("id", existing.id);
       } else {
         await supabase.from("abandoned_carts").insert({
-          user_id: user.id,
-          user_email: user.email || null,
+          user_id: u.id,
+          user_email: u.email || null,
           items: cartData as any,
           total,
           last_activity_at: new Date().toISOString(),
@@ -92,30 +98,28 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } catch (err) {
       console.error("Failed to sync abandoned cart:", err);
     }
-  }, [user]);
+  }, []); // stable — uses ref
 
-  // Debounced sync - save after 2 seconds of inactivity
   const debouncedSync = useCallback((currentItems: CartItem[]) => {
     if (abandonedCartTimer.current) clearTimeout(abandonedCartTimer.current);
     abandonedCartTimer.current = setTimeout(() => {
       syncAbandonedCart(currentItems);
     }, 2000);
-  }, [syncAbandonedCart]);
+  }, [syncAbandonedCart]); // stable
 
-  // Clear abandoned cart when user completes purchase
   const clearAbandonedCart = useCallback(async () => {
-    if (!user) return;
+    const u = userRef.current;
+    if (!u) return;
     try {
       await supabase.from("abandoned_carts")
         .update({ recovered: true, recovered_at: new Date().toISOString(), status: "recovered" as any })
-        .eq("user_id", user.id)
+        .eq("user_id", u.id)
         .eq("recovered", false);
     } catch (err) {
       console.error("Failed to clear abandoned cart:", err);
     }
-  }, [user]);
+  }, []); // stable
 
-  // Fetch products for guest cart items
   const hydrateGuestCart = useCallback(async () => {
     const local = getGuestCart();
     if (local.length === 0) { setItems([]); return; }
@@ -130,7 +134,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setItems(hydrated);
   }, []);
 
-  // Sync guest cart to DB on login
   const syncGuestCartToDb = useCallback(async (userId: string) => {
     const local = getGuestCart();
     if (local.length === 0) return;
@@ -147,32 +150,37 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     clearGuestCartStorage();
   }, []);
 
-  const fetchDbCart = useCallback(async () => {
-    if (!user) return;
+  const fetchDbCart = useCallback(async (userId: string) => {
     setLoading(true);
-    await syncGuestCartToDb(user.id);
+    await syncGuestCartToDb(userId);
     const { data } = await supabase
       .from("cart_items")
       .select("*, product:products(*)")
-      .eq("user_id", user.id);
+      .eq("user_id", userId);
     if (data) {
       const cartItems = data.map((d: any) => ({ id: d.id, product_id: d.product_id, quantity: d.quantity, product: d.product }));
       setItems(cartItems);
-      // Sync to abandoned cart tracker
       if (cartItems.length > 0) {
         debouncedSync(cartItems);
       }
     }
     setLoading(false);
-  }, [user, syncGuestCartToDb, debouncedSync]);
+  }, [syncGuestCartToDb, debouncedSync]); // both stable
 
+  // Single fetch on user change
   useEffect(() => {
-    if (user) {
-      fetchDbCart();
+    const currentUserId = user?.id || null;
+    // Only re-fetch if user actually changed
+    if (currentUserId === userIdRef.current && fetchedRef.current) return;
+    userIdRef.current = currentUserId;
+    fetchedRef.current = true;
+
+    if (currentUserId) {
+      fetchDbCart(currentUserId);
     } else {
       hydrateGuestCart();
     }
-  }, [user, fetchDbCart, hydrateGuestCart]);
+  }, [user?.id, fetchDbCart, hydrateGuestCart]);
 
   const addToCart = async (productId: string, qty = 1) => {
     if (user) {
@@ -182,7 +190,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       } else {
         await supabase.from("cart_items").insert({ user_id: user.id, product_id: productId, quantity: qty });
       }
-      await fetchDbCart();
+      await fetchDbCart(user.id);
     } else {
       const local = getGuestCart();
       const existing = local.find(i => i.product_id === productId);
@@ -199,7 +207,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const removeFromCart = async (productId: string) => {
     if (user) {
       await supabase.from("cart_items").delete().eq("user_id", user.id).eq("product_id", productId);
-      await fetchDbCart();
+      await fetchDbCart(user.id);
     } else {
       const local = getGuestCart().filter(i => i.product_id !== productId);
       setGuestCart(local);
@@ -211,7 +219,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (qty <= 0) { await removeFromCart(productId); return; }
     if (user) {
       await supabase.from("cart_items").update({ quantity: qty }).eq("user_id", user.id).eq("product_id", productId);
-      await fetchDbCart();
+      await fetchDbCart(user.id);
     } else {
       const local = getGuestCart();
       const item = local.find(i => i.product_id === productId);
@@ -224,7 +232,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const clearCart = async () => {
     if (user) {
       await supabase.from("cart_items").delete().eq("user_id", user.id);
-      // Mark abandoned cart as recovered (purchase completed)
       await clearAbandonedCart();
     }
     clearGuestCartStorage();
