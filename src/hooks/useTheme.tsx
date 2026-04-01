@@ -5,9 +5,11 @@ export interface ThemeSettings {
   color_mode: string;
   primary_color: string;
   secondary_color: string;
+  accent_color: string;
   background_color: string;
   text_color: string;
   font_family: string;
+  heading_font: string;
   font_size_scale: string;
   heading_weight: string;
   line_height: string;
@@ -18,13 +20,15 @@ export interface ThemeSettings {
   spacing_density: string;
 }
 
-const DEFAULTS: ThemeSettings = {
+export const DEFAULTS: ThemeSettings = {
   color_mode: "auto",
   primary_color: "210 40% 50%",
   secondary_color: "210 20% 60%",
+  accent_color: "30 80% 55%",
   background_color: "0 0% 100%",
   text_color: "210 40% 10%",
   font_family: "Inter",
+  heading_font: "DM Serif Display",
   font_size_scale: "medium",
   heading_weight: "bold",
   line_height: "normal",
@@ -41,13 +45,13 @@ export function useThemeSettings() {
   return useContext(ThemeContext);
 }
 
-function applyThemeToDOM(theme: ThemeSettings) {
+export function applyThemeToDOM(theme: ThemeSettings) {
   const root = document.documentElement;
 
-  // Colors — values are already HSL strings from DB
   const colorMap: Record<string, string> = {
     "--primary": theme.primary_color,
     "--secondary": theme.secondary_color,
+    "--accent": theme.accent_color,
     "--background": theme.background_color,
     "--foreground": theme.text_color,
   };
@@ -56,13 +60,16 @@ function applyThemeToDOM(theme: ThemeSettings) {
     if (val) root.style.setProperty(prop, val);
   });
 
-  // Border radius
   if (theme.border_radius != null) {
     root.style.setProperty("--radius", `${theme.border_radius / 16}rem`);
   }
 
-  // Font
-  if (theme.font_family && theme.font_family !== "Inter") {
+  // Load fonts
+  const fontsToLoad = new Set<string>();
+  if (theme.font_family && theme.font_family !== "Inter") fontsToLoad.add(theme.font_family);
+  if (theme.heading_font && theme.heading_font !== "Inter") fontsToLoad.add(theme.heading_font);
+
+  if (fontsToLoad.size > 0) {
     let fontLink = document.getElementById("theme-google-fonts") as HTMLLinkElement;
     if (!fontLink) {
       fontLink = document.createElement("link");
@@ -70,16 +77,19 @@ function applyThemeToDOM(theme: ThemeSettings) {
       fontLink.rel = "stylesheet";
       document.head.appendChild(fontLink);
     }
-    fontLink.href = `https://fonts.googleapis.com/css2?family=${theme.font_family.replace(/ /g, "+")}:wght@400;500;600;700;800&display=swap`;
+    const families = Array.from(fontsToLoad).map(f => `family=${f.replace(/ /g, "+")}:wght@400;500;600;700;800`).join("&");
+    fontLink.href = `https://fonts.googleapis.com/css2?${families}&display=swap`;
   }
 
-  // Font size scale
-  const scaleMap: Record<string, string> = { small: "14px", medium: "16px", large: "18px" };
+  const scaleMap: Record<string, string> = { small: "14px", medium: "16px", large: "18px", xl: "20px" };
   if (scaleMap[theme.font_size_scale]) {
     root.style.setProperty("--base-font-size", scaleMap[theme.font_size_scale]);
   }
 
-  // Build dynamic CSS
+  // Spacing density
+  const spacingMap: Record<string, string> = { compact: "0.75", normal: "1", spacious: "1.35" };
+  root.style.setProperty("--spacing-scale", spacingMap[theme.spacing_density] || "1");
+
   let styleEl = document.getElementById("theme-dynamic-css") as HTMLStyleElement;
   if (!styleEl) {
     styleEl = document.createElement("style");
@@ -87,7 +97,8 @@ function applyThemeToDOM(theme: ThemeSettings) {
     document.head.appendChild(styleEl);
   }
 
-  const fontFamily = theme.font_family || "Inter";
+  const bodyFont = theme.font_family || "Inter";
+  const headingFont = theme.heading_font || bodyFont;
   const lineHeightMap: Record<string, string> = { compact: "1.4", normal: "1.6", relaxed: "1.8" };
   const lh = lineHeightMap[theme.line_height] || "1.6";
   const hoverMap: Record<string, string> = {
@@ -95,16 +106,18 @@ function applyThemeToDOM(theme: ThemeSettings) {
     lighten: "filter: brightness(1.1);",
     shadow: "box-shadow: 0 4px 16px rgba(0,0,0,0.2);",
     scale: "transform: scale(1.05);",
+    glow: "box-shadow: 0 0 20px hsl(var(--primary) / 0.4);",
   };
   const hoverCss = hoverMap[theme.button_hover] || "";
 
   styleEl.textContent = `
 body:not(.admin-panel) {
-  font-family: '${fontFamily}', system-ui, sans-serif;
+  font-family: '${bodyFont}', system-ui, sans-serif;
   line-height: ${lh};
 }
 body:not(.admin-panel) h1, body:not(.admin-panel) h2, body:not(.admin-panel) h3,
 body:not(.admin-panel) h4, body:not(.admin-panel) h5, body:not(.admin-panel) h6 {
+  font-family: '${headingFont}', '${bodyFont}', serif;
   font-weight: ${theme.heading_weight === "bold" ? "700" : theme.heading_weight === "extrabold" ? "800" : "600"};
 }
 body:not(.admin-panel) button:hover, body:not(.admin-panel) [role="button"]:hover {
@@ -134,8 +147,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     fetchTheme();
-
-    // Realtime subscription for instant theme updates
     const channel = supabase
       .channel("theme-changes")
       .on(
@@ -144,7 +155,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         () => { fetchTheme(); }
       )
       .subscribe();
-
     return () => { supabase.removeChannel(channel); };
   }, [fetchTheme]);
 
