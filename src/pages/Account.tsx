@@ -264,7 +264,7 @@ export default function Account() {
 
   return (
     <Layout>
-      <div className="container py-8 md:py-12 max-w-6xl px-6 md:px-12">
+      <div className="container py-8 md:py-12 max-w-6xl px-4 md:px-8">
         {/* Personalized greeting */}
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
@@ -308,7 +308,7 @@ export default function Account() {
         </div>
 
         {/* Two-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 items-start">
           <div className="min-w-0">
             <Tabs defaultValue="orders">
               {/* Scrollable tab bar */}

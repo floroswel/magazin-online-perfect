@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
-import { Facebook, Instagram, Youtube, Globe, ShieldCheck, ArrowRight, Phone, Mail, MapPin } from "lucide-react";
+import { Facebook, Instagram, Youtube, ArrowRight, Phone, Mail, MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -62,8 +62,6 @@ export default function Footer() {
   const showColumns = useVisibility("footer_columns");
   const showSocial = useVisibility("footer_social");
   const showNewsletter = useVisibility("footer_newsletter");
-  const showSol = useVisibility("compliance_sol");
-  const showAnpc = useVisibility("compliance_anpc");
 
   useEffect(() => {
     Promise.all([
@@ -242,21 +240,7 @@ export default function Footer() {
               )}
             </div>
             <div className="flex items-center gap-3">
-              {showAnpc !== false && (
-                <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-background/50 hover:text-background transition-colors">
-                  <ShieldCheck className="w-4 h-4" />
-                  <span className="text-xs">ANPC</span>
-                </a>
-              )}
-              {showSol !== false && (
-                <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-background/50 hover:text-background transition-colors">
-                  <Globe className="w-4 h-4" />
-                  <span className="text-xs">SOL</span>
-                </a>
-              )}
-              <div ref={footerScriptsRef} className="inline-flex flex-row flex-wrap items-center gap-3 [&_a]:inline-flex [&_a]:items-center [&_a]:text-background/50 [&_a]:hover:text-background [&_a]:transition-colors [&_img]:h-5 [&_img]:!w-auto [&_img]:object-contain [&_img]:opacity-60 [&_img]:hover:opacity-100 [&_span]:text-xs [&_p]:text-xs [&_div]:contents" />
+              <div ref={footerScriptsRef} className="inline-flex flex-row flex-wrap items-center gap-4 [&_a]:inline-flex [&_a]:items-center [&_a]:gap-1.5 [&_a]:text-background/60 [&_a]:hover:text-background [&_a]:transition-colors [&_img]:h-7 [&_img]:!w-auto [&_img]:object-contain [&_img]:opacity-70 [&_img]:hover:opacity-100 [&_span]:text-sm [&_p]:text-sm [&_div]:contents" />
             </div>
           </div>
         </div>

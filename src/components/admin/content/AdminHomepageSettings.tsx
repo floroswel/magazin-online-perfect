@@ -32,7 +32,7 @@ const DEFAULT_SECTIONS: HomepageSection[] = [
   { key: "flash", label: "Oferte Flash / Limitate", visible: true, title: "Oferte Limitate" },
   { key: "social_proof", label: "Social Proof Ticker", visible: true },
   { key: "bestsellers", label: "Cele Mai Iubite (Bestsellers)", visible: true, title: "Cele Mai Iubite" },
-  { key: "why_ventuza", label: "De Ce MamaLucica", visible: true },
+  { key: "why_mamalucica", label: "De Ce MamaLucica", visible: true },
   { key: "process", label: "Procesul Nostru", visible: true },
   { key: "testimonials", label: "Testimoniale", visible: true },
   { key: "recently_viewed", label: "Produse Vizualizate Recent", visible: true },
