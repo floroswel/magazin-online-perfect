@@ -100,49 +100,52 @@ export default function Header() {
 
       {/* Main Header */}
       <header className={`bg-primary ${stickyClass} z-50 shadow-md`}>
-        <div className={`container flex items-center ${headerHeightClass} px-4 gap-3 md:gap-5`}>
-          {/* Hamburger mobile */}
-          {showMenu !== false && (
-            <button className="lg:hidden text-primary-foreground" onClick={() => setMobileMenu(true)} aria-label="Meniu">
-              <Menu className="h-6 w-6" />
-            </button>
-          )}
+        <div className={`container flex items-center justify-between ${headerHeightClass} px-4`}>
+          {/* Left: hamburger + logo */}
+          <div className="flex items-center gap-3 shrink-0">
+            {/* Hamburger mobile */}
+            {showMenu !== false && (
+              <button className="lg:hidden text-primary-foreground min-w-[44px] min-h-[44px] flex items-center justify-center" onClick={() => setMobileMenu(true)} aria-label="Meniu">
+                <Menu className="h-6 w-6" />
+              </button>
+            )}
 
-          {/* Logo */}
-          {showLogo !== false && (
-            <Link to="/" className="shrink-0">
-              <span className="text-primary-foreground font-extrabold text-xl md:text-2xl tracking-tight">
-                MamaLucica
-              </span>
-            </Link>
-          )}
+            {/* Logo */}
+            {showLogo !== false && (
+              <Link to="/" className="shrink-0">
+                <span className="text-primary-foreground font-extrabold text-xl md:text-2xl tracking-tight">
+                  MamaLucica
+                </span>
+              </Link>
+            )}
+          </div>
 
-          {/* Search bar */}
+          {/* Center: Search bar */}
           {showSearch !== false && (
-            <div className="flex-1 max-w-2xl hidden md:block">
+            <div className="flex-1 max-w-2xl mx-4 hidden md:block">
               <SearchAutocomplete className="[&_input]:bg-primary-foreground [&_input]:text-foreground [&_input]:placeholder:text-muted-foreground [&_input]:rounded-lg [&_input]:h-10 [&_input]:border-0" />
             </div>
           )}
 
-          {/* Right actions */}
-          <div className="flex items-center gap-2 ml-auto md:ml-0">
+          {/* Right: action icons */}
+          <div className="flex items-center gap-1 shrink-0">
             <button
               onClick={() => navigate(user ? "/account" : "/auth")}
-              className="hidden md:flex flex-col items-center px-3 text-primary-foreground/90 hover:text-primary-foreground transition-colors"
+              className="hidden md:flex flex-col items-center justify-center w-14 h-14 text-primary-foreground/90 hover:text-primary-foreground transition-colors"
             >
               <User className="h-5 w-5" />
               <span className="text-[10px] mt-0.5">{user ? "Cont" : "Login"}</span>
             </button>
 
             {user && (
-              <Link to="/favorites" className="hidden md:flex flex-col items-center px-3 text-primary-foreground/90 hover:text-primary-foreground transition-colors">
+              <Link to="/favorites" className="hidden md:flex flex-col items-center justify-center w-14 h-14 text-primary-foreground/90 hover:text-primary-foreground transition-colors">
                 <Heart className="h-5 w-5" />
                 <span className="text-[10px] mt-0.5">Favorite</span>
               </Link>
             )}
 
             {showCart !== false && (
-              <Link to={user ? "/cart" : "/auth"} className="relative flex flex-col items-center px-3 text-primary-foreground/90 hover:text-primary-foreground transition-colors">
+              <Link to={user ? "/cart" : "/auth"} className="relative flex flex-col items-center justify-center w-14 h-14 text-primary-foreground/90 hover:text-primary-foreground transition-colors">
                 <div className="relative">
                   <ShoppingBag className="h-5 w-5" />
                   {totalItems > 0 && (
@@ -157,7 +160,7 @@ export default function Header() {
 
             {/* Mobile search */}
             {showSearch !== false && (
-              <Link to="/catalog" className="md:hidden text-primary-foreground/90 px-2">
+              <Link to="/catalog" className="md:hidden flex items-center justify-center w-11 h-11 text-primary-foreground/90">
                 <Search className="h-5 w-5" />
               </Link>
             )}
@@ -167,7 +170,7 @@ export default function Header() {
           {layout.header_cta_show && layout.header_cta_text && (
             <Link
               to={layout.header_cta_url || "/"}
-              className="hidden lg:inline-flex items-center bg-accent text-accent-foreground px-4 py-1.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+              className="hidden lg:inline-flex items-center bg-accent text-accent-foreground px-4 py-1.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity shrink-0"
             >
               {layout.header_cta_text}
             </Link>

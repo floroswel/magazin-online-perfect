@@ -11,8 +11,9 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Search, Power, PowerOff, Eye, EyeOff, Filter, Loader2, Calendar } from "lucide-react";
+import { Search, Power, PowerOff, Eye, EyeOff, Filter, Loader2, Calendar, Pencil } from "lucide-react";
 import { toast } from "sonner";
+import ControlElementEditor from "./ControlElementEditor";
 
 interface VisibilityRow {
   id: string;
@@ -103,6 +104,7 @@ export default function ControlVisibility() {
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [selectMode, setSelectMode] = useState(false);
+  const [editingElement, setEditingElement] = useState<string | null>(null);
 
   const fetchRows = async () => {
     const { data } = await (supabase as any)
@@ -266,45 +268,62 @@ export default function ControlVisibility() {
             </CardHeader>
             <CardContent className="space-y-1 pt-0">
               {catRows.map((row) => (
-                <div key={row.id} className={`flex items-center gap-3 p-2.5 rounded-lg border transition-all ${row.is_active ? "bg-muted/30 border-border" : "bg-muted/10 border-border/40 opacity-60"}`}>
-                  {selectMode && (
-                    <Checkbox
-                      checked={selected.has(row.id)}
-                      onCheckedChange={(checked) => {
-                        const newSet = new Set(selected);
-                        checked ? newSet.add(row.id) : newSet.delete(row.id);
-                        setSelected(newSet);
-                      }}
-                    />
-                  )}
-                  <Switch checked={row.is_active} onCheckedChange={() => toggleElement(row.id, row.is_active)} />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-foreground">{row.label}</div>
-                    <div className="text-xs text-muted-foreground">{row.path_label}</div>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-muted-foreground" />
-                      <Input
-                        type="datetime-local"
-                        className="h-7 text-xs w-[150px]"
-                        value={row.scheduled_from?.slice(0, 16) || ""}
-                        onChange={(e) => updateSchedule(row.id, "scheduled_from", e.target.value ? new Date(e.target.value).toISOString() : "")}
-                        title="Vizibil de la"
+                <div key={row.id}>
+                  <div className={`flex items-center gap-3 p-2.5 rounded-lg border transition-all ${row.is_active ? "bg-muted/30 border-border" : "bg-muted/10 border-border/40 opacity-60"}`}>
+                    {selectMode && (
+                      <Checkbox
+                        checked={selected.has(row.id)}
+                        onCheckedChange={(checked) => {
+                          const newSet = new Set(selected);
+                          checked ? newSet.add(row.id) : newSet.delete(row.id);
+                          setSelected(newSet);
+                        }}
                       />
-                      <span className="text-xs text-muted-foreground">→</span>
-                      <Input
-                        type="datetime-local"
-                        className="h-7 text-xs w-[150px]"
-                        value={row.scheduled_until?.slice(0, 16) || ""}
-                        onChange={(e) => updateSchedule(row.id, "scheduled_until", e.target.value ? new Date(e.target.value).toISOString() : "")}
-                        title="Vizibil până la"
-                      />
+                    )}
+                    <Switch checked={row.is_active} onCheckedChange={() => toggleElement(row.id, row.is_active)} />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium text-foreground">{row.label}</div>
+                      <div className="text-xs text-muted-foreground">{row.path_label}</div>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant={editingElement === row.element_key ? "default" : "ghost"}
+                      className="h-7 w-7 p-0 shrink-0"
+                      onClick={() => setEditingElement(editingElement === row.element_key ? null : row.element_key)}
+                      title="Editează configurare"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                    </Button>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3 text-muted-foreground" />
+                        <Input
+                          type="datetime-local"
+                          className="h-7 text-xs w-[150px]"
+                          value={row.scheduled_from?.slice(0, 16) || ""}
+                          onChange={(e) => updateSchedule(row.id, "scheduled_from", e.target.value ? new Date(e.target.value).toISOString() : "")}
+                          title="Vizibil de la"
+                        />
+                        <span className="text-xs text-muted-foreground">→</span>
+                        <Input
+                          type="datetime-local"
+                          className="h-7 text-xs w-[150px]"
+                          value={row.scheduled_until?.slice(0, 16) || ""}
+                          onChange={(e) => updateSchedule(row.id, "scheduled_until", e.target.value ? new Date(e.target.value).toISOString() : "")}
+                          title="Vizibil până la"
+                        />
+                      </div>
+                    </div>
+                    <div className="text-[10px] text-muted-foreground shrink-0 w-24 text-right">
+                      {new Date(row.updated_at).toLocaleDateString("ro")}
                     </div>
                   </div>
-                  <div className="text-[10px] text-muted-foreground shrink-0 w-24 text-right">
-                    {new Date(row.updated_at).toLocaleDateString("ro")}
-                  </div>
+                  {editingElement === row.element_key && (
+                    <ControlElementEditor
+                      elementKey={row.element_key}
+                      onClose={() => setEditingElement(null)}
+                    />
+                  )}
                 </div>
               ))}
             </CardContent>
