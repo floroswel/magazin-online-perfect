@@ -311,10 +311,28 @@ export default function Account() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 items-start">
           <div className="min-w-0">
             <Tabs defaultValue="orders">
-              {/* Scrollable tab bar */}
+              {/* Tab navigation - vertical on mobile, horizontal scroll on desktop */}
               <div className="relative">
+                {/* Mobile: vertical stacked tabs */}
+                <div className="md:hidden pb-2">
+                  <TabsList className="flex flex-col w-full h-auto gap-1 p-1">
+                    <TabsTrigger value="orders" className="w-full justify-start gap-2 text-xs"><Package className="h-3.5 w-3.5" /> Comenzi</TabsTrigger>
+                    <TabsTrigger value="invoices" className="w-full justify-start gap-2 text-xs"><FileText className="h-3.5 w-3.5" /> Facturi</TabsTrigger>
+                    <TabsTrigger value="addresses" className="w-full justify-start gap-2 text-xs"><MapPin className="h-3.5 w-3.5" /> Adrese</TabsTrigger>
+                    <TabsTrigger value="loyalty" className="w-full justify-start gap-2 text-xs"><Award className="h-3.5 w-3.5" /> Fidelitate</TabsTrigger>
+                    <TabsTrigger value="wishlists" className="w-full justify-start gap-2 text-xs"><Heart className="h-3.5 w-3.5" /> Wishlist</TabsTrigger>
+                    <TabsTrigger value="wallet" className="w-full justify-start gap-2 text-xs"><Wallet className="h-3.5 w-3.5" /> Wallet</TabsTrigger>
+                    <TabsTrigger value="giftcards" className="w-full justify-start gap-2 text-xs"><Gift className="h-3.5 w-3.5" /> Card cadou</TabsTrigger>
+                    <TabsTrigger value="referral" className="w-full justify-start gap-2 text-xs"><Share2 className="h-3.5 w-3.5" /> Recomandă</TabsTrigger>
+                    <TabsTrigger value="affiliate" className="w-full justify-start gap-2 text-xs"><TrendingUp className="h-3.5 w-3.5" /> Afiliere</TabsTrigger>
+                    <TabsTrigger value="burnlog" className="w-full justify-start gap-2 text-xs"><Flame className="h-3.5 w-3.5" /> Burn Log</TabsTrigger>
+                    <TabsTrigger value="profile" className="w-full justify-start gap-2 text-xs"><UserIcon className="h-3.5 w-3.5" /> Profil</TabsTrigger>
+                    <TabsTrigger value="preferences" className="w-full justify-start gap-2 text-xs"><Settings className="h-3.5 w-3.5" /> Preferințe</TabsTrigger>
+                  </TabsList>
+                </div>
+                {/* Desktop: horizontal scrollable tabs */}
                 <div
-                  className="scrollbar-hide pb-2"
+                  className="hidden md:block scrollbar-hide pb-2"
                   style={{
                     overflowX: 'auto',
                     overflowY: 'hidden',
@@ -336,8 +354,8 @@ export default function Account() {
                     <TabsTrigger value="preferences" className="gap-1.5 text-xs whitespace-nowrap"><Settings className="h-3.5 w-3.5" /> Preferințe</TabsTrigger>
                   </TabsList>
                 </div>
-                {/* Fade indicator for more tabs */}
-                <div className="absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" />
+                {/* Fade indicator for more tabs - desktop only */}
+                <div className="hidden md:block absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" />
               </div>
 
               {/* ORDERS TAB */}

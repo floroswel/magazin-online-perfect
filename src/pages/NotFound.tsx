@@ -128,13 +128,33 @@ const NotFound = () => {
   // Default plain 404
   if (!settings || !settings.enabled) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-muted">
-        <div className="text-center">
-          <h1 className="mb-4 text-4xl font-bold text-foreground">404</h1>
-          <p className="mb-4 text-xl text-muted-foreground">Oops! Page not found</p>
-          <a href="/" className="text-primary underline hover:text-primary/90">Return to Home</a>
+      <Layout>
+        <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 py-16 text-center">
+          <div className="text-[120px] md:text-[160px] font-bold leading-none text-primary/15 select-none font-serif">404</div>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground -mt-4 mb-3">Ups! Pagina nu a fost găsită</h1>
+          <p className="text-muted-foreground max-w-md mb-6">
+            Ne pare rău, dar pagina pe care o cauți nu există sau a fost mutată.
+            Poate te putem ajuta să găsești ceea ce cauți?
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button size="lg" asChild>
+              <Link to="/">Înapoi la magazin</Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link to="/catalog">Explorează produsele</Link>
+            </Button>
+          </div>
+          <form onSubmit={handleSearch} className="mt-8 max-w-sm w-full flex gap-2">
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Caută un produs..."
+              className="flex-1"
+            />
+            <Button type="submit" size="icon" variant="outline"><Search className="w-4 h-4" /></Button>
+          </form>
         </div>
-      </div>
+      </Layout>
     );
   }
 
