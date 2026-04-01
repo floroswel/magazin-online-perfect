@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
-import { Facebook, Instagram, Youtube, Globe, ShieldCheck, ArrowRight, Phone, Mail, MapPin } from "lucide-react";
+import { Facebook, Instagram, Youtube, ArrowRight, Phone, Mail, MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
