@@ -25,7 +25,7 @@ export default function Tracking() {
     setLoading(false);
   };
 
-  const statusLabels: Record<string, string> = { pending: "Plasată", processing: "Se Procesează", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată" };
+  const statusLabels: Record<string, string> = { pending: "În așteptare", processing: "În procesare", confirmed: "Confirmată", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată", refunded: "Rambursată" };
   const statusSteps = ["pending", "processing", "shipped", "delivered"];
 
   return (

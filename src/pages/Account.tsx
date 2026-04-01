@@ -214,7 +214,7 @@ export default function Account() {
     );
   };
 
-  const statusLabels: Record<string, string> = { pending: "În așteptare", processing: "Se procesează", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată", payment_failed: "Plată eșuată", refunded: "Rambursată", returned: "Returnată", on_hold: "În așteptare", pending_transfer: "Transfer în așteptare", pending_payment: "Plată în așteptare", ...statusLabelsFromDb };
+  const statusLabels: Record<string, string> = { pending: "În așteptare", processing: "În procesare", confirmed: "Confirmată", shipped: "Expediată", delivered: "Livrată", cancelled: "Anulată", payment_failed: "Plată eșuată", refunded: "Rambursată", returned: "Returnată", on_hold: "În așteptare", pending_transfer: "Transfer în așteptare", pending_payment: "Plată în așteptare", ...statusLabelsFromDb };
   const statusIcons: Record<string, any> = { pending: Clock, processing: Package, shipped: Truck, delivered: CheckCircle2, cancelled: XCircle };
 
   const progressToNext = nextLevel
@@ -421,7 +421,7 @@ export default function Account() {
                             <div className="flex items-center justify-between px-4">
                               {STATUS_TIMELINE.map((step, i) => {
                                 const isActive = i <= currentStep;
-                                const labels: Record<string, string> = { pending: "Plasată", processing: "Procesare", shipped: "Expediată", delivered: "Livrată", ...statusLabelsFromDb };
+                                const labels: Record<string, string> = { pending: "În așteptare", processing: "În procesare", confirmed: "Confirmată", shipped: "Expediată", delivered: "Livrată", ...statusLabelsFromDb };
                                 return (
                                   <div key={step} className="flex flex-col items-center flex-1">
                                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${isActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>

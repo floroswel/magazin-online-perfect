@@ -92,7 +92,7 @@ export default function CookieConsent() {
             <h3 className="font-semibold text-foreground text-sm">🍪 Acest site folosește cookie-uri</h3>
             <p className="text-xs text-muted-foreground mt-1">
               Folosim cookie-uri pentru a-ți oferi cea mai bună experiență. Poți accepta toate cookie-urile sau să le personalizezi.{" "}
-              <Link to="/page/politica-cookie" className="text-primary hover:underline">Politica de cookie-uri</Link>
+              <Link to="/politica-de-cookies" className="text-primary hover:underline">Politica de cookie-uri</Link>
             </p>
 
             {showDetails && (
