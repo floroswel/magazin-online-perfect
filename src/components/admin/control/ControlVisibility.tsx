@@ -11,8 +11,9 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Search, Power, PowerOff, Eye, EyeOff, Filter, Loader2, Calendar } from "lucide-react";
+import { Search, Power, PowerOff, Eye, EyeOff, Filter, Loader2, Calendar, Pencil } from "lucide-react";
 import { toast } from "sonner";
+import ControlElementEditor from "./ControlElementEditor";
 
 interface VisibilityRow {
   id: string;
