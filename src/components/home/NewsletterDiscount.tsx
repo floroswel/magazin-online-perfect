@@ -34,7 +34,7 @@ export default function NewsletterDiscount() {
               <Mail className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-lg md:text-xl font-bold">Abonează-te la Newsletter</h3>
+              <h3 className="text-lg md:text-xl font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>Abonează-te la Newsletter</h3>
               <p className="text-primary-foreground/80 text-sm">Primești 10% reducere la prima comandă + oferte exclusive!</p>
             </div>
           </div>
@@ -44,13 +44,14 @@ export default function NewsletterDiscount() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Adresa ta de email"
-              className="flex-1 md:w-72 h-11 px-4 text-sm bg-primary-foreground text-foreground rounded-l-lg border-0 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="flex-1 md:w-72 h-11 px-4 text-sm bg-white text-foreground rounded-l-lg border-0 focus:outline-none focus:ring-2 focus:ring-accent"
               required
             />
             <button
               type="submit"
               disabled={loading}
-              className="h-11 px-5 bg-accent text-accent-foreground font-bold text-sm rounded-r-lg hover:opacity-90 transition-opacity flex items-center gap-1"
+              className="h-11 px-5 font-bold text-sm rounded-r-lg hover:opacity-90 transition-opacity flex items-center gap-1"
+              style={{ background: "#111", color: "#fff" }}
             >
               Abonează-te <ArrowRight className="w-4 h-4" />
             </button>

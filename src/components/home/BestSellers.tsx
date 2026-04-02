@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, TrendingUp } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import ProductCard from "@/components/products/ProductCard";
 import { ProductCardSkeleton } from "@/components/ui/skeletons";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,15 +28,15 @@ export default function BestSellers({ title = "Cele Mai Vândute" }: Props) {
 
   return (
     <section className="container py-8 md:py-12 px-4" ref={ref}>
-      <div className="flex items-center justify-between mb-5 reveal stagger-1">
-        <div className="flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-primary" />
-          <h2 className="text-xl md:text-2xl font-bold text-foreground">{title}</h2>
-        </div>
+      <div className="flex items-end justify-between mb-1 reveal stagger-1">
+        <h2 className="text-xl md:text-2xl text-foreground" style={{ fontFamily: "'Playfair Display', serif" }}>
+          {title}
+        </h2>
         <Link to="/catalog?sort=popular" className="text-primary text-sm font-medium flex items-center gap-1 hover:underline">
           Vezi toate <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
+      <div className="w-[60px] h-[3px] bg-primary mb-6 reveal stagger-1" />
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">

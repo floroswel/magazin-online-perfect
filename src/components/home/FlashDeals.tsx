@@ -14,7 +14,7 @@ interface Props {
   title?: string;
 }
 
-export default function FlashDeals({ title = "⚡ Flash Deals" }: Props) {
+export default function FlashDeals({ title = "Oferte Flash" }: Props) {
   const [products, setProducts] = useState<Tables<"products">[]>([]);
   const [loading, setLoading] = useState(true);
   const ref = useScrollReveal();
@@ -22,7 +22,6 @@ export default function FlashDeals({ title = "⚡ Flash Deals" }: Props) {
   const [email, setEmail] = useState("");
   const [subscribing, setSubscribing] = useState(false);
 
-  // Check if user is a newsletter subscriber
   useEffect(() => {
     const stored = localStorage.getItem("flash_subscriber");
     if (stored) setIsSubscriber(true);
@@ -74,21 +73,21 @@ export default function FlashDeals({ title = "⚡ Flash Deals" }: Props) {
   const showBlurred = !isSubscriber && products.length > 2;
 
   return (
-    <section className="bg-card border-y border-border" ref={ref}>
+    <section ref={ref} style={{ background: "hsl(35 40% 97%)" }}>
       <div className="container py-6 md:py-10 px-4">
         <div className="flex items-center justify-between mb-5 reveal stagger-1">
           <div className="flex items-center gap-3">
-            <div className="bg-primary text-primary-foreground px-3 py-1.5 rounded-md flex items-center gap-1.5">
+            <div className="bg-primary text-primary-foreground px-3 py-1.5 rounded flex items-center gap-1.5">
               <Zap className="w-4 h-4" />
-              <span className="font-bold text-sm">{title}</span>
+              <span className="font-bold text-sm" style={{ fontFamily: "'Playfair Display', serif" }}>{title}</span>
             </div>
             <div className="flex items-center gap-1 text-sm">
               <span className="text-muted-foreground">Se termină în:</span>
-              <span className="bg-foreground text-background font-mono font-bold px-1.5 py-0.5 rounded text-xs">{String(timeLeft.h).padStart(2, "0")}</span>
+              <span className="bg-primary text-primary-foreground font-mono font-bold px-1.5 py-0.5 rounded text-xs">{String(timeLeft.h).padStart(2, "0")}</span>
               <span className="font-bold text-foreground">:</span>
-              <span className="bg-foreground text-background font-mono font-bold px-1.5 py-0.5 rounded text-xs">{String(timeLeft.m).padStart(2, "0")}</span>
+              <span className="bg-primary text-primary-foreground font-mono font-bold px-1.5 py-0.5 rounded text-xs">{String(timeLeft.m).padStart(2, "0")}</span>
               <span className="font-bold text-foreground">:</span>
-              <span className="bg-foreground text-background font-mono font-bold px-1.5 py-0.5 rounded text-xs">{String(timeLeft.s).padStart(2, "0")}</span>
+              <span className="bg-primary text-primary-foreground font-mono font-bold px-1.5 py-0.5 rounded text-xs">{String(timeLeft.s).padStart(2, "0")}</span>
             </div>
           </div>
           <Link to="/catalog?badge=deals" className="text-primary text-sm font-medium flex items-center gap-1 hover:underline">
@@ -110,12 +109,11 @@ export default function FlashDeals({ title = "⚡ Flash Deals" }: Props) {
               ))}
             </div>
 
-            {/* Subscriber Gate Overlay */}
             {showBlurred && (
               <div className="absolute inset-0 flex items-center justify-center" style={{ top: "30%" }}>
                 <div className="bg-card/95 backdrop-blur-sm border border-border rounded-xl p-6 max-w-sm text-center shadow-lg">
                   <Lock className="w-8 h-8 text-primary mx-auto mb-3" />
-                  <h3 className="text-lg font-bold text-foreground mb-1">Acces Exclusiv Flash Sale</h3>
+                  <h3 className="text-lg font-bold text-foreground mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>Acces Exclusiv Flash Sale</h3>
                   <p className="text-sm text-muted-foreground mb-4">
                     Abonează-te pentru a vedea toate ofertele cu reduceri de până la 50%!
                   </p>
@@ -127,7 +125,7 @@ export default function FlashDeals({ title = "⚡ Flash Deals" }: Props) {
                       onChange={(e) => setEmail(e.target.value)}
                       className="flex-1"
                     />
-                    <Button size="sm" onClick={handleSubscribe} disabled={subscribing}>
+                    <Button size="sm" onClick={handleSubscribe} disabled={subscribing} className="bg-primary hover:bg-primary/90">
                       <Mail className="w-4 h-4 mr-1" />
                       {subscribing ? "..." : "Vreau acces"}
                     </Button>

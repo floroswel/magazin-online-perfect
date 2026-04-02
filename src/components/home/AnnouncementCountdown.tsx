@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
 function getTimeUntilMidnightRO(): { h: number; m: number; s: number } {
-  // Romanian timezone: Europe/Bucharest
   const now = new Date();
   const roNow = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Bucharest" }));
   const midnight = new Date(roNow);
@@ -29,15 +28,13 @@ export default function AnnouncementCountdown() {
 
   return (
     <div
-      className="text-center py-2 text-sm font-medium tracking-wide"
-      style={{ background: "#111", color: "#F5A623" }}
+      className="text-center py-2 text-sm font-medium tracking-wide bg-primary text-primary-foreground"
     >
-      <span className="hidden sm:inline">🔥 Oferta expiră în </span>
-      <span className="sm:hidden">🔥 </span>
+      <span className="hidden sm:inline">🕯️ Livrare GRATUITĂ la comenzi peste 200 lei | Oferta expiră în </span>
+      <span className="sm:hidden">🕯️ Livrare GRATUITĂ — </span>
       <span className="font-bold tabular-nums">
         {pad(time.h)}:{pad(time.m)}:{pad(time.s)}
       </span>
-      <span className="hidden sm:inline"> — Livrare GRATUITĂ peste 200 lei</span>
     </div>
   );
 }
