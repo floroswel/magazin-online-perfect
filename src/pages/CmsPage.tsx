@@ -11,7 +11,6 @@ export default function CmsPage() {
   const { store_general } = useEditableContent();
   usePageSeo({ title: store_general.store_name, description: `${store_general.store_slogan} — magazin online.` });
   const { slug } = useParams<{ slug: string }>();
-  const branding = useStoreBranding();
   const [page, setPage] = useState<{ title: string; body_html: string | null; meta_title: string | null; meta_description: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
