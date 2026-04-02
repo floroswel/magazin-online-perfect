@@ -185,8 +185,8 @@ export default function ProductDetail() {
 
   // Dynamic SEO for product page
   usePageSeo({
-    title: product ? `${product.name} — ${product.price} lei · MamaLucica` : "MamaLucica",
-    description: product ? `${product.name} — ${product.short_description || "Lumânare artizanală MamaLucica"}. Stoc: ${product.stock} bucăți. Livrare rapidă în România.` : "",
+    title: product ? `${product.name} — ${product.price} lei · ${store_general.store_name}` : store_general.store_name,
+    description: product ? `${product.name} — ${product.short_description || `Lumânare artizanală ${store_general.store_name}`}. Stoc: ${product.stock} bucăți. Livrare rapidă în România.` : "",
     ogImage: product?.image_url || "/og-homepage.jpg",
     ogType: "product",
     productPrice: product?.price,
