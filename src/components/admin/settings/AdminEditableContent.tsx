@@ -90,6 +90,20 @@ export default function AdminEditableContent() {
     toast.success("Salvat! Schimbările apar pe site în câteva secunde.");
   };
 
+  const seedDefaults = async () => {
+    setSeeding(true);
+    const promises = Object.entries(KEY_MAP).map(([field, dbKey]) =>
+      supabase.from("app_settings").upsert(
+        { key: dbKey, value_json: (EDITABLE_DEFAULTS as any)[field] as any, updated_at: new Date().toISOString() },
+        { onConflict: "key" }
+      )
+    );
+    await Promise.all(promises);
+    setContent(EDITABLE_DEFAULTS);
+    setSeeding(false);
+    toast.success("Valorile implicite au fost scrise în baza de date. Sincronizarea este activă!");
+  };
+
   const set = <K extends keyof EditableContent>(key: K, val: EditableContent[K]) =>
     setContent(c => ({ ...c, [key]: val }));
 
