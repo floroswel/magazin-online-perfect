@@ -78,52 +78,54 @@ export default function Footer() {
   const copyrightText = texts.copyright.replace("{year}", String(new Date().getFullYear()));
 
   const renderLink = (l: FooterLink, i: number) => {
-    const cls = "text-[13px] transition-colors hover:text-primary" as const;
-    const style = { color: "#AAA" };
+    const cls = "text-[13px] transition-colors text-muted-foreground hover:text-primary";
     if (l.url.startsWith("http")) {
-      return <a key={i} href={l.url} target="_blank" rel="noopener noreferrer" className={cls} style={style}>{l.label}</a>;
+      return <a key={i} href={l.url} target="_blank" rel="noopener noreferrer" className={cls}>{l.label}</a>;
     }
-    return <Link key={i} to={l.url} className={cls} style={style}>{l.label}</Link>;
+    return <Link key={i} to={l.url} className={cls}>{l.label}</Link>;
   };
 
   return (
     <footer className="mt-auto overflow-hidden">
-      {/* Upper Footer — Techniq style: dark, 3 equal columns */}
-      <div style={{ background: "#2D2D2D" }}>
-        <div className="container py-10 px-4 max-w-[1200px] mx-auto">
+      {/* Upper Footer — warm dark walnut */}
+      <div className="bg-[#3C2F2F]">
+        <div className="container py-12 px-4 max-w-[1200px] mx-auto">
           {showColumns !== false && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Column 1 — Magazinul meu */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+              {/* Column 1 */}
               <div>
-                <h4 className="text-sm font-semibold mb-4 uppercase tracking-wider" style={{ color: "#FFF", letterSpacing: "1px" }}>{texts.col1_title || "Magazinul meu"}</h4>
-                <ul className="space-y-2">
+                <h4 className="text-sm font-semibold mb-5 uppercase tracking-wider text-white/90" style={{ letterSpacing: "1.5px", fontFamily: "'Inter', sans-serif" }}>
+                  {texts.col1_title || "Magazinul meu"}
+                </h4>
+                <ul className="space-y-2.5">
                   {col2Links.map((l, i) => <li key={i}>{renderLink(l, i)}</li>)}
                 </ul>
               </div>
 
-              {/* Column 2 — Clienti */}
+              {/* Column 2 */}
               <div>
-                <h4 className="text-sm font-semibold mb-4 uppercase tracking-wider" style={{ color: "#FFF", letterSpacing: "1px" }}>{texts.col3_title || "Clienți"}</h4>
-                <ul className="space-y-2 mb-6">
+                <h4 className="text-sm font-semibold mb-5 uppercase tracking-wider text-white/90" style={{ letterSpacing: "1.5px", fontFamily: "'Inter', sans-serif" }}>
+                  {texts.col3_title || "Clienți"}
+                </h4>
+                <ul className="space-y-2.5 mb-6">
                   {col3Links.map((l, i) => <li key={i}>{renderLink(l, i)}</li>)}
                 </ul>
 
-                {/* Contact info below client links */}
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   {texts.col4_show_phone && texts.col4_phone && (
-                    <div className="flex items-center gap-2 text-[13px]" style={{ color: "#AAA" }}>
+                    <div className="flex items-center gap-2 text-[13px] text-white/60">
                       <Phone className="w-4 h-4 text-primary shrink-0" />
                       <span>{texts.col4_phone}</span>
                     </div>
                   )}
                   {texts.col4_show_email && texts.col4_email && (
-                    <div className="flex items-center gap-2 text-[13px]" style={{ color: "#AAA" }}>
+                    <div className="flex items-center gap-2 text-[13px] text-white/60">
                       <Mail className="w-4 h-4 text-primary shrink-0" />
                       <span>{texts.col4_email}</span>
                     </div>
                   )}
                   {texts.col4_show_hours && texts.col4_hours && (
-                    <div className="flex items-center gap-2 text-[13px]" style={{ color: "#AAA" }}>
+                    <div className="flex items-center gap-2 text-[13px] text-white/60">
                       <Clock className="w-4 h-4 text-primary shrink-0" />
                       <span>{texts.col4_hours}</span>
                     </div>
@@ -131,21 +133,23 @@ export default function Footer() {
                 </div>
               </div>
 
-              {/* Column 3 — Date comerciale */}
+              {/* Column 3 */}
               <div>
-                <h4 className="text-sm font-semibold mb-4 uppercase tracking-wider" style={{ color: "#FFF", letterSpacing: "1px" }}>Date comerciale</h4>
-                <p className="text-primary font-semibold text-sm mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>Mama Lucica</p>
+                <h4 className="text-sm font-semibold mb-5 uppercase tracking-wider text-white/90" style={{ letterSpacing: "1.5px", fontFamily: "'Inter', sans-serif" }}>
+                  Date comerciale
+                </h4>
+                <p className="text-primary font-semibold text-sm mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>Mama Lucica</p>
                 {companyInfo.cui && (
-                  <p className="text-[13px] mb-1" style={{ color: "#AAA" }}>CUI: {companyInfo.cui}</p>
+                  <p className="text-[13px] mb-1 text-white/60">CUI: {companyInfo.cui}</p>
                 )}
                 {companyInfo.reg_com && (
-                  <p className="text-[13px] mb-1" style={{ color: "#AAA" }}>Reg. Com.: {companyInfo.reg_com}</p>
+                  <p className="text-[13px] mb-1 text-white/60">Reg. Com.: {companyInfo.reg_com}</p>
                 )}
                 {texts.col4_show_address && texts.col4_address && (
-                  <p className="text-[13px]" style={{ color: "#AAA" }}>{texts.col4_address}</p>
+                  <p className="text-[13px] text-white/60">{texts.col4_address}</p>
                 )}
                 {texts.col1_description && (
-                  <p className="text-[13px] mt-3" style={{ color: "#888" }}>{texts.col1_description}</p>
+                  <p className="text-[13px] mt-3 text-white/40">{texts.col1_description}</p>
                 )}
               </div>
             </div>
@@ -154,10 +158,10 @@ export default function Footer() {
       </div>
 
       {/* Lower Footer */}
-      <div style={{ background: "#1A1A1A" }}>
-        <div className="container py-3 px-4 max-w-[1200px] mx-auto">
+      <div className="bg-[#2A2020]">
+        <div className="container py-4 px-4 max-w-[1200px] mx-auto">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <p className="text-xs" style={{ color: "#888" }}>{copyrightText}</p>
+            <p className="text-xs text-white/40">{copyrightText}</p>
             <div ref={footerScriptsRef} className="inline-flex flex-row flex-wrap items-center gap-4 [&_a]:inline-flex [&_a]:items-center [&_a]:gap-1.5 [&_img]:h-7 [&_img]:!w-auto [&_img]:object-contain [&_img]:opacity-70 [&_img]:hover:opacity-100 [&_span]:text-sm [&_p]:text-sm [&_div]:contents" />
           </div>
         </div>

@@ -52,8 +52,8 @@ export default function Header() {
 
   return (
     <>
-      {/* LAYER 2 — Main Header (Techniq style: white, no top bar) */}
-      <header className={`bg-card ${stickyClass} z-50`} style={{ borderBottom: "1px solid hsl(var(--border))" }}>
+      {/* Main Header — warm cream bg */}
+      <header className={`bg-background ${stickyClass} z-50 border-b border-border`}>
         <div className="container flex items-center justify-between h-16 md:h-20 px-4 gap-4">
           {/* Left: hamburger (mobile) + logo */}
           <div className="flex items-center gap-3 shrink-0">
@@ -71,17 +71,17 @@ export default function Header() {
             )}
           </div>
 
-          {/* Center: Search bar — Techniq style: rectangular, not pill */}
+          {/* Center: Search bar — rounded, warm */}
           {showSearch !== false && (
             <div className="flex-1 max-w-xl mx-4 hidden md:block">
               <SearchAutocomplete
-                className="[&_input]:bg-card [&_input]:text-foreground [&_input]:placeholder:text-muted-foreground [&_input]:h-11 [&_input]:border [&_input]:border-border [&_input]:rounded [&_input]:px-4 [&_input]:pr-12"
+                className="[&_input]:bg-card [&_input]:text-foreground [&_input]:placeholder:text-muted-foreground [&_input]:h-11 [&_input]:border [&_input]:border-border [&_input]:rounded-lg [&_input]:px-4 [&_input]:pr-12"
               />
             </div>
           )}
 
-          {/* Right: Icons row — Techniq style: no text labels, just icons */}
-          <div className="flex items-center gap-0.5 shrink-0">
+          {/* Right: Icons */}
+          <div className="flex items-center gap-1 shrink-0">
             {user && (
               <Link to="/favorites" className="hidden md:flex items-center justify-center w-10 h-10 text-foreground/70 hover:text-primary transition-colors rounded-full hover:bg-muted">
                 <Heart className="h-[22px] w-[22px]" />
@@ -114,14 +114,13 @@ export default function Header() {
           </div>
         </div>
 
-        {/* LAYER 3 — Navigation Bar (Techniq style) */}
+        {/* Navigation Bar */}
         {showMenu !== false && (
-          <div className="hidden lg:block" style={{ borderTop: "1px solid hsl(var(--border))" }}>
+          <div className="hidden lg:block border-t border-border">
             <div className="container flex items-center h-12 px-4">
-              {/* "Toate Produsele" dropdown button */}
               {showMegaMenu !== false && (
                 <div className="relative" onMouseEnter={() => setShowCategories(true)} onMouseLeave={() => setShowCategories(false)}>
-                  <button className="flex items-center gap-2 bg-primary text-primary-foreground text-sm font-semibold h-12 px-5 hover:opacity-90 transition-opacity" style={{ minWidth: 200 }}>
+                  <button className="flex items-center gap-2 bg-primary text-primary-foreground text-sm font-semibold h-12 px-5 rounded-t-lg hover:opacity-90 transition-opacity" style={{ minWidth: 200 }}>
                     <Grid3X3 className="w-4 h-4" />
                     Toate Produsele
                     <ChevronDown className="w-3.5 h-3.5 ml-auto" />
@@ -158,29 +157,28 @@ export default function Header() {
 
       {/* Mobile search bar */}
       {showSearch !== false && (
-        <div className="md:hidden bg-card px-4 py-2 border-b z-40" style={{ borderColor: "hsl(var(--border))" }}>
-          <SearchAutocomplete className="[&_input]:h-9 [&_input]:text-sm [&_input]:rounded [&_input]:border [&_input]:border-border" />
+        <div className="md:hidden bg-background px-4 py-2 border-b border-border z-40">
+          <SearchAutocomplete className="[&_input]:h-9 [&_input]:text-sm [&_input]:rounded-lg [&_input]:border [&_input]:border-border" />
         </div>
       )}
 
       {/* Mobile fullscreen overlay */}
       <div
-        className={`fixed inset-0 z-[100] bg-card transition-transform duration-300 ease-out ${mobileMenu ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed inset-0 z-[100] bg-background transition-transform duration-300 ease-out ${mobileMenu ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="flex items-center justify-between px-4 h-14 border-b" style={{ borderColor: "hsl(var(--border))" }}>
+        <div className="flex items-center justify-between px-4 h-14 border-b border-border">
           <span className="text-primary font-bold text-xl" style={{ fontFamily: "'Playfair Display', serif" }}>Mama Lucica</span>
           <button onClick={() => setMobileMenu(false)} className="text-foreground p-2 min-w-[44px] min-h-[44px] flex items-center justify-center">
             <X className="h-6 w-6" />
           </button>
         </div>
 
-        {/* Mobile search */}
-        <div className="px-4 py-3 border-b" style={{ borderColor: "hsl(var(--border))" }}>
-          <SearchAutocomplete className="[&_input]:h-10 [&_input]:text-sm [&_input]:rounded [&_input]:border [&_input]:border-border" />
+        <div className="px-4 py-3 border-b border-border">
+          <SearchAutocomplete className="[&_input]:h-10 [&_input]:text-sm [&_input]:rounded-lg [&_input]:border [&_input]:border-border" />
         </div>
 
         {user && (
-          <div className="px-4 py-3 border-b flex items-center gap-3 bg-muted/50" style={{ borderColor: "hsl(var(--border))" }}>
+          <div className="px-4 py-3 border-b border-border flex items-center gap-3 bg-muted/50">
             <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
               {(user.email || "?")[0].toUpperCase()}
             </div>
@@ -199,7 +197,7 @@ export default function Header() {
                 key={cat.slug}
                 to={`/catalog?category=${cat.slug}`}
                 onClick={() => setMobileMenu(false)}
-                className="flex items-center gap-3 min-h-[44px] px-2 text-foreground hover:bg-muted rounded transition-colors"
+                className="flex items-center gap-3 min-h-[44px] px-2 text-foreground hover:bg-muted rounded-lg transition-colors"
               >
                 <span>{cat.icon}</span>
                 <span className="text-sm">{cat.name}</span>
@@ -207,7 +205,7 @@ export default function Header() {
             ))}
           </div>
 
-          <div className="border-t mx-4" style={{ borderColor: "hsl(var(--border))" }} />
+          <div className="border-t border-border mx-4" />
 
           <div className="px-4 py-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 mt-3">Navigare</p>
@@ -222,7 +220,7 @@ export default function Header() {
                 key={link.to}
                 to={link.to}
                 onClick={() => setMobileMenu(false)}
-                className="flex items-center min-h-[44px] px-2 text-foreground hover:bg-muted rounded transition-colors text-sm"
+                className="flex items-center min-h-[44px] px-2 text-foreground hover:bg-muted rounded-lg transition-colors text-sm"
               >
                 {link.label}
               </Link>
@@ -231,7 +229,7 @@ export default function Header() {
             <Link
               to="/cart"
               onClick={() => setMobileMenu(false)}
-              className="flex items-center justify-between min-h-[44px] px-2 text-foreground hover:bg-muted rounded transition-colors text-sm"
+              className="flex items-center justify-between min-h-[44px] px-2 text-foreground hover:bg-muted rounded-lg transition-colors text-sm"
             >
               <span>Coș</span>
               {totalItems > 0 && (
@@ -242,7 +240,7 @@ export default function Header() {
         </nav>
 
         {user && (
-          <div className="px-4 pb-6 border-t pt-4" style={{ borderColor: "hsl(var(--border))" }}>
+          <div className="px-4 pb-6 border-t border-border pt-4">
             <button
               onClick={() => { signOut(); setMobileMenu(false); }}
               className="text-muted-foreground text-sm w-full text-left min-h-[44px]"
