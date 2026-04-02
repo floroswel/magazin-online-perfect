@@ -1,30 +1,15 @@
 import { Link } from "react-router-dom";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-
-const promos = [
-  {
-    title: "Lumânări de Sezon",
-    subtitle: "Arome noi de toamnă",
-    cta: "Descoperă Colecția",
-    link: "/catalog?category=colectii-sezoniere",
-    image: "https://images.unsplash.com/photo-1605651531144-51381895e23a?w=600&h=300&fit=crop",
-  },
-  {
-    title: "Personalizează-ți Lumânarea",
-    subtitle: "Gravură, arome, culori la alegere",
-    cta: "Creează Acum",
-    link: "/personalizare",
-    image: "https://images.unsplash.com/photo-1608181831718-3b43e628bba2?w=600&h=300&fit=crop",
-  },
-];
+import { useEditableContent } from "@/hooks/useEditableContent";
 
 export default function ScentGuideTeaser() {
   const ref = useScrollReveal();
+  const { scent_promos } = useEditableContent();
 
   return (
     <section className="container py-6 md:py-10 px-4" ref={ref}>
       <div className="grid md:grid-cols-2 gap-4 reveal stagger-1">
-        {promos.map((promo) => (
+        {scent_promos.map((promo) => (
           <Link
             key={promo.title}
             to={promo.link}

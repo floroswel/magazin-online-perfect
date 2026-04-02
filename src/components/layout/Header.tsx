@@ -11,17 +11,7 @@ import { useLayoutSettings } from "@/hooks/useLayoutSettings";
 import SearchAutocomplete from "@/components/SearchAutocomplete";
 import MegaMenu from "@/components/layout/MegaMenu";
 import { useStoreBranding } from "@/hooks/useStoreBranding";
-
-const categories = [
-  { name: "Lumânări Parfumate", slug: "lumanari-parfumate", icon: "🕯️" },
-  { name: "Decorative", slug: "lumanari-decorative", icon: "✨" },
-  { name: "Cadouri & Seturi", slug: "cadouri-seturi", icon: "🎁" },
-  { name: "Aromaterapie", slug: "aromaterapie", icon: "🌿" },
-  { name: "Eveniment", slug: "lumanari-eveniment", icon: "🎉" },
-  { name: "Personalizare", slug: "personalizare", icon: "🎨" },
-  { name: "Accesorii", slug: "accesorii", icon: "🔧" },
-  { name: "Sezoniere", slug: "colectii-sezoniere", icon: "🍂" },
-];
+import { useEditableContent } from "@/hooks/useEditableContent";
 
 export default function Header() {
   const { user, signOut } = useAuth();
@@ -32,6 +22,7 @@ export default function Header() {
   const { isDark, toggle: toggleDarkMode } = useDarkMode();
   const layout = useLayoutSettings();
   const branding = useStoreBranding();
+  const { header_topbar, header_nav, mobile_categories } = useEditableContent();
   const [mobileMenu, setMobileMenu] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
 
@@ -56,9 +47,9 @@ export default function Header() {
         {/* Top utility bar */}
         <div className="bg-muted border-b border-border">
           <div className="container flex items-center justify-between h-8 px-4 text-[11px] text-muted-foreground">
-            <span className="font-medium">📞 0800-123-456</span>
-            <span className="hidden sm:block font-semibold text-primary">🚚 Livrare GRATUITĂ la comenzi peste 150 lei</span>
-            <span className="hidden md:block">📍 București, România</span>
+            <span className="font-medium">{header_topbar.phone}</span>
+            <span className="hidden sm:block font-semibold text-primary">{header_topbar.shipping_text}</span>
+            <span className="hidden md:block">{header_topbar.location}</span>
           </div>
         </div>
 
@@ -158,18 +149,12 @@ export default function Header() {
               )}
 
               <nav className="flex items-center gap-0 ml-1">
-                {[
-                  { to: "/catalog?badge=deals", label: "Oferte MamaLucica", highlight: true },
-                  { to: "/catalog", label: "Catalog" },
-                  { to: "/povestea-noastra", label: "Despre Noi" },
-                  { to: "/blog", label: "Blog" },
-                  { to: "/faq", label: "Contact" },
-                ].map((link) => (
+                {header_nav.map((link) => (
                   <Link
                     key={link.to}
                     to={link.to}
                     className={`text-sm font-semibold px-4 h-11 flex items-center transition-colors border-b-2 border-transparent hover:border-primary ${
-                      (link as any).highlight ? "text-primary font-bold" : "text-foreground/80 hover:text-primary"
+                      link.highlight ? "text-primary font-bold" : "text-foreground/80 hover:text-primary"
                     }`}
                   >
                     {link.label}
@@ -218,7 +203,7 @@ export default function Header() {
         <nav className="flex-1 overflow-y-auto">
           <div className="px-4 py-2">
             <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1 mt-3">Categorii</p>
-            {categories.map((cat) => (
+            {mobile_categories.map((cat) => (
               <Link
                 key={cat.slug}
                 to={`/catalog?category=${cat.slug}`}
