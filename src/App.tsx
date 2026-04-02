@@ -148,6 +148,7 @@ const App = () => (
           </CartProvider>
           </CurrencyProvider>
           </I18nProvider>
+          </EditableContentProvider>
           </StoreBrandingProvider>
           </ThemeProvider>
         </AuthProvider>
