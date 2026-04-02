@@ -47,8 +47,8 @@ export default function HeroSlider() {
   if (slides.length === 0) return null;
 
   return (
-    <section className="relative w-full overflow-hidden bg-card">
-      <div className="relative h-[300px] sm:h-[400px] md:h-[500px]">
+    <section className="relative w-full overflow-hidden">
+      <div className="relative h-[300px] sm:h-[400px] md:h-[500px]" style={{ background: "linear-gradient(135deg, hsl(35 75% 42%), hsl(35 75% 32%))" }}>
         {slides.map((slide, i) => (
           <div
             key={slide.id}
@@ -59,6 +59,7 @@ export default function HeroSlider() {
               alt={slide.title}
               className="absolute inset-0 w-full h-full object-cover"
               loading={i === 0 ? "eager" : "lazy"}
+              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
             />
             <div className="absolute inset-0 bg-black/40" />
             <div className="relative z-10 h-full flex items-center justify-center text-center">
