@@ -52,6 +52,7 @@ export default function AdminEditableContent() {
   const [content, setContent] = useState<EditableContent>(EDITABLE_DEFAULTS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [seeding, setSeeding] = useState(false);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
