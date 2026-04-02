@@ -100,7 +100,7 @@ export function usePageSeo(data: PageSeoData) {
     setMeta("og:type", data.ogType || "website", "property");
     setMeta("og:image", data.ogImage || seo.og_image || "/og-homepage.jpg", "property");
     setMeta("og:url", base + location.pathname, "property");
-    setMeta("og:site_name", "MamaLucica", "property");
+    setMeta("og:site_name", seo.site_title || "MamaLucica", "property");
     setMeta("og:locale", "ro_RO", "property");
 
     // Product-specific OG
