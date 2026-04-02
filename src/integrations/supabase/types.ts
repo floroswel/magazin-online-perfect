@@ -5815,6 +5815,7 @@ export type Database = {
           stock: number
           subscription_discount_percent: number | null
           tags: string[] | null
+          total_sold: number | null
           videos: string[] | null
           visible: boolean | null
           warranty_months: number | null
@@ -5873,6 +5874,7 @@ export type Database = {
           stock?: number
           subscription_discount_percent?: number | null
           tags?: string[] | null
+          total_sold?: number | null
           videos?: string[] | null
           visible?: boolean | null
           warranty_months?: number | null
@@ -5931,6 +5933,7 @@ export type Database = {
           stock?: number
           subscription_discount_percent?: number | null
           tags?: string[] | null
+          total_sold?: number | null
           videos?: string[] | null
           visible?: boolean | null
           warranty_months?: number | null
