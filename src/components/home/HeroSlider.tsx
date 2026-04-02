@@ -48,7 +48,10 @@ export default function HeroSlider() {
 
   return (
     <section className="relative w-full overflow-hidden">
-      <div className="relative h-[300px] sm:h-[400px] md:h-[500px]" style={{ background: "linear-gradient(135deg, hsl(35 75% 42%), hsl(35 75% 32%))" }}>
+      <div
+        className="relative h-[320px] sm:h-[420px] md:h-[520px]"
+        style={{ background: "linear-gradient(135deg, hsl(22 66% 55%), hsl(22 66% 38%))" }}
+      >
         {slides.map((slide, i) => (
           <div
             key={slide.id}
@@ -61,19 +64,25 @@ export default function HeroSlider() {
               loading={i === 0 ? "eager" : "lazy"}
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
             />
-            <div className="absolute inset-0 bg-black/40" />
-            <div className="relative z-10 h-full flex items-center justify-center text-center">
-              <div className="container px-4 md:px-8 max-w-3xl mx-auto">
-                <div className="text-white">
-                  <h2 className="text-2xl sm:text-3xl md:text-5xl mb-2 md:mb-4 leading-tight drop-shadow-lg" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-transparent" />
+            <div className="relative z-10 h-full flex items-center">
+              <div className="container px-4 md:px-8 max-w-3xl">
+                <div className="text-white max-w-lg">
+                  <h2
+                    className="text-2xl sm:text-3xl md:text-5xl mb-3 md:mb-5 leading-tight drop-shadow-lg"
+                    style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700 }}
+                  >
                     {slide.title}
                   </h2>
-                  <p className="text-sm sm:text-base md:text-lg opacity-90 mb-4 md:mb-6 drop-shadow-md" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  <p
+                    className="text-sm sm:text-base md:text-lg opacity-90 mb-5 md:mb-7 drop-shadow-md leading-relaxed"
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                  >
                     {slide.subtitle}
                   </p>
                   <Link
                     to={slide.link}
-                    className="inline-flex items-center justify-center bg-primary text-primary-foreground font-bold text-sm px-6 py-3 rounded hover:opacity-90 transition-opacity min-h-[48px]"
+                    className="inline-flex items-center justify-center bg-primary text-primary-foreground font-semibold text-sm px-8 py-3.5 rounded-lg hover:shadow-lg hover:shadow-primary/30 transition-all min-h-[48px]"
                   >
                     {slide.cta}
                   </Link>
@@ -85,19 +94,25 @@ export default function HeroSlider() {
 
         {slides.length > 1 && (
           <>
-            <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full flex items-center justify-center shadow transition-colors" style={{ background: "rgba(200,134,10,0.8)", color: "#fff" }}>
+            <button
+              onClick={prev}
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
+            >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full flex items-center justify-center shadow transition-colors" style={{ background: "rgba(200,134,10,0.8)", color: "#fff" }}>
+            <button
+              onClick={next}
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
+            >
               <ChevronRight className="w-5 h-5" />
             </button>
 
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex gap-2">
               {slides.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}
-                  className={`h-2.5 rounded-full transition-all ${i === current ? "w-6 bg-primary" : "w-2.5 bg-white/50"}`}
+                  className={`h-2.5 rounded-full transition-all ${i === current ? "w-7 bg-primary" : "w-2.5 bg-white/40"}`}
                 />
               ))}
             </div>
