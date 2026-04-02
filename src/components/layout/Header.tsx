@@ -52,10 +52,19 @@ export default function Header() {
 
   return (
     <>
-      {/* Main Header — warm cream bg */}
-      <header className={`bg-background ${stickyClass} z-50 border-b border-border`}>
-        <div className="container flex items-center justify-between h-16 md:h-20 px-4 gap-4">
-          {/* Left: hamburger (mobile) + logo */}
+      <header className={`bg-background ${stickyClass} z-50 shadow-sm`}>
+        {/* Top utility bar */}
+        <div className="border-b border-border bg-muted/40">
+          <div className="container flex items-center justify-between h-9 px-4 text-xs text-muted-foreground">
+            <span>📞 0800-123-456</span>
+            <span className="hidden sm:block font-medium text-primary">🚚 Livrare GRATUITĂ la comenzi peste 150 lei</span>
+            <span className="hidden md:block">📍 București, România</span>
+          </div>
+        </div>
+
+        {/* Main header row */}
+        <div className="container flex items-center justify-between h-16 md:h-[72px] px-4 gap-4">
+          {/* Left: hamburger + logo */}
           <div className="flex items-center gap-3 shrink-0">
             {showMenu !== false && (
               <button className="lg:hidden text-foreground min-w-[44px] min-h-[44px] flex items-center justify-center" onClick={() => setMobileMenu(true)} aria-label="Meniu">
@@ -63,43 +72,43 @@ export default function Header() {
               </button>
             )}
             {showLogo !== false && (
-              <Link to="/" className="shrink-0">
-                <span className="text-primary font-bold text-xl md:text-2xl" style={{ fontFamily: "'Playfair Display', serif" }}>
+              <Link to="/" className="shrink-0 flex items-center gap-2">
+                <span className="text-primary font-extrabold text-2xl md:text-[28px] tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
                   Mama Lucica
                 </span>
               </Link>
             )}
           </div>
 
-          {/* Center: Search bar — rounded, warm */}
+          {/* Center: Search bar */}
           {showSearch !== false && (
-            <div className="flex-1 max-w-xl mx-4 hidden md:block">
+            <div className="flex-1 max-w-2xl mx-4 hidden md:block">
               <SearchAutocomplete
-                className="[&_input]:bg-card [&_input]:text-foreground [&_input]:placeholder:text-muted-foreground [&_input]:h-11 [&_input]:border [&_input]:border-border [&_input]:rounded-lg [&_input]:px-4 [&_input]:pr-12"
+                className="[&_input]:bg-muted [&_input]:text-foreground [&_input]:placeholder:text-muted-foreground [&_input]:h-11 [&_input]:border-0 [&_input]:rounded-full [&_input]:px-5 [&_input]:pr-12 [&_input]:focus:ring-2 [&_input]:focus:ring-primary/30"
               />
             </div>
           )}
 
           {/* Right: Icons */}
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-0.5 shrink-0">
             {user && (
-              <Link to="/favorites" className="hidden md:flex items-center justify-center w-10 h-10 text-foreground/70 hover:text-primary transition-colors rounded-full hover:bg-muted">
+              <Link to="/favorites" className="hidden md:flex items-center justify-center w-10 h-10 text-foreground/60 hover:text-primary transition-colors rounded-full hover:bg-primary/10">
                 <Heart className="h-[22px] w-[22px]" />
               </Link>
             )}
 
             <button
               onClick={() => navigate(user ? "/account" : "/auth")}
-              className="hidden md:flex items-center justify-center w-10 h-10 text-foreground/70 hover:text-primary transition-colors rounded-full hover:bg-muted"
+              className="hidden md:flex items-center justify-center w-10 h-10 text-foreground/60 hover:text-primary transition-colors rounded-full hover:bg-primary/10"
             >
               <User className="h-[22px] w-[22px]" />
             </button>
 
             {showCart !== false && (
-              <Link to={user ? "/cart" : "/auth"} className="relative flex items-center justify-center w-10 h-10 text-foreground/70 hover:text-primary transition-colors rounded-full hover:bg-muted">
+              <Link to={user ? "/cart" : "/auth"} className="relative flex items-center justify-center w-10 h-10 text-foreground/60 hover:text-primary transition-colors rounded-full hover:bg-primary/10">
                 <ShoppingBag className="h-[22px] w-[22px]" />
                 {totalItems > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 h-[18px] min-w-[18px] flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold px-1">
+                  <span className="absolute -top-0.5 -right-0.5 h-[20px] min-w-[20px] flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold px-1 shadow-md">
                     {totalItems}
                   </span>
                 )}
@@ -107,7 +116,7 @@ export default function Header() {
             )}
 
             {showSearch !== false && (
-              <Link to="/catalog" className="md:hidden flex items-center justify-center w-10 h-10 text-foreground/70">
+              <Link to="/catalog" className="md:hidden flex items-center justify-center w-10 h-10 text-foreground/60">
                 <Search className="h-5 w-5" />
               </Link>
             )}
@@ -117,10 +126,10 @@ export default function Header() {
         {/* Navigation Bar */}
         {showMenu !== false && (
           <div className="hidden lg:block border-t border-border">
-            <div className="container flex items-center h-12 px-4">
+            <div className="container flex items-center h-11 px-4">
               {showMegaMenu !== false && (
                 <div className="relative" onMouseEnter={() => setShowCategories(true)} onMouseLeave={() => setShowCategories(false)}>
-                  <button className="flex items-center gap-2 bg-primary text-primary-foreground text-sm font-semibold h-12 px-5 rounded-t-lg hover:opacity-90 transition-opacity" style={{ minWidth: 200 }}>
+                  <button className="flex items-center gap-2 bg-primary text-primary-foreground text-sm font-bold h-11 px-5 rounded-t-lg hover:brightness-110 transition-all" style={{ minWidth: 200 }}>
                     <Grid3X3 className="w-4 h-4" />
                     Toate Produsele
                     <ChevronDown className="w-3.5 h-3.5 ml-auto" />
@@ -144,7 +153,7 @@ export default function Header() {
                   <Link
                     key={link.to}
                     to={link.to}
-                    className="text-foreground/80 hover:text-primary text-sm px-4 h-12 flex items-center transition-colors border-b-2 border-transparent hover:border-primary"
+                    className="text-foreground/70 hover:text-primary text-sm font-medium px-4 h-11 flex items-center transition-colors border-b-2 border-transparent hover:border-primary"
                   >
                     {link.label}
                   </Link>
@@ -158,7 +167,7 @@ export default function Header() {
       {/* Mobile search bar */}
       {showSearch !== false && (
         <div className="md:hidden bg-background px-4 py-2 border-b border-border z-40">
-          <SearchAutocomplete className="[&_input]:h-9 [&_input]:text-sm [&_input]:rounded-lg [&_input]:border [&_input]:border-border" />
+          <SearchAutocomplete className="[&_input]:h-9 [&_input]:text-sm [&_input]:rounded-full [&_input]:border-0 [&_input]:bg-muted [&_input]:px-4" />
         </div>
       )}
 
@@ -167,14 +176,14 @@ export default function Header() {
         className={`fixed inset-0 z-[100] bg-background transition-transform duration-300 ease-out ${mobileMenu ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="flex items-center justify-between px-4 h-14 border-b border-border">
-          <span className="text-primary font-bold text-xl" style={{ fontFamily: "'Playfair Display', serif" }}>Mama Lucica</span>
+          <span className="text-primary font-extrabold text-xl" style={{ fontFamily: "'Playfair Display', serif" }}>Mama Lucica</span>
           <button onClick={() => setMobileMenu(false)} className="text-foreground p-2 min-w-[44px] min-h-[44px] flex items-center justify-center">
             <X className="h-6 w-6" />
           </button>
         </div>
 
         <div className="px-4 py-3 border-b border-border">
-          <SearchAutocomplete className="[&_input]:h-10 [&_input]:text-sm [&_input]:rounded-lg [&_input]:border [&_input]:border-border" />
+          <SearchAutocomplete className="[&_input]:h-10 [&_input]:text-sm [&_input]:rounded-full [&_input]:border-0 [&_input]:bg-muted" />
         </div>
 
         {user && (
@@ -197,7 +206,7 @@ export default function Header() {
                 key={cat.slug}
                 to={`/catalog?category=${cat.slug}`}
                 onClick={() => setMobileMenu(false)}
-                className="flex items-center gap-3 min-h-[44px] px-2 text-foreground hover:bg-muted rounded-lg transition-colors"
+                className="flex items-center gap-3 min-h-[44px] px-2 text-foreground hover:bg-primary/5 rounded-lg transition-colors"
               >
                 <span>{cat.icon}</span>
                 <span className="text-sm">{cat.name}</span>
@@ -220,7 +229,7 @@ export default function Header() {
                 key={link.to}
                 to={link.to}
                 onClick={() => setMobileMenu(false)}
-                className="flex items-center min-h-[44px] px-2 text-foreground hover:bg-muted rounded-lg transition-colors text-sm"
+                className="flex items-center min-h-[44px] px-2 text-foreground hover:bg-primary/5 rounded-lg transition-colors text-sm"
               >
                 {link.label}
               </Link>
@@ -229,7 +238,7 @@ export default function Header() {
             <Link
               to="/cart"
               onClick={() => setMobileMenu(false)}
-              className="flex items-center justify-between min-h-[44px] px-2 text-foreground hover:bg-muted rounded-lg transition-colors text-sm"
+              className="flex items-center justify-between min-h-[44px] px-2 text-foreground hover:bg-primary/5 rounded-lg transition-colors text-sm"
             >
               <span>Coș</span>
               {totalItems > 0 && (

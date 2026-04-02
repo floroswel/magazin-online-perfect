@@ -73,25 +73,25 @@ function ProductCardInner({ product, eager = false }: Props) {
     <Link
       to={`/product/${product.slug}`}
       onMouseEnter={() => prefetchProduct(product.slug)}
-      className="group flex flex-col bg-card overflow-hidden rounded-xl border border-border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full"
+      className="group flex flex-col bg-background overflow-hidden rounded-xl border border-border/60 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 h-full"
     >
       {/* Image */}
-      <div className="relative aspect-[4/5] overflow-hidden bg-muted rounded-t-xl">
+      <div className="relative aspect-[4/5] overflow-hidden bg-muted">
         {/* Badges */}
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
           {discount > 0 && (
-            <span className="bg-destructive text-destructive-foreground text-[11px] font-bold px-2.5 py-1 rounded-md">
+            <span className="bg-destructive text-destructive-foreground text-[11px] font-bold px-2.5 py-1 rounded-md shadow-sm">
               -{discount}%
             </span>
           )}
           {(product as any).badge_new && (
-            <span className="bg-primary text-primary-foreground text-[11px] font-bold px-2.5 py-1 rounded-md">NOU</span>
+            <span className="bg-primary text-primary-foreground text-[11px] font-bold px-2.5 py-1 rounded-md shadow-sm">NOU</span>
           )}
           {(product as any).badge_bestseller && (
-            <span className="text-[11px] font-bold px-2.5 py-1 bg-accent text-accent-foreground rounded-md">BEST</span>
+            <span className="text-[11px] font-bold px-2.5 py-1 bg-secondary text-secondary-foreground rounded-md shadow-sm">BEST</span>
           )}
           {promotion && !pricingDiscount && (
-            <span className="text-[11px] font-bold px-2.5 py-1 text-primary-foreground rounded-md"
+            <span className="text-[11px] font-bold px-2.5 py-1 text-primary-foreground rounded-md shadow-sm"
               style={{ backgroundColor: promotion.badgeColor || "hsl(var(--primary))" }}>
               {promotion.badgeText}
             </span>
@@ -101,9 +101,9 @@ function ProductCardInner({ product, eager = false }: Props) {
         {/* Wishlist */}
         <button
           onClick={handleWishlist}
-          className="absolute top-3 right-3 z-10 w-9 h-9 flex items-center justify-center bg-card/90 backdrop-blur-sm rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
+          className="absolute top-3 right-3 z-10 w-9 h-9 flex items-center justify-center bg-background/90 backdrop-blur-sm rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
         >
-          <Heart className={`h-4 w-4 ${liked ? "fill-primary text-primary" : "text-muted-foreground hover:text-primary"}`} />
+          <Heart className={`h-4 w-4 ${liked ? "fill-secondary text-secondary" : "text-muted-foreground hover:text-secondary"}`} />
         </button>
 
         <img
@@ -120,10 +120,10 @@ function ProductCardInner({ product, eager = false }: Props) {
       {/* Info */}
       <div className="p-4 flex flex-col flex-1">
         {/* Vendor */}
-        <p className="text-[11px] text-muted-foreground mb-1.5 truncate uppercase tracking-widest">{vendorName}</p>
+        <p className="text-[11px] text-muted-foreground mb-1 truncate uppercase tracking-widest">{vendorName}</p>
 
         {/* Title */}
-        <h3 className="text-sm text-card-foreground leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors font-medium">
+        <h3 className="text-sm text-foreground leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors font-medium">
           {product.name}
         </h3>
 
@@ -131,7 +131,7 @@ function ProductCardInner({ product, eager = false }: Props) {
         <div className="flex items-center gap-1.5 mb-2.5">
           <div className="flex items-center">
             {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(rating) ? "fill-accent text-accent" : "text-border"}`} />
+              <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(rating) ? "fill-primary text-primary" : "text-border"}`} />
             ))}
           </div>
           <span className="text-[11px] text-muted-foreground">({reviewCount})</span>
@@ -139,7 +139,7 @@ function ProductCardInner({ product, eager = false }: Props) {
 
         {/* Price */}
         <div className="flex items-baseline gap-2 mb-1.5">
-          <span className="text-lg font-bold text-primary">
+          <span className="text-xl font-extrabold text-primary">
             {format(effectivePrice)}
           </span>
           {showOldPrice && showOldPrice > effectivePrice && (
@@ -154,7 +154,7 @@ function ProductCardInner({ product, eager = false }: Props) {
         )}
 
         {promoDiscount && promoDiscount.savings > 0 && (
-          <p className="text-[11px] text-primary font-medium mb-1">
+          <p className="text-[11px] text-primary font-semibold mb-1">
             Economisești {format(promoDiscount.savings)}
           </p>
         )}
@@ -187,13 +187,13 @@ function ProductCardInner({ product, eager = false }: Props) {
         {/* Add to cart */}
         <div className="mt-auto pt-3">
           {isOutOfStock ? (
-            <button disabled className="w-full h-11 min-h-[44px] bg-muted text-muted-foreground text-[13px] font-medium flex items-center justify-center gap-2 cursor-not-allowed rounded-lg">
+            <button disabled className="w-full h-11 min-h-[44px] bg-muted text-muted-foreground text-[13px] font-medium flex items-center justify-center gap-2 cursor-not-allowed rounded-full">
               Stoc epuizat
             </button>
           ) : (
             <button
               onClick={handleAddToCart}
-              className="w-full h-11 min-h-[44px] bg-primary text-primary-foreground text-[13px] font-semibold flex items-center justify-center gap-2 rounded-lg hover:shadow-lg hover:shadow-primary/25 transition-all md:opacity-0 md:group-hover:opacity-100"
+              className="w-full h-11 min-h-[44px] bg-primary text-primary-foreground text-[13px] font-bold flex items-center justify-center gap-2 rounded-full hover:shadow-lg hover:shadow-primary/30 hover:scale-[1.02] transition-all md:opacity-0 md:group-hover:opacity-100"
             >
               {addedToCart ? (
                 <><Check className="h-4 w-4" /> Adăugat!</>

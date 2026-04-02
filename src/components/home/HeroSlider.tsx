@@ -13,9 +13,9 @@ interface HeroSlide {
 }
 
 const DEFAULT_SLIDES: HeroSlide[] = [
-  { id: "1", title: "Lumânări Artizanale Handmade", subtitle: "Fiecare lumânare e turnată manual cu dragoste și ingrediente naturale", cta: "DESCOPERĂ COLECȚIA", link: "/catalog", image: "https://images.unsplash.com/photo-1602607167093-5ac4af65e1cd?auto=format&w=1200&q=80" },
-  { id: "2", title: "Colecția de Sezon", subtitle: "Arome noi inspirate din natură — ediție limitată", cta: "VEZI NOUTĂȚILE", link: "/catalog?sort=newest", image: "https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&w=1200&q=80" },
-  { id: "3", title: "Seturi Cadou Premium", subtitle: "Dăruiește aromă și căldură — pachete elegante pentru orice ocazie", cta: "ALEGE CADOUL", link: "/catalog?category=cadouri-seturi", image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&w=1200&q=80" },
+  { id: "1", title: "Lumânări Artizanale Handmade", subtitle: "Fiecare lumânare e turnată manual cu dragoste și ingrediente naturale", cta: "DESCOPERĂ COLECȚIA", link: "/catalog", image: "https://images.unsplash.com/photo-1602607167093-5ac4af65e1cd?auto=format&w=1400&q=80" },
+  { id: "2", title: "Colecția de Sezon", subtitle: "Arome noi inspirate din natură — ediție limitată", cta: "VEZI NOUTĂȚILE", link: "/catalog?sort=newest", image: "https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&w=1400&q=80" },
+  { id: "3", title: "Seturi Cadou Premium", subtitle: "Dăruiește aromă și căldură — pachete elegante pentru orice ocazie", cta: "ALEGE CADOUL", link: "/catalog?category=cadouri-seturi", image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&w=1400&q=80" },
 ];
 
 export default function HeroSlider() {
@@ -49,8 +49,8 @@ export default function HeroSlider() {
   return (
     <section className="relative w-full overflow-hidden">
       <div
-        className="relative h-[320px] sm:h-[420px] md:h-[520px]"
-        style={{ background: "linear-gradient(135deg, hsl(22 66% 55%), hsl(22 66% 38%))" }}
+        className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[540px]"
+        style={{ background: "linear-gradient(135deg, hsl(24 100% 50%), hsl(16 100% 50%))" }}
       >
         {slides.map((slide, i) => (
           <div
@@ -64,25 +64,25 @@ export default function HeroSlider() {
               loading={i === 0 ? "eager" : "lazy"}
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
             <div className="relative z-10 h-full flex items-center">
               <div className="container px-4 md:px-8 max-w-3xl">
                 <div className="text-white max-w-lg">
                   <h2
-                    className="text-2xl sm:text-3xl md:text-5xl mb-3 md:mb-5 leading-tight drop-shadow-lg"
-                    style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700 }}
+                    className="text-2xl sm:text-4xl md:text-5xl lg:text-[56px] mb-3 md:mb-5 leading-[1.1] drop-shadow-lg"
+                    style={{ fontFamily: "'Playfair Display', serif", fontWeight: 800 }}
                   >
                     {slide.title}
                   </h2>
                   <p
-                    className="text-sm sm:text-base md:text-lg opacity-90 mb-5 md:mb-7 drop-shadow-md leading-relaxed"
+                    className="text-sm sm:text-base md:text-lg opacity-90 mb-6 md:mb-8 drop-shadow-md leading-relaxed max-w-md"
                     style={{ fontFamily: "'Inter', sans-serif" }}
                   >
                     {slide.subtitle}
                   </p>
                   <Link
                     to={slide.link}
-                    className="inline-flex items-center justify-center bg-primary text-primary-foreground font-semibold text-sm px-8 py-3.5 rounded-lg hover:shadow-lg hover:shadow-primary/30 transition-all min-h-[48px]"
+                    className="inline-flex items-center justify-center bg-primary text-primary-foreground font-bold text-sm px-8 py-4 rounded-full hover:shadow-xl hover:shadow-primary/40 hover:scale-105 transition-all min-h-[48px] uppercase tracking-wide"
                   >
                     {slide.cta}
                   </Link>
@@ -96,23 +96,23 @@ export default function HeroSlider() {
           <>
             <button
               onClick={prev}
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={next}
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
 
-            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2.5">
               {slides.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}
-                  className={`h-2.5 rounded-full transition-all ${i === current ? "w-7 bg-primary" : "w-2.5 bg-white/40"}`}
+                  className={`h-2.5 rounded-full transition-all ${i === current ? "w-8 bg-primary" : "w-2.5 bg-white/50 hover:bg-white/70"}`}
                 />
               ))}
             </div>

@@ -78,7 +78,7 @@ export default function Footer() {
   const copyrightText = texts.copyright.replace("{year}", String(new Date().getFullYear()));
 
   const renderLink = (l: FooterLink, i: number) => {
-    const cls = "text-[13px] transition-colors text-muted-foreground hover:text-primary";
+    const cls = "text-[13px] transition-colors text-foreground/50 hover:text-primary";
     if (l.url.startsWith("http")) {
       return <a key={i} href={l.url} target="_blank" rel="noopener noreferrer" className={cls}>{l.label}</a>;
     }
@@ -87,70 +87,75 @@ export default function Footer() {
 
   return (
     <footer className="mt-auto overflow-hidden">
-      {/* Upper Footer — warm dark walnut */}
-      <div className="bg-[#3C2F2F]">
-        <div className="container py-12 px-4 max-w-[1200px] mx-auto">
+      {/* Upper Footer — dark charcoal */}
+      <div className="bg-foreground">
+        <div className="container py-14 px-4 max-w-[1200px] mx-auto">
           {showColumns !== false && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              {/* Column 1 */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+              {/* Brand column */}
               <div>
-                <h4 className="text-sm font-semibold mb-5 uppercase tracking-wider text-white/90" style={{ letterSpacing: "1.5px", fontFamily: "'Inter', sans-serif" }}>
-                  {texts.col1_title || "Magazinul meu"}
+                <h4 className="text-lg font-bold mb-4 text-primary" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  Mama Lucica
                 </h4>
+                {texts.col1_description && (
+                  <p className="text-[13px] text-background/40 leading-relaxed">{texts.col1_description}</p>
+                )}
+                {companyInfo.cui && (
+                  <p className="text-[12px] mt-3 text-background/30">CUI: {companyInfo.cui}</p>
+                )}
+                {companyInfo.reg_com && (
+                  <p className="text-[12px] text-background/30">Reg. Com.: {companyInfo.reg_com}</p>
+                )}
+              </div>
+
+              {/* Column 2 — Links */}
+              <div>
+                <h5 className="text-sm font-semibold mb-4 uppercase tracking-wider text-background/70" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  {texts.col1_title || "Informații"}
+                </h5>
                 <ul className="space-y-2.5">
                   {col2Links.map((l, i) => <li key={i}>{renderLink(l, i)}</li>)}
                 </ul>
               </div>
 
-              {/* Column 2 */}
+              {/* Column 3 — Legal */}
               <div>
-                <h4 className="text-sm font-semibold mb-5 uppercase tracking-wider text-white/90" style={{ letterSpacing: "1.5px", fontFamily: "'Inter', sans-serif" }}>
-                  {texts.col3_title || "Clienți"}
-                </h4>
-                <ul className="space-y-2.5 mb-6">
+                <h5 className="text-sm font-semibold mb-4 uppercase tracking-wider text-background/70" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  {texts.col3_title || "Legal"}
+                </h5>
+                <ul className="space-y-2.5">
                   {col3Links.map((l, i) => <li key={i}>{renderLink(l, i)}</li>)}
                 </ul>
+              </div>
 
-                <div className="space-y-2.5">
+              {/* Column 4 — Contact */}
+              <div>
+                <h5 className="text-sm font-semibold mb-4 uppercase tracking-wider text-background/70" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  Contact
+                </h5>
+                <div className="space-y-3">
                   {texts.col4_show_phone && texts.col4_phone && (
-                    <div className="flex items-center gap-2 text-[13px] text-white/60">
+                    <div className="flex items-center gap-2.5 text-[13px] text-background/50">
                       <Phone className="w-4 h-4 text-primary shrink-0" />
                       <span>{texts.col4_phone}</span>
                     </div>
                   )}
                   {texts.col4_show_email && texts.col4_email && (
-                    <div className="flex items-center gap-2 text-[13px] text-white/60">
+                    <div className="flex items-center gap-2.5 text-[13px] text-background/50">
                       <Mail className="w-4 h-4 text-primary shrink-0" />
                       <span>{texts.col4_email}</span>
                     </div>
                   )}
                   {texts.col4_show_hours && texts.col4_hours && (
-                    <div className="flex items-center gap-2 text-[13px] text-white/60">
+                    <div className="flex items-center gap-2.5 text-[13px] text-background/50">
                       <Clock className="w-4 h-4 text-primary shrink-0" />
                       <span>{texts.col4_hours}</span>
                     </div>
                   )}
+                  {texts.col4_show_address && texts.col4_address && (
+                    <p className="text-[13px] text-background/40 mt-2">{texts.col4_address}</p>
+                  )}
                 </div>
-              </div>
-
-              {/* Column 3 */}
-              <div>
-                <h4 className="text-sm font-semibold mb-5 uppercase tracking-wider text-white/90" style={{ letterSpacing: "1.5px", fontFamily: "'Inter', sans-serif" }}>
-                  Date comerciale
-                </h4>
-                <p className="text-primary font-semibold text-sm mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>Mama Lucica</p>
-                {companyInfo.cui && (
-                  <p className="text-[13px] mb-1 text-white/60">CUI: {companyInfo.cui}</p>
-                )}
-                {companyInfo.reg_com && (
-                  <p className="text-[13px] mb-1 text-white/60">Reg. Com.: {companyInfo.reg_com}</p>
-                )}
-                {texts.col4_show_address && texts.col4_address && (
-                  <p className="text-[13px] text-white/60">{texts.col4_address}</p>
-                )}
-                {texts.col1_description && (
-                  <p className="text-[13px] mt-3 text-white/40">{texts.col1_description}</p>
-                )}
               </div>
             </div>
           )}
@@ -158,10 +163,10 @@ export default function Footer() {
       </div>
 
       {/* Lower Footer */}
-      <div className="bg-[#2A2020]">
+      <div className="bg-foreground border-t border-background/10">
         <div className="container py-4 px-4 max-w-[1200px] mx-auto">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <p className="text-xs text-white/40">{copyrightText}</p>
+            <p className="text-xs text-background/30">{copyrightText}</p>
             <div ref={footerScriptsRef} className="inline-flex flex-row flex-wrap items-center gap-4 [&_a]:inline-flex [&_a]:items-center [&_a]:gap-1.5 [&_img]:h-7 [&_img]:!w-auto [&_img]:object-contain [&_img]:opacity-70 [&_img]:hover:opacity-100 [&_span]:text-sm [&_p]:text-sm [&_div]:contents" />
           </div>
         </div>
