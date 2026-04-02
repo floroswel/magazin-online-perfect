@@ -16,10 +16,10 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 13%;
 
-    --primary: 16 100% 50%;               /* #FF4D00 eMAG orange */
+    --primary: 24 90% 52%;                /* Warm amber-orange for candle shop */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 24 100% 50%;             /* #FF6B00 hover orange */
+    --secondary: 28 85% 56%;              /* Softer hover orange */
     --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 96%;                    /* #F5F5F5 light gray */
