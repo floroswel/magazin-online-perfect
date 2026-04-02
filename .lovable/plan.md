@@ -1,87 +1,51 @@
 
 
-# VERSION 9.0 — External Webhooks Integration
+# VERSION 13.0 — Sync Fix & Hardcoded String Cleanup
 
-## Overview
+## Diagnosis
 
-Add a complete "External Webhooks" system allowing users to configure outgoing webhooks that fire on store events (order.created, order.paid, etc.) and send payloads to external URLs like Zapier, Make.com, or custom CRMs.
+The central settings system (`useEditableContent` + `EditableContentProvider` + `AdminEditableContent`) **already exists and is correctly wired**:
+- Provider wraps the app in `App.tsx`
+- Supabase Realtime subscription is active on `app_settings`
+- All major components (Header, Footer, AnnouncementCountdown, WhyVentuza, ProcessSection, ScentGuideTeaser, TrustFooterStrip, SocialProofBar, SeoHead) already use `useEditableContent()`
 
-## Current State
+**Root cause of "changes not appearing"**: No `editable_*` rows exist in the database yet. The admin editor saves on demand — if nobody has clicked "Salvează Tot" in the Content Editor, all components fall back to hardcoded defaults. This is working as designed.
 
-- **Existing `AdminWebhooks`** at `/admin/shipping/webhooks` manages **incoming** courier tracking webhooks only (Fan Courier, Sameday, etc.)
-- **`webhook_queue`** table exists but is designed for incoming courier payloads
-- No `external_webhooks` or `webhook_endpoints` table exists for user-configured outgoing webhooks
+## What Actually Needs Fixing
 
-## Changes
+### 1. Seed default content on first save / app init
+Add an "Initialize Defaults" button in AdminEditableContent that writes all EDITABLE_DEFAULTS to the database, ensuring the round-trip works immediately.
 
-### 1. New Database Table: `external_webhooks`
+### 2. Remove remaining hardcoded "MamaLucica" strings (5 files)
+These files still have hardcoded brand names instead of reading from `useEditableContent`:
 
-```sql
-CREATE TABLE public.external_webhooks (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,
-  event_type TEXT NOT NULL,
-  url TEXT NOT NULL,
-  secret_key TEXT,
-  enabled BOOLEAN DEFAULT true,
-  include_payload BOOLEAN DEFAULT true,
-  custom_headers JSONB DEFAULT '{}',
-  last_triggered_at TIMESTAMPTZ,
-  last_status INTEGER,
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
-);
+| File | Current | Fix |
+|------|---------|-----|
+| `src/pages/ProductDetail.tsx` | `"MamaLucica"` in SEO title | Read from `useEditableContent().store_general.store_name` |
+| `src/pages/CmsPage.tsx` | `"MamaLucica"` in page title | Read from `useEditableContent().store_general.store_name` |
+| `src/components/products/VendorComparison.tsx` | `"MamaLucica"` brand name | Read from `useEditableContent().store_general.store_name` |
+| `vite.config.ts` | PWA manifest `"Mama Lucica"` | Keep as-is (build-time only, not runtime) |
 
-ALTER TABLE public.external_webhooks ENABLE ROW LEVEL SECURITY;
+### 3. Consolidate `useStoreBranding` → `useEditableContent`
+`useStoreBranding` reads from `store_branding` key while `useEditableContent` reads from `editable_store_general`. This duplication causes confusion. Update `useStoreBranding` to delegate to `useEditableContent().store_general` so there's one source of truth.
 
-CREATE POLICY "Admins manage external webhooks"
-  ON public.external_webhooks FOR ALL TO authenticated
-  USING (public.has_role(auth.uid(), 'admin'))
-  WITH CHECK (public.has_role(auth.uid(), 'admin'));
-```
+### 4. Add "Inițializează" button in Admin Content Editor
+A one-click button that upserts all 10 `editable_*` keys with their current defaults into `app_settings`, ensuring the database has the rows and Realtime can propagate changes.
 
-### 2. New Edge Function: `dispatch-webhook`
+## Files Modified
 
-- Accepts `{ event_type, payload }` via POST
-- Queries `external_webhooks` for matching enabled endpoints
-- For each match: sends POST with HMAC-SHA256 signature header, logs result
-- Updates `last_triggered_at` and `last_status`
-- Logs to `webhook_queue` as `direction: 'outgoing'`
-- Includes retry logic (up to 3 attempts with exponential backoff)
-
-### 3. New Admin UI: `AdminExternalWebhooks.tsx`
-
-Located at `/admin/integrations/external-webhooks`, accessible from sidebar under "Integrări".
-
-Features:
-- List all configured webhooks with name, event, URL, enabled toggle, last status
-- Add/Edit dialog with fields: name, event_type (dropdown), url, secret_key, include_payload, custom_headers (JSON textarea)
-- Event type options: `order.created`, `order.paid`, `order.shipped`, `order.cancelled`, `product.updated`, `customer.created`, `newsletter.subscribed`, `custom_event`
-- **"Send Test Webhook"** button per endpoint — sends a sample payload to the URL
-- Delete with confirmation
-- Recent delivery log (from `webhook_queue` filtered by outgoing + URL)
-
-### 4. Trigger Webhooks from Existing Flows
-
-Add `dispatchWebhook(eventType, payload)` helper in a shared util that calls the edge function. Integrate into:
-- **Order creation** → `order.created`
-- **Order status changes** → `order.paid`, `order.shipped`, `order.cancelled`
-
-This is done via a lightweight client-side call after the DB operation succeeds.
-
-### 5. Sidebar & Routing
-
-- Add route: `/admin/integrations/external-webhooks` → `AdminExternalWebhooks`
-- Add sidebar entry under Integrări: "Webhooks Externe" with Webhook icon
-
-### Files
-
-| File | Action |
+| File | Change |
 |------|--------|
-| Migration SQL | Create `external_webhooks` table + RLS |
-| `supabase/functions/dispatch-webhook/index.ts` | New edge function |
-| `src/components/admin/integrations/AdminExternalWebhooks.tsx` | New admin UI |
-| `src/lib/dispatchWebhook.ts` | Client helper to invoke the edge function |
-| `src/components/admin/AdminRoutes.tsx` | Add route |
-| `src/components/admin/AdminSidebar.tsx` | Add menu item |
+| `src/components/admin/settings/AdminEditableContent.tsx` | Add "Initialize Defaults" button |
+| `src/hooks/useStoreBranding.tsx` | Delegate to `useEditableContent().store_general` |
+| `src/pages/ProductDetail.tsx` | Replace hardcoded "MamaLucica" with dynamic store name |
+| `src/pages/CmsPage.tsx` | Replace hardcoded "MamaLucica" with dynamic store name |
+| `src/components/products/VendorComparison.tsx` | Replace hardcoded "MamaLucica" with dynamic store name |
+
+## How It Works After Fix
+
+1. Admin opens Content Editor → clicks "Inițializează Valori Default" (or just "Salvează Tot")
+2. All 10 `editable_*` rows are written to `app_settings`
+3. Realtime subscription fires → `useEditableContent` re-fetches → all components update instantly
+4. Any future edit + save propagates in under 10 seconds
 
