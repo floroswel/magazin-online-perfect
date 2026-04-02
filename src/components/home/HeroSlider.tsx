@@ -13,9 +13,9 @@ interface HeroSlide {
 }
 
 const DEFAULT_SLIDES: HeroSlide[] = [
-  { id: "1", title: "Lumânări Artizanale Handmade", subtitle: "Fiecare lumânare e turnată manual cu dragoste și ingrediente naturale", cta: "DESCOPERĂ COLECȚIA", link: "/catalog", image: "https://images.unsplash.com/photo-1602607167093-5ac4af65e1cd?w=1200&h=500&fit=crop" },
-  { id: "2", title: "Colecția de Sezon", subtitle: "Arome noi inspirate din natură — ediție limitată", cta: "VEZI NOUTĂȚILE", link: "/catalog?sort=newest", image: "https://images.unsplash.com/photo-1603006905003-be475563bc59?w=1200&h=500&fit=crop" },
-  { id: "3", title: "Seturi Cadou Premium", subtitle: "Dăruiește aromă și căldură — pachete elegante pentru orice ocazie", cta: "ALEGE CADOUL", link: "/catalog?category=cadouri-seturi", image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=1200&h=500&fit=crop" },
+  { id: "1", title: "Lumânări Artizanale Handmade", subtitle: "Fiecare lumânare e turnată manual cu dragoste și ingrediente naturale", cta: "DESCOPERĂ COLECȚIA", link: "/catalog", image: "https://images.unsplash.com/photo-1602607167093-5ac4af65e1cd?auto=format&w=1200&q=80" },
+  { id: "2", title: "Colecția de Sezon", subtitle: "Arome noi inspirate din natură — ediție limitată", cta: "VEZI NOUTĂȚILE", link: "/catalog?sort=newest", image: "https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&w=1200&q=80" },
+  { id: "3", title: "Seturi Cadou Premium", subtitle: "Dăruiește aromă și căldură — pachete elegante pentru orice ocazie", cta: "ALEGE CADOUL", link: "/catalog?category=cadouri-seturi", image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&w=1200&q=80" },
 ];
 
 export default function HeroSlider() {
@@ -47,8 +47,8 @@ export default function HeroSlider() {
   if (slides.length === 0) return null;
 
   return (
-    <section className="relative w-full overflow-hidden bg-card">
-      <div className="relative h-[300px] sm:h-[400px] md:h-[500px]">
+    <section className="relative w-full overflow-hidden">
+      <div className="relative h-[300px] sm:h-[400px] md:h-[500px]" style={{ background: "linear-gradient(135deg, hsl(35 75% 42%), hsl(35 75% 32%))" }}>
         {slides.map((slide, i) => (
           <div
             key={slide.id}
@@ -59,6 +59,7 @@ export default function HeroSlider() {
               alt={slide.title}
               className="absolute inset-0 w-full h-full object-cover"
               loading={i === 0 ? "eager" : "lazy"}
+              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
             />
             <div className="absolute inset-0 bg-black/40" />
             <div className="relative z-10 h-full flex items-center justify-center text-center">

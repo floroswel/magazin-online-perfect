@@ -158,7 +158,7 @@ export default function Header() {
 
       {/* Mobile search bar */}
       {showSearch !== false && (
-        <div className="md:hidden bg-card px-4 py-2 border-b sticky top-0 z-40" style={{ borderColor: "hsl(var(--border))" }}>
+        <div className="md:hidden bg-card px-4 py-2 border-b z-40" style={{ borderColor: "hsl(var(--border))" }}>
           <SearchAutocomplete className="[&_input]:h-9 [&_input]:text-sm [&_input]:rounded [&_input]:border [&_input]:border-border" />
         </div>
       )}

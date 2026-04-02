@@ -31,9 +31,9 @@ export default function Layout({ children, hideHeader }: { children: React.React
   const isAdmin = location.pathname.startsWith("/admin");
   const showCountdown = useVisibility("announcement_countdown");
 
-  // Force light mode — Techniq theme has no dark mode
   if (typeof document !== "undefined" && !isAdmin) {
     document.documentElement.classList.remove("dark");
+    document.documentElement.style.colorScheme = "light";
   }
 
   return (
