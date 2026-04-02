@@ -126,42 +126,46 @@ export default function Index() {
     buy_again: showBuyAgain,
   };
 
+  const EB = ErrorBoundary;
+
   const sectionComponents: Record<string, React.ReactNode> = useMemo(() => ({
-    hero_section: <HeroSlider key="hero_section" />,
-    social_proof_bar: <SocialProofBar key="social_proof_bar" />,
-    collections_grid: <CollectionsGrid key="collections_grid" />,
+    hero_section: <EB key="hero_section" fallback={null}><HeroSlider /></EB>,
+    social_proof_bar: <EB key="social_proof_bar" fallback={null}><SocialProofBar /></EB>,
+    collections_grid: <EB key="collections_grid" fallback={null}><CollectionsGrid /></EB>,
     featured_products: (
-      <section key="featured_products" className="container py-8 md:py-12 px-4" ref={featuredRef}>
-        <div className="flex items-center justify-between mb-5 reveal stagger-1">
-          <h2 className="text-xl md:text-2xl font-bold text-foreground">Produse Recomandate</h2>
-          <Link to="/catalog" className="text-primary text-sm font-medium hover:underline">Vezi toate →</Link>
-        </div>
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-            {Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)}
+      <EB key="featured_products" fallback={null}>
+        <section className="container py-8 md:py-12 px-4" ref={featuredRef}>
+          <div className="flex items-center justify-between mb-5 reveal stagger-1">
+            <h2 className="text-xl md:text-2xl font-bold text-foreground">Produse Recomandate</h2>
+            <Link to="/catalog" className="text-primary text-sm font-medium hover:underline">Vezi toate →</Link>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 reveal stagger-2">
-            {featured.map((p, i) => <ProductCard key={p.id} product={p} eager={i < 4} />)}
-          </div>
-        )}
-      </section>
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+              {Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 reveal stagger-2">
+              {featured.map((p, i) => <ProductCard key={p.id} product={p} eager={i < 4} />)}
+            </div>
+          )}
+        </section>
+      </EB>
     ),
-    flash_deals: <FlashDeals key="flash_deals" title="⚡ Flash Deals" />,
-    bestsellers_section: <BestSellers key="bestsellers_section" title="Cele Mai Vândute" />,
-    brand_story_section: <BrandStory key="brand_story_section" />,
-    scent_guide_teaser: <ScentGuideTeaser key="scent_guide_teaser" />,
-    reviews_section: <ReviewsSection key="reviews_section" />,
-    instagram_feed: <InstagramFeed key="instagram_feed" />,
-    brand_logos: <BrandLogosCarousel key="brand_logos" />,
-    recently_viewed: <RecentlyViewed key="recently_viewed" />,
-    personalized_recommendations: <PersonalizedRecommendations key="personalized_recommendations" />,
-    newsletter_section: <NewsletterDiscount key="newsletter_section" />,
-    quick_filters: <QuickFilters key="quick_filters" />,
-    coupon_collector: <CouponCollector key="coupon_collector" />,
-    top_vendors: <TopVendors key="top_vendors" />,
-    buy_again: <BuyAgain key="buy_again" />,
-    mood_selector: <CandleMoodSelector key="mood_selector" />,
+    flash_deals: <EB key="flash_deals" fallback={null}><FlashDeals title="⚡ Flash Deals" /></EB>,
+    bestsellers_section: <EB key="bestsellers_section" fallback={null}><BestSellers title="Cele Mai Vândute" /></EB>,
+    brand_story_section: <EB key="brand_story_section" fallback={null}><BrandStory /></EB>,
+    scent_guide_teaser: <EB key="scent_guide_teaser" fallback={null}><ScentGuideTeaser /></EB>,
+    reviews_section: <EB key="reviews_section" fallback={null}><ReviewsSection /></EB>,
+    instagram_feed: <EB key="instagram_feed" fallback={null}><InstagramFeed /></EB>,
+    brand_logos: <EB key="brand_logos" fallback={null}><BrandLogosCarousel /></EB>,
+    recently_viewed: <EB key="recently_viewed" fallback={null}><RecentlyViewed /></EB>,
+    personalized_recommendations: <EB key="personalized_recommendations" fallback={null}><PersonalizedRecommendations /></EB>,
+    newsletter_section: <EB key="newsletter_section" fallback={null}><NewsletterDiscount /></EB>,
+    quick_filters: <EB key="quick_filters" fallback={null}><QuickFilters /></EB>,
+    coupon_collector: <EB key="coupon_collector" fallback={null}><CouponCollector /></EB>,
+    top_vendors: <EB key="top_vendors" fallback={null}><TopVendors /></EB>,
+    buy_again: <EB key="buy_again" fallback={null}><BuyAgain /></EB>,
+    mood_selector: <EB key="mood_selector" fallback={null}><CandleMoodSelector /></EB>,
   }), [featured, loading, featuredRef]);
 
   return (
