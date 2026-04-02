@@ -73,25 +73,25 @@ function ProductCardInner({ product, eager = false }: Props) {
     <Link
       to={`/product/${product.slug}`}
       onMouseEnter={() => prefetchProduct(product.slug)}
-      className="group flex flex-col bg-background overflow-hidden rounded-xl border border-border/60 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 h-full"
+      className="group flex flex-col bg-card overflow-hidden rounded-lg border border-border hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 h-full"
     >
       {/* Image */}
       <div className="relative aspect-[4/5] overflow-hidden bg-muted">
         {/* Badges */}
-        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
+        <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1.5">
           {discount > 0 && (
-            <span className="bg-destructive text-destructive-foreground text-[11px] font-bold px-2.5 py-1 rounded-md shadow-sm">
+            <span className="bg-primary text-primary-foreground text-[11px] font-bold px-2 py-0.5 rounded">
               -{discount}%
             </span>
           )}
           {(product as any).badge_new && (
-            <span className="bg-primary text-primary-foreground text-[11px] font-bold px-2.5 py-1 rounded-md shadow-sm">NOU</span>
+            <span className="bg-[hsl(var(--store-success))] text-white text-[11px] font-bold px-2 py-0.5 rounded">NOU</span>
           )}
           {(product as any).badge_bestseller && (
-            <span className="text-[11px] font-bold px-2.5 py-1 bg-secondary text-secondary-foreground rounded-md shadow-sm">BEST</span>
+            <span className="bg-secondary text-secondary-foreground text-[11px] font-bold px-2 py-0.5 rounded">BEST</span>
           )}
           {promotion && !pricingDiscount && (
-            <span className="text-[11px] font-bold px-2.5 py-1 text-primary-foreground rounded-md shadow-sm"
+            <span className="text-[11px] font-bold px-2 py-0.5 text-white rounded"
               style={{ backgroundColor: promotion.badgeColor || "hsl(var(--primary))" }}>
               {promotion.badgeText}
             </span>
@@ -101,9 +101,9 @@ function ProductCardInner({ product, eager = false }: Props) {
         {/* Wishlist */}
         <button
           onClick={handleWishlist}
-          className="absolute top-3 right-3 z-10 w-9 h-9 flex items-center justify-center bg-background/90 backdrop-blur-sm rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
+          className="absolute top-2.5 right-2.5 z-10 w-8 h-8 flex items-center justify-center bg-background/90 rounded-full shadow opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
         >
-          <Heart className={`h-4 w-4 ${liked ? "fill-secondary text-secondary" : "text-muted-foreground hover:text-secondary"}`} />
+          <Heart className={`h-4 w-4 ${liked ? "fill-primary text-primary" : "text-muted-foreground hover:text-primary"}`} />
         </button>
 
         <img
@@ -118,9 +118,9 @@ function ProductCardInner({ product, eager = false }: Props) {
       </div>
 
       {/* Info */}
-      <div className="p-4 flex flex-col flex-1">
+      <div className="p-3.5 flex flex-col flex-1">
         {/* Vendor */}
-        <p className="text-[11px] text-muted-foreground mb-1 truncate uppercase tracking-widest">{vendorName}</p>
+        <p className="text-[11px] text-muted-foreground mb-1 truncate">{vendorName}</p>
 
         {/* Title */}
         <h3 className="text-sm text-foreground leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors font-medium">
@@ -128,18 +128,18 @@ function ProductCardInner({ product, eager = false }: Props) {
         </h3>
 
         {/* Rating */}
-        <div className="flex items-center gap-1.5 mb-2.5">
+        <div className="flex items-center gap-1.5 mb-2">
           <div className="flex items-center">
             {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(rating) ? "fill-primary text-primary" : "text-border"}`} />
+              <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(rating) ? "fill-[hsl(var(--store-warning))] text-[hsl(var(--store-warning))]" : "text-border"}`} />
             ))}
           </div>
           <span className="text-[11px] text-muted-foreground">({reviewCount})</span>
         </div>
 
         {/* Price */}
-        <div className="flex items-baseline gap-2 mb-1.5">
-          <span className="text-xl font-extrabold text-primary">
+        <div className="flex items-baseline gap-2 mb-1">
+          <span className="text-lg font-extrabold text-primary">
             {format(effectivePrice)}
           </span>
           {showOldPrice && showOldPrice > effectivePrice && (
@@ -178,22 +178,22 @@ function ProductCardInner({ product, eager = false }: Props) {
           }
           return (
             <div className="flex items-center gap-1 text-[11px] text-muted-foreground mt-1">
-              <Truck className="w-3 h-3 text-[hsl(var(--store-success,142_71%_45%))]" />
+              <Truck className="w-3 h-3 text-[hsl(var(--store-success))]" />
               <span>Livrare în 1-2 zile</span>
             </div>
           );
         })()}
 
-        {/* Add to cart */}
+        {/* Add to cart — always visible like eMAG */}
         <div className="mt-auto pt-3">
           {isOutOfStock ? (
-            <button disabled className="w-full h-11 min-h-[44px] bg-muted text-muted-foreground text-[13px] font-medium flex items-center justify-center gap-2 cursor-not-allowed rounded-full">
+            <button disabled className="w-full h-10 min-h-[44px] bg-muted text-muted-foreground text-[13px] font-medium flex items-center justify-center gap-2 cursor-not-allowed rounded-lg">
               Stoc epuizat
             </button>
           ) : (
             <button
               onClick={handleAddToCart}
-              className="w-full h-11 min-h-[44px] bg-primary text-primary-foreground text-[13px] font-bold flex items-center justify-center gap-2 rounded-full hover:shadow-lg hover:shadow-primary/30 hover:scale-[1.02] transition-all md:opacity-0 md:group-hover:opacity-100"
+              className="w-full h-10 min-h-[44px] bg-primary text-primary-foreground text-[13px] font-bold flex items-center justify-center gap-2 rounded-lg hover:bg-secondary hover:shadow-md transition-all"
             >
               {addedToCart ? (
                 <><Check className="h-4 w-4" /> Adăugat!</>

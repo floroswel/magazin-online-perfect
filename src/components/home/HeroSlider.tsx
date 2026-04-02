@@ -48,10 +48,7 @@ export default function HeroSlider() {
 
   return (
     <section className="relative w-full overflow-hidden">
-      <div
-        className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[540px]"
-        style={{ background: "linear-gradient(135deg, hsl(24 100% 50%), hsl(16 100% 50%))" }}
-      >
+      <div className="relative h-[280px] sm:h-[380px] md:h-[460px] lg:h-[500px] bg-muted">
         {slides.map((slide, i) => (
           <div
             key={slide.id}
@@ -64,25 +61,19 @@ export default function HeroSlider() {
               loading={i === 0 ? "eager" : "lazy"}
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent" />
             <div className="relative z-10 h-full flex items-center">
               <div className="container px-4 md:px-8 max-w-3xl">
                 <div className="text-white max-w-lg">
-                  <h2
-                    className="text-2xl sm:text-4xl md:text-5xl lg:text-[56px] mb-3 md:mb-5 leading-[1.1] drop-shadow-lg"
-                    style={{ fontFamily: "'Playfair Display', serif", fontWeight: 800 }}
-                  >
+                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-[52px] mb-3 md:mb-5 leading-[1.1] drop-shadow-lg font-black">
                     {slide.title}
                   </h2>
-                  <p
-                    className="text-sm sm:text-base md:text-lg opacity-90 mb-6 md:mb-8 drop-shadow-md leading-relaxed max-w-md"
-                    style={{ fontFamily: "'Inter', sans-serif" }}
-                  >
+                  <p className="text-sm sm:text-base md:text-lg opacity-90 mb-6 md:mb-8 drop-shadow-md leading-relaxed max-w-md font-medium">
                     {slide.subtitle}
                   </p>
                   <Link
                     to={slide.link}
-                    className="inline-flex items-center justify-center bg-primary text-primary-foreground font-bold text-sm px-8 py-4 rounded-full hover:shadow-xl hover:shadow-primary/40 hover:scale-105 transition-all min-h-[48px] uppercase tracking-wide"
+                    className="inline-flex items-center justify-center bg-primary text-primary-foreground font-bold text-sm px-8 py-3.5 rounded-lg hover:bg-secondary hover:shadow-xl transition-all min-h-[48px] uppercase tracking-wide"
                   >
                     {slide.cta}
                   </Link>
@@ -96,23 +87,23 @@ export default function HeroSlider() {
           <>
             <button
               onClick={prev}
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 bg-background/80 text-foreground hover:bg-background"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={next}
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 bg-white/20 backdrop-blur-sm text-white hover:bg-white/30"
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 bg-background/80 text-foreground hover:bg-background"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
 
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2.5">
+            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex gap-2">
               {slides.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}
-                  className={`h-2.5 rounded-full transition-all ${i === current ? "w-8 bg-primary" : "w-2.5 bg-white/50 hover:bg-white/70"}`}
+                  className={`h-2.5 rounded-full transition-all ${i === current ? "w-8 bg-primary" : "w-2.5 bg-white/50 hover:bg-white/80"}`}
                 />
               ))}
             </div>
