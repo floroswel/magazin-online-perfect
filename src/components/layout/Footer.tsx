@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import React from "react";
 import { useVisibility } from "@/hooks/useVisibility";
 import { useLayoutSettings } from "@/hooks/useLayoutSettings";
+import TrustIcons from "@/components/TrustIcons";
 
 interface FooterLink { label: string; url: string; active: boolean }
 interface FooterTexts {
@@ -87,6 +88,8 @@ export default function Footer() {
 
   return (
     <footer className="mt-auto overflow-hidden">
+      {/* Trust Icons from admin */}
+      <TrustIcons />
       {/* Upper Footer — eMAG dark style */}
       <div className="bg-[hsl(0_0%_13%)]">
         <div className="container py-12 px-4 max-w-[1200px] mx-auto">

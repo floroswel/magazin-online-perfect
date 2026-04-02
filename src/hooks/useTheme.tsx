@@ -20,6 +20,18 @@ export interface ThemeSettings {
   spacing_density: string;
 }
 
+export interface ExtendedThemeSettings {
+  btn_bg_color: string;
+  btn_text_color: string;
+  btn_text_style: string;
+  cta_bg_color: string;
+  cta_text_color: string;
+  cta_text_style: string;
+  heading_size: string;
+  bg_color: string;
+  trust_icons: Array<{ url: string; alt: string }>;
+}
+
 export const DEFAULTS: ThemeSettings = {
   color_mode: "light",
   primary_color: "16 100% 50%",
@@ -39,16 +51,33 @@ export const DEFAULTS: ThemeSettings = {
   spacing_density: "spacious",
 };
 
-const ThemeContext = createContext<ThemeSettings | null>(null);
+const EXTENDED_DEFAULTS: ExtendedThemeSettings = {
+  btn_bg_color: "#1e3a5f",
+  btn_text_color: "#ffffff",
+  btn_text_style: "normal",
+  cta_bg_color: "#e87722",
+  cta_text_color: "#ffffff",
+  cta_text_style: "bold",
+  heading_size: "standard",
+  bg_color: "#f5f7fa",
+  trust_icons: [],
+};
 
-export function useThemeSettings() {
-  return useContext(ThemeContext);
+interface ThemeContextValue {
+  theme: ThemeSettings | null;
+  extended: ExtendedThemeSettings;
 }
 
-/**
- * Parse an HSL string like "210 40% 50%" into [h, s, l] numbers.
- * Returns null when the string is not parseable.
- */
+const ThemeContext = createContext<ThemeContextValue>({ theme: null, extended: EXTENDED_DEFAULTS });
+
+export function useThemeSettings() {
+  return useContext(ThemeContext).theme;
+}
+
+export function useExtendedTheme() {
+  return useContext(ThemeContext).extended;
+}
+
 function parseHSL(hsl: string): [number, number, number] | null {
   if (!hsl) return null;
   const parts = hsl.replace(/%/g, "").trim().split(/\s+/);
@@ -56,14 +85,12 @@ function parseHSL(hsl: string): [number, number, number] | null {
   return [parseFloat(parts[0]), parseFloat(parts[1]), parseFloat(parts[2])];
 }
 
-/** Approximate relative luminance from HSL lightness — light ≥ 60 */
 function isLightColor(hsl: string): boolean {
   const parsed = parseHSL(hsl);
   if (!parsed) return false;
   return parsed[2] >= 60;
 }
 
-/** Return a contrasting foreground for a given HSL background */
 function contrastForeground(bgHSL: string, lightFg = "0 0% 100%", darkFg = "220 15% 15%"): string {
   return isLightColor(bgHSL) ? darkFg : lightFg;
 }
@@ -71,7 +98,6 @@ function contrastForeground(bgHSL: string, lightFg = "0 0% 100%", darkFg = "220 
 export function applyThemeToDOM(theme: ThemeSettings) {
   const root = document.documentElement;
 
-  // Apply base colors
   const colorMap: Record<string, string> = {
     "--primary": theme.primary_color,
     "--secondary": theme.secondary_color,
@@ -84,7 +110,6 @@ export function applyThemeToDOM(theme: ThemeSettings) {
     if (val) root.style.setProperty(prop, val);
   });
 
-  // Auto-compute contrasting foreground colors so header/buttons never become invisible
   if (theme.primary_color) {
     root.style.setProperty("--primary-foreground", contrastForeground(theme.primary_color));
   }
@@ -95,7 +120,6 @@ export function applyThemeToDOM(theme: ThemeSettings) {
     root.style.setProperty("--accent-foreground", contrastForeground(theme.accent_color));
   }
   if (theme.background_color) {
-    // Card is slightly lighter/warmer than background for elevation
     const bgParsed = parseHSL(theme.background_color);
     const cardHSL = bgParsed ? `${bgParsed[0]} ${Math.max(bgParsed[1], 20)}% ${Math.min(bgParsed[2] + 3, 98)}%` : theme.background_color;
     root.style.setProperty("--card", cardHSL);
@@ -130,7 +154,6 @@ export function applyThemeToDOM(theme: ThemeSettings) {
     root.style.setProperty("--base-font-size", scaleMap[theme.font_size_scale]);
   }
 
-  // Spacing density
   const spacingMap: Record<string, string> = { compact: "0.75", normal: "1", spacious: "1.35" };
   root.style.setProperty("--spacing-scale", spacingMap[theme.spacing_density] || "1");
 
@@ -154,6 +177,32 @@ export function applyThemeToDOM(theme: ThemeSettings) {
   };
   const hoverCss = hoverMap[theme.button_hover] || "";
 
+  // Button shape CSS
+  const shapeMap: Record<string, string> = {
+    square: "border-radius: 0 !important;",
+    rounded: `border-radius: ${theme.border_radius}px !important;`,
+    pill: "border-radius: 9999px !important;",
+  };
+  const shapeCss = shapeMap[theme.button_shape] || "";
+
+  // Button style CSS
+  let buttonStyleCss = "";
+  if (theme.button_style === "outline") {
+    buttonStyleCss = `
+body:not(.admin-panel) .btn-storefront {
+  background: transparent !important;
+  border: 2px solid hsl(var(--primary)) !important;
+  color: hsl(var(--primary)) !important;
+}`;
+  } else if (theme.button_style === "ghost") {
+    buttonStyleCss = `
+body:not(.admin-panel) .btn-storefront {
+  background: transparent !important;
+  border: none !important;
+  color: hsl(var(--primary)) !important;
+}`;
+  }
+
   styleEl.textContent = `
 body:not(.admin-panel) {
   font-family: '${bodyFont}', system-ui, sans-serif;
@@ -166,13 +215,70 @@ body:not(.admin-panel) h4, body:not(.admin-panel) h5, body:not(.admin-panel) h6 
 }
 body:not(.admin-panel) button:hover, body:not(.admin-panel) [role="button"]:hover {
   ${hoverCss}
+}
+body:not(.admin-panel) button, body:not(.admin-panel) [role="button"] {
+  ${shapeCss}
+}
+${buttonStyleCss}`;
+}
+
+function applyExtendedThemeToDOM(ext: ExtendedThemeSettings) {
+  let styleEl = document.getElementById("theme-extended-css") as HTMLStyleElement;
+  if (!styleEl) {
+    styleEl = document.createElement("style");
+    styleEl.id = "theme-extended-css";
+    document.head.appendChild(styleEl);
+  }
+
+  const headingScaleMap: Record<string, number> = { small: 0.85, standard: 1, medium: 1.15, large: 1.3 };
+  const scale = headingScaleMap[ext.heading_size] || 1;
+
+  const textStyleCss = (style: string) => {
+    const parts: string[] = [];
+    if (style === "bold") parts.push("font-weight: 700 !important;");
+    if (style === "italic") parts.push("font-style: italic !important;");
+    if (style === "underline") parts.push("text-decoration: underline !important;");
+    if (style === "uppercase") parts.push("text-transform: uppercase !important;");
+    return parts.join(" ");
+  };
+
+  styleEl.textContent = `
+:root {
+  --btn-bg: ${ext.btn_bg_color};
+  --btn-text: ${ext.btn_text_color};
+  --cta-bg: ${ext.cta_bg_color};
+  --cta-text: ${ext.cta_text_color};
+  --heading-scale: ${scale};
+}
+body:not(.admin-panel) h1 {
+  font-size: calc(2.25rem * var(--heading-scale)) !important;
+}
+body:not(.admin-panel) h2 {
+  font-size: calc(1.75rem * var(--heading-scale)) !important;
+}
+body:not(.admin-panel) h3 {
+  font-size: calc(1.375rem * var(--heading-scale)) !important;
+}
+body:not(.admin-panel) .btn-cta,
+body:not(.admin-panel) [data-cta="true"] {
+  background-color: ${ext.cta_bg_color} !important;
+  color: ${ext.cta_text_color} !important;
+  ${textStyleCss(ext.cta_text_style)}
+}
+body:not(.admin-panel) .btn-standard,
+body:not(.admin-panel) [data-btn="standard"] {
+  background-color: ${ext.btn_bg_color} !important;
+  color: ${ext.btn_text_color} !important;
+  ${textStyleCss(ext.btn_text_style)}
 }`;
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<ThemeSettings | null>(null);
+  const [extended, setExtended] = useState<ExtendedThemeSettings>(EXTENDED_DEFAULTS);
 
   const fetchTheme = useCallback(async () => {
+    // 1. Fetch site_theme_settings
     const { data } = await (supabase as any)
       .from("site_theme_settings")
       .select("setting_key, value_json");
@@ -188,7 +294,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       setTheme(merged);
     }
 
-    // Also load custom CSS from app_settings theme_settings
+    // 2. Load custom CSS from app_settings theme_settings
     const { data: appData } = await supabase
       .from("app_settings")
       .select("value_json")
@@ -206,17 +312,33 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         customStyleEl.textContent = ts.customCss;
       }
     }
+
+    // 3. Load extended theme settings from app_settings
+    const extKeys = ["btn_bg_color", "btn_text_color", "btn_text_style", "cta_bg_color", "cta_text_color", "cta_text_style", "heading_size", "bg_color", "trust_icons"];
+    const { data: extData } = await supabase
+      .from("app_settings")
+      .select("key, value_json")
+      .in("key", extKeys);
+    if (extData && extData.length > 0) {
+      const ext = { ...EXTENDED_DEFAULTS };
+      extData.forEach((row: any) => {
+        if (row.key === "trust_icons") {
+          ext.trust_icons = Array.isArray(row.value_json) ? row.value_json : [];
+        } else if (row.key in ext) {
+          (ext as any)[row.key] = typeof row.value_json === "string" ? row.value_json : String(row.value_json ?? "");
+        }
+      });
+      setExtended(ext);
+    }
   }, []);
 
   useEffect(() => {
     fetchTheme();
+    // Listen for changes on both tables
     const channel = supabase
-      .channel("theme-changes")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "site_theme_settings" },
-        () => { fetchTheme(); }
-      )
+      .channel("theme-changes-all")
+      .on("postgres_changes", { event: "*", schema: "public", table: "site_theme_settings" }, () => { fetchTheme(); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "app_settings" }, () => { fetchTheme(); })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [fetchTheme]);
@@ -225,8 +347,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (theme) applyThemeToDOM(theme);
   }, [theme]);
 
+  useEffect(() => {
+    applyExtendedThemeToDOM(extended);
+  }, [extended]);
+
   return (
-    <ThemeContext.Provider value={theme}>
+    <ThemeContext.Provider value={{ theme, extended }}>
       {children}
     </ThemeContext.Provider>
   );

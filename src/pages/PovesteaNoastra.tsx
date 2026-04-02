@@ -13,7 +13,7 @@ const defaultSections: PovesteaSection[] = [
 ];
 
 export default function PovesteaNoastra() {
-  const [sections, setSections] = useState<PovesteaSection[]>([]);
+  const [sections, setSections] = useState<PovesteaSection[]>(defaultSections);
 
   useEffect(() => {
     supabase.from("app_settings").select("value_json").eq("key", "static_page_povestea").maybeSingle()
@@ -40,41 +40,19 @@ export default function PovesteaNoastra() {
         </div>
       </section>
 
-      {sections.length > 0 ? (
-        <div className="max-w-3xl mx-auto py-12 md:py-24 px-4 space-y-16 md:space-y-20">
-          {sections.map((sec, i) => (
-            <div key={i}>
-              {i > 0 && <div className="border-t border-border mb-16" />}
-              <section>
-                <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">{sec.label}</p>
-                <h2 className="font-serif text-2xl md:text-3xl font-medium text-foreground mb-6">{sec.title}</h2>
-                {sec.text && <p className="text-muted-foreground leading-relaxed text-lg">{sec.text}</p>}
-              </section>
-            </div>
-          ))}
-          <p className="text-xs text-primary tracking-wide text-center mt-8">Handmade cu dragoste în România 🇷🇴</p>
-        </div>
-      ) : (
-        <div className="max-w-3xl mx-auto py-12 md:py-24 px-4 space-y-16 md:space-y-20">
-          <section>
-            <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">Cum a Început</p>
-            <h2 className="font-serif text-2xl md:text-3xl font-medium text-foreground mb-6">O Pasiune Născută Acasă</h2>
-            <p className="text-muted-foreground leading-relaxed text-lg">
-              MamaLucica s-a născut dintr-o pasiune simplă: dorința de a crea ceva frumos, cu mâinile proprii, din ingrediente naturale.
-            </p>
-          </section>
-          <div className="border-t border-border my-8" />
-          <section className="text-center">
-            <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">Angajament</p>
-            <h2 className="font-serif text-2xl md:text-3xl font-medium text-foreground mb-6">Promisiunea Noastră</h2>
-            <p className="text-muted-foreground leading-relaxed text-lg max-w-xl mx-auto">
-              Fiecare lumânare MamaLucica este o mică operă de artă. Promitem să folosim mereu ingrediente naturale,
-              să respectăm mediul și să creăm produse care aduc bucurie în fiecare casă.
-            </p>
-            <p className="text-xs text-primary tracking-wide mt-8">Handmade cu dragoste în România 🇷🇴</p>
-          </section>
-        </div>
-      )}
+      <div className="max-w-3xl mx-auto py-12 md:py-24 px-4 space-y-16 md:space-y-20">
+        {sections.map((sec, i) => (
+          <div key={i}>
+            {i > 0 && <div className="border-t border-border mb-16" />}
+            <section>
+              <p className="text-xs tracking-[0.3em] uppercase text-primary mb-4 font-medium">{sec.label}</p>
+              <h2 className="font-serif text-2xl md:text-3xl font-medium text-foreground mb-6">{sec.title}</h2>
+              {sec.text && <p className="text-muted-foreground leading-relaxed text-lg">{sec.text}</p>}
+            </section>
+          </div>
+        ))}
+        <p className="text-xs text-primary tracking-wide text-center mt-8">Handmade cu dragoste în România 🇷🇴</p>
+      </div>
     </Layout>
   );
 }
