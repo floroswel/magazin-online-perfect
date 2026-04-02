@@ -85,6 +85,7 @@ const App = () => (
         <AuthProvider>
           <ThemeProvider>
           <StoreBrandingProvider>
+          <EditableContentProvider>
           <I18nProvider>
           <CurrencyProvider>
           <CartProvider>
