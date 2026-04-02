@@ -36,6 +36,11 @@ export interface EditableContent {
 }
 
 const DEFAULTS: EditableContent = {
+  store_general: {
+    store_name: "MamaLucica",
+    store_slogan: "Lumânări artizanale",
+    store_email: "contact@mamalucica.ro",
+  },
   announcement: {
     text_desktop: "🕯️ Livrare GRATUITĂ la comenzi peste {threshold} lei | Oferta expiră în ",
     text_mobile: "🕯️ Livrare GRATUITĂ — ",
