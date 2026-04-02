@@ -144,9 +144,9 @@ export default function Header() {
             <div className="container flex items-center h-11 px-4">
               {showMegaMenu !== false && (
                 <div className="relative" onMouseEnter={() => setShowCategories(true)} onMouseLeave={() => setShowCategories(false)}>
-                  <button className="flex items-center gap-2 bg-primary text-primary-foreground text-sm font-bold h-11 px-5 hover:bg-secondary transition-colors" style={{ minWidth: 200 }}>
-                    <Grid3X3 className="w-4 h-4" />
-                    Toate Produsele
+                  <button className="flex items-center gap-2 bg-primary text-primary-foreground text-sm font-bold h-11 px-5 hover:bg-secondary transition-colors" style={{ minWidth: 180 }}>
+                    <Menu className="w-4 h-4" />
+                    Produse
                     <ChevronDown className="w-3.5 h-3.5 ml-auto" />
                   </button>
                   {showCategories && (
@@ -159,7 +159,7 @@ export default function Header() {
 
               <nav className="flex items-center gap-0 ml-1">
                 {[
-                  { to: "/", label: "Acasă" },
+                  { to: "/catalog?badge=deals", label: "Oferte MamaLucica", highlight: true },
                   { to: "/catalog", label: "Catalog" },
                   { to: "/povestea-noastra", label: "Despre Noi" },
                   { to: "/blog", label: "Blog" },
@@ -168,7 +168,9 @@ export default function Header() {
                   <Link
                     key={link.to}
                     to={link.to}
-                    className="text-foreground/80 hover:text-primary text-sm font-semibold px-4 h-11 flex items-center transition-colors border-b-2 border-transparent hover:border-primary"
+                    className={`text-sm font-semibold px-4 h-11 flex items-center transition-colors border-b-2 border-transparent hover:border-primary ${
+                      (link as any).highlight ? "text-primary font-bold" : "text-foreground/80 hover:text-primary"
+                    }`}
                   >
                     {link.label}
                   </Link>
