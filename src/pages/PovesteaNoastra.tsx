@@ -7,8 +7,8 @@ interface PovesteaSection { label: string; title: string; text: string; }
 
 const defaultSections: PovesteaSection[] = [
   { label: "Cum a Început", title: "O Pasiune Născută Acasă", text: "MamaLucica s-a născut dintr-o pasiune simplă: dorința de a crea ceva frumos, cu mâinile proprii, din ingrediente naturale. Totul a început acasă, în bucătărie, cu primele experimente cu ceară de soia și uleiuri esențiale. Astăzi, fiecare lumânare MamaLucica poartă aceeași dragoste și atenție la detalii din primele zile." },
-  { label: "Ingrediente", title: "Ce Folosim", text: "" },
-  { label: "Principii", title: "Valorile Noastre", text: "" },
+  { label: "Ingrediente", title: "Ce Folosim", text: "Folosim doar ceară de soia 100% naturală, fitiluri din bumbac și uleiuri esențiale pure." },
+  { label: "Principii", title: "Valorile Noastre", text: "Calitate, sustenabilitate și transparență – valorile care ne ghidează în fiecare zi." },
   { label: "Angajament", title: "Promisiunea Noastră", text: "Fiecare lumânare MamaLucica este o mică operă de artă. Promitem să folosim mereu ingrediente naturale, să respectăm mediul și să creăm produse care aduc bucurie în fiecare casă." },
 ];
 
