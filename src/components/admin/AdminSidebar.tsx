@@ -4,7 +4,7 @@ import {
   LayoutDashboard, ShoppingCart, Package, Users, Megaphone, Trophy,
   FileText, BarChart3, TrendingUp, Palette, Plug, Settings, User,
   ChevronDown, X, ArrowLeft, PanelLeftClose, PanelLeftOpen, LogOut,
-  Flame,
+  Flame, Webhook,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
