@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Search, Heart, User, Menu, X, ShoppingBag, ChevronDown, Truck, Shield, RotateCcw, Headphones, Sun, Moon } from "lucide-react";
+import { Search, Heart, User, Menu, X, ShoppingBag, ChevronDown, Grid3X3, Facebook, Instagram, Phone, Mail } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -35,7 +35,6 @@ export default function Header() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
 
-  // Visibility hooks
   const showLogo = useVisibility("header_logo");
   const showSearch = useVisibility("header_search");
   const showCart = useVisibility("header_cart");
@@ -49,144 +48,125 @@ export default function Header() {
     return () => { document.body.style.overflow = ""; };
   }, [mobileMenu]);
 
-  const headerHeightClass = layout.header_height === "compact" ? "h-12 md:h-12" : layout.header_height === "tall" ? "h-16 md:h-20" : "h-14 md:h-16";
   const stickyClass = layout.header_sticky ? "sticky top-0" : "";
+
+  // TikTok SVG icon
+  const TikTokIcon = () => (
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.71a8.19 8.19 0 0 0 4.76 1.52v-3.4a4.85 4.85 0 0 1-1-.14z"/>
+    </svg>
+  );
 
   return (
     <>
-      {/* Top info bar */}
-      {showFreeShipping !== false && (
-        <div className="bg-foreground text-background relative z-[60]">
-          <div className="container flex items-center justify-between h-8 px-4 text-[11px]">
-            {/* Mobile: show shipping info too */}
-            <div className="flex items-center gap-4">
-              {totalPrice > 0 && totalPrice < 200 ? (
-                <span className="flex items-center gap-1 opacity-90">
-                  <Truck className="w-3 h-3 shrink-0" />
-                  <span className="hidden sm:inline">Mai adaugă</span> <strong className="text-accent mx-0.5">{(200 - totalPrice).toFixed(0)} lei</strong> <span className="hidden xs:inline">pentru</span> livrare GRATUITĂ!
-                </span>
-              ) : totalPrice >= 200 ? (
-                <span className="flex items-center gap-1 opacity-90">
-                  <Truck className="w-3 h-3" /> 🎉 Transport gratuit!
-                </span>
-              ) : (
-                <span className="flex items-center gap-1 opacity-80"><Truck className="w-3 h-3" /> Livrare gratuită peste 200 lei</span>
-              )}
-              <span className="hidden md:flex items-center gap-1 opacity-80"><RotateCcw className="w-3 h-3" /> Retur 30 zile</span>
-            </div>
-            <div className="flex items-center gap-4 ml-auto shrink-0">
-              {branding.phone && <span className="hidden sm:flex items-center gap-1 opacity-80"><Headphones className="w-3 h-3" /> {branding.phone}</span>}
-              <button onClick={toggleDarkMode} className="opacity-70 hover:opacity-100 transition-opacity">
-                {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-              </button>
-            </div>
+      {/* LAYER 1 — Top Info Bar */}
+      <div className="hidden md:block relative z-[60]" style={{ background: "#111" }}>
+        <div className="container flex items-center justify-between h-8 px-4">
+          <div className="flex items-center gap-4 text-white/80" style={{ fontSize: "12px" }}>
+            {branding.phone && (
+              <span className="flex items-center gap-1.5">
+                <Phone className="w-3 h-3" /> {branding.phone}
+              </span>
+            )}
+            {branding.email && (
+              <span className="flex items-center gap-1.5">
+                <Mail className="w-3 h-3" /> {branding.email}
+              </span>
+            )}
           </div>
-          {/* Free shipping progress bar - visible when cart has items */}
-          {totalPrice > 0 && totalPrice < 200 && (
-            <div className="h-1 bg-background/20">
-              <div
-                className={`h-full transition-all duration-700 ease-out rounded-r-full ${
-                  totalPrice / 200 < 0.4 ? "bg-destructive" : totalPrice / 200 < 0.75 ? "bg-accent" : "bg-primary"
-                }`}
-                style={{ width: `${Math.min(100, (totalPrice / 200) * 100)}%` }}
-              />
-            </div>
-          )}
-          {totalPrice >= 200 && (
-            <div className="h-1 bg-primary" />
-          )}
+          <div className="flex items-center gap-3">
+            <a href="#" className="text-white/60 hover:text-white transition-colors"><Facebook className="w-3.5 h-3.5" /></a>
+            <a href="#" className="text-white/60 hover:text-white transition-colors"><Instagram className="w-3.5 h-3.5" /></a>
+            <a href="#" className="text-white/60 hover:text-white transition-colors"><TikTokIcon /></a>
+          </div>
         </div>
-      )}
+      </div>
 
-      {/* Main Header */}
-      <header className={`bg-primary ${stickyClass} z-50 shadow-md`}>
-        <div className={`container flex items-center justify-between ${headerHeightClass} px-4`}>
-          {/* Left: hamburger + logo */}
+      {/* LAYER 2 — Main Header */}
+      <header className={`bg-card ${stickyClass} z-50 border-b`} style={{ borderColor: "#E5E0D8" }}>
+        <div className="container flex items-center justify-between h-16 md:h-20 px-4">
+          {/* Left: hamburger (mobile) + logo */}
           <div className="flex items-center gap-3 shrink-0">
-            {/* Hamburger mobile */}
             {showMenu !== false && (
-              <button className="lg:hidden text-primary-foreground min-w-[44px] min-h-[44px] flex items-center justify-center" onClick={() => setMobileMenu(true)} aria-label="Meniu">
+              <button className="lg:hidden text-foreground min-w-[44px] min-h-[44px] flex items-center justify-center" onClick={() => setMobileMenu(true)} aria-label="Meniu">
                 <Menu className="h-6 w-6" />
               </button>
             )}
-
-            {/* Logo */}
             {showLogo !== false && (
-              <Link to="/" className="shrink-0">
-                <span className="text-primary-foreground font-extrabold text-xl md:text-2xl tracking-tight">
-                  MamaLucica
+              <Link to="/" className="shrink-0 flex flex-col">
+                <span className="text-primary font-bold text-xl md:text-2xl" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  Mama Lucica
                 </span>
+                <span className="text-muted-foreground hidden md:block" style={{ fontSize: "11px" }}>Lumânări Artizanale</span>
               </Link>
             )}
           </div>
 
           {/* Center: Search bar */}
           {showSearch !== false && (
-            <div className="flex-1 max-w-2xl mx-4 hidden md:block">
-              <SearchAutocomplete className="[&_input]:bg-primary-foreground [&_input]:text-foreground [&_input]:placeholder:text-muted-foreground [&_input]:rounded-lg [&_input]:h-10 [&_input]:border-0" />
+            <div className="flex-1 max-w-lg mx-6 hidden md:block">
+              <SearchAutocomplete className="[&_input]:bg-card [&_input]:text-foreground [&_input]:placeholder:text-muted-foreground [&_input]:h-10 [&_input]:border-2 [&_input]:border-primary [&_input]:rounded-full [&_input]:px-5 [&_input]:pr-10" />
             </div>
           )}
 
           {/* Right: action icons */}
           <div className="flex items-center gap-1 shrink-0">
+            {user && (
+              <Link to="/favorites" className="hidden md:flex flex-col items-center justify-center w-14 h-14 text-foreground/70 hover:text-primary transition-colors">
+                <Heart className="h-5 w-5" />
+                <span className="text-[10px] mt-0.5">Lista</span>
+              </Link>
+            )}
+
             <button
               onClick={() => navigate(user ? "/account" : "/auth")}
-              className="hidden md:flex flex-col items-center justify-center w-14 h-14 text-primary-foreground/90 hover:text-primary-foreground transition-colors"
+              className="hidden md:flex flex-col items-center justify-center w-14 h-14 text-foreground/70 hover:text-primary transition-colors"
             >
               <User className="h-5 w-5" />
               <span className="text-[10px] mt-0.5">{user ? "Cont" : "Login"}</span>
             </button>
 
-            {user && (
-              <Link to="/favorites" className="hidden md:flex flex-col items-center justify-center w-14 h-14 text-primary-foreground/90 hover:text-primary-foreground transition-colors">
-                <Heart className="h-5 w-5" />
-                <span className="text-[10px] mt-0.5">Favorite</span>
-              </Link>
-            )}
-
             {showCart !== false && (
-              <Link to={user ? "/cart" : "/auth"} className="relative flex flex-col items-center justify-center w-14 h-14 text-primary-foreground/90 hover:text-primary-foreground transition-colors">
+              <Link to={user ? "/cart" : "/auth"} className="relative flex flex-col items-center justify-center w-14 h-14 text-foreground/70 hover:text-primary transition-colors">
                 <div className="relative">
                   <ShoppingBag className="h-5 w-5" />
                   {totalItems > 0 && (
-                    <span className="absolute -top-1.5 -right-2 h-[18px] min-w-[18px] flex items-center justify-center rounded-full bg-accent text-accent-foreground text-[10px] font-bold px-1">
+                    <span className="absolute -top-1.5 -right-2 h-[18px] min-w-[18px] flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold px-1">
                       {totalItems}
                     </span>
                   )}
                 </div>
-                <span className="text-[10px] mt-0.5 hidden md:block">Coș</span>
+                <span className="text-[10px] mt-0.5 hidden md:block">Coș{totalItems > 0 ? ` (${totalItems})` : ""}</span>
               </Link>
             )}
 
-            {/* Mobile search */}
             {showSearch !== false && (
-              <Link to="/catalog" className="md:hidden flex items-center justify-center w-11 h-11 text-primary-foreground/90">
+              <Link to="/catalog" className="md:hidden flex items-center justify-center w-11 h-11 text-foreground/70">
                 <Search className="h-5 w-5" />
               </Link>
             )}
           </div>
 
-          {/* Header CTA button from layout settings */}
           {layout.header_cta_show && layout.header_cta_text && (
             <Link
               to={layout.header_cta_url || "/"}
-              className="hidden lg:inline-flex items-center bg-accent text-accent-foreground px-4 py-1.5 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity shrink-0"
+              className="hidden lg:inline-flex items-center bg-primary text-primary-foreground px-4 py-1.5 rounded text-sm font-semibold hover:opacity-90 transition-opacity shrink-0"
             >
               {layout.header_cta_text}
             </Link>
           )}
         </div>
 
-        {/* Category navigation bar */}
+        {/* LAYER 3 — Navigation Bar */}
         {showMenu !== false && (
-          <div className="hidden lg:block bg-primary border-t border-primary-foreground/10">
-            <div className="container flex items-center h-10 px-4">
-              {/* Categories mega-menu dropdown */}
+          <div className="hidden lg:block border-t" style={{ borderColor: "#E5E0D8" }}>
+            <div className="container flex items-center h-11 px-4">
+              {/* "Toate Produsele" button */}
               {showMegaMenu !== false && (
                 <div className="relative" onMouseEnter={() => setShowCategories(true)} onMouseLeave={() => setShowCategories(false)}>
-                  <button className="flex items-center gap-1.5 text-primary-foreground text-sm font-medium h-10 px-4 hover:bg-primary-foreground/10 transition-colors">
-                    <Menu className="w-4 h-4" />
-                    Categorii
+                  <button className="flex items-center gap-2 bg-primary text-primary-foreground text-sm font-bold h-11 px-5 hover:opacity-90 transition-opacity">
+                    <Grid3X3 className="w-4 h-4" />
+                    Toate Produsele
                     <ChevronDown className="w-3 h-3" />
                   </button>
                   {showCategories && (
@@ -197,50 +177,56 @@ export default function Header() {
                 </div>
               )}
 
-              {/* Quick links */}
-              <nav className="flex items-center gap-0">
+              <nav className="flex items-center gap-0 ml-1">
                 {[
                   { to: "/catalog?sort=newest", label: "Noutăți" },
                   { to: "/catalog?sort=popular", label: "Populare" },
                   { to: "/oferte", label: "🔥 Oferte" },
-                  { to: "/catalog", label: "Toate Produsele" },
+                  { to: "/catalog", label: "Catalog" },
                   { to: "/povestea-noastra", label: "Despre Noi" },
                   { to: "/faq", label: "Ajutor" },
                 ].map((link) => (
                   <Link
                     key={link.to}
                     to={link.to}
-                    className="text-primary-foreground/80 hover:text-primary-foreground text-sm px-3 h-10 flex items-center transition-colors"
+                    className="text-foreground/80 hover:text-primary text-sm px-3 h-11 flex items-center transition-colors border-b-2 border-transparent hover:border-primary"
                   >
                     {link.label}
                   </Link>
                 ))}
               </nav>
             </div>
+            {/* Amber bottom border */}
+            <div className="h-0.5 bg-primary" />
           </div>
         )}
       </header>
 
       {/* Mobile search bar */}
       {showSearch !== false && (
-        <div className="md:hidden bg-card px-4 py-2 border-b border-border sticky top-14 z-40">
-          <SearchAutocomplete className="[&_input]:h-9 [&_input]:text-sm [&_input]:rounded-lg" />
+        <div className="md:hidden bg-card px-4 py-2 border-b sticky top-0 z-40" style={{ borderColor: "#E5E0D8" }}>
+          <SearchAutocomplete className="[&_input]:h-9 [&_input]:text-sm [&_input]:rounded-full [&_input]:border-2 [&_input]:border-primary" />
         </div>
       )}
 
       {/* Mobile fullscreen overlay */}
       <div
-        className={`fixed inset-0 z-[100] bg-background transition-transform duration-300 ease-out ${mobileMenu ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed inset-0 z-[100] bg-card transition-transform duration-300 ease-out ${mobileMenu ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="flex items-center justify-between px-4 h-14 border-b border-border">
-          <span className="font-extrabold text-xl text-foreground">MamaLucica</span>
+        <div className="flex items-center justify-between px-4 h-14 border-b" style={{ borderColor: "#E5E0D8" }}>
+          <span className="text-primary font-bold text-xl" style={{ fontFamily: "'Playfair Display', serif" }}>Mama Lucica</span>
           <button onClick={() => setMobileMenu(false)} className="text-foreground p-2 min-w-[44px] min-h-[44px] flex items-center justify-center">
             <X className="h-6 w-6" />
           </button>
         </div>
 
+        {/* Mobile search */}
+        <div className="px-4 py-3 border-b" style={{ borderColor: "#E5E0D8" }}>
+          <SearchAutocomplete className="[&_input]:h-10 [&_input]:text-sm [&_input]:rounded-full [&_input]:border-2 [&_input]:border-primary" />
+        </div>
+
         {user && (
-          <div className="px-4 py-3 border-b border-border flex items-center gap-3 bg-muted/50">
+          <div className="px-4 py-3 border-b flex items-center gap-3 bg-muted/50" style={{ borderColor: "#E5E0D8" }}>
             <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
               {(user.email || "?")[0].toUpperCase()}
             </div>
@@ -267,7 +253,7 @@ export default function Header() {
             ))}
           </div>
 
-          <div className="border-t border-border mx-4" />
+          <div className="border-t mx-4" style={{ borderColor: "#E5E0D8" }} />
 
           <div className="px-4 py-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 mt-3">Navigare</p>
@@ -299,10 +285,18 @@ export default function Header() {
               )}
             </Link>
           </div>
+
+          {/* Social links in mobile */}
+          <div className="border-t mx-4 mt-2" style={{ borderColor: "#E5E0D8" }} />
+          <div className="px-6 py-4 flex items-center gap-4">
+            <a href="#" className="text-muted-foreground hover:text-primary transition-colors"><Facebook className="w-5 h-5" /></a>
+            <a href="#" className="text-muted-foreground hover:text-primary transition-colors"><Instagram className="w-5 h-5" /></a>
+            <a href="#" className="text-muted-foreground hover:text-primary transition-colors"><TikTokIcon /></a>
+          </div>
         </nav>
 
         {user && (
-          <div className="px-4 pb-6 border-t border-border pt-4">
+          <div className="px-4 pb-6 border-t pt-4" style={{ borderColor: "#E5E0D8" }}>
             <button
               onClick={() => { signOut(); setMobileMenu(false); }}
               className="text-muted-foreground text-sm w-full text-left min-h-[44px]"

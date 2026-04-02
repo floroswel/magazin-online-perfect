@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-import { Camera, ChevronRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Instagram, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface SocialPhoto {
@@ -24,7 +23,6 @@ export default function InstagramFeed() {
   const [instagramUrl, setInstagramUrl] = useState("https://instagram.com/mamalucica.ro");
 
   useEffect(() => {
-    // Try loading admin-managed social feed photos from app_settings
     Promise.all([
       supabase.from("app_settings").select("value_json").eq("key", "social_feed_photos").maybeSingle(),
       supabase.from("app_settings").select("value_json").eq("key", "footer_social_links").maybeSingle(),
@@ -32,7 +30,6 @@ export default function InstagramFeed() {
       if (photosRes.data?.value_json && Array.isArray(photosRes.data.value_json) && photosRes.data.value_json.length > 0) {
         setPhotos(photosRes.data.value_json as unknown as SocialPhoto[]);
       }
-      // Extract Instagram link
       if (socialRes.data?.value_json && Array.isArray(socialRes.data.value_json)) {
         const ig = (socialRes.data.value_json as any[]).find((l: any) => l.platform === "instagram" || l.icon === "instagram");
         if (ig?.url && ig.url !== "#") setInstagramUrl(ig.url);
@@ -44,8 +41,8 @@ export default function InstagramFeed() {
     <section className="container py-8 md:py-12 px-4" ref={ref}>
       <div className="flex items-center justify-between mb-5 reveal stagger-1">
         <div className="flex items-center gap-2">
-          <Camera className="w-5 h-5 text-primary" />
-          <h2 className="text-xl md:text-2xl font-bold text-foreground">@mamalucica.ro</h2>
+          <Instagram className="w-5 h-5 text-primary" />
+          <h2 className="text-xl md:text-2xl text-foreground" style={{ fontFamily: "'Playfair Display', serif" }}>@mamalucica.ro</h2>
         </div>
         <a
           href={instagramUrl}
@@ -63,7 +60,7 @@ export default function InstagramFeed() {
             href={instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="aspect-square rounded-xl overflow-hidden group"
+            className="aspect-square rounded-lg overflow-hidden group relative"
           >
             <img
               src={photo.url}
@@ -71,9 +68,18 @@ export default function InstagramFeed() {
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
               loading="lazy"
             />
+            <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/40 transition-colors duration-300 flex items-center justify-center">
+              <Instagram className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </div>
           </a>
         ))}
       </div>
+      <p className="text-center mt-4 text-sm text-muted-foreground reveal stagger-2">
+        Urmărește pe Instagram{" "}
+        <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline">
+          @mamalucica
+        </a>
+      </p>
     </section>
   );
 }

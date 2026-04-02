@@ -12,7 +12,7 @@ export default function BrandLogosCarousel() {
   const ref = useScrollReveal();
 
   return (
-    <section className="bg-muted py-8 md:py-12" ref={ref}>
+    <section className="py-8 md:py-12" style={{ background: "hsl(35 40% 97%)" }} ref={ref}>
       <div className="container px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 reveal stagger-1">
           {guarantees.map((g) => {
@@ -22,7 +22,7 @@ export default function BrandLogosCarousel() {
                 <div className="w-14 h-14 rounded-full bg-card mx-auto mb-3 flex items-center justify-center shadow-sm">
                   <Icon className="w-6 h-6 text-primary" />
                 </div>
-                <h4 className="text-sm font-bold text-foreground mb-1">{g.title}</h4>
+                <h4 className="text-sm font-bold text-foreground mb-1" style={{ fontFamily: "'Inter', sans-serif" }}>{g.title}</h4>
                 <p className="text-[11px] text-muted-foreground">{g.desc}</p>
               </div>
             );

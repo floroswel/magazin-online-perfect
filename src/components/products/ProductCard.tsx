@@ -72,22 +72,23 @@ function ProductCardInner({ product, eager = false }: Props) {
     <Link
       to={`/product/${product.slug}`}
       onMouseEnter={() => prefetchProduct(product.slug)}
-      className="group flex flex-col bg-card rounded-lg border border-border overflow-hidden hover:shadow-lg transition-shadow duration-200 h-full"
+      className="group flex flex-col bg-card rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 h-full"
+      style={{ border: "1px solid #F0EAE0", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
     >
       {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-secondary">
+      <div className="relative aspect-square overflow-hidden bg-muted">
         {/* Badges */}
         <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
           {discount > 0 && (
-            <span className="bg-primary text-primary-foreground text-[11px] font-bold px-2 py-0.5 rounded">
+            <span className="bg-destructive text-destructive-foreground text-[11px] font-bold px-2 py-0.5 rounded">
               -{discount}%
             </span>
           )}
           {(product as any).badge_new && (
-            <span className="bg-accent text-accent-foreground text-[11px] font-bold px-2 py-0.5 rounded">NOU</span>
+            <span className="bg-primary text-primary-foreground text-[11px] font-bold px-2 py-0.5 rounded">NOU</span>
           )}
           {(product as any).badge_bestseller && (
-            <span className="bg-foreground text-background text-[11px] font-bold px-2 py-0.5 rounded">BEST</span>
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded" style={{ background: "#111", color: "#fff" }}>BEST</span>
           )}
           {promotion && !pricingDiscount && (
             <span className="text-[11px] font-bold px-2 py-0.5 rounded text-primary-foreground"
@@ -102,7 +103,7 @@ function ProductCardInner({ product, eager = false }: Props) {
           onClick={handleWishlist}
           className="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center bg-card/80 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-all"
         >
-          <Heart className={`h-4 w-4 ${liked ? "fill-primary text-primary" : "text-muted-foreground"}`} />
+          <Heart className={`h-4 w-4 ${liked ? "fill-primary text-primary" : "text-muted-foreground hover:text-primary"}`} />
         </button>
 
         <img
@@ -119,10 +120,10 @@ function ProductCardInner({ product, eager = false }: Props) {
       {/* Info */}
       <div className="p-3 flex flex-col flex-1">
         {/* Vendor */}
-        <p className="text-[11px] text-muted-foreground mb-1 truncate">{vendorName}</p>
+        <p className="text-[11px] text-muted-foreground mb-1 truncate uppercase tracking-wide">{vendorName}</p>
 
         {/* Title */}
-        <h3 className="text-sm text-card-foreground leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+        <h3 className="text-sm text-card-foreground leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500 }}>
           {product.name}
         </h3>
 
@@ -130,7 +131,7 @@ function ProductCardInner({ product, eager = false }: Props) {
         <div className="flex items-center gap-1 mb-2">
           <div className="flex items-center">
             {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className={`w-3 h-3 ${i < Math.floor(rating) ? "fill-accent text-accent" : "text-border"}`} />
+              <Star key={i} className={`w-3 h-3 ${i < Math.floor(rating) ? "fill-primary text-primary" : "text-border"}`} />
             ))}
           </div>
           <span className="text-[11px] text-muted-foreground">({reviewCount})</span>
@@ -138,7 +139,7 @@ function ProductCardInner({ product, eager = false }: Props) {
 
         {/* Price */}
         <div className="flex items-baseline gap-2 mb-2">
-          <span className={`text-lg font-bold ${discount > 0 ? "text-primary" : "text-card-foreground"}`}>
+          <span className={`text-lg font-bold ${discount > 0 ? "text-primary" : "text-card-foreground"}`} style={{ fontFamily: "'Inter', sans-serif" }}>
             {format(effectivePrice)}
           </span>
           {showOldPrice && showOldPrice > effectivePrice && (
@@ -174,7 +175,7 @@ function ProductCardInner({ product, eager = false }: Props) {
           }
           if (product.stock !== null && product.stock !== undefined && product.stock <= threshold) {
             return (
-              <p className="text-[11px] font-semibold text-[hsl(var(--accent))] mt-2 animate-pulse">
+              <p className="text-[11px] font-semibold text-primary mt-2 animate-pulse">
                 ⚠️ Doar {product.stock} în stoc!
               </p>
             );
@@ -192,14 +193,14 @@ function ProductCardInner({ product, eager = false }: Props) {
         {product.stock !== null && product.stock !== undefined && product.stock <= 0 ? (
           <button
             disabled
-            className="w-full h-10 min-h-[48px] bg-muted text-muted-foreground text-sm font-medium rounded-md flex items-center justify-center gap-2 cursor-not-allowed"
+            className="w-full h-10 min-h-[48px] bg-muted text-muted-foreground text-sm font-medium rounded flex items-center justify-center gap-2 cursor-not-allowed"
           >
             Stoc epuizat
           </button>
         ) : (
           <button
             onClick={handleAddToCart}
-            className="w-full h-10 min-h-[48px] bg-primary text-primary-foreground text-sm font-medium rounded-md flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+            className="w-full h-10 min-h-[48px] bg-primary text-primary-foreground text-sm font-medium rounded flex items-center justify-center gap-2 hover:opacity-90 transition-all md:opacity-0 md:group-hover:opacity-100"
           >
             {addedToCart ? (
               <><Check className="h-4 w-4" /> Adăugat!</>

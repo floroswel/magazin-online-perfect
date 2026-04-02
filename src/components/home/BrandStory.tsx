@@ -32,7 +32,6 @@ export default function BrandStory() {
   const ref = useScrollReveal();
   const [content, setContent] = useState<BrandStoryData>(DEFAULTS);
 
-  // Real stats from DB
   const { data: stats } = useQuery({
     queryKey: ["brand-story-stats"],
     queryFn: async () => {
@@ -41,10 +40,7 @@ export default function BrandStory() {
         supabase.from("orders").select("user_id").not("user_id", "is", null),
       ]);
       const uniqueCustomers = new Set((customersRes.data || []).map((o: any) => o.user_id)).size;
-      return {
-        brands: brandsRes.count || 0,
-        customers: uniqueCustomers,
-      };
+      return { brands: brandsRes.count || 0, customers: uniqueCustomers };
     },
     staleTime: 60 * 60 * 1000,
     refetchOnWindowFocus: false,
@@ -63,41 +59,41 @@ export default function BrandStory() {
   const stat2Value = content.stat2_value || (stats ? `${stats.customers.toLocaleString("ro-RO")}+` : "0");
 
   return (
-    <section className="bg-card border-y border-border" ref={ref}>
-      <div className="container py-8 md:py-14 px-4">
+    <section ref={ref} style={{ background: "#111" }}>
+      <div className="container py-10 md:py-16 px-4">
         <div className="grid md:grid-cols-2 gap-8 items-center reveal stagger-1">
           <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-card-foreground mb-4">
+            <h2 className="text-2xl md:text-3xl text-white mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
               {content.title}
             </h2>
             {content.subtitle && (
               <p className="text-primary font-medium text-sm mb-2">{content.subtitle}</p>
             )}
-            <p className="text-muted-foreground text-sm md:text-base mb-6 leading-relaxed">
+            <p className="text-white/70 text-sm md:text-base mb-6 leading-relaxed">
               {content.text}
             </p>
             <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="text-center bg-muted rounded-lg p-4">
+              <div className="text-center rounded-lg p-4" style={{ background: "rgba(255,255,255,0.08)" }}>
                 <Flame className="w-6 h-6 text-primary mx-auto mb-1" />
-                <p className="text-xl font-bold text-card-foreground">{stat1Value}</p>
-                <p className="text-[11px] text-muted-foreground">{content.stat1_label}</p>
+                <p className="text-xl font-bold text-white">{stat1Value}</p>
+                <p className="text-[11px] text-white/50">{content.stat1_label}</p>
               </div>
-              <div className="text-center bg-muted rounded-lg p-4">
+              <div className="text-center rounded-lg p-4" style={{ background: "rgba(255,255,255,0.08)" }}>
                 <Users className="w-6 h-6 text-primary mx-auto mb-1" />
-                <p className="text-xl font-bold text-card-foreground">{stat2Value}</p>
-                <p className="text-[11px] text-muted-foreground">{content.stat2_label}</p>
+                <p className="text-xl font-bold text-white">{stat2Value}</p>
+                <p className="text-[11px] text-white/50">{content.stat2_label}</p>
               </div>
-              <div className="text-center bg-muted rounded-lg p-4">
+              <div className="text-center rounded-lg p-4" style={{ background: "rgba(255,255,255,0.08)" }}>
                 <ShieldCheck className="w-6 h-6 text-primary mx-auto mb-1" />
-                <p className="text-xl font-bold text-card-foreground">{content.stat3_value}</p>
-                <p className="text-[11px] text-muted-foreground">{content.stat3_label}</p>
+                <p className="text-xl font-bold text-white">{content.stat3_value}</p>
+                <p className="text-[11px] text-white/50">{content.stat3_label}</p>
               </div>
             </div>
             <div className="flex gap-3">
-              <Link to="/catalog" className="bg-primary text-primary-foreground font-semibold text-sm px-6 py-2.5 rounded-lg flex items-center gap-2 hover:opacity-90 transition-opacity">
+              <Link to="/catalog" className="bg-primary text-primary-foreground font-semibold text-sm px-6 py-2.5 rounded flex items-center gap-2 hover:opacity-90 transition-opacity">
                 Explorează Colecția <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link to="/povestea-noastra" className="border border-border text-card-foreground font-semibold text-sm px-6 py-2.5 rounded-lg hover:bg-muted transition-colors">
+              <Link to="/povestea-noastra" className="border border-white/20 text-white font-semibold text-sm px-6 py-2.5 rounded hover:bg-white/10 transition-colors">
                 Povestea Noastră
               </Link>
             </div>
