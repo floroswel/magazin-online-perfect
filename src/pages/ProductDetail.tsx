@@ -314,13 +314,13 @@ export default function ProductDetail() {
               </div>
             )}
 
-            <div className="flex items-center gap-3 pt-2">
-              <div className="flex items-center border rounded-md">
+            <div className="flex items-center gap-3 pt-3">
+              <div className="flex items-center border border-border rounded">
                 <Button variant="ghost" size="icon" onClick={() => setQty(Math.max(1, qty - 1))}><Minus className="h-4 w-4" /></Button>
-                <span className="w-12 text-center font-medium">{qty}</span>
+                <span className="w-12 text-center font-bold">{qty}</span>
                 <Button variant="ghost" size="icon" onClick={() => setQty(qty + 1)}><Plus className="h-4 w-4" /></Button>
               </div>
-              <Button onClick={handleAddToCart} size="lg" className="flex-1 font-semibold" disabled={activeStock <= 0 || (hasVariants && !selectedVariant)}>
+              <Button onClick={handleAddToCart} size="lg" className="flex-1 font-extrabold uppercase tracking-wide" disabled={activeStock <= 0 || (hasVariants && !selectedVariant)}>
                 <ShoppingCart className="h-5 w-5 mr-2" /> {hasVariants && !selectedVariant ? "Selectează varianta" : activeStock <= 0 ? "Stoc epuizat" : "Adaugă în coș"}
               </Button>
               <Button variant="outline" size="lg" onClick={toggleFav}>

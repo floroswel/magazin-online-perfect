@@ -43,29 +43,27 @@ export default function CategoryGrid() {
   if (categories.length === 0 && dynCategories.length === 0) return null;
 
   return (
-    <section className="container py-16 md:py-20">
-      <div className="text-center mb-12">
-        <p className="text-xs tracking-[0.3em] uppercase text-primary mb-3 font-medium">Colecții</p>
-        <h2 className="font-serif text-3xl md:text-4xl font-medium text-foreground">Explorează Colecțiile de Lumânări</h2>
+    <section className="container py-6 md:py-8 px-4">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg md:text-xl font-bold text-foreground">Explorează Categoriile</h2>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
         {categories.map(cat => {
           const Icon = iconMap[cat.icon || ""] || Package;
           return (
             <Link
               key={cat.id}
               to={`/catalog?category=${cat.slug}`}
-              className="group relative flex flex-col items-center gap-4 p-6 md:p-8 border border-border hover:border-primary transition-all duration-300"
+              className="group flex flex-col items-center gap-2 p-4 bg-background border border-border hover:border-primary hover:shadow-sm transition-all rounded"
             >
               {cat.image_url ? (
-                <img src={cat.image_url} alt={cat.name} className="w-16 h-16 object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
+                <img src={cat.image_url} alt={cat.name} className="w-12 h-12 object-cover rounded" />
               ) : (
-                <div className="w-16 h-16 flex items-center justify-center">
-                  <Icon className="h-8 w-8 text-primary/60 group-hover:text-primary transition-colors" />
+                <div className="w-12 h-12 flex items-center justify-center bg-muted rounded">
+                  <Icon className="h-6 w-6 text-primary" />
                 </div>
               )}
-              <span className="text-sm font-medium text-foreground text-center tracking-wide">{cat.name}</span>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-12 h-[2px] bg-primary transition-all duration-300" />
+              <span className="text-xs font-semibold text-foreground text-center leading-tight">{cat.name}</span>
             </Link>
           );
         })}
@@ -73,17 +71,16 @@ export default function CategoryGrid() {
           <Link
             key={`dyn-${dcat.id}`}
             to={`/catalog?smart=${dcat.slug}`}
-            className="group relative flex flex-col items-center gap-4 p-6 md:p-8 border border-primary/20 hover:border-primary transition-all duration-300"
+            className="group flex flex-col items-center gap-2 p-4 bg-background border border-border hover:border-primary hover:shadow-sm transition-all rounded"
           >
-            <div className="w-16 h-16 flex items-center justify-center">
+            <div className="w-12 h-12 flex items-center justify-center bg-muted rounded">
               {dcat.icon ? (
-                <span className="text-3xl">{dcat.icon}</span>
+                <span className="text-2xl">{dcat.icon}</span>
               ) : (
-                <Zap className="h-8 w-8 text-primary/60 group-hover:text-primary transition-colors" />
+                <Zap className="h-6 w-6 text-primary" />
               )}
             </div>
-            <span className="text-sm font-medium text-foreground text-center tracking-wide">{dcat.name}</span>
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 group-hover:w-12 h-[2px] bg-primary transition-all duration-300" />
+            <span className="text-xs font-semibold text-foreground text-center leading-tight">{dcat.name}</span>
           </Link>
         ))}
       </div>
