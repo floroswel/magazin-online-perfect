@@ -17,10 +17,9 @@ export default function PersonalizedRecommendations() {
 
       if (user) {
         // Logged-in user: recommend based on order history categories
-        const { data: orderItems } = await supabase
+        const { data: orderItems } = await (supabase as any)
           .from("order_items")
           .select("product_id, products(category_id)")
-          .eq("orders.user_id" as any, user.id)
           .limit(30);
 
         const categoryIds = new Set<string>();
