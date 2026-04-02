@@ -6,45 +6,45 @@
 
 @layer base {
   :root {
-    /* MAMA LUCICA — Modern eMAG / Instagram Inspired */
-    --background: 0 0% 100%;            /* #FFFFFF pure white */
-    --foreground: 0 0% 12%;              /* #1F1F1F dark text */
+    /* INDUSTRIAL LUXURY — Dark Premium */
+    --background: 0 0% 6%;               /* #0F0F0F deep black */
+    --foreground: 0 0% 100%;              /* #FFFFFF pure white */
 
-    --card: 30 50% 98%;                  /* #FAF6F0 warm cream card */
-    --card-foreground: 0 0% 12%;
+    --card: 0 0% 10%;                     /* #1A1A1A dark gray */
+    --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 12%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 24 100% 50%;              /* #FF6B00 vibrant orange */
+    --primary: 16 100% 50%;               /* #FF4D00 vibrant orange */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 348 62% 49%;            /* #C13584 Instagram pink */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 43 76% 52%;              /* #D4AF37 luxurious gold */
+    --secondary-foreground: 0 0% 6%;
 
-    --muted: 30 30% 96%;                 /* warm light cream muted */
-    --muted-foreground: 0 0% 33%;        /* #555555 body text */
+    --muted: 0 0% 14%;                    /* dark muted */
+    --muted-foreground: 0 0% 67%;         /* #AAAAAA light gray body */
 
-    --accent: 16 100% 50%;               /* #FF4D00 deep orange accent */
+    --accent: 348 62% 49%;                /* #C13584 Instagram pink */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 30 15% 90%;
-    --input: 30 15% 90%;
-    --ring: 24 100% 50%;
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 16 100% 50%;
 
     --radius: 0.625rem;
 
     /* Store tokens */
-    --ml-orange: 24 100% 50%;
-    --ml-deep-orange: 16 100% 50%;
+    --ml-orange: 16 100% 50%;
+    --ml-deep-orange: 16 100% 44%;
+    --ml-gold: 43 76% 52%;
     --ml-pink: 348 62% 49%;
-    --ml-dark: 0 0% 12%;
-    --ml-body: 0 0% 33%;
-    --ml-cream-bg: 30 50% 97%;
-    --ml-border: 30 15% 90%;
+    --ml-dark: 0 0% 6%;
+    --ml-body: 0 0% 67%;
+    --ml-section: 0 0% 10%;
 
     /* Store specific */
     --store-success: 142 71% 45%;
@@ -60,36 +60,6 @@
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 220 40% 24%;
     --sidebar-ring: 220 88% 50%;
-  }
-
-  .dark:not(.admin-panel) {
-    --background: 0 0% 7%;
-    --foreground: 0 0% 90%;
-
-    --card: 0 0% 11%;
-    --card-foreground: 0 0% 90%;
-
-    --popover: 0 0% 11%;
-    --popover-foreground: 0 0% 90%;
-
-    --primary: 24 100% 50%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 348 62% 49%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 55%;
-
-    --accent: 16 100% 50%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 72% 48%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 24 100% 50%;
   }
 
   /* ADMIN PANEL — unchanged */
@@ -172,14 +142,14 @@
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: transparent;
+    background: hsl(0 0% 8%);
   }
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--border));
+    background: hsl(0 0% 20%);
     border-radius: 10px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground));
+    background: hsl(var(--primary));
   }
 }
 
