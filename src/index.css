@@ -6,45 +6,45 @@
 
 @layer base {
   :root {
-    /* MAMA LUCICA — Premium Warm Candle Theme */
-    --background: 36 33% 93%;       /* #F5F0E8 warm cream */
-    --foreground: 0 14% 21%;         /* #3C2F2F dark walnut */
+    /* MAMA LUCICA — Modern eMAG / Instagram Inspired */
+    --background: 0 0% 100%;            /* #FFFFFF pure white */
+    --foreground: 0 0% 12%;              /* #1F1F1F dark text */
 
-    --card: 40 33% 96%;              /* slightly lighter warm white for cards */
-    --card-foreground: 0 14% 21%;
+    --card: 30 50% 98%;                  /* #FAF6F0 warm cream card */
+    --card-foreground: 0 0% 12%;
 
-    --popover: 40 33% 96%;
-    --popover-foreground: 0 14% 21%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 12%;
 
-    --primary: 22 66% 55%;           /* #D9773F deep amber/caramel */
+    --primary: 24 100% 50%;              /* #FF6B00 vibrant orange */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 45 78% 53%;         /* #E8B923 soft gold */
-    --secondary-foreground: 0 14% 21%;
+    --secondary: 348 62% 49%;            /* #C13584 Instagram pink */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 36 25% 90%;             /* warm muted cream */
-    --muted-foreground: 0 8% 45%;
+    --muted: 30 30% 96%;                 /* warm light cream muted */
+    --muted-foreground: 0 0% 33%;        /* #555555 body text */
 
-    --accent: 45 78% 53%;            /* soft gold */
-    --accent-foreground: 0 14% 21%;
+    --accent: 16 100% 50%;               /* #FF4D00 deep orange accent */
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 30 18% 85%;
-    --input: 30 18% 85%;
-    --ring: 22 66% 55%;
+    --border: 30 15% 90%;
+    --input: 30 15% 90%;
+    --ring: 24 100% 50%;
 
-    --radius: 0.5rem;
+    --radius: 0.625rem;
 
     /* Store tokens */
-    --ml-terracotta: 22 66% 55%;
-    --ml-terracotta-dark: 22 66% 42%;
-    --ml-dark: 0 14% 21%;
-    --ml-dark-surface: 0 14% 16%;
-    --ml-light-bg: 36 33% 93%;
-    --ml-warm-bg: 36 33% 95%;
-    --ml-border: 30 18% 85%;
+    --ml-orange: 24 100% 50%;
+    --ml-deep-orange: 16 100% 50%;
+    --ml-pink: 348 62% 49%;
+    --ml-dark: 0 0% 12%;
+    --ml-body: 0 0% 33%;
+    --ml-cream-bg: 30 50% 97%;
+    --ml-border: 30 15% 90%;
 
     /* Store specific */
     --store-success: 142 71% 45%;
@@ -63,33 +63,33 @@
   }
 
   .dark:not(.admin-panel) {
-    --background: 20 10% 8%;
-    --foreground: 36 20% 88%;
+    --background: 0 0% 7%;
+    --foreground: 0 0% 90%;
 
-    --card: 20 10% 12%;
-    --card-foreground: 36 20% 88%;
+    --card: 0 0% 11%;
+    --card-foreground: 0 0% 90%;
 
-    --popover: 20 10% 12%;
-    --popover-foreground: 36 20% 88%;
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 90%;
 
-    --primary: 22 66% 55%;
+    --primary: 24 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 20 10% 16%;
-    --secondary-foreground: 36 20% 88%;
+    --secondary: 348 62% 49%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 20 10% 16%;
-    --muted-foreground: 0 0% 50%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 55%;
 
-    --accent: 45 78% 53%;
+    --accent: 16 100% 50%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 20 10% 20%;
-    --input: 20 10% 20%;
-    --ring: 22 66% 55%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 24 100% 50%;
   }
 
   /* ADMIN PANEL — unchanged */
