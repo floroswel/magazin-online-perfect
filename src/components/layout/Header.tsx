@@ -203,7 +203,7 @@ export default function Header() {
         <nav className="flex-1 overflow-y-auto">
           <div className="px-4 py-2">
             <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1 mt-3">Categorii</p>
-            {categories.map((cat) => (
+            {mobile_categories.map((cat) => (
               <Link
                 key={cat.slug}
                 to={`/catalog?category=${cat.slug}`}
