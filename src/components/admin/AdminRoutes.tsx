@@ -405,7 +405,9 @@ export default function AdminRoutes() {
         <Route path="reports/traffic" element={<AdminTrafficAnalytics />} />
 
         {/* ═══════════ SETĂRI ═══════════ */}
+        <Route path="setari" element={<AdminSettingsHub />} />
         <Route path="settings/general" element={<AdminGeneralSettings />} />
+        <Route path="shipping/gomag" element={<AdminShippingGomag />} />
         <Route path="settings/theme" element={<AdminThemeEditor />} />
         {/* footer-badges removed — use settings/footer */}
         <Route path="settings/footer" element={<AdminFooterSettings />} />
