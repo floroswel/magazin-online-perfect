@@ -229,28 +229,29 @@ export default function ProductDetail() {
             alt={imageAlts[activeImage] || product.name}
           />
 
-          <div className="space-y-5">
+          <div className="space-y-4">
             {product.status === "draft" && <Badge variant="secondary">Ciornă</Badge>}
-            <h1 className="font-serif text-3xl md:text-4xl font-medium text-foreground leading-tight">{product.name}</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-foreground leading-snug">{product.name}</h1>
             <div className="flex items-center gap-2">
               <div className="flex">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className={`h-4 w-4 ${i < Math.round(product.rating || 0) ? "fill-primary text-primary" : "text-border"}`} />
+                  <Star key={i} className={`h-4 w-4 ${i < Math.round(product.rating || 0) ? "fill-[hsl(var(--store-warning))] text-[hsl(var(--store-warning))]" : "text-border"}`} />
                 ))}
               </div>
               <span className="text-sm text-muted-foreground">({product.review_count} recenzii)</span>
               {product.brands?.name && <span className="text-sm text-muted-foreground">• {product.brands.name}</span>}
             </div>
 
-            <div className="flex items-baseline gap-3">
-              <span className={`font-serif text-3xl font-medium ${promoDiscount ? "text-destructive" : "text-foreground"}`}>{format(finalPrice)}</span>
-              {showOriginal && showOriginal > finalPrice && (
-                <>
-                  <span className="text-lg text-muted-foreground line-through">{format(showOriginal)}</span>
-                  {discount > 0 && <span className="bg-primary text-primary-foreground text-sm font-bold px-2 py-1 rounded">-{discount}%</span>}
-                </>
-              )}
-            </div>
+            <div className="bg-muted p-4 rounded">
+              <div className="flex items-baseline gap-3">
+                <span className="text-3xl font-extrabold text-primary">{format(finalPrice)}</span>
+                {showOriginal && showOriginal > finalPrice && (
+                  <>
+                    <span className="text-base text-muted-foreground line-through">{format(showOriginal)}</span>
+                    {discount > 0 && <span className="bg-primary text-primary-foreground text-sm font-bold px-2 py-0.5 rounded">-{discount}%</span>}
+                  </>
+                )}
+              </div>
             {taxSettings.show_tax_included_message && (
               <p className="text-xs text-muted-foreground">{taxSettings.tax_included_message}</p>
             )}
