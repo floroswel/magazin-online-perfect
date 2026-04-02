@@ -132,6 +132,7 @@ export function EditableContentProvider({ children }: { children: React.ReactNod
 
     const updated = { ...DEFAULTS };
     const keyMap: Record<string, keyof EditableContent> = {
+      editable_store_general: "store_general",
       editable_announcement: "announcement",
       editable_header_topbar: "header_topbar",
       editable_header_nav: "header_nav",

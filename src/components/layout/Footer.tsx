@@ -101,7 +101,7 @@ export default function Footer() {
               {/* Brand column */}
               <div>
                 <h4 className="text-lg font-black mb-4 text-white">
-                  Mama<span className="text-primary">Lucica</span>
+                  {storeName.includes("Lucica") ? <>Mama<span className="text-primary">Lucica</span></> : storeName}
                 </h4>
                 {texts.col1_description && (
                   <p className="text-[13px] text-white/40 leading-relaxed">{texts.col1_description}</p>

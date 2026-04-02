@@ -159,7 +159,7 @@ export default function SeoHead() {
   const orgSchema = safeJsonLd({
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "MamaLucica SRL",
+    name: storeName + " SRL",
     url: base,
     logo: base + "/og-homepage.jpg",
     sameAs: [
