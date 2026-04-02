@@ -1,99 +1,39 @@
 
 
-# Plan: Sincronizare Completă Admin ↔ Storefront
+# VERSION 7.0 — Add Missing Custom Fields to Admin Panel
 
-## Rezumat
+## Current State
 
-Proiectul are 3 surse de setări tematice care nu sunt complet conectate la storefront:
-1. **`site_theme_settings`** (HSL) — citit de `useTheme.tsx` ✅ funcționează
-2. **`app_settings.theme_settings`** (hex, custom CSS) — parțial conectat (doar customCss)
-3. **`AdminThemeEditorExtended`** (butoane, CTA, heading_size, bg_color, trust_icons) — **complet deconectat** de storefront
+**Already implemented (VERSION 5.0/6.0):** All 9 content sections (Announcement, Header Topbar, Header Nav, Mobile Categories, Why Section, Process Section, Scent Promos, Trust Strip, Social Proof) are fully editable in Admin via `AdminEditableContent.tsx` and synced to storefront via `useEditableContent` + Supabase Realtime.
 
-De asemenea, `button_shape` și `button_style` din `site_theme_settings` sunt stocate dar nu aplicate vizual în CSS-ul generat.
+## What's Actually Missing
 
----
+1. **General Settings fields** (`store_name`, `store_slogan`) — not in `useEditableContent`; currently only in `AdminHomepageSettings` branding but not connected to storefront components (SeoHead, Footer hardcode "MamaLucica")
+2. **Add/Remove buttons** missing on Why items, Process steps, Trust badges, and Social Proof items (only Nav links, Categories, and Promos have add/remove)
+3. **Textarea** should be used for longer text fields (announcement text, descriptions) instead of single-line Input
+4. **Hardcoded "MamaLucica"** in SeoHead.tsx, Footer.tsx, ControlTheme.tsx preview — should read from editable content
 
-## Schimbări planificate
+## Changes
 
-### 1. Extinderea `useTheme.tsx` — Citirea setărilor Extended
+### 1. Extend `useEditableContent.tsx`
+- Add `store_general` field: `{ store_name: string; store_slogan: string; store_email: string }`
+- Add corresponding `editable_store_general` key to CONTENT_KEYS
+- Default: `{ store_name: "MamaLucica", store_slogan: "Lumânări artizanale", store_email: "contact@mamalucica.ro" }`
 
-**Fișier**: `src/hooks/useTheme.tsx`
+### 2. Update `AdminEditableContent.tsx`
+- Add 5th tab **"General"** with store_name, store_slogan, store_email fields
+- Add **Plus/Trash buttons** on Why items, Process steps, Trust badges, Social Proof items
+- Replace `Input` with `Textarea` for announcement text_desktop, text_mobile, and all `desc` fields
 
-- În funcția `fetchTheme`, după ce citim `site_theme_settings` și `app_settings.theme_settings`, adăugăm un al treilea fetch din `app_settings` pentru cheile Extended: `btn_bg_color`, `btn_text_color`, `btn_text_style`, `cta_bg_color`, `cta_text_color`, `cta_text_style`, `heading_size`, `bg_color`, `trust_icons`.
-- Aplicăm aceste valori ca CSS custom properties pe `:root`:
-  - `--btn-bg`, `--btn-text`, `--cta-bg`, `--cta-text`
-  - `--heading-scale` (bazat pe `heading_size`: small=0.85, standard=1, medium=1.15, large=1.3)
-- Adăugăm CSS dinamic pentru `button_shape` (square/rounded/pill) și `button_style` (filled/outline/ghost) pe butoanele storefront.
-- Adăugăm CSS pentru `btn_text_style` și `cta_text_style` (bold/italic/underline/uppercase).
+### 3. Connect `store_general` to storefront
+- **SeoHead.tsx**: Read `store_general.store_name` from `useEditableContent()` instead of hardcoded "MamaLucica"
+- **Footer.tsx**: Use `store_general.store_name` for copyright fallback
 
-### 2. Sincronizarea culorilor Extended la publicare
-
-**Fișier**: `src/components/admin/settings/AdminThemeEditorExtended.tsx`
-
-- La `save()`, pe lângă scrierea în `app_settings`, sincronizăm și la `site_theme_settings` cheile relevante (ex: `bg_color` → convertit HSL → `background_color`) pentru consistență.
-- Adăugăm Supabase Realtime listener pe `app_settings` changes cu cheile extended, ca storefront-ul să se actualizeze instant (<10s).
-
-### 3. Sincronizarea completă la Publish din Theme Editor principal
-
-**Fișier**: `src/components/admin/settings/AdminThemeEditor.tsx`
-
-- Completăm sync-ul existent: adăugăm `button_style`, `button_shape`, `spacing_density` la lista `syncRows`.
-- Sincronizăm și culorile `muted`, `border`, `card` la `site_theme_settings`.
-
-### 4. Pagina "Despre Noi" — Eliminare conținut hardcodat vechi
-
-**Fișier**: `src/pages/PovesteaNoastra.tsx`
-
-- Eliminăm blocul fallback hardcodat (afișat când `sections.length === 0`).
-- Înlocuim cu un fallback care folosește `defaultSections` (deja definit dar neutilizat ca state inițial).
-- Astfel, dacă admin-ul are secțiuni salvate, apar cele din DB; altfel se afișează `defaultSections` — fără suprapuneri.
-
-### 5. Adăugarea realtime pe `app_settings` pentru conținut dinamic
-
-**Fișier**: `src/hooks/useTheme.tsx`
-
-- Extindem canalul Realtime existent pentru a asculta și `app_settings` (filtrând pe cheile de temă), re-fetchând automat la orice schimbare.
-
-### 6. Aplicarea trust_icons pe storefront
-
-**Fișier**: `src/hooks/useTheme.tsx` sau o nouă componentă `TrustIcons.tsx`
-
-- Creăm un hook `useExtendedTheme()` care expune `trust_icons` din `app_settings`.
-- Adăugăm o componentă `TrustIcons` afișată în Footer (sau sub butonul "Adaugă în coș" pe pagina de produs) care citește iconurile din context.
-
----
-
-## Ce rămâne conectat / deconectat după implementare
-
-**Complet conectat:**
-- ✅ Culori (primary, secondary, accent, background, foreground, muted, border, card)
-- ✅ Tipografie (font body, heading, weights, sizes, line-height)
-- ✅ Butoane (border-radius, hover, shape, style, text-transform, colors CTA)
-- ✅ Layout (spacing density, container width, card border radius)
-- ✅ Custom CSS
-- ✅ Pagini statice (Povestea/FAQ/Îngrijire via app_settings)
-- ✅ Trust Icons
-- ✅ Heading size scale
-- ✅ Vizibilitate elemente (useVisibility)
-- ✅ Layout settings (useLayoutSettings)
-- ✅ Store Branding (useStoreBranding)
-- ✅ Navigation & Footer links (via CMS pages + footer settings)
-
-**Necesită configurare externă (nu cod):**
-- ⚠️ Integrări plată (Netopia, Mokka) — necesită chei API reale
-- ⚠️ Email (Resend) — necesită configurare SPF/DKIM
-- ⚠️ AWB/Facturi — necesită chei SmartBill/Sameday
-
----
-
-## Fișiere modificate
-
-| Fișier | Acțiune |
-|--------|---------|
-| `src/hooks/useTheme.tsx` | Extindere: citire extended theme, realtime pe app_settings, aplicare CSS butoane/heading |
-| `src/components/admin/settings/AdminThemeEditor.tsx` | Completare sync rows la publish |
-| `src/components/admin/settings/AdminThemeEditorExtended.tsx` | Adăugare sync la site_theme_settings + realtime |
-| `src/pages/PovesteaNoastra.tsx` | Fix fallback: folosirea defaultSections, eliminare duplicare |
-| `src/components/layout/Footer.tsx` | Adăugare TrustIcons component |
-| `src/components/TrustIcons.tsx` | NOU — componentă care citește și afișează trust icons |
+### Files Modified
+| File | Change |
+|------|--------|
+| `src/hooks/useEditableContent.tsx` | Add `store_general` to interface, defaults, and key map |
+| `src/components/admin/settings/AdminEditableContent.tsx` | Add General tab, add/remove on all lists, Textarea for long fields |
+| `src/components/SeoHead.tsx` | Read store name from editable content |
+| `src/components/layout/Footer.tsx` | Read store name from editable content |
 
