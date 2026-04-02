@@ -268,7 +268,7 @@ export default function Catalog() {
 
   return (
     <Layout>
-       <div className="container py-10">
+       <div className="container py-6">
         {/* Breadcrumbs */}
         {breadcrumbs.length > 0 && (
           <nav className="flex items-center gap-1 text-xs tracking-wide uppercase text-muted-foreground mb-8 flex-wrap" aria-label="Breadcrumb">
