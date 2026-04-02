@@ -64,10 +64,11 @@ export default {
         ml: {
           orange: "hsl(var(--ml-orange))",
           "deep-orange": "hsl(var(--ml-deep-orange))",
+          gold: "hsl(var(--ml-gold))",
           pink: "hsl(var(--ml-pink))",
           dark: "hsl(var(--ml-dark))",
           body: "hsl(var(--ml-body))",
-          "cream-bg": "hsl(var(--ml-cream-bg))",
+          section: "hsl(var(--ml-section))",
         },
       },
       borderRadius: {
@@ -117,6 +118,10 @@ export default {
           "0%, 100%": { opacity: "1", transform: "translateY(0)" },
           "50%": { opacity: "0.4", transform: "translateY(8px)" },
         },
+        glow: {
+          "0%, 100%": { boxShadow: "0 0 20px hsl(16 100% 50% / 0.3)" },
+          "50%": { boxShadow: "0 0 40px hsl(16 100% 50% / 0.6)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -129,6 +134,7 @@ export default {
         "heart-pop": "heart-pop 0.4s ease-out",
         "bounce-count": "bounce-count 0.3s ease-out",
         "scroll-arrow": "scroll-arrow 2s ease-in-out infinite",
+        glow: "glow 2s ease-in-out infinite",
       },
     },
   },
