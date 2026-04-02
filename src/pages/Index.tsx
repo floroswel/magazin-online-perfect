@@ -135,17 +135,17 @@ export default function Index() {
     collections_grid: <EB key="collections_grid" fallback={null}><CollectionsGrid /></EB>,
     featured_products: (
       <EB key="featured_products" fallback={null}>
-        <section className="container py-8 md:py-12 px-4" ref={featuredRef}>
-          <div className="flex items-center justify-between mb-5 reveal stagger-1">
-            <h2 className="text-xl md:text-2xl font-bold text-foreground">Produse Recomandate</h2>
-            <Link to="/catalog" className="text-primary text-sm font-medium hover:underline">Vezi toate →</Link>
+        <section className="container py-6 md:py-8 px-4" ref={featuredRef}>
+          <div className="flex items-center justify-between mb-4 reveal stagger-1">
+            <h2 className="text-lg md:text-xl font-bold text-foreground">Produse Recomandate</h2>
+            <Link to="/catalog" className="text-primary text-sm font-semibold hover:underline">Vezi toate →</Link>
           </div>
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 reveal stagger-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 reveal stagger-2">
               {featured.map((p, i) => <ProductCard key={p.id} product={p} eager={i < 4} />)}
             </div>
           )}

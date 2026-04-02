@@ -268,7 +268,7 @@ export default function Catalog() {
 
   return (
     <Layout>
-       <div className="container py-10">
+       <div className="container py-6">
         {/* Breadcrumbs */}
         {breadcrumbs.length > 0 && (
           <nav className="flex items-center gap-1 text-xs tracking-wide uppercase text-muted-foreground mb-8 flex-wrap" aria-label="Breadcrumb">
@@ -296,7 +296,7 @@ export default function Catalog() {
                 <img src={currentCategory.image_url} alt={currentCategory.name} className="w-16 h-16 rounded-lg object-cover border" />
               )}
               <div>
-                <h1 className="font-serif text-3xl font-medium text-foreground">{currentCategory.name}</h1>
+                <h1 className="text-xl md:text-2xl font-bold text-foreground">{currentCategory.name}</h1>
                 {currentCategory.description && (
                   <div className="text-sm text-muted-foreground mt-1 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(currentCategory.description) }} />
                 )}
@@ -337,7 +337,7 @@ export default function Catalog() {
         {!currentCategory && (
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="font-serif text-3xl font-medium text-foreground">
+              <h1 className="text-xl md:text-2xl font-bold text-foreground">
                 {searchQuery ? `Rezultate pentru "${searchQuery}"` : smartCategory?.name || "Toate Lumânările"}
               </h1>
               <p className="text-sm text-muted-foreground mt-1">{totalCount} produse găsite</p>
@@ -460,8 +460,8 @@ export default function Catalog() {
 
           <div className="flex-1">
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Array.from({ length: 6 }).map((_, i) => (<div key={i} className="h-80 bg-muted rounded-lg animate-pulse" />))}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                {Array.from({ length: 8 }).map((_, i) => (<div key={i} className="h-80 bg-muted animate-pulse" />))}
               </div>
             ) : filteredBySpecs.length === 0 ? (
               <div className="text-center py-16 text-muted-foreground">
@@ -470,7 +470,7 @@ export default function Catalog() {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                   {filteredBySpecs.map(p => <ProductCard key={p.id} product={p} />)}
                 </div>
                 {totalPages > 1 && (
