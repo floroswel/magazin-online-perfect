@@ -187,6 +187,25 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       });
       setTheme(merged);
     }
+
+    // Also load custom CSS from app_settings theme_settings
+    const { data: appData } = await supabase
+      .from("app_settings")
+      .select("value_json")
+      .eq("key", "theme_settings")
+      .maybeSingle();
+    if (appData?.value_json && typeof appData.value_json === "object") {
+      const ts = appData.value_json as any;
+      if (ts.customCss && ts.isPublished) {
+        let customStyleEl = document.getElementById("theme-custom-css") as HTMLStyleElement;
+        if (!customStyleEl) {
+          customStyleEl = document.createElement("style");
+          customStyleEl.id = "theme-custom-css";
+          document.head.appendChild(customStyleEl);
+        }
+        customStyleEl.textContent = ts.customCss;
+      }
+    }
   }, []);
 
   useEffect(() => {
