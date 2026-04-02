@@ -11,17 +11,7 @@ import { useLayoutSettings } from "@/hooks/useLayoutSettings";
 import SearchAutocomplete from "@/components/SearchAutocomplete";
 import MegaMenu from "@/components/layout/MegaMenu";
 import { useStoreBranding } from "@/hooks/useStoreBranding";
-
-const categories = [
-  { name: "Lumânări Parfumate", slug: "lumanari-parfumate", icon: "🕯️" },
-  { name: "Decorative", slug: "lumanari-decorative", icon: "✨" },
-  { name: "Cadouri & Seturi", slug: "cadouri-seturi", icon: "🎁" },
-  { name: "Aromaterapie", slug: "aromaterapie", icon: "🌿" },
-  { name: "Eveniment", slug: "lumanari-eveniment", icon: "🎉" },
-  { name: "Personalizare", slug: "personalizare", icon: "🎨" },
-  { name: "Accesorii", slug: "accesorii", icon: "🔧" },
-  { name: "Sezoniere", slug: "colectii-sezoniere", icon: "🍂" },
-];
+import { useEditableContent } from "@/hooks/useEditableContent";
 
 export default function Header() {
   const { user, signOut } = useAuth();
