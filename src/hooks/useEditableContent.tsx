@@ -3,6 +3,11 @@ import { supabase } from "@/integrations/supabase/client";
 
 // All editable content keys and their defaults
 export interface EditableContent {
+  store_general: {
+    store_name: string;
+    store_slogan: string;
+    store_email: string;
+  };
   announcement: {
     text_desktop: string;
     text_mobile: string;
