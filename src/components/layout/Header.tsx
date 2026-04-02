@@ -149,18 +149,12 @@ export default function Header() {
               )}
 
               <nav className="flex items-center gap-0 ml-1">
-                {[
-                  { to: "/catalog?badge=deals", label: "Oferte MamaLucica", highlight: true },
-                  { to: "/catalog", label: "Catalog" },
-                  { to: "/povestea-noastra", label: "Despre Noi" },
-                  { to: "/blog", label: "Blog" },
-                  { to: "/faq", label: "Contact" },
-                ].map((link) => (
+                {header_nav.map((link) => (
                   <Link
                     key={link.to}
                     to={link.to}
                     className={`text-sm font-semibold px-4 h-11 flex items-center transition-colors border-b-2 border-transparent hover:border-primary ${
-                      (link as any).highlight ? "text-primary font-bold" : "text-foreground/80 hover:text-primary"
+                      link.highlight ? "text-primary font-bold" : "text-foreground/80 hover:text-primary"
                     }`}
                   >
                     {link.label}
