@@ -13,7 +13,7 @@ const defaultSections: PovesteaSection[] = [
 ];
 
 export default function PovesteaNoastra() {
-  const [sections, setSections] = useState<PovesteaSection[]>([]);
+  const [sections, setSections] = useState<PovesteaSection[]>(defaultSections);
 
   useEffect(() => {
     supabase.from("app_settings").select("value_json").eq("key", "static_page_povestea").maybeSingle()
