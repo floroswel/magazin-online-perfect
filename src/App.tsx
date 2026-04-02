@@ -149,7 +149,7 @@ const App = () => (
           </CurrencyProvider>
           </I18nProvider>
           </EditableContentProvider>
-          </StoreBrandingProvider>
+
           </ThemeProvider>
         </AuthProvider>
       </BrowserRouter>
