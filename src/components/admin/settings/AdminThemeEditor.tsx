@@ -428,6 +428,11 @@ ${theme.customCss || ""}`;
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Gomag Extended Design Sections */}
+      <Suspense fallback={<div className="py-8 text-center text-muted-foreground">Se încarcă secțiuni suplimentare...</div>}>
+        <AdminThemeEditorExtended />
+      </Suspense>
     </div>
   );
 }
