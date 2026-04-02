@@ -95,11 +95,13 @@ export function applyThemeToDOM(theme: ThemeSettings) {
     root.style.setProperty("--accent-foreground", contrastForeground(theme.accent_color));
   }
   if (theme.background_color) {
-    // foreground on background: opposite of background
-    root.style.setProperty("--card", theme.background_color);
-    root.style.setProperty("--card-foreground", contrastForeground(theme.background_color));
-    root.style.setProperty("--popover", theme.background_color);
-    root.style.setProperty("--popover-foreground", contrastForeground(theme.background_color));
+    // Card is slightly lighter/warmer than background for elevation
+    const bgParsed = parseHSL(theme.background_color);
+    const cardHSL = bgParsed ? `${bgParsed[0]} ${Math.max(bgParsed[1], 20)}% ${Math.min(bgParsed[2] + 3, 98)}%` : theme.background_color;
+    root.style.setProperty("--card", cardHSL);
+    root.style.setProperty("--card-foreground", contrastForeground(cardHSL));
+    root.style.setProperty("--popover", cardHSL);
+    root.style.setProperty("--popover-foreground", contrastForeground(cardHSL));
   }
 
   if (theme.border_radius != null) {
