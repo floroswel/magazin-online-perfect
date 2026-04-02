@@ -2,49 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @layer base {
   :root {
-    /* INDUSTRIAL LUXURY — Dark Premium */
-    --background: 0 0% 6%;               /* #0F0F0F deep black */
-    --foreground: 0 0% 100%;              /* #FFFFFF pure white */
+    /* eMAG-STYLE — Clean White Commercial */
+    --background: 0 0% 100%;              /* #FFFFFF white */
+    --foreground: 0 0% 13%;               /* #222222 dark text */
 
-    --card: 0 0% 10%;                     /* #1A1A1A dark gray */
-    --card-foreground: 0 0% 100%;
+    --card: 0 0% 100%;                    /* #FFFFFF */
+    --card-foreground: 0 0% 13%;
 
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 13%;
 
-    --primary: 16 100% 50%;               /* #FF4D00 vibrant orange */
+    --primary: 16 100% 50%;               /* #FF4D00 eMAG orange */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 43 76% 52%;              /* #D4AF37 luxurious gold */
-    --secondary-foreground: 0 0% 6%;
+    --secondary: 24 100% 50%;             /* #FF6B00 hover orange */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 14%;                    /* dark muted */
-    --muted-foreground: 0 0% 67%;         /* #AAAAAA light gray body */
+    --muted: 0 0% 96%;                    /* #F5F5F5 light gray */
+    --muted-foreground: 0 0% 33%;         /* #555555 body text */
 
-    --accent: 348 62% 49%;                /* #C13584 Instagram pink */
+    --accent: 348 62% 49%;                /* #C13584 pink */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 16%;
-    --input: 0 0% 16%;
+    --border: 0 0% 90%;                   /* #E5E5E5 */
+    --input: 0 0% 90%;
     --ring: 16 100% 50%;
 
-    --radius: 0.625rem;
+    --radius: 0.5rem;
 
     /* Store tokens */
     --ml-orange: 16 100% 50%;
-    --ml-deep-orange: 16 100% 44%;
+    --ml-deep-orange: 24 100% 50%;
     --ml-gold: 43 76% 52%;
     --ml-pink: 348 62% 49%;
-    --ml-dark: 0 0% 6%;
-    --ml-body: 0 0% 67%;
-    --ml-section: 0 0% 10%;
+    --ml-dark: 0 0% 13%;
+    --ml-body: 0 0% 33%;
+    --ml-section: 0 0% 96%;
 
     /* Store specific */
     --store-success: 142 71% 45%;
@@ -126,15 +126,10 @@
     height: auto;
   }
 
-  h1, h2, h3, h4 {
-    font-family: 'Playfair Display', 'Georgia', serif;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', system-ui, sans-serif;
     font-weight: 700;
     color: hsl(var(--foreground));
-  }
-
-  h5, h6 {
-    font-family: 'Inter', system-ui, sans-serif;
-    font-weight: 600;
   }
 
   ::-webkit-scrollbar {
@@ -142,10 +137,10 @@
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: hsl(0 0% 8%);
+    background: hsl(0 0% 96%);
   }
   ::-webkit-scrollbar-thumb {
-    background: hsl(0 0% 20%);
+    background: hsl(0 0% 80%);
     border-radius: 10px;
   }
   ::-webkit-scrollbar-thumb:hover {

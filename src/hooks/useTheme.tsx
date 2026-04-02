@@ -22,20 +22,20 @@ export interface ThemeSettings {
 
 export const DEFAULTS: ThemeSettings = {
   color_mode: "light",
-  primary_color: "24 100% 50%",
-  secondary_color: "348 62% 49%",
-  accent_color: "16 100% 50%",
+  primary_color: "16 100% 50%",
+  secondary_color: "24 100% 50%",
+  accent_color: "348 62% 49%",
   background_color: "0 0% 100%",
-  text_color: "0 0% 12%",
+  text_color: "0 0% 13%",
   font_family: "Inter",
-  heading_font: "Playfair Display",
+  heading_font: "Inter",
   font_size_scale: "medium",
   heading_weight: "bold",
   line_height: "normal",
   button_shape: "rounded",
   button_style: "filled",
   button_hover: "shadow",
-  border_radius: 10,
+  border_radius: 8,
   spacing_density: "spacious",
 };
 

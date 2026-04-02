@@ -78,7 +78,7 @@ export default function Footer() {
   const copyrightText = texts.copyright.replace("{year}", String(new Date().getFullYear()));
 
   const renderLink = (l: FooterLink, i: number) => {
-    const cls = "text-[13px] transition-colors text-foreground/50 hover:text-primary";
+    const cls = "text-[13px] transition-colors text-white/60 hover:text-primary hover:underline";
     if (l.url.startsWith("http")) {
       return <a key={i} href={l.url} target="_blank" rel="noopener noreferrer" className={cls}>{l.label}</a>;
     }
@@ -87,30 +87,30 @@ export default function Footer() {
 
   return (
     <footer className="mt-auto overflow-hidden">
-      {/* Upper Footer — dark charcoal */}
-      <div className="bg-foreground">
-        <div className="container py-14 px-4 max-w-[1200px] mx-auto">
+      {/* Upper Footer — eMAG dark style */}
+      <div className="bg-[hsl(0_0%_13%)]">
+        <div className="container py-12 px-4 max-w-[1200px] mx-auto">
           {showColumns !== false && (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
               {/* Brand column */}
               <div>
-                <h4 className="text-lg font-bold mb-4 text-primary" style={{ fontFamily: "'Playfair Display', serif" }}>
-                  Mama Lucica
+                <h4 className="text-lg font-black mb-4 text-white">
+                  Mama<span className="text-primary">Lucica</span>
                 </h4>
                 {texts.col1_description && (
-                  <p className="text-[13px] text-background/40 leading-relaxed">{texts.col1_description}</p>
+                  <p className="text-[13px] text-white/40 leading-relaxed">{texts.col1_description}</p>
                 )}
                 {companyInfo.cui && (
-                  <p className="text-[12px] mt-3 text-background/30">CUI: {companyInfo.cui}</p>
+                  <p className="text-[12px] mt-3 text-white/30">CUI: {companyInfo.cui}</p>
                 )}
                 {companyInfo.reg_com && (
-                  <p className="text-[12px] text-background/30">Reg. Com.: {companyInfo.reg_com}</p>
+                  <p className="text-[12px] text-white/30">Reg. Com.: {companyInfo.reg_com}</p>
                 )}
               </div>
 
               {/* Column 2 — Links */}
               <div>
-                <h5 className="text-sm font-semibold mb-4 uppercase tracking-wider text-background/70" style={{ fontFamily: "'Inter', sans-serif" }}>
+                <h5 className="text-sm font-bold mb-4 uppercase tracking-wider text-white/80">
                   {texts.col1_title || "Informații"}
                 </h5>
                 <ul className="space-y-2.5">
@@ -120,7 +120,7 @@ export default function Footer() {
 
               {/* Column 3 — Legal */}
               <div>
-                <h5 className="text-sm font-semibold mb-4 uppercase tracking-wider text-background/70" style={{ fontFamily: "'Inter', sans-serif" }}>
+                <h5 className="text-sm font-bold mb-4 uppercase tracking-wider text-white/80">
                   {texts.col3_title || "Legal"}
                 </h5>
                 <ul className="space-y-2.5">
@@ -130,30 +130,30 @@ export default function Footer() {
 
               {/* Column 4 — Contact */}
               <div>
-                <h5 className="text-sm font-semibold mb-4 uppercase tracking-wider text-background/70" style={{ fontFamily: "'Inter', sans-serif" }}>
+                <h5 className="text-sm font-bold mb-4 uppercase tracking-wider text-white/80">
                   Contact
                 </h5>
                 <div className="space-y-3">
                   {texts.col4_show_phone && texts.col4_phone && (
-                    <div className="flex items-center gap-2.5 text-[13px] text-background/50">
+                    <div className="flex items-center gap-2.5 text-[13px] text-white/60">
                       <Phone className="w-4 h-4 text-primary shrink-0" />
                       <span>{texts.col4_phone}</span>
                     </div>
                   )}
                   {texts.col4_show_email && texts.col4_email && (
-                    <div className="flex items-center gap-2.5 text-[13px] text-background/50">
+                    <div className="flex items-center gap-2.5 text-[13px] text-white/60">
                       <Mail className="w-4 h-4 text-primary shrink-0" />
                       <span>{texts.col4_email}</span>
                     </div>
                   )}
                   {texts.col4_show_hours && texts.col4_hours && (
-                    <div className="flex items-center gap-2.5 text-[13px] text-background/50">
+                    <div className="flex items-center gap-2.5 text-[13px] text-white/60">
                       <Clock className="w-4 h-4 text-primary shrink-0" />
                       <span>{texts.col4_hours}</span>
                     </div>
                   )}
                   {texts.col4_show_address && texts.col4_address && (
-                    <p className="text-[13px] text-background/40 mt-2">{texts.col4_address}</p>
+                    <p className="text-[13px] text-white/40 mt-2">{texts.col4_address}</p>
                   )}
                 </div>
               </div>
@@ -163,10 +163,10 @@ export default function Footer() {
       </div>
 
       {/* Lower Footer */}
-      <div className="bg-foreground border-t border-background/10">
+      <div className="bg-[hsl(0_0%_10%)] border-t border-white/10">
         <div className="container py-4 px-4 max-w-[1200px] mx-auto">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <p className="text-xs text-background/30">{copyrightText}</p>
+            <p className="text-xs text-white/30">{copyrightText}</p>
             <div ref={footerScriptsRef} className="inline-flex flex-row flex-wrap items-center gap-4 [&_a]:inline-flex [&_a]:items-center [&_a]:gap-1.5 [&_img]:h-7 [&_img]:!w-auto [&_img]:object-contain [&_img]:opacity-70 [&_img]:hover:opacity-100 [&_span]:text-sm [&_p]:text-sm [&_div]:contents" />
           </div>
         </div>
