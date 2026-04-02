@@ -252,6 +252,7 @@ export default function ProductDetail() {
                   </>
                 )}
               </div>
+            </div>
             {taxSettings.show_tax_included_message && (
               <p className="text-xs text-muted-foreground">{taxSettings.tax_included_message}</p>
             )}
