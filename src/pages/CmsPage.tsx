@@ -8,7 +8,8 @@ import { Loader2 } from "lucide-react";
 import DOMPurify from "dompurify";
 
 export default function CmsPage() {
-  usePageSeo({ title: "MamaLucica", description: "Magazin de lumânări artizanale handmade." });
+  const { store_general } = useEditableContent();
+  usePageSeo({ title: store_general.store_name, description: `${store_general.store_slogan} — magazin online.` });
   const { slug } = useParams<{ slug: string }>();
   const branding = useStoreBranding();
   const [page, setPage] = useState<{ title: string; body_html: string | null; meta_title: string | null; meta_description: string | null } | null>(null);
