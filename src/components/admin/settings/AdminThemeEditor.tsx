@@ -154,6 +154,33 @@ export default function AdminThemeEditor() {
       toast.success(publish ? "Tema publicată!" : "Draft salvat (nepublicat)");
       setSavedTheme(payload);
       setTheme(payload);
+
+      // Sync to site_theme_settings so storefront picks up changes in real-time
+      if (publish) {
+        const c = payload.colors;
+        const t = payload.typography;
+        const b = payload.buttons;
+        const syncRows = [
+          { setting_key: "primary_color", value_json: hexToHsl(c.primary) },
+          { setting_key: "secondary_color", value_json: hexToHsl(c.secondary) },
+          { setting_key: "accent_color", value_json: hexToHsl(c.accent) },
+          { setting_key: "background_color", value_json: hexToHsl(c.background) },
+          { setting_key: "text_color", value_json: hexToHsl(c.foreground) },
+          { setting_key: "font_family", value_json: t.fontFamily },
+          { setting_key: "heading_font", value_json: t.fontFamilyHeadings },
+          { setting_key: "heading_weight", value_json: Number(t.h1Weight) >= 800 ? "extrabold" : Number(t.h1Weight) >= 700 ? "bold" : "semibold" },
+          { setting_key: "border_radius", value_json: b.borderRadius },
+          { setting_key: "button_hover", value_json: b.hoverEffect },
+          { setting_key: "font_size_scale", value_json: t.baseFontSize <= 14 ? "small" : t.baseFontSize <= 16 ? "medium" : t.baseFontSize <= 18 ? "large" : "xl" },
+          { setting_key: "line_height", value_json: t.lineHeight <= 1.4 ? "compact" : t.lineHeight <= 1.6 ? "normal" : "relaxed" },
+        ];
+        for (const row of syncRows) {
+          await (supabase as any).from("site_theme_settings").upsert(
+            { ...row, updated_at: new Date().toISOString() },
+            { onConflict: "setting_key" }
+          );
+        }
+      }
     }
     setSaving(false);
   };
