@@ -45,9 +45,33 @@ export function useThemeSettings() {
   return useContext(ThemeContext);
 }
 
+/**
+ * Parse an HSL string like "210 40% 50%" into [h, s, l] numbers.
+ * Returns null when the string is not parseable.
+ */
+function parseHSL(hsl: string): [number, number, number] | null {
+  if (!hsl) return null;
+  const parts = hsl.replace(/%/g, "").trim().split(/\s+/);
+  if (parts.length < 3) return null;
+  return [parseFloat(parts[0]), parseFloat(parts[1]), parseFloat(parts[2])];
+}
+
+/** Approximate relative luminance from HSL lightness — light ≥ 60 */
+function isLightColor(hsl: string): boolean {
+  const parsed = parseHSL(hsl);
+  if (!parsed) return false;
+  return parsed[2] >= 60;
+}
+
+/** Return a contrasting foreground for a given HSL background */
+function contrastForeground(bgHSL: string, lightFg = "0 0% 100%", darkFg = "220 15% 15%"): string {
+  return isLightColor(bgHSL) ? darkFg : lightFg;
+}
+
 export function applyThemeToDOM(theme: ThemeSettings) {
   const root = document.documentElement;
 
+  // Apply base colors
   const colorMap: Record<string, string> = {
     "--primary": theme.primary_color,
     "--secondary": theme.secondary_color,
@@ -59,6 +83,24 @@ export function applyThemeToDOM(theme: ThemeSettings) {
   Object.entries(colorMap).forEach(([prop, val]) => {
     if (val) root.style.setProperty(prop, val);
   });
+
+  // Auto-compute contrasting foreground colors so header/buttons never become invisible
+  if (theme.primary_color) {
+    root.style.setProperty("--primary-foreground", contrastForeground(theme.primary_color));
+  }
+  if (theme.secondary_color) {
+    root.style.setProperty("--secondary-foreground", contrastForeground(theme.secondary_color));
+  }
+  if (theme.accent_color) {
+    root.style.setProperty("--accent-foreground", contrastForeground(theme.accent_color));
+  }
+  if (theme.background_color) {
+    // foreground on background: opposite of background
+    root.style.setProperty("--card", theme.background_color);
+    root.style.setProperty("--card-foreground", contrastForeground(theme.background_color));
+    root.style.setProperty("--popover", theme.background_color);
+    root.style.setProperty("--popover-foreground", contrastForeground(theme.background_color));
+  }
 
   if (theme.border_radius != null) {
     root.style.setProperty("--radius", `${theme.border_radius / 16}rem`);
