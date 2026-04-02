@@ -337,7 +337,7 @@ export default function Catalog() {
         {!currentCategory && (
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="font-serif text-3xl font-medium text-foreground">
+              <h1 className="text-xl md:text-2xl font-bold text-foreground">
                 {searchQuery ? `Rezultate pentru "${searchQuery}"` : smartCategory?.name || "Toate Lumânările"}
               </h1>
               <p className="text-sm text-muted-foreground mt-1">{totalCount} produse găsite</p>
