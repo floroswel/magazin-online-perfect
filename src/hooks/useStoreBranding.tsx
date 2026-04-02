@@ -1,5 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useEditableContent } from "@/hooks/useEditableContent";
 
 export interface StoreBranding {
   name: string;
@@ -10,42 +9,15 @@ export interface StoreBranding {
   copyright: string;
 }
 
-const DEFAULTS: StoreBranding = {
-  name: "Mama Lucica",
-  emoji: "🕯️",
-  tagline: "Lumânări artizanale din ceară de soia, create cu dragoste în România.",
-  phone: "",
-  email: "contact@mamalucica.ro",
-  copyright: `© ${new Date().getFullYear()} Mama Lucica. Toate drepturile rezervate.`,
-};
+export function useStoreBranding(): StoreBranding {
+  const { store_general, header_topbar } = useEditableContent();
 
-const StoreBrandingContext = createContext<StoreBranding>(DEFAULTS);
-
-export function StoreBrandingProvider({ children }: { children: React.ReactNode }) {
-  const [branding, setBranding] = useState<StoreBranding>(DEFAULTS);
-
-  useEffect(() => {
-    supabase
-      .from("app_settings")
-      .select("value_json")
-      .eq("key", "store_branding")
-      .maybeSingle()
-      .then(({ data }) => {
-        if (data?.value_json && typeof data.value_json === "object" && !Array.isArray(data.value_json)) {
-          const val = data.value_json as Record<string, unknown>;
-          setBranding(prev => ({ ...prev, ...val } as StoreBranding));
-          if (val.name) document.title = val.name as string;
-        }
-      });
-  }, []);
-
-  return (
-    <StoreBrandingContext.Provider value={branding}>
-      {children}
-    </StoreBrandingContext.Provider>
-  );
-}
-
-export function useStoreBranding() {
-  return useContext(StoreBrandingContext);
+  return {
+    name: store_general.store_name || "MamaLucica",
+    emoji: "🕯️",
+    tagline: store_general.store_slogan || "Lumânări artizanale",
+    phone: header_topbar.phone || "",
+    email: store_general.store_email || "contact@mamalucica.ro",
+    copyright: `© ${new Date().getFullYear()} ${store_general.store_name || "MamaLucica"}. Toate drepturile rezervate.`,
+  };
 }

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCurrency } from "@/hooks/useCurrency";
 import { supabase } from "@/integrations/supabase/client";
+import { useEditableContent } from "@/hooks/useEditableContent";
 
 interface VendorOffer {
   vendorSlug: string;

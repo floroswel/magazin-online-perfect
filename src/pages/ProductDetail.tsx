@@ -35,6 +35,7 @@ import DOMPurify from "dompurify";
 import { useCurrency } from "@/hooks/useCurrency";
 import { useTaxSettings } from "@/hooks/useTaxSettings";
 import { usePageSeo } from "@/components/SeoHead";
+import { useEditableContent } from "@/hooks/useEditableContent";
 import type { Tables } from "@/integrations/supabase/types";
 
 export default function ProductDetail() {
