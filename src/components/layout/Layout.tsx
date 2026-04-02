@@ -29,10 +29,12 @@ export default function Layout({ children, hideHeader }: { children: React.React
   const { totalItems } = useCart();
   const { user } = useAuth();
   const isAdmin = location.pathname.startsWith("/admin");
+  const showCountdown = useVisibility("announcement_countdown");
 
   return (
     <div className="min-h-screen flex flex-col">
       <SeoHead />
+      {showCountdown !== false && !isAdmin && <AnnouncementCountdown />}
       <BannerRenderer />
       {!hideHeader && <Header />}
       <Breadcrumbs />
