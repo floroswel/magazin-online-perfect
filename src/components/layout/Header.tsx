@@ -63,7 +63,7 @@ export default function Header() {
         </div>
 
         {/* Main header row */}
-        <div className="container flex items-center justify-between h-16 md:h-[68px] px-4 gap-4">
+        <div className="container flex items-center justify-between h-[76px] px-4 gap-4">
           {/* Left: hamburger + logo */}
           <div className="flex items-center gap-3 shrink-0">
             {showMenu !== false && (
@@ -73,7 +73,7 @@ export default function Header() {
             )}
             {showLogo !== false && (
               <Link to="/" className="shrink-0 flex items-center gap-2">
-                <span className="text-foreground font-black text-xl md:text-2xl tracking-tight">
+                <span className="text-foreground font-black text-2xl md:text-[28px] tracking-tight">
                   Mama<span className="text-primary">Lucica</span>
                 </span>
               </Link>
@@ -82,39 +82,51 @@ export default function Header() {
 
           {/* Center: Search bar — eMAG style */}
           {showSearch !== false && (
-            <div className="flex-1 max-w-2xl mx-4 hidden md:block">
-              <SearchAutocomplete
-                className="[&_input]:bg-muted [&_input]:text-foreground [&_input]:placeholder:text-muted-foreground [&_input]:h-11 [&_input]:border [&_input]:border-border [&_input]:rounded-full [&_input]:px-5 [&_input]:pr-12 [&_input]:focus:ring-2 [&_input]:focus:ring-primary/30 [&_input]:focus:border-primary"
-              />
+            <div className="flex-1 max-w-3xl mx-6 hidden md:flex items-center">
+              <div className="flex-1 relative flex">
+                <SearchAutocomplete
+                  className="flex-1 [&_input]:bg-background [&_input]:text-foreground [&_input]:placeholder:text-muted-foreground [&_input]:h-12 [&_input]:border [&_input]:border-border [&_input]:rounded-l-lg [&_input]:rounded-r-none [&_input]:px-5 [&_input]:pr-4 [&_input]:focus:ring-2 [&_input]:focus:ring-primary/30 [&_input]:focus:border-primary"
+                />
+                <button
+                  onClick={() => navigate("/catalog")}
+                  className="h-12 px-5 bg-primary hover:bg-secondary text-primary-foreground rounded-r-lg flex items-center justify-center transition-colors shrink-0"
+                  aria-label="Caută"
+                >
+                  <Search className="h-5 w-5" />
+                </button>
+              </div>
             </div>
           )}
 
-          {/* Right: Icons */}
-          <div className="flex items-center gap-1 shrink-0">
+          {/* Right: Icons — eMAG horizontal inline style */}
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              onClick={() => navigate(user ? "/account" : "/auth")}
+              className="hidden md:flex items-center gap-1.5 text-foreground/80 hover:text-primary transition-colors px-2 py-1.5 rounded-lg hover:bg-muted"
+            >
+              <User className="h-5 w-5" />
+              <span className="text-sm font-semibold whitespace-nowrap">Contul meu</span>
+              <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+            </button>
+
             {user && (
-              <Link to="/favorites" className="hidden md:flex flex-col items-center justify-center w-12 h-12 text-foreground/70 hover:text-primary transition-colors rounded-lg hover:bg-muted">
+              <Link to="/favorites" className="hidden md:flex items-center gap-1.5 text-foreground/80 hover:text-primary transition-colors px-2 py-1.5 rounded-lg hover:bg-muted">
                 <Heart className="h-5 w-5" />
-                <span className="text-[9px] mt-0.5 font-medium">Favorite</span>
+                <span className="text-sm font-semibold whitespace-nowrap">Favorite</span>
               </Link>
             )}
 
-            <button
-              onClick={() => navigate(user ? "/account" : "/auth")}
-              className="hidden md:flex flex-col items-center justify-center w-12 h-12 text-foreground/70 hover:text-primary transition-colors rounded-lg hover:bg-muted"
-            >
-              <User className="h-5 w-5" />
-              <span className="text-[9px] mt-0.5 font-medium">Cont</span>
-            </button>
-
             {showCart !== false && (
-              <Link to={user ? "/cart" : "/auth"} className="relative flex flex-col items-center justify-center w-12 h-12 text-foreground/70 hover:text-primary transition-colors rounded-lg hover:bg-muted">
-                <ShoppingBag className="h-5 w-5" />
-                <span className="text-[9px] mt-0.5 font-medium">Coș</span>
-                {totalItems > 0 && (
-                  <span className="absolute top-0.5 right-0.5 h-[18px] min-w-[18px] flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold px-1">
-                    {totalItems}
-                  </span>
-                )}
+              <Link to={user ? "/cart" : "/auth"} className="hidden md:flex items-center gap-1.5 relative text-foreground/80 hover:text-primary transition-colors px-2 py-1.5 rounded-lg hover:bg-muted">
+                <div className="relative">
+                  <ShoppingBag className="h-5 w-5" />
+                  {totalItems > 0 && (
+                    <span className="absolute -top-1.5 -right-2.5 h-[18px] min-w-[18px] flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold px-1">
+                      {totalItems}
+                    </span>
+                  )}
+                </div>
+                <span className="text-sm font-semibold whitespace-nowrap">Coșul meu</span>
               </Link>
             )}
 
