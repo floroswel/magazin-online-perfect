@@ -44,6 +44,7 @@ const AdminMokkaSettings = lazy(() => import("./payments/AdminMokkaSettings"));
 const AdminAIGenerator = lazy(() => import("./apps/AdminAIGenerator"));
 const AdminGeneralSettings = lazy(() => import("./settings/AdminGeneralSettings"));
 const AdminSettingsHub = lazy(() => import("./settings/AdminSettingsHub"));
+const AdminShippingGomag = lazy(() => import("./shipping/AdminShippingGomag"));
 const AdminAbandonedCarts = lazy(() => import("./customers/AdminAbandonedCarts"));
 const AdminBlacklist = lazy(() => import("./customers/AdminBlacklist"));
 const AdminCustomScripts = lazy(() => import("./content/AdminCustomScripts"));
