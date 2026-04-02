@@ -84,7 +84,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <ThemeProvider>
-          <StoreBrandingProvider>
+
           <EditableContentProvider>
           <I18nProvider>
           <CurrencyProvider>
