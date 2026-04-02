@@ -82,17 +82,17 @@ export default function AdminShippingGomag() {
   });
 
   const saveMethod = (method: ShippingMethod) => {
-    let updated: ShippingMethod[];
+    let updated: any[];
     if (method.id) {
-      updated = methods.map((m: any) => m.id === method.id ? method : m);
+      updated = (methods as any[]).map((m: any) => m.id === method.id ? method : m);
     } else {
-      updated = [...methods, { ...method, id: crypto.randomUUID() }];
+      updated = [...(methods as any[]), { ...method, id: crypto.randomUUID() }];
     }
-    saveMutation.mutate(updated);
+    saveMutation.mutate(updated as any);
   };
 
   const deleteMethod = (id: string) => {
-    saveMutation.mutate(methods.filter((m: any) => m.id !== id));
+    saveMutation.mutate((methods as any[]).filter((m: any) => m.id !== id) as any);
   };
 
   const toggleSelectAll = (checked: boolean) => {

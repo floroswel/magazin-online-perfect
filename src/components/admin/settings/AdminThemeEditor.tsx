@@ -220,6 +220,9 @@ ${theme.customCss || ""}`;
 
   const hasChanges = JSON.stringify(theme) !== JSON.stringify(savedTheme);
 
+  // Lazy load extended sections
+  const AdminThemeEditorExtended = lazy(() => import("./AdminThemeEditorExtended"));
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
