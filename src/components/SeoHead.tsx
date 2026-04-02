@@ -136,6 +136,8 @@ export function usePageSeo(data: PageSeoData) {
 export default function SeoHead() {
   const seo = useSeoSettings();
   const location = useLocation();
+  const { store_general } = useEditableContent();
+  const storeName = store_general?.store_name || "MamaLucica";
 
   useEffect(() => {
     // Google verification
