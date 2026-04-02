@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import ProductCard from "@/components/products/ProductCard";
 import HeroSlider from "@/components/home/HeroSlider";
 import SocialProofBar from "@/components/home/SocialProofBar";
