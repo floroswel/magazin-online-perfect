@@ -33,6 +33,8 @@ export default function Footer() {
   const footerScriptsRef = useRef<HTMLDivElement>(null);
   const [companyInfo, setCompanyInfo] = useState<any>({});
   const layout = useLayoutSettings();
+  const { store_general } = useEditableContent();
+  const storeName = store_general?.store_name || "MamaLucica";
 
   const showColumns = useVisibility("footer_columns");
 
