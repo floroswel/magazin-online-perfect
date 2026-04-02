@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ["'DM Serif Display'", "Georgia", "serif"],
-        sans: ["'Inter'", "'Roboto'", "system-ui", "sans-serif"],
+        serif: ["'Playfair Display'", "'DM Serif Display'", "Georgia", "serif"],
+        sans: ["'Inter'", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
