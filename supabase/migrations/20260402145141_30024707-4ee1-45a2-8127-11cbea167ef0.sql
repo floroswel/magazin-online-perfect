@@ -1,0 +1,12 @@
+UPDATE public.site_theme_settings SET value_json = '"16 100% 50%"' WHERE setting_key = 'primary_color';
+UPDATE public.site_theme_settings SET value_json = '"24 100% 50%"' WHERE setting_key = 'secondary_color';
+UPDATE public.site_theme_settings SET value_json = '"348 62% 49%"' WHERE setting_key = 'accent_color';
+UPDATE public.site_theme_settings SET value_json = '"0 0% 100%"' WHERE setting_key = 'background_color';
+UPDATE public.site_theme_settings SET value_json = '"0 0% 13%"' WHERE setting_key = 'text_color';
+UPDATE public.site_theme_settings SET value_json = '"Inter"' WHERE setting_key = 'font_family';
+UPDATE public.site_theme_settings SET value_json = '"Inter"' WHERE setting_key = 'heading_font';
+UPDATE public.site_theme_settings SET value_json = '"bold"' WHERE setting_key = 'heading_weight';
+UPDATE public.site_theme_settings SET value_json = '"rounded"' WHERE setting_key = 'button_shape';
+UPDATE public.site_theme_settings SET value_json = '"shadow"' WHERE setting_key = 'button_hover';
+UPDATE public.site_theme_settings SET value_json = '8' WHERE setting_key = 'border_radius';
+UPDATE public.site_theme_settings SET value_json = '"spacious"' WHERE setting_key = 'spacing_density';
