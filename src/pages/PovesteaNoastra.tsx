@@ -14,6 +14,7 @@ const defaultSections: PovesteaSection[] = [
 
 export default function PovesteaNoastra() {
   const [sections, setSections] = useState<PovesteaSection[]>(defaultSections);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     supabase.from("app_settings").select("value_json").eq("key", "static_page_povestea").maybeSingle()
@@ -21,7 +22,26 @@ export default function PovesteaNoastra() {
         if (data?.value_json && Array.isArray(data.value_json) && data.value_json.length > 0) {
           setSections(data.value_json as unknown as PovesteaSection[]);
         }
+        setLoaded(true);
       });
+
+    // Realtime: update when admin saves
+    const channel = supabase
+      .channel("povestea-realtime")
+      .on("postgres_changes", {
+        event: "*",
+        schema: "public",
+        table: "app_settings",
+        filter: "key=eq.static_page_povestea",
+      }, (payload: any) => {
+        const val = payload.new?.value_json;
+        if (val && Array.isArray(val) && val.length > 0) {
+          setSections(val as unknown as PovesteaSection[]);
+        }
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
   usePageSeo({
     title: "Povestea MamaLucica — Lumânări Artizanale din România",
