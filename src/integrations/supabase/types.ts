@@ -2892,6 +2892,51 @@ export type Database = {
         }
         Relationships: []
       }
+      external_webhooks: {
+        Row: {
+          created_at: string | null
+          custom_headers: Json | null
+          enabled: boolean | null
+          event_type: string
+          id: string
+          include_payload: boolean | null
+          last_status: number | null
+          last_triggered_at: string | null
+          name: string
+          secret_key: string | null
+          updated_at: string | null
+          url: string
+        }
+        Insert: {
+          created_at?: string | null
+          custom_headers?: Json | null
+          enabled?: boolean | null
+          event_type: string
+          id?: string
+          include_payload?: boolean | null
+          last_status?: number | null
+          last_triggered_at?: string | null
+          name: string
+          secret_key?: string | null
+          updated_at?: string | null
+          url: string
+        }
+        Update: {
+          created_at?: string | null
+          custom_headers?: Json | null
+          enabled?: boolean | null
+          event_type?: string
+          id?: string
+          include_payload?: boolean | null
+          last_status?: number | null
+          last_triggered_at?: string | null
+          name?: string
+          secret_key?: string | null
+          updated_at?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
