@@ -52,6 +52,7 @@ import SeoLanding from "./pages/SeoLanding";
 import SeoHub from "./pages/SeoHub";
 import SeasonalCollections from "./pages/SeasonalCollections";
 import VirtualTryOn from "./pages/VirtualTryOn";
+import SitemapXml from "./pages/SitemapXml";
 import PostDelivery from "./pages/PostDelivery";
 import PoliticaConfidentialitate from "./pages/PoliticaConfidentialitate";
 import TermeniSiConditii from "./pages/TermeniSiConditii";
@@ -134,6 +135,7 @@ const App = () => (
               <Route path="/termeni-si-conditii" element={<ErrorBoundary><TermeniSiConditii /></ErrorBoundary>} />
               <Route path="/politica-de-cookies" element={<ErrorBoundary><PoliticaCookies /></ErrorBoundary>} />
               <Route path="/politica-de-retur" element={<ErrorBoundary><PoliticaRetur /></ErrorBoundary>} />
+              <Route path="/sitemap.xml" element={<SitemapXml />} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="*" element={<ErrorBoundary><NotFound /></ErrorBoundary>} />
             </Routes>
