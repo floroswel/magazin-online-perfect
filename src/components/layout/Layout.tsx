@@ -12,8 +12,10 @@ import SocialProofPopup from "@/components/SocialProofPopup";
 import LiveChat from "@/components/LiveChat";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import BannerRenderer from "./BannerRenderer";
+import AnnouncementCountdown from "@/components/home/AnnouncementCountdown";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
+import { useVisibility } from "@/hooks/useVisibility";
 
 const mobileNavItems = [
   { to: "/", label: "Acasă", icon: Home },
