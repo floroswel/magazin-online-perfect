@@ -1,36 +1,15 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
-const STORAGE_KEY = "storefront-dark-mode";
-
+/**
+ * Dark mode disabled — Techniq theme is light-only.
+ * Hook kept for backward compatibility.
+ */
 export function useDarkMode() {
-  const [isDark, setIsDark] = useState(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored !== null) return stored === "true";
-      return window.matchMedia("(prefers-color-scheme: dark)").matches;
-    } catch {
-      return false;
-    }
-  });
-
   useEffect(() => {
-    const root = document.documentElement;
-    if (isDark) {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-    try {
-      localStorage.setItem(STORAGE_KEY, String(isDark));
-    } catch {}
-  }, [isDark]);
-
-  // Remove dark class when entering admin to prevent interference
-  useEffect(() => {
-    return () => {};
+    document.documentElement.classList.remove("dark");
+    try { localStorage.removeItem("storefront-dark-mode"); } catch {}
   }, []);
 
-  const toggle = useCallback(() => setIsDark((prev) => !prev), []);
-
-  return { isDark, toggle };
+  const toggle = useCallback(() => {}, []);
+  return { isDark: false, toggle };
 }
