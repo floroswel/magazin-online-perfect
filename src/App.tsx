@@ -54,6 +54,7 @@ import SeasonalCollections from "./pages/SeasonalCollections";
 import VirtualTryOn from "./pages/VirtualTryOn";
 import SitemapXml from "./pages/SitemapXml";
 import PostDelivery from "./pages/PostDelivery";
+import Contact from "./pages/Contact";
 import PoliticaConfidentialitate from "./pages/PoliticaConfidentialitate";
 import TermeniSiConditii from "./pages/TermeniSiConditii";
 import PoliticaCookies from "./pages/PoliticaCookies";
@@ -131,6 +132,7 @@ const App = () => (
               <Route path="/colectii-sezoniere" element={<ErrorBoundary><SeasonalCollections /></ErrorBoundary>} />
               <Route path="/virtual-try-on" element={<ErrorBoundary><VirtualTryOn /></ErrorBoundary>} />
               <Route path="/post-delivery/:token" element={<ErrorBoundary><PostDelivery /></ErrorBoundary>} />
+              <Route path="/contact" element={<ErrorBoundary><Contact /></ErrorBoundary>} />
               <Route path="/politica-de-confidentialitate" element={<ErrorBoundary><PoliticaConfidentialitate /></ErrorBoundary>} />
               <Route path="/termeni-si-conditii" element={<ErrorBoundary><TermeniSiConditii /></ErrorBoundary>} />
               <Route path="/politica-de-cookies" element={<ErrorBoundary><PoliticaCookies /></ErrorBoundary>} />
