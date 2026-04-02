@@ -74,8 +74,8 @@ export default function AdminExternalWebhooks() {
 
   const saveMutation = useMutation({
     mutationFn: async (f: WebhookForm & { id?: string }) => {
-      let headers: Record<string, unknown> = {};
-      try { headers = JSON.parse(f.custom_headers); } catch { headers = {}; }
+      let headers: Record<string, string> = {};
+      try { headers = JSON.parse(f.custom_headers) as Record<string, string>; } catch { headers = {}; }
 
       const row = {
         name: f.name,
