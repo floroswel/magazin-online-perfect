@@ -40,6 +40,7 @@ import type { Tables } from "@/integrations/supabase/types";
 
 export default function ProductDetail() {
   const { slug } = useParams();
+  const { store_general } = useEditableContent();
   const { user } = useAuth();
   const { addToCart } = useCart();
   const { addToComparison, isInComparison } = useComparison();
