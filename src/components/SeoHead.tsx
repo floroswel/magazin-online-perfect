@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
+import { useEditableContent } from "@/hooks/useEditableContent";
 
 interface SeoSettings {
   site_title: string;
@@ -99,7 +100,7 @@ export function usePageSeo(data: PageSeoData) {
     setMeta("og:type", data.ogType || "website", "property");
     setMeta("og:image", data.ogImage || seo.og_image || "/og-homepage.jpg", "property");
     setMeta("og:url", base + location.pathname, "property");
-    setMeta("og:site_name", "MamaLucica", "property");
+    setMeta("og:site_name", seo.site_title || "MamaLucica", "property");
     setMeta("og:locale", "ro_RO", "property");
 
     // Product-specific OG
@@ -135,6 +136,8 @@ export function usePageSeo(data: PageSeoData) {
 export default function SeoHead() {
   const seo = useSeoSettings();
   const location = useLocation();
+  const { store_general } = useEditableContent();
+  const storeName = store_general?.store_name || "MamaLucica";
 
   useEffect(() => {
     // Google verification
@@ -156,7 +159,7 @@ export default function SeoHead() {
   const orgSchema = safeJsonLd({
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "MamaLucica SRL",
+    name: storeName + " SRL",
     url: base,
     logo: base + "/og-homepage.jpg",
     sameAs: [

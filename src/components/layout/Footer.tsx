@@ -6,6 +6,7 @@ import React from "react";
 import { useVisibility } from "@/hooks/useVisibility";
 import { useLayoutSettings } from "@/hooks/useLayoutSettings";
 import TrustIcons from "@/components/TrustIcons";
+import { useEditableContent } from "@/hooks/useEditableContent";
 
 interface FooterLink { label: string; url: string; active: boolean }
 interface FooterTexts {
@@ -32,6 +33,8 @@ export default function Footer() {
   const footerScriptsRef = useRef<HTMLDivElement>(null);
   const [companyInfo, setCompanyInfo] = useState<any>({});
   const layout = useLayoutSettings();
+  const { store_general } = useEditableContent();
+  const storeName = store_general?.store_name || "MamaLucica";
 
   const showColumns = useVisibility("footer_columns");
 
@@ -98,7 +101,7 @@ export default function Footer() {
               {/* Brand column */}
               <div>
                 <h4 className="text-lg font-black mb-4 text-white">
-                  Mama<span className="text-primary">Lucica</span>
+                  {storeName.includes("Lucica") ? <>Mama<span className="text-primary">Lucica</span></> : storeName}
                 </h4>
                 {texts.col1_description && (
                   <p className="text-[13px] text-white/40 leading-relaxed">{texts.col1_description}</p>
