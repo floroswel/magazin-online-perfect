@@ -126,6 +126,7 @@ const menuSections: MenuSection[] = [
           { label: "Editor Conținut Site", path: "/admin/settings/content-editor" },
           { label: "Vizibilitate", path: "/admin/control" },
           { label: "Layout Secțiuni", path: "/admin/content/homepage" },
+          { label: "Pagini Statice", path: "/admin/content/static-pages" },
           { label: "Footer", path: "/admin/settings/footer" },
         ],
       },
