@@ -43,6 +43,8 @@ const AdminTracking = lazy(() => import("./shipping/AdminTracking"));
 const AdminMokkaSettings = lazy(() => import("./payments/AdminMokkaSettings"));
 const AdminAIGenerator = lazy(() => import("./apps/AdminAIGenerator"));
 const AdminGeneralSettings = lazy(() => import("./settings/AdminGeneralSettings"));
+const AdminSettingsHub = lazy(() => import("./settings/AdminSettingsHub"));
+const AdminShippingGomag = lazy(() => import("./shipping/AdminShippingGomag"));
 const AdminAbandonedCarts = lazy(() => import("./customers/AdminAbandonedCarts"));
 const AdminBlacklist = lazy(() => import("./customers/AdminBlacklist"));
 const AdminCustomScripts = lazy(() => import("./content/AdminCustomScripts"));
@@ -403,7 +405,9 @@ export default function AdminRoutes() {
         <Route path="reports/traffic" element={<AdminTrafficAnalytics />} />
 
         {/* ═══════════ SETĂRI ═══════════ */}
+        <Route path="setari" element={<AdminSettingsHub />} />
         <Route path="settings/general" element={<AdminGeneralSettings />} />
+        <Route path="shipping/gomag" element={<AdminShippingGomag />} />
         <Route path="settings/theme" element={<AdminThemeEditor />} />
         {/* footer-badges removed — use settings/footer */}
         <Route path="settings/footer" element={<AdminFooterSettings />} />

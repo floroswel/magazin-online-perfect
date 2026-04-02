@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, lazy, Suspense } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -220,6 +220,9 @@ ${theme.customCss || ""}`;
 
   const hasChanges = JSON.stringify(theme) !== JSON.stringify(savedTheme);
 
+  // Lazy load extended sections
+  const AdminThemeEditorExtended = lazy(() => import("./AdminThemeEditorExtended"));
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -425,6 +428,11 @@ ${theme.customCss || ""}`;
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Gomag Extended Design Sections */}
+      <Suspense fallback={<div className="py-8 text-center text-muted-foreground">Se încarcă secțiuni suplimentare...</div>}>
+        <AdminThemeEditorExtended />
+      </Suspense>
     </div>
   );
 }
