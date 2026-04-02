@@ -129,10 +129,16 @@ export default function AdminEditableContent() {
           </h1>
           <p className="text-sm text-muted-foreground">Editează orice text, link sau componentă de pe site – salvat în timp real</p>
         </div>
-        <Button onClick={save} disabled={saving} size="sm" className="shrink-0">
-          {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Save className="w-4 h-4 mr-1" />}
-          Salvează Tot
-        </Button>
+        <div className="flex gap-2 shrink-0">
+          <Button onClick={seedDefaults} disabled={seeding} size="sm" variant="outline">
+            {seeding ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Plus className="w-4 h-4 mr-1" />}
+            Inițializează Valori Default
+          </Button>
+          <Button onClick={save} disabled={saving} size="sm">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Save className="w-4 h-4 mr-1" />}
+            Salvează Tot
+          </Button>
+        </div>
       </div>
 
       <div className="relative max-w-sm">
