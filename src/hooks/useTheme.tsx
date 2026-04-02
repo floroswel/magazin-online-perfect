@@ -22,11 +22,11 @@ export interface ThemeSettings {
 
 export const DEFAULTS: ThemeSettings = {
   color_mode: "light",
-  primary_color: "35 75% 42%",
-  secondary_color: "0 0% 7%",
-  accent_color: "38 90% 55%",
-  background_color: "0 0% 100%",
-  text_color: "0 0% 20%",
+  primary_color: "22 66% 55%",
+  secondary_color: "45 78% 53%",
+  accent_color: "45 78% 53%",
+  background_color: "36 33% 93%",
+  text_color: "0 14% 21%",
   font_family: "Inter",
   heading_font: "Playfair Display",
   font_size_scale: "medium",
@@ -34,9 +34,9 @@ export const DEFAULTS: ThemeSettings = {
   line_height: "normal",
   button_shape: "rounded",
   button_style: "filled",
-  button_hover: "scale",
-  border_radius: 4,
-  spacing_density: "normal",
+  button_hover: "shadow",
+  border_radius: 8,
+  spacing_density: "spacious",
 };
 
 const ThemeContext = createContext<ThemeSettings | null>(null);
