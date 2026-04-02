@@ -73,25 +73,25 @@ function ProductCardInner({ product, eager = false }: Props) {
     <Link
       to={`/product/${product.slug}`}
       onMouseEnter={() => prefetchProduct(product.slug)}
-      className="group flex flex-col bg-card overflow-hidden rounded-lg border border-border hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 h-full"
+      className="group flex flex-col bg-background overflow-hidden border border-border hover:shadow-lg transition-all duration-200 h-full"
     >
       {/* Image */}
-      <div className="relative aspect-[4/5] overflow-hidden bg-muted">
+      <div className="relative aspect-square overflow-hidden bg-background">
         {/* Badges */}
-        <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1.5">
+        <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
           {discount > 0 && (
-            <span className="bg-primary text-primary-foreground text-[11px] font-bold px-2 py-0.5 rounded">
+            <span className="bg-primary text-primary-foreground text-[11px] font-bold px-2 py-0.5 rounded-sm">
               -{discount}%
             </span>
           )}
           {(product as any).badge_new && (
-            <span className="bg-[hsl(var(--store-success))] text-white text-[11px] font-bold px-2 py-0.5 rounded">NOU</span>
+            <span className="bg-[hsl(var(--store-success))] text-white text-[11px] font-bold px-2 py-0.5 rounded-sm">NOU</span>
           )}
           {(product as any).badge_bestseller && (
-            <span className="bg-secondary text-secondary-foreground text-[11px] font-bold px-2 py-0.5 rounded">BEST</span>
+            <span className="bg-secondary text-secondary-foreground text-[11px] font-bold px-2 py-0.5 rounded-sm">BEST</span>
           )}
           {promotion && !pricingDiscount && (
-            <span className="text-[11px] font-bold px-2 py-0.5 text-white rounded"
+            <span className="text-[11px] font-bold px-2 py-0.5 text-white rounded-sm"
               style={{ backgroundColor: promotion.badgeColor || "hsl(var(--primary))" }}>
               {promotion.badgeText}
             </span>
@@ -101,7 +101,7 @@ function ProductCardInner({ product, eager = false }: Props) {
         {/* Wishlist */}
         <button
           onClick={handleWishlist}
-          className="absolute top-2.5 right-2.5 z-10 w-8 h-8 flex items-center justify-center bg-background/90 rounded-full shadow opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
+          className="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center bg-background rounded-full shadow-sm border border-border opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
         >
           <Heart className={`h-4 w-4 ${liked ? "fill-primary text-primary" : "text-muted-foreground hover:text-primary"}`} />
         </button>
@@ -110,42 +110,46 @@ function ProductCardInner({ product, eager = false }: Props) {
           src={product.image_url || "/placeholder.svg"}
           alt={product.name || "Produs"}
           width={400}
-          height={500}
+          height={400}
           loading={eager ? "eager" : "lazy"}
           decoding={eager ? "sync" : "async"}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-300"
         />
       </div>
 
       {/* Info */}
-      <div className="p-3.5 flex flex-col flex-1">
-        {/* Vendor */}
-        <p className="text-[11px] text-muted-foreground mb-1 truncate">{vendorName}</p>
-
+      <div className="px-3 pb-3 pt-2 flex flex-col flex-1 border-t border-border">
         {/* Title */}
-        <h3 className="text-sm text-foreground leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors font-medium">
+        <h3 className="text-[13px] text-foreground leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors font-medium min-h-[2.5rem]">
           {product.name}
         </h3>
 
         {/* Rating */}
-        <div className="flex items-center gap-1.5 mb-2">
-          <div className="flex items-center">
+        <div className="flex items-center gap-1 mb-2">
+          <div className="flex items-center gap-px">
             {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(rating) ? "fill-[hsl(var(--store-warning))] text-[hsl(var(--store-warning))]" : "text-border"}`} />
+              <Star key={i} className={`w-3 h-3 ${i < Math.floor(rating) ? "fill-[hsl(var(--store-warning))] text-[hsl(var(--store-warning))]" : "text-border"}`} />
             ))}
           </div>
           <span className="text-[11px] text-muted-foreground">({reviewCount})</span>
         </div>
 
-        {/* Price */}
-        <div className="flex items-baseline gap-2 mb-1">
-          <span className="text-lg font-extrabold text-primary">
-            {format(effectivePrice)}
-          </span>
-          {showOldPrice && showOldPrice > effectivePrice && (
-            <span className="text-[13px] text-muted-foreground line-through">
-              {format(showOldPrice)}
+        {/* Price block */}
+        <div className="mb-1.5">
+          <div className="flex items-baseline gap-2">
+            <span className="text-xl font-extrabold text-primary leading-tight">
+              {format(effectivePrice)}
             </span>
+          </div>
+          {showOldPrice && showOldPrice > effectivePrice && (
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="text-xs text-muted-foreground line-through">
+                {format(showOldPrice)}
+              </span>
+              {discount > 0 && (
+                <span className="text-xs font-bold text-primary">-{discount}%</span>
+              )}
+            </div>
           )}
         </div>
 
@@ -163,7 +167,7 @@ function ProductCardInner({ product, eager = false }: Props) {
           <CountdownTimer endsAt={promotion.endsAt} />
         )}
 
-        {/* Stock urgency */}
+        {/* Delivery / stock info */}
         {(() => {
           const threshold = (product as any).low_stock_threshold || 5;
           if (isOutOfStock) {
@@ -177,28 +181,28 @@ function ProductCardInner({ product, eager = false }: Props) {
             );
           }
           return (
-            <div className="flex items-center gap-1 text-[11px] text-muted-foreground mt-1">
-              <Truck className="w-3 h-3 text-[hsl(var(--store-success))]" />
-              <span>Livrare în 1-2 zile</span>
+            <div className="flex items-center gap-1 text-[11px] text-[hsl(var(--store-success))] mt-1 font-medium">
+              <Truck className="w-3 h-3" />
+              <span>Livrare gratuită</span>
             </div>
           );
         })()}
 
-        {/* Add to cart — always visible like eMAG */}
-        <div className="mt-auto pt-3">
+        {/* Add to cart */}
+        <div className="mt-auto pt-2.5">
           {isOutOfStock ? (
-            <button disabled className="w-full h-12 min-h-[48px] bg-muted text-muted-foreground text-sm font-bold flex items-center justify-center gap-2 cursor-not-allowed rounded-lg uppercase tracking-wide">
+            <button disabled className="w-full h-11 bg-muted text-muted-foreground text-sm font-bold flex items-center justify-center gap-2 cursor-not-allowed rounded uppercase tracking-wide">
               Stoc epuizat
             </button>
           ) : (
             <button
               onClick={handleAddToCart}
-              className="w-full h-12 min-h-[48px] bg-primary text-primary-foreground text-sm font-extrabold flex items-center justify-center gap-2 rounded-lg hover:bg-secondary hover:shadow-md transition-all uppercase tracking-wide"
+              className="w-full h-11 bg-primary text-primary-foreground text-sm font-extrabold flex items-center justify-center gap-2 rounded hover:bg-secondary hover:shadow-md transition-all uppercase tracking-wide"
             >
               {addedToCart ? (
-                <><Check className="h-5 w-5" /> Adăugat!</>
+                <><Check className="h-4 w-4" /> Adăugat!</>
               ) : (
-                <><ShoppingBag className="h-5 w-5" /> Adaugă în coș</>
+                <><ShoppingBag className="h-4 w-4" /> Adaugă în coș</>
               )}
             </button>
           )}
