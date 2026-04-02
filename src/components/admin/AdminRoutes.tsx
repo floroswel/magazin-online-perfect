@@ -67,6 +67,7 @@ const AdminCheckoutSettings = lazy(() => import("./settings/AdminCheckoutSetting
 const AdminEmailSettings = lazy(() => import("./settings/AdminEmailSettings"));
 const AdminTaxSettings = lazy(() => import("./settings/AdminTaxSettings"));
 const AdminThemeEditor = lazy(() => import("./settings/AdminThemeEditor"));
+const AdminEditableContent = lazy(() => import("./settings/AdminEditableContent"));
 const Admin2FA = lazy(() => import("./settings/Admin2FA"));
 const AdminPageBuilder = lazy(() => import("./content/AdminPageBuilder"));
 const AdminTranslations = lazy(() => import("./content/AdminTranslations"));
