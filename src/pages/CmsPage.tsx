@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
-import { useStoreBranding } from "@/hooks/useStoreBranding";
+import { useEditableContent } from "@/hooks/useEditableContent";
 import { usePageSeo } from "@/components/SeoHead";
 import { Loader2 } from "lucide-react";
 import DOMPurify from "dompurify";
 
 export default function CmsPage() {
-  usePageSeo({ title: "MamaLucica", description: "Magazin de lumânări artizanale handmade." });
+  const { store_general } = useEditableContent();
+  usePageSeo({ title: store_general.store_name, description: `${store_general.store_slogan} — magazin online.` });
   const { slug } = useParams<{ slug: string }>();
-  const branding = useStoreBranding();
   const [page, setPage] = useState<{ title: string; body_html: string | null; meta_title: string | null; meta_description: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -27,7 +27,7 @@ export default function CmsPage() {
       .then(({ data }) => {
         if (data) {
           setPage(data);
-          document.title = data.meta_title || data.title || branding.name;
+          document.title = data.meta_title || data.title || store_general.store_name;
           const metaDesc = document.querySelector('meta[name="description"]');
           if (metaDesc && data.meta_description) metaDesc.setAttribute("content", data.meta_description);
         } else {

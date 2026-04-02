@@ -52,6 +52,7 @@ export default function AdminEditableContent() {
   const [content, setContent] = useState<EditableContent>(EDITABLE_DEFAULTS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [seeding, setSeeding] = useState(false);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -89,6 +90,20 @@ export default function AdminEditableContent() {
     toast.success("Salvat! Schimbările apar pe site în câteva secunde.");
   };
 
+  const seedDefaults = async () => {
+    setSeeding(true);
+    const promises = Object.entries(KEY_MAP).map(([field, dbKey]) =>
+      supabase.from("app_settings").upsert(
+        { key: dbKey, value_json: (EDITABLE_DEFAULTS as any)[field] as any, updated_at: new Date().toISOString() },
+        { onConflict: "key" }
+      )
+    );
+    await Promise.all(promises);
+    setContent(EDITABLE_DEFAULTS);
+    setSeeding(false);
+    toast.success("Valorile implicite au fost scrise în baza de date. Sincronizarea este activă!");
+  };
+
   const set = <K extends keyof EditableContent>(key: K, val: EditableContent[K]) =>
     setContent(c => ({ ...c, [key]: val }));
 
@@ -114,10 +129,16 @@ export default function AdminEditableContent() {
           </h1>
           <p className="text-sm text-muted-foreground">Editează orice text, link sau componentă de pe site – salvat în timp real</p>
         </div>
-        <Button onClick={save} disabled={saving} size="sm" className="shrink-0">
-          {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Save className="w-4 h-4 mr-1" />}
-          Salvează Tot
-        </Button>
+        <div className="flex gap-2 shrink-0">
+          <Button onClick={seedDefaults} disabled={seeding} size="sm" variant="outline">
+            {seeding ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Plus className="w-4 h-4 mr-1" />}
+            Inițializează Valori Default
+          </Button>
+          <Button onClick={save} disabled={saving} size="sm">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Save className="w-4 h-4 mr-1" />}
+            Salvează Tot
+          </Button>
+        </div>
       </div>
 
       <div className="relative max-w-sm">

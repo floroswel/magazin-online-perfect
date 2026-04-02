@@ -35,10 +35,12 @@ import DOMPurify from "dompurify";
 import { useCurrency } from "@/hooks/useCurrency";
 import { useTaxSettings } from "@/hooks/useTaxSettings";
 import { usePageSeo } from "@/components/SeoHead";
+import { useEditableContent } from "@/hooks/useEditableContent";
 import type { Tables } from "@/integrations/supabase/types";
 
 export default function ProductDetail() {
   const { slug } = useParams();
+  const { store_general } = useEditableContent();
   const { user } = useAuth();
   const { addToCart } = useCart();
   const { addToComparison, isInComparison } = useComparison();
@@ -183,8 +185,8 @@ export default function ProductDetail() {
 
   // Dynamic SEO for product page
   usePageSeo({
-    title: product ? `${product.name} — ${product.price} lei · MamaLucica` : "MamaLucica",
-    description: product ? `${product.name} — ${product.short_description || "Lumânare artizanală MamaLucica"}. Stoc: ${product.stock} bucăți. Livrare rapidă în România.` : "",
+    title: product ? `${product.name} — ${product.price} lei · ${store_general.store_name}` : store_general.store_name,
+    description: product ? `${product.name} — ${product.short_description || `Lumânare artizanală ${store_general.store_name}`}. Stoc: ${product.stock} bucăți. Livrare rapidă în România.` : "",
     ogImage: product?.image_url || "/og-homepage.jpg",
     ogType: "product",
     productPrice: product?.price,

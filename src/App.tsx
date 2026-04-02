@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/hooks/useTheme";
-import { StoreBrandingProvider } from "@/hooks/useStoreBranding";
+
 import { EditableContentProvider } from "@/hooks/useEditableContent";
 import { CartProvider } from "@/hooks/useCart";
 import { CurrencyProvider } from "@/hooks/useCurrency";
@@ -84,7 +84,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <ThemeProvider>
-          <StoreBrandingProvider>
+
           <EditableContentProvider>
           <I18nProvider>
           <CurrencyProvider>
@@ -149,7 +149,7 @@ const App = () => (
           </CurrencyProvider>
           </I18nProvider>
           </EditableContentProvider>
-          </StoreBrandingProvider>
+
           </ThemeProvider>
         </AuthProvider>
       </BrowserRouter>

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCurrency } from "@/hooks/useCurrency";
 import { supabase } from "@/integrations/supabase/client";
+import { useEditableContent } from "@/hooks/useEditableContent";
 
 interface VendorOffer {
   vendorSlug: string;
@@ -27,12 +28,13 @@ interface Props {
 
 export default function VendorComparison({ productName, productId, productPrice, brandId }: Props) {
   const { format } = useCurrency();
+  const { store_general } = useEditableContent();
   const [offers, setOffers] = useState<VendorOffer[]>([]);
 
   useEffect(() => {
     // Build offers from brand info + generated alternatives
     const buildOffers = async () => {
-      let brandName = "MamaLucica";
+      let brandName = store_general.store_name || "MamaLucica";
       let brandSlug = "mama-lucica";
 
       if (brandId) {
@@ -81,7 +83,7 @@ export default function VendorComparison({ productName, productId, productPrice,
     };
 
     buildOffers();
-  }, [brandId, productPrice]);
+  }, [brandId, productPrice, store_general.store_name]);
 
   if (offers.length === 0) return null;
 
