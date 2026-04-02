@@ -6,6 +6,7 @@ import React from "react";
 import { useVisibility } from "@/hooks/useVisibility";
 import { useLayoutSettings } from "@/hooks/useLayoutSettings";
 import TrustIcons from "@/components/TrustIcons";
+import { useEditableContent } from "@/hooks/useEditableContent";
 
 interface FooterLink { label: string; url: string; active: boolean }
 interface FooterTexts {
