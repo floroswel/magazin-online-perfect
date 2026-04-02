@@ -138,6 +138,7 @@ const menuSections: MenuSection[] = [
           { label: "Facturare", path: "/admin/settings/smartbill" },
           { label: "Newsletter / Email", path: "/admin/settings/email" },
           { label: "Comparatoare", path: "/admin/marketing/feeds" },
+          { label: "Webhooks Externe", path: "/admin/integrations/external-webhooks" },
         ],
       },
       {
