@@ -54,6 +54,7 @@ import SeasonalCollections from "./pages/SeasonalCollections";
 import VirtualTryOn from "./pages/VirtualTryOn";
 import SitemapXml from "./pages/SitemapXml";
 import PostDelivery from "./pages/PostDelivery";
+import Contact from "./pages/Contact";
 import PoliticaConfidentialitate from "./pages/PoliticaConfidentialitate";
 import TermeniSiConditii from "./pages/TermeniSiConditii";
 import PoliticaCookies from "./pages/PoliticaCookies";
