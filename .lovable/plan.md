@@ -1,33 +1,33 @@
 
 
-# Make All CTA Buttons Bigger & Bolder (eMAG-style)
+# Redesign Header to Match eMAG Exactly
 
-## Changes
+## Key Differences (Current vs eMAG)
 
-### 1. Global Button Component (`src/components/ui/button.tsx`)
-- Increase base font weight to `font-bold`
-- Change default variant hover to `hover:bg-secondary hover:shadow-md`
-- Make `default` size taller: `h-12 px-6 py-3 text-[15px]`
-- Make `lg` size even bigger: `h-14 px-10 text-base`
-- Add `rounded-lg` to base instead of `rounded-md`
-- Increase icon size to `[&_svg]:size-5`
+Based on comparing the current site screenshot with the real eMAG.ro:
 
-### 2. ProductCard "Adaugă în coș" button (`src/components/products/ProductCard.tsx`)
-- Increase height from `h-10 min-h-[44px]` to `h-12 min-h-[48px]`
-- Increase font size from `text-[13px]` to `text-sm`
-- Add `font-extrabold uppercase tracking-wide`
-- Increase icon size from `h-4 w-4` to `h-5 w-5`
+1. **Search bar**: eMAG's is much wider, takes ~60% of the header width, with a flat/slightly-rounded shape (not `rounded-full`), white background with gray border, and orange search button attached to the right edge
+2. **Right icons**: eMAG shows "Contul meu", "Favorite", "Coșul meu" as **horizontal inline** items (icon + text side by side), not stacked vertically with tiny text
+3. **Header height**: eMAG's main row is taller (~72-76px)
+4. **Logo**: eMAG logo is bigger and bolder
+5. **Nav bar**: eMAG uses a hamburger "☰ Produse" button (not "Toate Produsele" with Grid3X3), followed by text links like "Ofertele eMAG", "Genius", etc.
 
-### 3. Hero CTA button (`src/components/home/HeroSlider.tsx`)
-- Increase from `px-8 py-3.5 text-sm min-h-[48px]` to `px-10 py-4 text-base min-h-[52px]`
-- Add `font-extrabold`
+## Changes to `src/components/layout/Header.tsx`
 
-### 4. Cross-sell/recommendation buttons (`CartCrossSell.tsx`, `CartRecommendations.tsx`, `UpgradeRecommendation.tsx`)
-- Increase small "Adaugă" buttons from `h-7 text-xs px-2` to `h-9 text-sm px-3 font-bold`
-- Make upgrade CTA button bolder with `text-base font-extrabold h-12`
+### Main header row
+- Increase height to `h-[76px]`
+- Make search bar wider: `max-w-3xl` instead of `max-w-2xl`, change input from `rounded-full` to `rounded-lg`, white bg with gray border, taller `h-12`
+- Right icons: switch from vertical stacked layout to **horizontal inline** (`flex-row items-center gap-1.5`) with text beside icon, matching eMAG's "Contul meu ▾", "Favorite", "Coșul meu"
+- Make logo text larger: `text-2xl md:text-[28px]`
 
-### 5. ProductDetail page (`src/pages/ProductDetail.tsx`)
-- The main "Adaugă în coș" button already uses `size="lg"` — will benefit from the global `lg` size increase
+### Nav bar
+- Change "Toate Produsele" button icon from `Grid3X3` to `Menu` (hamburger), rename to "Produse"
+- Make nav links match eMAG style: first link colored orange ("Oferte MamaLucica"), rest in dark text
 
-**Files to modify**: `button.tsx`, `ProductCard.tsx`, `HeroSlider.tsx`, `CartCrossSell.tsx`, `CartRecommendations.tsx`, `UpgradeRecommendation.tsx`
+### Search bar styling
+- Remove `rounded-full`, use `rounded-lg` with a visible orange search button flush on the right
+- Input background: white with `border-gray-300`
+
+## File: `src/components/layout/Header.tsx`
+Single file change — all modifications are within the header component.
 
