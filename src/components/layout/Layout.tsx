@@ -12,8 +12,10 @@ import SocialProofPopup from "@/components/SocialProofPopup";
 import LiveChat from "@/components/LiveChat";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import BannerRenderer from "./BannerRenderer";
+import AnnouncementCountdown from "@/components/home/AnnouncementCountdown";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
+import { useVisibility } from "@/hooks/useVisibility";
 
 const mobileNavItems = [
   { to: "/", label: "Acasă", icon: Home },
@@ -27,10 +29,12 @@ export default function Layout({ children, hideHeader }: { children: React.React
   const { totalItems } = useCart();
   const { user } = useAuth();
   const isAdmin = location.pathname.startsWith("/admin");
+  const showCountdown = useVisibility("announcement_countdown");
 
   return (
     <div className="min-h-screen flex flex-col">
       <SeoHead />
+      {showCountdown !== false && !isAdmin && <AnnouncementCountdown />}
       <BannerRenderer />
       {!hideHeader && <Header />}
       <Breadcrumbs />

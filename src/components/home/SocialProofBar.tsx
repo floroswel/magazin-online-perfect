@@ -1,17 +1,49 @@
-import { Truck, Shield, RotateCcw, Headphones, CreditCard, Award } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Truck, Shield, RotateCcw, Star, Package, Users } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
-const features = [
+const staticFeatures = [
   { icon: Truck, label: "Livrare Gratuită", desc: "La comenzi peste 200 lei" },
   { icon: Shield, label: "Plată Securizată", desc: "100% protejat" },
   { icon: RotateCcw, label: "Retur Gratuit", desc: "30 zile garanție" },
-  { icon: Headphones, label: "Suport 24/7", desc: "Asistență non-stop" },
-  { icon: CreditCard, label: "Rate fără Dobândă", desc: "Până la 12 rate" },
-  { icon: Award, label: "Calitate Premium", desc: "Vendori verificați" },
 ];
+
+function useRealStats() {
+  return useQuery({
+    queryKey: ["social-proof-stats"],
+    queryFn: async () => {
+      const [ordersRes, customersRes, reviewsRes] = await Promise.all([
+        supabase.from("orders").select("id", { count: "exact", head: true }).in("status", ["delivered", "confirmed", "shipped"]),
+        supabase.from("orders").select("user_id").not("user_id", "is", null),
+        supabase.from("product_reviews").select("id", { count: "exact", head: true }).eq("rating", 5).eq("status", "approved"),
+      ]);
+
+      const uniqueCustomers = new Set((customersRes.data || []).map((o: any) => o.user_id)).size;
+
+      return {
+        ordersDelivered: ordersRes.count || 0,
+        happyCustomers: uniqueCustomers,
+        fiveStarReviews: reviewsRes.count || 0,
+      };
+    },
+    staleTime: 60 * 60 * 1000, // 1 hour
+    refetchOnWindowFocus: false,
+  });
+}
 
 export default function SocialProofBar() {
   const ref = useScrollReveal();
+  const { data: stats } = useRealStats();
+
+  const dynamicFeatures = [
+    { icon: Package, label: `${stats?.ordersDelivered || 0}+ Comenzi`, desc: "Livrate cu succes" },
+    { icon: Users, label: `${stats?.happyCustomers || 0}+ Clienți`, desc: "Mulțumiți" },
+    { icon: Star, label: `${stats?.fiveStarReviews || 0}+ Recenzii`, desc: "De 5 stele ★" },
+  ];
+
+  const features = [...staticFeatures, ...dynamicFeatures];
 
   return (
     <section className="bg-card border-b border-border py-4 md:py-6" ref={ref}>
