@@ -83,7 +83,7 @@ export default function VendorComparison({ productName, productId, productPrice,
     };
 
     buildOffers();
-  }, [brandId, productPrice]);
+  }, [brandId, productPrice, store_general.store_name]);
 
   if (offers.length === 0) return null;
 
