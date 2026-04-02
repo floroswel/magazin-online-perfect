@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import React from "react";
 import { useVisibility } from "@/hooks/useVisibility";
 import { useLayoutSettings } from "@/hooks/useLayoutSettings";
+import TrustIcons from "@/components/TrustIcons";
 
 interface FooterLink { label: string; url: string; active: boolean }
 interface FooterTexts {
