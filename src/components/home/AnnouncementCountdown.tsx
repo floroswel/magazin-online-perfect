@@ -27,9 +27,7 @@ export default function AnnouncementCountdown() {
   }, []);
 
   return (
-    <div
-      className="text-center py-2 text-sm font-medium tracking-wide bg-primary text-primary-foreground"
-    >
+    <div className="text-center py-2 text-sm font-medium tracking-wide bg-primary text-primary-foreground">
       <span className="hidden sm:inline">🕯️ Livrare GRATUITĂ la comenzi peste 200 lei | Oferta expiră în </span>
       <span className="sm:hidden">🕯️ Livrare GRATUITĂ — </span>
       <span className="font-bold tabular-nums">
