@@ -21,21 +21,21 @@ export interface ThemeSettings {
 }
 
 export const DEFAULTS: ThemeSettings = {
-  color_mode: "auto",
-  primary_color: "210 40% 50%",
-  secondary_color: "210 20% 60%",
-  accent_color: "30 80% 55%",
+  color_mode: "light",
+  primary_color: "35 75% 42%",
+  secondary_color: "0 0% 7%",
+  accent_color: "38 90% 55%",
   background_color: "0 0% 100%",
-  text_color: "210 40% 10%",
+  text_color: "0 0% 20%",
   font_family: "Inter",
-  heading_font: "DM Serif Display",
+  heading_font: "Playfair Display",
   font_size_scale: "medium",
   heading_weight: "bold",
   line_height: "normal",
   button_shape: "rounded",
   button_style: "filled",
   button_hover: "scale",
-  border_radius: 8,
+  border_radius: 4,
   spacing_density: "normal",
 };
 
