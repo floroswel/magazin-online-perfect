@@ -171,6 +171,9 @@ export default function AdminThemeEditor() {
           { setting_key: "heading_weight", value_json: Number(t.h1Weight) >= 800 ? "extrabold" : Number(t.h1Weight) >= 700 ? "bold" : "semibold" },
           { setting_key: "border_radius", value_json: b.borderRadius },
           { setting_key: "button_hover", value_json: b.hoverEffect },
+          { setting_key: "button_shape", value_json: b.borderRadius >= 9999 ? "pill" : b.borderRadius === 0 ? "square" : "rounded" },
+          { setting_key: "button_style", value_json: "filled" },
+          { setting_key: "spacing_density", value_json: payload.layout.sectionSpacing <= 24 ? "compact" : payload.layout.sectionSpacing <= 40 ? "normal" : "spacious" },
           { setting_key: "font_size_scale", value_json: t.baseFontSize <= 14 ? "small" : t.baseFontSize <= 16 ? "medium" : t.baseFontSize <= 18 ? "large" : "xl" },
           { setting_key: "line_height", value_json: t.lineHeight <= 1.4 ? "compact" : t.lineHeight <= 1.6 ? "normal" : "relaxed" },
         ];
