@@ -4,7 +4,7 @@ import {
   LayoutDashboard, ShoppingCart, Package, Users, Megaphone, Trophy,
   FileText, BarChart3, TrendingUp, Palette, Plug, Settings, User,
   ChevronDown, X, ArrowLeft, PanelLeftClose, PanelLeftOpen, LogOut,
-  Flame,
+  Flame, Webhook,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -138,6 +138,7 @@ const menuSections: MenuSection[] = [
           { label: "Facturare", path: "/admin/settings/smartbill" },
           { label: "Newsletter / Email", path: "/admin/settings/email" },
           { label: "Comparatoare", path: "/admin/marketing/feeds" },
+          { label: "Webhooks Externe", path: "/admin/integrations/external-webhooks" },
         ],
       },
       {

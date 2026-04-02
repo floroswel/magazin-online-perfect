@@ -190,6 +190,7 @@ const AdminConfiguratorSettings = lazy(() => import("./settings/AdminConfigurato
 const AdminHeroSlides = lazy(() => import("./content/AdminHeroSlides"));
 const AdminPersonalizationOptions = lazy(() => import("./content/AdminPersonalizationOptions"));
 const AdminStaticPages = lazy(() => import("./content/AdminStaticPages"));
+const AdminExternalWebhooks = lazy(() => import("./integrations/AdminExternalWebhooks"));
 
 export default function AdminRoutes() {
   return (
@@ -384,6 +385,7 @@ export default function AdminRoutes() {
         <Route path="integrations/nod" element={<AdminIntegrationConfig integrationKey="nod" title="NOD" description="Integrare NOD catalog și stoc." fields={[{ key: "username", label: "Utilizator API" }, { key: "api_key", label: "API Key", type: "password" }]} />} />
         <Route path="integrations/ssl" element={<AdminSSL />} />
         <Route path="integrations/erp" element={<AdminERPIntegrations />} />
+        <Route path="integrations/external-webhooks" element={<AdminExternalWebhooks />} />
 
         {/* ═══════════ MULTI-CANAL ═══════════ */}
         <Route path="channels/allegro" element={<AdminIntegrationConfig integrationKey="allegro" title="Allegro" description="Sincronizare produse și comenzi Allegro." fields={[{ key: "client_id", label: "Client ID" }, { key: "client_secret", label: "Client Secret", type: "password" }]} />} />
