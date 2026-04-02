@@ -187,18 +187,18 @@ function ProductCardInner({ product, eager = false }: Props) {
         {/* Add to cart — always visible like eMAG */}
         <div className="mt-auto pt-3">
           {isOutOfStock ? (
-            <button disabled className="w-full h-10 min-h-[44px] bg-muted text-muted-foreground text-[13px] font-medium flex items-center justify-center gap-2 cursor-not-allowed rounded-lg">
+            <button disabled className="w-full h-12 min-h-[48px] bg-muted text-muted-foreground text-sm font-bold flex items-center justify-center gap-2 cursor-not-allowed rounded-lg uppercase tracking-wide">
               Stoc epuizat
             </button>
           ) : (
             <button
               onClick={handleAddToCart}
-              className="w-full h-10 min-h-[44px] bg-primary text-primary-foreground text-[13px] font-bold flex items-center justify-center gap-2 rounded-lg hover:bg-secondary hover:shadow-md transition-all"
+              className="w-full h-12 min-h-[48px] bg-primary text-primary-foreground text-sm font-extrabold flex items-center justify-center gap-2 rounded-lg hover:bg-secondary hover:shadow-md transition-all uppercase tracking-wide"
             >
               {addedToCart ? (
-                <><Check className="h-4 w-4" /> Adăugat!</>
+                <><Check className="h-5 w-5" /> Adăugat!</>
               ) : (
-                <><ShoppingBag className="h-4 w-4" /> Adaugă în coș</>
+                <><ShoppingBag className="h-5 w-5" /> Adaugă în coș</>
               )}
             </button>
           )}

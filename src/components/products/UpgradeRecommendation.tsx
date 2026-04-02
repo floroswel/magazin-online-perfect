@@ -86,8 +86,8 @@ export default function UpgradeRecommendation({ productId, currentProduct }: Pro
               )}
             </div>
           </div>
-          <Button onClick={handleChoose} className="w-full mt-4 font-semibold">
-            <ArrowRight className="h-4 w-4 mr-2" /> Alege varianta premium
+          <Button onClick={handleChoose} size="lg" className="w-full mt-4 font-extrabold text-base uppercase tracking-wide">
+            <ArrowRight className="h-5 w-5 mr-2" /> Alege varianta premium
           </Button>
         </CardContent>
       </Card>

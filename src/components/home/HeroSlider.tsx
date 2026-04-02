@@ -73,7 +73,7 @@ export default function HeroSlider() {
                   </p>
                   <Link
                     to={slide.link}
-                    className="inline-flex items-center justify-center bg-primary text-primary-foreground font-bold text-sm px-8 py-3.5 rounded-lg hover:bg-secondary hover:shadow-xl transition-all min-h-[48px] uppercase tracking-wide"
+                    className="inline-flex items-center justify-center bg-primary text-primary-foreground font-extrabold text-base px-10 py-4 rounded-lg hover:bg-secondary hover:shadow-xl transition-all min-h-[52px] uppercase tracking-wide"
                   >
                     {slide.cta}
                   </Link>

@@ -98,11 +98,10 @@ export default function CartRecommendations({ cartProductIds, cartCategoryIds }:
                   <p className="text-sm font-bold text-primary">{format(p.price)}</p>
                   <Button
                     size="sm"
-                    variant="outline"
-                    className="h-7 text-xs px-2"
+                    className="h-9 text-sm px-3 font-bold"
                     onClick={() => handleQuickAdd(p)}
                   >
-                    <Plus className="h-3 w-3 mr-1" /> Adaugă
+                    <Plus className="h-4 w-4 mr-1" /> Adaugă
                   </Button>
                 </div>
               </CardContent>
