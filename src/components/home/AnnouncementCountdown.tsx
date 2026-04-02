@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useEditableContent } from "@/hooks/useEditableContent";
 
 function getTimeUntilMidnightRO(): { h: number; m: number; s: number } {
   const now = new Date();
@@ -20,16 +21,20 @@ function pad(n: number) {
 
 export default function AnnouncementCountdown() {
   const [time, setTime] = useState(getTimeUntilMidnightRO);
+  const { announcement } = useEditableContent();
 
   useEffect(() => {
     const id = setInterval(() => setTime(getTimeUntilMidnightRO()), 1000);
     return () => clearInterval(id);
   }, []);
 
+  const desktopText = (announcement.text_desktop || "").replace("{threshold}", String(announcement.threshold || 200));
+  const mobileText = (announcement.text_mobile || "").replace("{threshold}", String(announcement.threshold || 200));
+
   return (
     <div className="text-center py-2 text-sm font-medium tracking-wide bg-primary text-primary-foreground">
-      <span className="hidden sm:inline">🕯️ Livrare GRATUITĂ la comenzi peste 200 lei | Oferta expiră în </span>
-      <span className="sm:hidden">🕯️ Livrare GRATUITĂ — </span>
+      <span className="hidden sm:inline">{desktopText}</span>
+      <span className="sm:hidden">{mobileText}</span>
       <span className="font-bold tabular-nums">
         {pad(time.h)}:{pad(time.m)}:{pad(time.s)}
       </span>
