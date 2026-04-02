@@ -52,6 +52,7 @@ import SeoLanding from "./pages/SeoLanding";
 import SeoHub from "./pages/SeoHub";
 import SeasonalCollections from "./pages/SeasonalCollections";
 import VirtualTryOn from "./pages/VirtualTryOn";
+import SitemapXml from "./pages/SitemapXml";
 import PostDelivery from "./pages/PostDelivery";
 import PoliticaConfidentialitate from "./pages/PoliticaConfidentialitate";
 import TermeniSiConditii from "./pages/TermeniSiConditii";
