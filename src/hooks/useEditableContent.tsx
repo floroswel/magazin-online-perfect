@@ -105,6 +105,7 @@ const DEFAULTS: EditableContent = {
 };
 
 const CONTENT_KEYS = [
+  "editable_store_general",
   "editable_announcement",
   "editable_header_topbar",
   "editable_header_nav",
