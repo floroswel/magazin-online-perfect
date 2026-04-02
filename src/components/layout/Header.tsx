@@ -22,6 +22,7 @@ export default function Header() {
   const { isDark, toggle: toggleDarkMode } = useDarkMode();
   const layout = useLayoutSettings();
   const branding = useStoreBranding();
+  const { header_topbar, header_nav, mobile_categories } = useEditableContent();
   const [mobileMenu, setMobileMenu] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
 
