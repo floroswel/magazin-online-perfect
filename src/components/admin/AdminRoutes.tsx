@@ -364,7 +364,7 @@ export default function AdminRoutes() {
         <Route path="integrations/cargus" element={<AdminIntegrationConfig integrationKey="cargus" title="Cargus" description="Configurare Cargus." fields={[{ key: "api_key", label: "API Key", type: "password" }, { key: "subscription_key", label: "Subscription Key" }]} />} />
         <Route path="integrations/dpd" element={<AdminIntegrationConfig integrationKey="dpd" title="DPD" description="Configurare DPD." fields={[{ key: "username", label: "Utilizator API" }, { key: "password", label: "Parolă", type: "password" }]} />} />
         <Route path="integrations/dhl" element={<AdminIntegrationConfig integrationKey="dhl" title="DHL" description="Configurare DHL Express." fields={[{ key: "site_id", label: "Site ID" }, { key: "password", label: "Parolă", type: "password" }, { key: "account_number", label: "Nr. Cont" }]} />} />
-        <Route path="integrations/smartbill" element={<AdminIntegrationConfig integrationKey="smartbill" title="SmartBill" description="Configurare SmartBill facturare." fields={[{ key: "email", label: "Email cont SmartBill" }, { key: "token", label: "API Token", type: "password" }, { key: "cif", label: "CIF companie" }, { key: "series", label: "Serie facturi" }]} />} />
+        {/* SmartBill lives at settings/smartbill only */}
         <Route path="integrations/facebook-pixel" element={<AdminIntegrationConfig integrationKey="facebook-pixel" title="Facebook Pixel" description="Configurare Meta Pixel." fields={[{ key: "pixel_id", label: "Pixel ID" }, { key: "access_token", label: "Access Token (CAPI)", type: "password" }]} />} />
         <Route path="integrations/tiktok-pixel" element={<AdminIntegrationConfig integrationKey="tiktok-pixel" title="TikTok Pixel" description="Configurare TikTok Pixel." fields={[{ key: "pixel_id", label: "Pixel ID" }]} />} />
         <Route path="integrations/google-ads" element={<AdminIntegrationConfig integrationKey="google-ads" title="Google Ads" description="Configurare Google Ads conversion tracking." fields={[{ key: "conversion_id", label: "Conversion ID" }, { key: "conversion_label", label: "Conversion Label" }]} />} />
@@ -405,7 +405,7 @@ export default function AdminRoutes() {
         {/* ═══════════ SETĂRI ═══════════ */}
         <Route path="settings/general" element={<AdminGeneralSettings />} />
         <Route path="settings/theme" element={<AdminThemeEditor />} />
-        <Route path="settings/footer-badges" element={<AdminFooterSettings />} />
+        {/* footer-badges removed — use settings/footer */}
         <Route path="settings/footer" element={<AdminFooterSettings />} />
         <Route path="settings/taxes" element={<AdminTaxSettings />} />
         <Route path="settings/store" element={<AdminStoreSettings />} />
