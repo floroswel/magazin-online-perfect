@@ -3,11 +3,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Palette, Megaphone, LayoutDashboard, Download, Upload, Settings2 } from "lucide-react";
+import { Eye, Megaphone, LayoutDashboard, Download, Upload, Settings2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAllVisibility } from "@/hooks/useVisibility";
 import ControlVisibility from "./ControlVisibility";
-import ControlTheme from "./ControlTheme";
 import ControlBanners from "./ControlBanners";
 import ControlLayout from "./ControlLayout";
 
@@ -105,12 +104,9 @@ export default function AdminControlCenter() {
       </div>
 
       <Tabs defaultValue="visibility" className="w-full">
-        <TabsList className="w-full grid grid-cols-4">
+        <TabsList className="w-full grid grid-cols-3">
           <TabsTrigger value="visibility" className="flex items-center gap-1.5">
             <Eye className="w-4 h-4" /> Vizibilitate
-          </TabsTrigger>
-          <TabsTrigger value="theme" className="flex items-center gap-1.5">
-            <Palette className="w-4 h-4" /> Temă
           </TabsTrigger>
           <TabsTrigger value="banners" className="flex items-center gap-1.5">
             <Megaphone className="w-4 h-4" /> Bannere
@@ -121,7 +117,6 @@ export default function AdminControlCenter() {
         </TabsList>
 
         <TabsContent value="visibility"><ControlVisibility /></TabsContent>
-        <TabsContent value="theme"><ControlTheme /></TabsContent>
         <TabsContent value="banners"><ControlBanners /></TabsContent>
         <TabsContent value="layout"><ControlLayout /></TabsContent>
       </Tabs>
