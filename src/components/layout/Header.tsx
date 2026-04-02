@@ -47,9 +47,9 @@ export default function Header() {
         {/* Top utility bar */}
         <div className="bg-muted border-b border-border">
           <div className="container flex items-center justify-between h-8 px-4 text-[11px] text-muted-foreground">
-            <span className="font-medium">📞 0800-123-456</span>
-            <span className="hidden sm:block font-semibold text-primary">🚚 Livrare GRATUITĂ la comenzi peste 150 lei</span>
-            <span className="hidden md:block">📍 București, România</span>
+            <span className="font-medium">{header_topbar.phone}</span>
+            <span className="hidden sm:block font-semibold text-primary">{header_topbar.shipping_text}</span>
+            <span className="hidden md:block">{header_topbar.location}</span>
           </div>
         </div>
 
