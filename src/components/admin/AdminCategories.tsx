@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, Pencil, Trash2, ChevronRight, ChevronDown, Eye, EyeOff, Upload, Image as ImageIcon, GripVertical, Zap } from "lucide-react";
+import { Plus, Pencil, Trash2, ChevronRight, ChevronDown, Eye, EyeOff, Upload, Image as ImageIcon, GripVertical, Zap, X } from "lucide-react";
 import { toast } from "sonner";
 import RichTextEditor from "@/components/ui/RichTextEditor";
 
@@ -302,7 +302,14 @@ export default function AdminCategories() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Icon (emoji)</Label>
-                <Input value={form.icon} onChange={e => setForm(p => ({ ...p, icon: e.target.value }))} placeholder="📱" />
+                <div className="flex gap-2">
+                  <Input value={form.icon} onChange={e => setForm(p => ({ ...p, icon: e.target.value }))} placeholder="📱" className="flex-1" />
+                  {form.icon && (
+                    <Button type="button" variant="outline" size="icon" className="shrink-0" onClick={() => setForm(p => ({ ...p, icon: "" }))}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
               <div>
                 <Label>Categorie Părinte</Label>
