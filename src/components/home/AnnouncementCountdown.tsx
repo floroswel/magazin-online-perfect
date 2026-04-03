@@ -31,6 +31,9 @@ export default function AnnouncementCountdown() {
   const desktopText = (announcement.text_desktop || "").replace("{threshold}", String(announcement.threshold || 200));
   const mobileText = (announcement.text_mobile || "").replace("{threshold}", String(announcement.threshold || 200));
 
+  // Hide bar if both texts are empty
+  if (!desktopText.trim() && !mobileText.trim()) return null;
+
   const bgColor = announcement.bg_color || undefined;
   const textColor = announcement.text_color || undefined;
   const isMarquee = !!announcement.marquee;
