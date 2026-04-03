@@ -41,7 +41,7 @@ import Recenzii from "./pages/Recenzii";
 import Tracking from "./pages/Tracking";
 import LivrareInternationala from "./pages/LivrareInternationala";
 import ComenziEvenimente from "./pages/ComenziEvenimente";
-import VendorStore from "./pages/VendorStore";
+
 import Oferte from "./pages/Oferte";
 import DeIncredere from "./pages/DeIncredere";
 import NouLansari from "./pages/NouLansari";
@@ -116,7 +116,7 @@ const App = () => (
               <Route path="/povestea-noastra" element={<ErrorBoundary><CmsPage overrideSlug="despre-noi" /></ErrorBoundary>} />
               <Route path="/recenzii" element={<ErrorBoundary><Recenzii /></ErrorBoundary>} />
               <Route path="/unsubscribe" element={<ErrorBoundary><Unsubscribe /></ErrorBoundary>} />
-              <Route path="/vendor/:slug" element={<ErrorBoundary><VendorStore /></ErrorBoundary>} />
+              
               <Route path="/oferte" element={<ErrorBoundary><Oferte /></ErrorBoundary>} />
               <Route path="/de-incredere" element={<ErrorBoundary><DeIncredere /></ErrorBoundary>} />
               <Route path="/nou" element={<ErrorBoundary><NouLansari /></ErrorBoundary>} />
