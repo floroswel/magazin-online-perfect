@@ -21,7 +21,7 @@ import BrandLogosCarousel from "@/components/home/BrandLogosCarousel";
 import QuickFilters from "@/components/home/QuickFilters";
 import CouponCollector from "@/components/home/CouponCollector";
 import CandleMoodSelector from "@/components/home/CandleMoodSelector";
-import TopVendors from "@/components/home/TopVendors";
+
 import BuyAgain from "@/components/home/BuyAgain";
 import { ProductCardSkeleton } from "@/components/ui/skeletons";
 import { supabase } from "@/integrations/supabase/client";
