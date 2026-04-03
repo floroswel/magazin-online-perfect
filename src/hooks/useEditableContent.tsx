@@ -19,6 +19,7 @@ export interface EditableContent {
     marquee_mobile: boolean;
     enabled: boolean;
     show_countdown: boolean;
+    fallback_text: string;
   };
   header_topbar: {
     phone: string;
