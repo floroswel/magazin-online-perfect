@@ -398,8 +398,8 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                                 className={cn(
                                   "block px-3 py-1.5 rounded-md text-[13px] transition-all",
                                   isActive(child.path)
-                                    ? "bg-white/10 text-white font-medium"
-                                    : "text-white/50 hover:text-white/80 hover:bg-white/5"
+                                    ? "bg-sidebar-accent text-sidebar-primary-foreground font-medium"
+                                    : "text-sidebar-foreground/70 hover:text-sidebar-accent-foreground hover:bg-sidebar-accent/50"
                                 )}
                               >
                                 {child.label}
