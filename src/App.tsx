@@ -104,7 +104,7 @@ const App = () => (
               <Route path="/page/:slug" element={<ErrorBoundary><CmsPage /></ErrorBoundary>} />
               <Route path="/install" element={<ErrorBoundary><Install /></ErrorBoundary>} />
               <Route path="/afilieri" element={<ErrorBoundary><Affiliates /></ErrorBoundary>} />
-              <Route path="/faq" element={<ErrorBoundary><FAQ /></ErrorBoundary>} />
+              <Route path="/faq" element={<ErrorBoundary><CmsPage overrideSlug="faq" /></ErrorBoundary>} />
               <Route path="/tracking" element={<ErrorBoundary><Tracking /></ErrorBoundary>} />
               <Route path="/livrare-internationala" element={<ErrorBoundary><LivrareInternationala /></ErrorBoundary>} />
               <Route path="/comenzi-bulk-evenimente" element={<ErrorBoundary><ComenziEvenimente /></ErrorBoundary>} />
@@ -113,7 +113,7 @@ const App = () => (
               <Route path="/corporate-gifting" element={<ErrorBoundary><CorporateGifting /></ErrorBoundary>} />
               <Route path="/quiz-parfum" element={<ErrorBoundary><QuizParfum /></ErrorBoundary>} />
               <Route path="/ingrijire-lumanari" element={<ErrorBoundary><IngrijireLumanari /></ErrorBoundary>} />
-              <Route path="/povestea-noastra" element={<ErrorBoundary><PovesteaNoastra /></ErrorBoundary>} />
+              <Route path="/povestea-noastra" element={<ErrorBoundary><CmsPage overrideSlug="despre-noi" /></ErrorBoundary>} />
               <Route path="/recenzii" element={<ErrorBoundary><Recenzii /></ErrorBoundary>} />
               <Route path="/unsubscribe" element={<ErrorBoundary><Unsubscribe /></ErrorBoundary>} />
               <Route path="/vendor/:slug" element={<ErrorBoundary><VendorStore /></ErrorBoundary>} />
@@ -127,11 +127,11 @@ const App = () => (
               <Route path="/colectii-sezoniere" element={<ErrorBoundary><SeasonalCollections /></ErrorBoundary>} />
               <Route path="/virtual-try-on" element={<ErrorBoundary><VirtualTryOn /></ErrorBoundary>} />
               <Route path="/post-delivery/:token" element={<ErrorBoundary><PostDelivery /></ErrorBoundary>} />
-              <Route path="/contact" element={<ErrorBoundary><Contact /></ErrorBoundary>} />
-              <Route path="/politica-de-confidentialitate" element={<ErrorBoundary><PoliticaConfidentialitate /></ErrorBoundary>} />
-              <Route path="/termeni-si-conditii" element={<ErrorBoundary><TermeniSiConditii /></ErrorBoundary>} />
-              <Route path="/politica-de-cookies" element={<ErrorBoundary><PoliticaCookies /></ErrorBoundary>} />
-              <Route path="/politica-de-retur" element={<ErrorBoundary><PoliticaRetur /></ErrorBoundary>} />
+              <Route path="/contact" element={<ErrorBoundary><CmsPage overrideSlug="contact" /></ErrorBoundary>} />
+              <Route path="/politica-de-confidentialitate" element={<ErrorBoundary><CmsPage overrideSlug="politica-de-confidentialitate" /></ErrorBoundary>} />
+              <Route path="/termeni-si-conditii" element={<ErrorBoundary><CmsPage overrideSlug="termeni-si-conditii" /></ErrorBoundary>} />
+              <Route path="/politica-de-cookies" element={<ErrorBoundary><CmsPage overrideSlug="politica-cookie" /></ErrorBoundary>} />
+              <Route path="/politica-de-retur" element={<ErrorBoundary><CmsPage overrideSlug="politica-retur" /></ErrorBoundary>} />
               <Route path="/sitemap.xml" element={<SitemapXml />} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="/:slug" element={<ErrorBoundary><CmsPage /></ErrorBoundary>} />

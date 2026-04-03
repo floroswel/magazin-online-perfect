@@ -7,17 +7,22 @@ import { usePageSeo } from "@/components/SeoHead";
 import { Loader2 } from "lucide-react";
 import DOMPurify from "dompurify";
 
-export default function CmsPage() {
+export default function CmsPage({ overrideSlug }: { overrideSlug?: string }) {
   const { store_general } = useEditableContent();
   usePageSeo({ title: store_general.store_name, description: `${store_general.store_slogan} — magazin online.` });
-  const { slug } = useParams<{ slug: string }>();
+  const params = useParams<{ slug: string }>();
+  const slug = overrideSlug ?? params.slug;
   const [page, setPage] = useState<{ title: string; body_html: string | null; meta_title: string | null; meta_description: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
+
     setLoading(true);
+    setNotFound(false);
+    setPage(null);
+
     supabase
       .from("cms_pages")
       .select("title, body_html, meta_title, meta_description")
@@ -35,7 +40,7 @@ export default function CmsPage() {
         }
         setLoading(false);
       });
-  }, [slug]);
+  }, [slug, store_general.store_name]);
 
   if (loading) {
     return (
