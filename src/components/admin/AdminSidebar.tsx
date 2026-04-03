@@ -255,12 +255,11 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
 
       <aside
         className={cn(
-          "h-screen flex flex-col shrink-0 transition-all duration-200 ease-in-out overflow-hidden",
+          "admin-sidebar h-screen flex flex-col shrink-0 transition-all duration-200 ease-in-out overflow-hidden bg-sidebar",
           "fixed lg:static z-50 lg:z-auto lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
           collapsed ? "lg:w-16" : "w-60"
         )}
-        style={{ background: "#1B2A4A" }}
       >
         {/* Logo */}
         <div className="flex items-center justify-between px-4 h-14 border-b border-white/10 shrink-0">
