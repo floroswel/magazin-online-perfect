@@ -19,6 +19,7 @@ export interface EditableContent {
     marquee_mobile: boolean;
     enabled: boolean;
     show_countdown: boolean;
+    fallback_text: string;
   };
   header_topbar: {
     phone: string;
@@ -58,6 +59,7 @@ const DEFAULTS: EditableContent = {
     marquee_mobile: false,
     enabled: true,
     show_countdown: true,
+    fallback_text: "",
   },
   header_topbar: {
     phone: "📞 0800-123-456",

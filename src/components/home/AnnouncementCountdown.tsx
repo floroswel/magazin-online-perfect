@@ -31,12 +31,27 @@ export default function AnnouncementCountdown() {
   const desktopText = (announcement.text_desktop || "").replace("{threshold}", String(announcement.threshold || 200));
   const mobileText = (announcement.text_mobile || "").replace("{threshold}", String(announcement.threshold || 200));
 
-  // Hide bar if disabled or both texts are empty
-  if (announcement.enabled === false) return null;
-  if (!desktopText.trim() && !mobileText.trim()) return null;
-
   const bgColor = announcement.bg_color || undefined;
   const textColor = announcement.text_color || undefined;
+
+  // If countdown bar is disabled, show fallback text if present
+  if (announcement.enabled === false) {
+    const fallback = (announcement.fallback_text || "").trim();
+    if (!fallback) return null;
+    return (
+      <div
+        className="text-center py-2 text-sm font-medium tracking-wide bg-primary text-primary-foreground"
+        style={{
+          ...(bgColor ? { backgroundColor: bgColor } : {}),
+          ...(textColor ? { color: textColor } : {}),
+        }}
+      >
+        {fallback}
+      </div>
+    );
+  }
+
+  if (!desktopText.trim() && !mobileText.trim()) return null;
   const isMarquee = !!announcement.marquee;
   const isMarqueeMobile = !!announcement.marquee_mobile;
   const showCountdown = announcement.show_countdown !== false;

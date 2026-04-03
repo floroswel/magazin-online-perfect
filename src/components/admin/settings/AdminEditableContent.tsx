@@ -219,6 +219,13 @@ export default function AdminEditableContent() {
                   <Label htmlFor="ann-countdown" className="text-sm cursor-pointer">Afișează cronometru</Label>
                 </div>
               </div>
+              {content.announcement.enabled === false && (
+                <div>
+                  <Label>Text personalizat (când bara countdown e dezactivată)</Label>
+                  <Textarea value={content.announcement.fallback_text || ""} onChange={e => set("announcement", { ...content.announcement, fallback_text: e.target.value })} rows={2} placeholder="Ex: Bun venit la MamaLucica! 🕯️" />
+                  <p className="text-xs text-muted-foreground mt-1">Acest text apare în locul barei de countdown</p>
+                </div>
+              )}
               <div><Label>Text Desktop</Label><Textarea value={content.announcement.text_desktop} onChange={e => set("announcement", { ...content.announcement, text_desktop: e.target.value })} rows={2} /><p className="text-xs text-muted-foreground mt-1">Folosește {"{threshold}"} pentru pragul în lei</p></div>
               <div><Label>Text Mobil</Label><Textarea value={content.announcement.text_mobile} onChange={e => set("announcement", { ...content.announcement, text_mobile: e.target.value })} rows={2} /></div>
               <div className="max-w-[200px]"><Label>Prag Livrare Gratuită (lei)</Label><Input type="number" value={content.announcement.threshold} onChange={e => set("announcement", { ...content.announcement, threshold: Number(e.target.value) })} /></div>
