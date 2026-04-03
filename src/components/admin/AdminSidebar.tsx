@@ -13,7 +13,7 @@ import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-interface SubItem { label: string; path: string }
+interface SubItem { label: string; path: string; dividerBefore?: string }
 interface MenuItem {
   label: string;
   icon: any;
