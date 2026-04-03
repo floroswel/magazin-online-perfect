@@ -260,7 +260,7 @@ export default function AdminDynamicCategories() {
                     <TableCell className="text-muted-foreground">{cat.display_order}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <span className="font-medium">{cat.icon} {cat.name}</span>
+                        <span className="font-medium">{cat.icon ? `${cat.icon} ` : ""}{cat.name}</span>
                         <Badge variant="secondary" className="text-[10px]"><Zap className="w-3 h-3 mr-0.5" />Dynamic</Badge>
                       </div>
                       <div className="text-xs text-muted-foreground">/{cat.slug}</div>
