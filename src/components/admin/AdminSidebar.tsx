@@ -358,24 +358,30 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                       <div
                         className={cn(
                           "overflow-hidden transition-all duration-200",
-                          isExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                          isExpanded ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0"
                         )}
                       >
                         <div className="ml-[18px] pl-4 border-l border-white/10 space-y-px mt-0.5 mb-1">
                           {item.children!.map((child) => (
-                            <Link
-                              key={child.path}
-                              to={child.path}
-                              onClick={handleNavClick}
-                              className={cn(
-                                "block px-3 py-1.5 rounded-md text-[13px] transition-all",
-                                isActive(child.path)
-                                  ? "bg-white/10 text-white font-medium"
-                                  : "text-white/50 hover:text-white/80 hover:bg-white/5"
+                            <div key={child.path}>
+                              {child.dividerBefore && (
+                                <p className="px-3 pt-2.5 pb-1 text-[9px] font-bold uppercase tracking-[0.15em] text-white/25">
+                                  {child.dividerBefore}
+                                </p>
                               )}
-                            >
-                              {child.label}
-                            </Link>
+                              <Link
+                                to={child.path}
+                                onClick={handleNavClick}
+                                className={cn(
+                                  "block px-3 py-1.5 rounded-md text-[13px] transition-all",
+                                  isActive(child.path)
+                                    ? "bg-white/10 text-white font-medium"
+                                    : "text-white/50 hover:text-white/80 hover:bg-white/5"
+                                )}
+                              >
+                                {child.label}
+                              </Link>
+                            </div>
                           ))}
                         </div>
                       </div>
