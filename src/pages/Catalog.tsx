@@ -61,9 +61,9 @@ export default function Catalog() {
       .order("display_order")
       .order("name")
       .then(({ data }) => {
-        const filtered = ((data as Cat[]) || []).filter((cat) => isCandleCollection(cat));
-        setCategories(filtered);
-        setAllowedCategoryIds(filtered.map((cat) => cat.id));
+        const all = (data as Cat[]) || [];
+        setCategories(all);
+        setAllowedCategoryIds(all.map((cat) => cat.id));
         setCategoriesLoaded(true);
       });
 
