@@ -9781,6 +9781,7 @@ export type Database = {
         Args: { p_code: string; p_valid_until: string }
         Returns: undefined
       }
+      delete_customer_data_gdpr: { Args: { p_user_id: string }; Returns: Json }
       get_dynamic_category_products: {
         Args: {
           category_id: string
