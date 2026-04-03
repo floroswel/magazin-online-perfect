@@ -388,7 +388,7 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                           {item.children!.map((child) => (
                             <div key={child.path}>
                               {child.dividerBefore && (
-                                <p className="px-3 pt-2.5 pb-1 text-[9px] font-bold uppercase tracking-[0.15em] text-white/25">
+                                <p className="px-3 pt-2.5 pb-1 text-[9px] font-bold uppercase tracking-[0.15em] text-sidebar-foreground/35">
                                   {child.dividerBefore}
                                 </p>
                               )}
