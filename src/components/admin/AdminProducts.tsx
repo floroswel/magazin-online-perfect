@@ -25,6 +25,7 @@ import AIGeneratorModal from "@/components/admin/products/AIGeneratorModal";
 import AttributeExtractorModal from "@/components/admin/products/AttributeExtractorModal";
 import { processProductImage, formatBytes } from "@/lib/imageResize";
 import ProductSizesEditor from "@/components/admin/products/ProductSizesEditor";
+import ProductVideoGenerator from "@/components/admin/products/ProductVideoGenerator";
 
 // ─── Types ───
 interface BundleComponent {
