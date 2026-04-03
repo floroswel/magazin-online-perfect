@@ -13,7 +13,7 @@ import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-interface SubItem { label: string; path: string }
+interface SubItem { label: string; path: string; dividerBefore?: string }
 interface MenuItem {
   label: string;
   icon: any;
@@ -46,25 +46,25 @@ const menuSections: MenuSection[] = [
       {
         label: "Produse", icon: Package,
         children: [
-          { label: "Toate Produsele", path: "/admin/products" },
+          { label: "Toate Produsele", path: "/admin/products", dividerBefore: "Catalog" },
           { label: "Categorii", path: "/admin/categories" },
           { label: "Categorii Inteligente", path: "/admin/categories/smart" },
           { label: "Mărci", path: "/admin/products/brands" },
-          { label: "Atribute", path: "/admin/products/attributes" },
+          { label: "Atribute", path: "/admin/products/attributes", dividerBefore: "Detalii Produs" },
           { label: "Specificații", path: "/admin/products/specs" },
           { label: "Pachete", path: "/admin/products/bundles" },
           { label: "Personalizare", path: "/admin/products/customization" },
-          { label: "Review-uri", path: "/admin/products/reviews" },
+          { label: "Review-uri", path: "/admin/products/reviews", dividerBefore: "Feedback" },
           { label: "Întrebări", path: "/admin/products/questions" },
-          { label: "SEO Produse", path: "/admin/products/seo" },
+          { label: "SEO Produse", path: "/admin/products/seo", dividerBefore: "Distribuție" },
           { label: "Import / Export", path: "/admin/products/import-export" },
           { label: "Feed-uri", path: "/admin/marketing/feeds" },
-          { label: "Stoc", path: "/admin/stock" },
+          { label: "Stoc", path: "/admin/stock", dividerBefore: "Stoc & Logistică" },
           { label: "Depozite", path: "/admin/stock/warehouses" },
           { label: "Mișcări Stoc", path: "/admin/stock/movements" },
           { label: "Alerte Stoc", path: "/admin/stock/alerts" },
           { label: "Inventar", path: "/admin/stock/inventory" },
-          { label: "Furnizori", path: "/admin/stock/suppliers" },
+          { label: "Furnizori", path: "/admin/stock/suppliers", dividerBefore: "Furnizori" },
           { label: "Comenzi Furnizori", path: "/admin/stock/purchase-orders" },
           { label: "Liste Prețuri", path: "/admin/stock/price-lists" },
         ],
@@ -358,24 +358,30 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                       <div
                         className={cn(
                           "overflow-hidden transition-all duration-200",
-                          isExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                          isExpanded ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0"
                         )}
                       >
                         <div className="ml-[18px] pl-4 border-l border-white/10 space-y-px mt-0.5 mb-1">
                           {item.children!.map((child) => (
-                            <Link
-                              key={child.path}
-                              to={child.path}
-                              onClick={handleNavClick}
-                              className={cn(
-                                "block px-3 py-1.5 rounded-md text-[13px] transition-all",
-                                isActive(child.path)
-                                  ? "bg-white/10 text-white font-medium"
-                                  : "text-white/50 hover:text-white/80 hover:bg-white/5"
+                            <div key={child.path}>
+                              {child.dividerBefore && (
+                                <p className="px-3 pt-2.5 pb-1 text-[9px] font-bold uppercase tracking-[0.15em] text-white/25">
+                                  {child.dividerBefore}
+                                </p>
                               )}
-                            >
-                              {child.label}
-                            </Link>
+                              <Link
+                                to={child.path}
+                                onClick={handleNavClick}
+                                className={cn(
+                                  "block px-3 py-1.5 rounded-md text-[13px] transition-all",
+                                  isActive(child.path)
+                                    ? "bg-white/10 text-white font-medium"
+                                    : "text-white/50 hover:text-white/80 hover:bg-white/5"
+                                )}
+                              >
+                                {child.label}
+                              </Link>
+                            </div>
                           ))}
                         </div>
                       </div>
