@@ -1,27 +1,57 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { X, Clock, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function ExitIntentPopup() {
   const [show, setShow] = useState(false);
-  const [code] = useState(() => "EXIT" + Math.random().toString(36).substring(2, 8).toUpperCase());
+  const [code, setCode] = useState("");
   const [copied, setCopied] = useState(false);
   const [minutes, setMinutes] = useState(30);
   const [seconds, setSeconds] = useState(0);
+  const couponCreated = useRef(false);
+
+  // Generate and persist coupon to DB
+  const createCoupon = useCallback(async () => {
+    if (couponCreated.current) return;
+    couponCreated.current = true;
+
+    const generated = "EXIT" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    setCode(generated);
+
+    // Save as a real coupon: 10% discount, single use, valid 30 min
+    const validUntil = new Date(Date.now() + 30 * 60 * 1000).toISOString();
+    await (supabase as any).from("coupons").insert({
+      code: generated,
+      discount_type: "percentage",
+      discount_value: 10,
+      is_active: true,
+      max_uses: 1,
+      max_uses_per_customer: 1,
+      first_order_only: true,
+      valid_until: validUntil,
+      description: "Exit intent - 10% prima comandă (auto-generat)",
+      applies_to: "all",
+    });
+
+    // Store in localStorage so checkout can identify it as exit-intent
+    localStorage.setItem("exit_intent_code", generated);
+  }, []);
 
   const handleMouseLeave = useCallback((e: MouseEvent) => {
     if (e.clientY <= 5 && !show) {
       const dismissed = sessionStorage.getItem("exit_popup_dismissed");
       if (dismissed) return;
       setShow(true);
+      createCoupon();
     }
-  }, [show]);
+  }, [show, createCoupon]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       document.addEventListener("mouseleave", handleMouseLeave);
-    }, 10000); // Wait 10s before activating
+    }, 10000);
 
     return () => {
       clearTimeout(timer);
@@ -59,12 +89,11 @@ export default function ExitIntentPopup() {
     setTimeout(() => setCopied(false), 3000);
   };
 
-  if (!show) return null;
+  if (!show || !code) return null;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="relative bg-card border border-border rounded-2xl shadow-2xl max-w-md w-[90%] overflow-hidden">
-        {/* Close */}
         <button
           onClick={handleDismiss}
           className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-muted hover:bg-muted/80 transition-colors"
@@ -72,11 +101,9 @@ export default function ExitIntentPopup() {
           <X className="w-4 h-4 text-muted-foreground" />
         </button>
 
-        {/* Top accent */}
         <div className="h-1.5 bg-gradient-to-r from-primary to-accent" />
 
         <div className="p-6 md:p-8 text-center">
-          {/* Icon */}
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
             <Gift className="w-8 h-8 text-primary" />
           </div>
@@ -88,7 +115,6 @@ export default function ExitIntentPopup() {
             Primești <span className="font-bold text-primary text-lg">10% REDUCERE</span> la prima ta comandă. Ofertă valabilă doar acum!
           </p>
 
-          {/* Coupon code */}
           <div className="bg-muted/50 border-2 border-dashed border-primary/40 rounded-xl p-4 mb-4">
             <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Codul tău de reducere</p>
             <code className="text-2xl font-mono font-extrabold tracking-[0.15em] text-primary">{code}</code>
@@ -98,7 +124,6 @@ export default function ExitIntentPopup() {
             {copied ? "✓ Copiat!" : "Copiază codul și cumpără acum"}
           </Button>
 
-          {/* Timer */}
           <div className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
             <Clock className="w-3.5 h-3.5" />
             <span>Expiră în <strong className="text-foreground">{String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}</strong></span>

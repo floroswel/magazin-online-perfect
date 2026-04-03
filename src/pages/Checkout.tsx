@@ -163,7 +163,28 @@ export default function Checkout() {
         const { count } = await supabase.from("orders").select("id", { count: "exact", head: true }).eq("user_id", user.id);
         if ((count || 0) > 0) { toast.error("Acest cod e valabil doar pentru prima comandă"); setCouponLoading(false); return; }
       }
-    if (coupon.specific_customer_id && coupon.specific_customer_id !== user.id) { toast.error("Acest cod nu este valabil pentru contul tău"); setCouponLoading(false); return; }
+      if (coupon.specific_customer_id && coupon.specific_customer_id !== user.id) { toast.error("Acest cod nu este valabil pentru contul tău"); setCouponLoading(false); return; }
+    }
+
+    // Anti-fraud check for exit-intent coupons
+    if (code.startsWith("EXIT")) {
+      const customerEmail = user?.email || form.email;
+      const customerPhone = form.phone;
+      const customerName = form.fullName;
+      const customerAddress = `${form.address} ${form.city} ${form.county}`.trim();
+
+      const { data: fraudCheck } = await (supabase as any).rpc("check_exit_intent_fraud", {
+        p_email: customerEmail || null,
+        p_phone: customerPhone || null,
+        p_name: customerName || null,
+        p_address: customerAddress || null,
+      });
+
+      if (fraudCheck === true) {
+        toast.error("Acest tip de cod promotional a fost deja folosit. Oferta este valabilă o singură dată per client.");
+        setCouponLoading(false);
+        return;
+      }
     }
 
     // Check product/category scope — find eligible items
@@ -287,6 +308,21 @@ export default function Checkout() {
     if (appliedCoupons.length > 0 && user) {
       for (const ac of appliedCoupons) {
         await supabase.from("coupon_usage").insert({ coupon_id: ac.id, user_id: user.id, order_id: order.id });
+      }
+    }
+
+    // Record exit-intent coupon usage for anti-fraud
+    for (const ac of appliedCoupons) {
+      if (ac.code?.startsWith("EXIT")) {
+        await (supabase as any).from("exit_intent_usage").insert({
+          coupon_code: ac.code,
+          order_id: order.id,
+          customer_email: user?.email || form.email || null,
+          customer_phone: form.phone || null,
+          customer_name: form.fullName || null,
+          customer_address: `${form.address} ${form.city} ${form.county}`.trim() || null,
+          user_id: user?.id || null,
+        });
       }
     }
     if (user && pointsToUse > 0) await addPoints(-pointsToUse, "redeem", `Folosite la comandă #${order.id.slice(0, 8)}`, order.id);
