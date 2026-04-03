@@ -433,7 +433,7 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
               )}
               <Link
                 to="/"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] text-white/40 hover:text-white/70 hover:bg-white/5 transition-all"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-all"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Înapoi la magazin</span>
