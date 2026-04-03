@@ -11,8 +11,12 @@ interface Props {
 
 type GalleryItem = { type: "image"; url: string } | { type: "video"; url: string };
 
-export default function ProductImageGallery({ mainImage, images, alt }: Props) {
-  const allImages = [mainImage, ...(images || []).filter(img => img !== mainImage)];
+export default function ProductImageGallery({ mainImage, images, videos, alt }: Props) {
+  const allItems: GalleryItem[] = [
+    { type: "image", url: mainImage },
+    ...(images || []).filter(img => img !== mainImage).map(url => ({ type: "image" as const, url })),
+    ...(videos || []).map(url => ({ type: "video" as const, url })),
+  ];
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [showFullscreen, setShowFullscreen] = useState(false);
   const [zoomActive, setZoomActive] = useState(false);
@@ -20,7 +24,7 @@ export default function ProductImageGallery({ mainImage, images, alt }: Props) {
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const thumbnailsRef = useRef<HTMLDivElement>(null);
 
-  const currentImage = allImages[selectedIndex] || "/placeholder.svg";
+  const currentItem = allItems[selectedIndex] || { type: "image", url: "/placeholder.svg" };
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!imageContainerRef.current) return;
