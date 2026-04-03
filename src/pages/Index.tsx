@@ -12,6 +12,7 @@ import ScentGuideTeaser from "@/components/home/ScentGuideTeaser";
 import ReviewsSection from "@/components/home/ReviewsSection";
 import NewsletterDiscount from "@/components/home/NewsletterDiscount";
 import FlashDeals from "@/components/home/FlashDeals";
+import HomepageCatalog from "@/components/home/HomepageCatalog";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
 import PersonalizedRecommendations from "@/components/home/PersonalizedRecommendations";
 import WelcomeBack from "@/components/home/WelcomeBack";
@@ -32,7 +33,7 @@ import { useVisibility } from "@/hooks/useVisibility";
 import type { Tables } from "@/integrations/supabase/types";
 
 const DEFAULT_ORDER = [
-  "hero_section", "social_proof_bar", "quick_filters", "mood_selector", "collections_grid",
+  "hero_section", "social_proof_bar", "quick_filters", "mood_selector", "product_catalog", "collections_grid",
   "coupon_collector", "flash_deals", "scent_guide_teaser",
   "featured_products", "personalized_recommendations", "top_vendors", "brand_story_section",
   "bestsellers_section", "buy_again", "instagram_feed",
@@ -69,6 +70,7 @@ export default function Index() {
   const showTopVendors = useVisibility("top_vendors");
   const showBuyAgain = useVisibility("buy_again");
   const showBrandLogos = useVisibility("brand_logos");
+  const showProductCatalog = useVisibility("product_catalog");
 
   useEffect(() => {
     const fetchOrder = () => {
@@ -125,6 +127,7 @@ export default function Index() {
     coupon_collector: showCouponCollector,
     top_vendors: showTopVendors,
     buy_again: showBuyAgain,
+    product_catalog: showProductCatalog,
   };
 
   const EB = ErrorBoundary;
@@ -167,6 +170,7 @@ export default function Index() {
     top_vendors: <EB key="top_vendors" fallback={null}><TopVendors /></EB>,
     buy_again: <EB key="buy_again" fallback={null}><BuyAgain /></EB>,
     mood_selector: <EB key="mood_selector" fallback={null}><CandleMoodSelector /></EB>,
+    product_catalog: <EB key="product_catalog" fallback={null}><HomepageCatalog /></EB>,
   }), [featured, loading, featuredRef]);
 
   return (
