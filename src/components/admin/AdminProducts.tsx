@@ -1339,8 +1339,7 @@ export default function AdminProducts() {
             </Button>
           )}
           <div className="relative flex-1 sm:flex-initial">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Caută produse..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 w-full sm:w-64" />
+            <Input placeholder="Filtrează produse..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full sm:w-64 h-9 text-sm rounded-md border-dashed" />
           </div>
           <Button onClick={openCreate} className="gap-2">
             <Plus className="w-4 h-4" /> Produs Nou
