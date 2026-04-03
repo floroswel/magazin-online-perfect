@@ -169,11 +169,11 @@ export default function Footer() {
       </div>
 
       {/* Lower Footer */}
-      <div className="bg-[hsl(0_0%_10%)] border-t border-white/10">
+      <div className="bg-[hsl(0_0%_10%)] border-t border-white/10 pb-16 md:pb-0">
         <div className="container py-4 px-4 max-w-[1200px] mx-auto">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row flex-wrap items-center justify-between gap-4">
             <p className="text-xs text-white/30">{copyrightText}</p>
-            <div ref={footerScriptsRef} className="inline-flex flex-row flex-wrap items-center gap-4 [&_a]:inline-flex [&_a]:items-center [&_a]:gap-1.5 [&_img]:h-7 [&_img]:!w-auto [&_img]:object-contain [&_img]:opacity-70 [&_img]:hover:opacity-100 [&_span]:text-sm [&_p]:text-sm [&_div]:contents" />
+            <div ref={footerScriptsRef} className="inline-flex flex-row flex-wrap items-center justify-center gap-4 [&_a]:inline-flex [&_a]:items-center [&_a]:gap-1.5 [&_img]:h-7 [&_img]:!w-auto [&_img]:object-contain [&_img]:opacity-70 [&_img]:hover:opacity-100 [&_span]:text-sm [&_p]:text-sm [&_div]:contents" />
           </div>
         </div>
       </div>
