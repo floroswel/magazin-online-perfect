@@ -12,7 +12,7 @@ import ProductCard from "@/components/products/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrency } from "@/hooks/useCurrency";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
-import { isCandleCollection } from "@/lib/candleCatalog";
+
 import { usePageSeo } from "@/components/SeoHead";
 
 interface Cat {
@@ -61,9 +61,9 @@ export default function Catalog() {
       .order("display_order")
       .order("name")
       .then(({ data }) => {
-        const filtered = ((data as Cat[]) || []).filter((cat) => isCandleCollection(cat));
-        setCategories(filtered);
-        setAllowedCategoryIds(filtered.map((cat) => cat.id));
+        const all = (data as Cat[]) || [];
+        setCategories(all);
+        setAllowedCategoryIds(all.map((cat) => cat.id));
         setCategoriesLoaded(true);
       });
 
@@ -80,7 +80,7 @@ export default function Catalog() {
   useEffect(() => {
     if (smartSlug) {
       supabase.from("dynamic_categories").select("id, name, description").eq("slug", smartSlug).eq("visible", true).maybeSingle()
-        .then(({ data }) => setSmartCategory(data && isCandleCollection(data as any) ? (data as any) : null));
+        .then(({ data }) => setSmartCategory(data as any));
     } else { setSmartCategory(null); }
   }, [smartSlug]);
 

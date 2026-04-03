@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrency } from "@/hooks/useCurrency";
-import { isCandleProductLike } from "@/lib/candleCatalog";
+
 
 interface Suggestion {
   id: string;
@@ -77,7 +77,7 @@ export default function SearchAutocomplete({ className }: { className?: string }
         result_limit: 6,
       });
       if (!error && data) {
-        setSuggestions((data as Suggestion[]).filter((item) => isCandleProductLike(item)));
+        setSuggestions(data as Suggestion[]);
       } else {
         setSuggestions([]);
       }
