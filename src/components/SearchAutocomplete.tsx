@@ -138,9 +138,6 @@ export default function SearchAutocomplete({ className }: { className?: string }
               <X className="h-4 w-4" />
             </Button>
           )}
-          <Button type="submit" size="icon" className="absolute right-1 top-1 h-9 w-9 rounded-md bg-primary hover:bg-primary/90">
-            <Search className="h-4 w-4" />
-          </Button>
         </div>
       </form>
 
