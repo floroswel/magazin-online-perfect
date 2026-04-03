@@ -423,11 +423,11 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
               {/* User info */}
               {user && (
                 <div className="flex items-center gap-2 px-3 py-2">
-                  <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                  <div className="w-7 h-7 rounded-full bg-sidebar-accent flex items-center justify-center text-sidebar-primary-foreground text-xs font-bold shrink-0">
                     {(user.email || "?")[0].toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-white/80 text-xs font-medium truncate">{user.email}</p>
+                    <p className="text-sidebar-foreground text-xs font-medium truncate">{user.email}</p>
                   </div>
                 </div>
               )}
