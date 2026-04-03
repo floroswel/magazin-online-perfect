@@ -27,7 +27,7 @@ import ProductCard from "@/components/products/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
-import { useComparison } from "@/hooks/useComparison";
+
 import { usePricingRules } from "@/hooks/usePricingRules";
 import { toast } from "sonner";
 import { safeJsonLd, sanitizeForJsonLd } from "@/lib/sanitize-json-ld";
