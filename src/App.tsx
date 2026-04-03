@@ -19,7 +19,7 @@ import OrderConfirmation from "./pages/OrderConfirmation";
 import Auth from "./pages/Auth";
 import Account from "./pages/Account";
 import Favorites from "./pages/Favorites";
-import Compare from "./pages/Compare";
+
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import CmsPage from "./pages/CmsPage";
