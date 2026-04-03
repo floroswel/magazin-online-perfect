@@ -417,7 +417,7 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
         </ScrollArea>
 
         {/* Footer */}
-        <div className="border-t border-white/10 p-2 shrink-0 space-y-1">
+        <div className="border-t border-sidebar-border p-2 shrink-0 space-y-1">
           {!collapsed ? (
             <>
               {/* User info */}
