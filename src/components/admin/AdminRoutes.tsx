@@ -191,6 +191,8 @@ const AdminHeroSlides = lazy(() => import("./content/AdminHeroSlides"));
 const AdminPersonalizationOptions = lazy(() => import("./content/AdminPersonalizationOptions"));
 const AdminStaticPages = lazy(() => import("./content/AdminStaticPages"));
 const AdminExternalWebhooks = lazy(() => import("./integrations/AdminExternalWebhooks"));
+const AdminBreadcrumbSettings = lazy(() => import("./settings/AdminBreadcrumbSettings"));
+const AdminDomainSettings = lazy(() => import("./settings/AdminDomainSettings"));
 
 export default function AdminRoutes() {
   return (
