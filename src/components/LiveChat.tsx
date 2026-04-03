@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { MessageCircle, X, Send, Bot, User, ThumbsUp, ThumbsDown, Loader2, Sparkles } from "lucide-react";
+import { MessageCircle, X, Send, Bot, User, ThumbsUp, ThumbsDown, Loader2, Sparkles, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -22,13 +22,22 @@ interface ChatSettings {
   offline_message: string;
 }
 
-const QUICK_REPLIES = [
-  "📦 Unde e comanda mea?",
-  "↩️ Vreau să returnez un produs",
-  "💳 Ce metode de plată acceptați?",
+const QUICK_REPLIES_GUEST = [
+  "🕯️ Ce lumânări aveți?",
   "🚚 Cât costă livrarea?",
-  "🕯️ Ce lumânare îmi recomandați?",
-  "🏷️ Aveți reduceri active?",
+  "💳 Ce metode de plată acceptați?",
+  "🎁 Caut un cadou special",
+  "↩️ Politica de retur",
+  "🏷️ Aveți reduceri?",
+];
+
+const QUICK_REPLIES_LOGGED = [
+  "📦 Unde e comanda mea?",
+  "🕯️ Recomandă-mi o lumânare",
+  "↩️ Vreau să returnez un produs",
+  "🚚 Cât costă livrarea?",
+  "🏷️ Aveți cupoane active?",
+  "🎁 Vreau un cadou personalizat",
 ];
 
 export default function LiveChat() {
@@ -41,6 +50,8 @@ export default function LiveChat() {
   const [sessionEnded, setSessionEnded] = useState(false);
   const [rated, setRated] = useState(false);
   const [showPulse, setShowPulse] = useState(true);
+  const [gdprAccepted, setGdprAccepted] = useState(false);
+  const [showGdpr, setShowGdpr] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const sessionId = useRef(crypto.randomUUID());
   const messageCount = useRef(0);
@@ -56,20 +67,56 @@ export default function LiveChat() {
       .then(({ data }: any) => {
         if (data) {
           setSettings(data);
-          if (data.enabled) {
-            setMessages([{ id: "welcome", role: "assistant", content: data.welcome_message }]);
-          }
         } else {
-          const defaults = { enabled: true, assistant_name: "Lucica", widget_color: "#6366f1", welcome_message: "Bună! 👋 Sunt Lucica, asistentul tău virtual. Cu ce te pot ajuta azi?", offline_message: "" };
-          setSettings(defaults);
-          setMessages([{ id: "welcome", role: "assistant", content: defaults.welcome_message }]);
+          setSettings({
+            enabled: true,
+            assistant_name: "Lucica",
+            widget_color: "#6366f1",
+            welcome_message: "Bună! 👋 Sunt Lucica, asistentul tău virtual. Cu ce te pot ajuta azi?",
+            offline_message: "",
+          });
         }
       });
+
+    // Check stored GDPR consent
+    const consent = localStorage.getItem("chatbot_gdpr_consent");
+    if (consent === "true") setGdprAccepted(true);
   }, []);
 
-  // Create session on first open
+  // Open chat handler
+  const handleOpen = () => {
+    if (!gdprAccepted) {
+      setShowGdpr(true);
+      return;
+    }
+    openChat();
+  };
+
+  const openChat = () => {
+    setOpen(true);
+    setShowGdpr(false);
+    setShowPulse(false);
+
+    // Set welcome message
+    if (messages.length === 0 && settings) {
+      const welcomeName = user ? ` Mă bucur să te văd!` : "";
+      setMessages([{
+        id: "welcome",
+        role: "assistant",
+        content: (settings.welcome_message || "Bună! 👋 Sunt Lucica.") + welcomeName,
+      }]);
+    }
+  };
+
+  const acceptGdpr = () => {
+    setGdprAccepted(true);
+    localStorage.setItem("chatbot_gdpr_consent", "true");
+    openChat();
+  };
+
+  // Create session
   useEffect(() => {
-    if (open && messageCount.current === 0) {
+    if (open && messageCount.current === 0 && gdprAccepted) {
       (supabase.from("chatbot_sessions" as any).insert({
         id: sessionId.current,
         customer_id: user?.id || null,
@@ -77,11 +124,10 @@ export default function LiveChat() {
         status: "active",
       } as any) as any).then(() => {});
       setTimeout(() => inputRef.current?.focus(), 100);
-      setShowPulse(false);
     }
-  }, [open, user]);
+  }, [open, user, gdprAccepted]);
 
-  // SSE streaming helper
+  // Stream chat
   const streamChat = useCallback(async (msgText: string, allMessages: Message[]) => {
     const historyMsgs = allMessages
       .filter(m => m.id !== "welcome")
@@ -99,31 +145,31 @@ export default function LiveChat() {
         sessionId: sessionId.current,
         userId: user?.id || null,
         history: historyMsgs,
+        gdprConsent: gdprAccepted,
       }),
     });
 
-    // Non-stream fallback for errors
     if (!resp.ok) {
       const errData = await resp.json().catch(() => ({}));
-      if (resp.status === 429) {
-        toast.warning("Chatbot-ul este momentan ocupat. Încearcă din nou.");
-      }
+      if (resp.status === 429) toast.warning("Chatbot-ul este momentan ocupat. Încearcă din nou.");
       return errData.reply || "Mulțumesc! Echipa noastră va reveni cu un răspuns. 🙏";
     }
 
     const contentType = resp.headers.get("content-type") || "";
 
-    // Non-streaming response (error/fallback from edge function)
     if (contentType.includes("application/json")) {
       const data = await resp.json();
       if (data.escalated) {
         setSessionEnded(true);
         toast.info("Conversația a fost transferată către echipa de suport.");
       }
+      if (data.requiresConsent) {
+        setGdprAccepted(false);
+        localStorage.removeItem("chatbot_gdpr_consent");
+      }
       return data.reply || "Mulțumesc! 😊";
     }
 
-    // Streaming SSE response
     if (!resp.body) return "Mulțumesc! 😊";
 
     const reader = resp.body.getReader();
@@ -132,7 +178,6 @@ export default function LiveChat() {
     let fullText = "";
     const assistantId = crypto.randomUUID();
 
-    // Add empty assistant message
     setMessages(prev => [...prev, { id: assistantId, role: "assistant", content: "" }]);
 
     let streamDone = false;
@@ -145,14 +190,11 @@ export default function LiveChat() {
       while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
         let line = textBuffer.slice(0, newlineIndex);
         textBuffer = textBuffer.slice(newlineIndex + 1);
-
         if (line.endsWith("\r")) line = line.slice(0, -1);
         if (line.startsWith(":") || line.trim() === "") continue;
         if (!line.startsWith("data: ")) continue;
-
         const jsonStr = line.slice(6).trim();
         if (jsonStr === "[DONE]") { streamDone = true; break; }
-
         try {
           const parsed = JSON.parse(jsonStr);
           const content = parsed.choices?.[0]?.delta?.content as string | undefined;
@@ -189,8 +231,8 @@ export default function LiveChat() {
       }
     }
 
-    return null; // Already handled via streaming
-  }, [user]);
+    return null;
+  }, [user, gdprAccepted]);
 
   const sendMessage = async (text?: string) => {
     const msgText = (text || input).trim();
@@ -203,45 +245,34 @@ export default function LiveChat() {
     setLoading(true);
     messageCount.current++;
 
-    // Save user message
     (supabase.from("chatbot_messages" as any).insert({
-      session_id: sessionId.current,
-      role: "user",
-      content: userMsg.content,
+      session_id: sessionId.current, role: "user", content: userMsg.content,
     } as any) as any).then(() => {});
 
     try {
       const result = await streamChat(msgText, newMessages);
-
-      // If non-streaming fallback returned text
       if (result) {
-        const aiMsg: Message = { id: crypto.randomUUID(), role: "assistant", content: result };
-        setMessages(prev => [...prev, aiMsg]);
-
-        // Save assistant message
+        setMessages(prev => [...prev, { id: crypto.randomUUID(), role: "assistant", content: result }]);
         (supabase.from("chatbot_messages" as any).insert({
-          session_id: sessionId.current,
-          role: "assistant",
-          content: result,
+          session_id: sessionId.current, role: "assistant", content: result,
         } as any) as any).then(() => {});
       } else {
-        // Streaming done - save final content
-        setMessages(prev => {
-          const lastMsg = prev[prev.length - 1];
-          if (lastMsg?.role === "assistant" && lastMsg.content) {
-            (supabase.from("chatbot_messages" as any).insert({
-              session_id: sessionId.current,
-              role: "assistant",
-              content: lastMsg.content,
-            } as any) as any).then(() => {});
-          }
-          return prev;
-        });
+        // Save streamed message
+        setTimeout(() => {
+          setMessages(prev => {
+            const lastMsg = prev[prev.length - 1];
+            if (lastMsg?.role === "assistant" && lastMsg.content) {
+              (supabase.from("chatbot_messages" as any).insert({
+                session_id: sessionId.current, role: "assistant", content: lastMsg.content,
+              } as any) as any).then(() => {});
+            }
+            return prev;
+          });
+        }, 100);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error("Chat error:", err);
-      const fallback = "Mulțumesc! Echipa noastră va reveni cu un răspuns. 🙏";
-      setMessages(prev => [...prev, { id: crypto.randomUUID(), role: "assistant", content: fallback }]);
+      setMessages(prev => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "Mulțumesc! Echipa noastră va reveni cu un răspuns. 🙏" }]);
     }
     setLoading(false);
     setTimeout(() => inputRef.current?.focus(), 50);
@@ -250,22 +281,55 @@ export default function LiveChat() {
   const rateSatisfaction = async (rating: number) => {
     setRated(true);
     await (supabase.from("chatbot_sessions" as any).update({
-      satisfaction_rating: rating,
-      status: "resolved",
-      ended_at: new Date().toISOString(),
+      satisfaction_rating: rating, status: "resolved", ended_at: new Date().toISOString(),
     } as any).eq("id", sessionId.current) as any);
   };
 
   if (!settings?.enabled) return null;
 
   const widgetColor = settings.widget_color || "#6366f1";
+  const quickReplies = user ? QUICK_REPLIES_LOGGED : QUICK_REPLIES_GUEST;
 
   return (
     <>
-      {/* Fab button — positioned ABOVE mobile bottom nav (bottom-20 on mobile) */}
+      {/* GDPR Consent Modal */}
+      {showGdpr && !gdprAccepted && (
+        <div className="fixed inset-0 z-[60] flex items-end md:items-center justify-center bg-black/40 animate-in fade-in duration-200">
+          <div className="bg-background rounded-t-2xl md:rounded-2xl w-full md:w-[400px] p-5 shadow-2xl animate-in slide-in-from-bottom-4 md:slide-in-from-bottom-2 duration-300">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: widgetColor + "20" }}>
+                <Shield className="w-5 h-5" style={{ color: widgetColor }} />
+              </div>
+              <div>
+                <h3 className="font-semibold text-sm">Protecția datelor tale</h3>
+                <p className="text-xs text-muted-foreground">GDPR & Confidențialitate</p>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground mb-1">
+              Prin utilizarea chat-ului, accepți ca mesajele tale să fie procesate pentru a-ți oferi asistență. 
+            </p>
+            <ul className="text-xs text-muted-foreground space-y-1 mb-4 ml-1">
+              <li>🔒 Conversațiile sunt stocate securizat și temporar</li>
+              <li>🚫 Nu partajăm datele cu terți</li>
+              <li>🗑️ Poți solicita ștergerea oricând la contact@mamalucica.ro</li>
+              <li>📋 Detalii complete în <a href="/politica-confidentialitate" target="_blank" className="underline text-primary">Politica de Confidențialitate</a></li>
+            </ul>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" className="flex-1" onClick={() => setShowGdpr(false)}>
+                Renunță
+              </Button>
+              <Button size="sm" className="flex-1" style={{ backgroundColor: widgetColor }} onClick={acceptGdpr}>
+                Accept și deschid chat-ul
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* FAB — above mobile nav */}
       {!open && (
         <button
-          onClick={() => setOpen(true)}
+          onClick={handleOpen}
           className="fixed bottom-20 md:bottom-6 right-4 z-[45] w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform animate-in fade-in slide-in-from-bottom-2"
           style={{ backgroundColor: widgetColor, color: "#fff" }}
           aria-label="Deschide chat"
@@ -277,7 +341,7 @@ export default function LiveChat() {
         </button>
       )}
 
-      {/* Chat window — full screen on mobile, floating on desktop */}
+      {/* Chat window — fullscreen mobile, floating desktop */}
       {open && (
         <div className="fixed inset-0 md:inset-auto md:bottom-6 md:right-4 z-[55] md:w-[400px] md:max-w-[calc(100vw-2rem)] md:h-[580px] md:max-h-[calc(100vh-6rem)] bg-background md:border md:border-border md:rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
           {/* Header */}
@@ -290,7 +354,7 @@ export default function LiveChat() {
                 <p className="font-semibold text-sm">{settings.assistant_name}</p>
                 <div className="flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />
-                  <p className="text-xs opacity-90">Online acum · Răspund instant</p>
+                  <p className="text-xs opacity-90">Online · Răspund instant</p>
                 </div>
               </div>
             </div>
@@ -310,7 +374,7 @@ export default function LiveChat() {
                 )}
                 <div
                   className={cn(
-                    "max-w-[78%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
+                    "max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
                     m.role === "user"
                       ? "text-white rounded-br-md"
                       : "bg-muted text-foreground rounded-bl-md"
@@ -318,12 +382,10 @@ export default function LiveChat() {
                   style={m.role === "user" ? { backgroundColor: widgetColor } : undefined}
                 >
                   {m.role === "assistant" ? (
-                    <div className="prose prose-sm max-w-none dark:prose-invert [&>p]:m-0 [&>p:not(:last-child)]:mb-1.5 [&>ul]:my-1 [&>ol]:my-1 [&>li]:my-0 [&>a]:text-primary [&>a]:underline">
+                    <div className="prose prose-sm max-w-none dark:prose-invert [&>p]:m-0 [&>p:not(:last-child)]:mb-1.5 [&>ul]:my-1 [&>ol]:my-1 [&>li]:my-0 [&>a]:text-primary [&>a]:underline [&>strong]:font-semibold">
                       <ReactMarkdown>{m.content}</ReactMarkdown>
                     </div>
-                  ) : (
-                    m.content
-                  )}
+                  ) : m.content}
                 </div>
                 {m.role === "user" && (
                   <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center shrink-0 mt-0.5">
@@ -348,7 +410,6 @@ export default function LiveChat() {
               </div>
             )}
 
-            {/* Satisfaction rating */}
             {sessionEnded && !rated && (
               <div className="text-center py-3 space-y-2 border-t border-border mt-2 pt-4">
                 <p className="text-sm text-muted-foreground">Cum evaluezi conversația?</p>
@@ -372,7 +433,7 @@ export default function LiveChat() {
           {/* Quick replies */}
           {messages.length <= 1 && !loading && (
             <div className="px-3 pb-2 flex flex-wrap gap-1.5">
-              {QUICK_REPLIES.map(qr => (
+              {quickReplies.map(qr => (
                 <button
                   key={qr}
                   onClick={() => sendMessage(qr)}
@@ -385,7 +446,7 @@ export default function LiveChat() {
           )}
 
           {/* Input */}
-          <div className="p-3 border-t border-border shrink-0 bg-background pb-safe">
+          <div className="p-3 border-t border-border shrink-0 bg-background">
             <form onSubmit={e => { e.preventDefault(); sendMessage(); }} className="flex gap-2">
               <Input
                 ref={inputRef}
@@ -406,9 +467,10 @@ export default function LiveChat() {
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               </Button>
             </form>
-            <p className="text-[10px] text-muted-foreground text-center mt-1.5">
-              Powered by AI · Răspunsuri în timp real
-            </p>
+            <div className="flex items-center justify-center gap-1 mt-1.5">
+              <Shield className="w-3 h-3 text-muted-foreground" />
+              <p className="text-[10px] text-muted-foreground">Conversație securizată · Date protejate GDPR</p>
+            </div>
           </div>
         </div>
       )}
