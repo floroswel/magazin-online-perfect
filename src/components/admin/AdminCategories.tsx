@@ -302,7 +302,14 @@ export default function AdminCategories() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label>Icon (emoji)</Label>
-                <Input value={form.icon} onChange={e => setForm(p => ({ ...p, icon: e.target.value }))} placeholder="📱" />
+                <div className="flex gap-2">
+                  <Input value={form.icon} onChange={e => setForm(p => ({ ...p, icon: e.target.value }))} placeholder="📱" className="flex-1" />
+                  {form.icon && (
+                    <Button type="button" variant="outline" size="icon" className="shrink-0" onClick={() => setForm(p => ({ ...p, icon: "" }))}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
               <div>
                 <Label>Categorie Părinte</Label>
