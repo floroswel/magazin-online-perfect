@@ -384,7 +384,7 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                           isExpanded ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0"
                         )}
                       >
-                        <div className="ml-[18px] pl-4 border-l border-white/10 space-y-px mt-0.5 mb-1">
+                        <div className="ml-[18px] pl-4 border-l border-sidebar-border space-y-px mt-0.5 mb-1">
                           {item.children!.map((child) => (
                             <div key={child.path}>
                               {child.dividerBefore && (
