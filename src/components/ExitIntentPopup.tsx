@@ -20,19 +20,11 @@ export default function ExitIntentPopup() {
     const generated = "EXIT" + Math.random().toString(36).substring(2, 8).toUpperCase();
     setCode(generated);
 
-    // Save as a real coupon: 10% discount, single use, valid 30 min
+    // Save as a real coupon via secure DB function
     const validUntil = new Date(Date.now() + 30 * 60 * 1000).toISOString();
-    await (supabase as any).from("coupons").insert({
-      code: generated,
-      discount_type: "percentage",
-      discount_value: 10,
-      is_active: true,
-      max_uses: 1,
-      max_uses_per_customer: 1,
-      first_order_only: true,
-      valid_until: validUntil,
-      description: "Exit intent - 10% prima comandă (auto-generat)",
-      applies_to: "all",
+    await supabase.rpc("create_exit_intent_coupon" as any, {
+      p_code: generated,
+      p_valid_until: validUntil,
     });
 
     // Store in localStorage so checkout can identify it as exit-intent

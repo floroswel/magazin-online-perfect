@@ -9736,6 +9736,10 @@ export type Database = {
         Args: { p_rules: Json }
         Returns: number
       }
+      create_exit_intent_coupon: {
+        Args: { p_code: string; p_valid_until: string }
+        Returns: undefined
+      }
       get_dynamic_category_products: {
         Args: {
           category_id: string
