@@ -231,7 +231,7 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
 
       <aside
         className={cn(
-          "min-h-screen flex flex-col shrink-0 transition-all duration-200 ease-in-out",
+          "h-screen flex flex-col shrink-0 transition-all duration-200 ease-in-out overflow-hidden",
           "fixed lg:static z-50 lg:z-auto lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
           collapsed ? "lg:w-16" : "w-60"
