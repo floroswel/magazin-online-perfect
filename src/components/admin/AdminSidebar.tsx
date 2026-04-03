@@ -255,27 +255,26 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
 
       <aside
         className={cn(
-          "h-screen flex flex-col shrink-0 transition-all duration-200 ease-in-out overflow-hidden",
+          "admin-sidebar h-screen flex flex-col shrink-0 transition-all duration-200 ease-in-out overflow-hidden bg-sidebar",
           "fixed lg:static z-50 lg:z-auto lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
           collapsed ? "lg:w-16" : "w-60"
         )}
-        style={{ background: "#1B2A4A" }}
       >
         {/* Logo */}
-        <div className="flex items-center justify-between px-4 h-14 border-b border-white/10 shrink-0">
+        <div className="flex items-center justify-between px-4 h-14 border-b border-sidebar-border shrink-0">
           <Link to="/admin" className="flex items-center gap-2 overflow-hidden" onClick={handleNavClick}>
             <div className="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center shrink-0">
               <Flame className="w-4 h-4 text-orange-400" />
             </div>
             {!collapsed && (
               <div>
-                <h2 className="font-bold text-sm text-white leading-tight">Mama Lucica</h2>
-                <p className="text-[9px] text-white/40 font-medium leading-none tracking-wider">ADMIN PANEL</p>
+                <h2 className="font-bold text-sm text-sidebar-primary-foreground leading-tight">Mama Lucica</h2>
+                <p className="text-[9px] text-sidebar-foreground/50 font-medium leading-none tracking-wider">ADMIN PANEL</p>
               </div>
             )}
           </Link>
-          <button onClick={onClose} className="lg:hidden p-1 rounded hover:bg-white/10 text-white/60">
+          <button onClick={onClose} className="lg:hidden p-1 rounded hover:bg-sidebar-accent text-sidebar-foreground">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -286,12 +285,12 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
             {menuSections.map((section, sIdx) => (
               <div key={sIdx}>
                 {section.title && !collapsed && (
-                  <p className="px-3 pt-5 pb-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-white/30">
+                  <p className="px-3 pt-5 pb-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-sidebar-foreground/40">
                     {section.title}
                   </p>
                 )}
                 {section.title && collapsed && (
-                  <div className="hidden lg:block mx-2 my-3 border-t border-white/10" />
+                  <div className="hidden lg:block mx-2 my-3 border-t border-sidebar-border" />
                 )}
 
                 {section.items.map((item) => {
@@ -311,8 +310,8 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                               className={cn(
                                 "hidden lg:flex items-center justify-center w-full h-10 rounded-lg transition-all",
                                 parentActive
-                                  ? "bg-white/10 text-white"
-                                  : "text-white/50 hover:text-white/80 hover:bg-white/5"
+                                  ? "bg-sidebar-accent text-sidebar-primary-foreground"
+                                  : "text-sidebar-foreground hover:text-sidebar-accent-foreground hover:bg-sidebar-accent/50"
                               )}
                             >
                               <item.icon className="w-[18px] h-[18px]" />
@@ -324,8 +323,8 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                               className={cn(
                                 "hidden lg:flex items-center justify-center w-full h-10 rounded-lg transition-all",
                                 itemActive
-                                  ? "bg-white/10 text-white"
-                                  : "text-white/50 hover:text-white/80 hover:bg-white/5"
+                                  ? "bg-sidebar-accent text-sidebar-primary-foreground"
+                                  : "text-sidebar-foreground hover:text-sidebar-accent-foreground hover:bg-sidebar-accent/50"
                               )}
                             >
                               <item.icon className="w-[18px] h-[18px]" />
@@ -349,8 +348,8 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                         className={cn(
                           "flex items-center gap-2.5 px-3 h-9 rounded-lg text-[13px] font-medium transition-all",
                           itemActive
-                            ? "bg-white/10 text-white"
-                            : "text-white/60 hover:text-white/90 hover:bg-white/5"
+                            ? "bg-sidebar-accent text-sidebar-primary-foreground"
+                            : "text-sidebar-foreground hover:text-sidebar-accent-foreground hover:bg-sidebar-accent/50"
                         )}
                       >
                         <item.icon className="w-[18px] h-[18px] shrink-0" />
@@ -366,8 +365,8 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                         className={cn(
                           "flex items-center gap-2.5 w-full px-3 h-9 rounded-lg text-[13px] font-medium transition-all",
                           parentActive
-                            ? "text-white"
-                            : "text-white/60 hover:text-white/90 hover:bg-white/5"
+                            ? "text-sidebar-primary-foreground"
+                            : "text-sidebar-foreground hover:text-sidebar-accent-foreground hover:bg-sidebar-accent/50"
                         )}
                       >
                         <item.icon className="w-[18px] h-[18px] shrink-0" />
@@ -385,11 +384,11 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                           isExpanded ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0"
                         )}
                       >
-                        <div className="ml-[18px] pl-4 border-l border-white/10 space-y-px mt-0.5 mb-1">
+                        <div className="ml-[18px] pl-4 border-l border-sidebar-border space-y-px mt-0.5 mb-1">
                           {item.children!.map((child) => (
                             <div key={child.path}>
                               {child.dividerBefore && (
-                                <p className="px-3 pt-2.5 pb-1 text-[9px] font-bold uppercase tracking-[0.15em] text-white/25">
+                                <p className="px-3 pt-2.5 pb-1 text-[9px] font-bold uppercase tracking-[0.15em] text-sidebar-foreground/35">
                                   {child.dividerBefore}
                                 </p>
                               )}
@@ -399,8 +398,8 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                                 className={cn(
                                   "block px-3 py-1.5 rounded-md text-[13px] transition-all",
                                   isActive(child.path)
-                                    ? "bg-white/10 text-white font-medium"
-                                    : "text-white/50 hover:text-white/80 hover:bg-white/5"
+                                    ? "bg-sidebar-accent text-sidebar-primary-foreground font-medium"
+                                    : "text-sidebar-foreground/70 hover:text-sidebar-accent-foreground hover:bg-sidebar-accent/50"
                                 )}
                               >
                                 {child.label}
@@ -418,37 +417,37 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
         </ScrollArea>
 
         {/* Footer */}
-        <div className="border-t border-white/10 p-2 shrink-0 space-y-1">
+        <div className="border-t border-sidebar-border p-2 shrink-0 space-y-1">
           {!collapsed ? (
             <>
               {/* User info */}
               {user && (
                 <div className="flex items-center gap-2 px-3 py-2">
-                  <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                  <div className="w-7 h-7 rounded-full bg-sidebar-accent flex items-center justify-center text-sidebar-primary-foreground text-xs font-bold shrink-0">
                     {(user.email || "?")[0].toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-white/80 text-xs font-medium truncate">{user.email}</p>
+                    <p className="text-sidebar-foreground text-xs font-medium truncate">{user.email}</p>
                   </div>
                 </div>
               )}
               <Link
                 to="/"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] text-white/40 hover:text-white/70 hover:bg-white/5 transition-all"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-all"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Înapoi la magazin</span>
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 w-full px-3 py-1.5 rounded-lg text-[13px] text-white/40 hover:text-red-400 hover:bg-white/5 transition-all"
+                className="flex items-center gap-2 w-full px-3 py-1.5 rounded-lg text-[13px] text-sidebar-foreground/60 hover:text-red-400 hover:bg-sidebar-accent/50 transition-all"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Deconectare</span>
               </button>
               <button
                 onClick={onToggleCollapse}
-                className="hidden lg:flex items-center gap-2 w-full px-3 py-1.5 rounded-lg text-[13px] text-white/40 hover:text-white/70 hover:bg-white/5 transition-all"
+                className="hidden lg:flex items-center gap-2 w-full px-3 py-1.5 rounded-lg text-[13px] text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-all"
               >
                 <PanelLeftClose className="w-4 h-4" />
                 <span>Restrânge</span>
@@ -460,7 +459,7 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                 <TooltipTrigger asChild>
                   <Link
                     to="/"
-                    className="hidden lg:flex items-center justify-center w-full h-9 rounded-lg text-white/40 hover:text-white/70 hover:bg-white/5 transition-all"
+                    className="hidden lg:flex items-center justify-center w-full h-9 rounded-lg text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-all"
                   >
                     <ArrowLeft className="w-4 h-4" />
                   </Link>
@@ -471,7 +470,7 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                 <TooltipTrigger asChild>
                   <button
                     onClick={onToggleCollapse}
-                    className="hidden lg:flex items-center justify-center w-full h-9 rounded-lg text-white/40 hover:text-white/70 hover:bg-white/5 transition-all"
+                    className="hidden lg:flex items-center justify-center w-full h-9 rounded-lg text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-all"
                   >
                     <PanelLeftOpen className="w-4 h-4" />
                   </button>
