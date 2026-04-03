@@ -127,6 +127,7 @@ export default function Index() {
     coupon_collector: showCouponCollector,
     top_vendors: showTopVendors,
     buy_again: showBuyAgain,
+    product_catalog: showProductCatalog,
   };
 
   const EB = ErrorBoundary;
