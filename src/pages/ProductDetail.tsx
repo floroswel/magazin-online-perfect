@@ -7,7 +7,7 @@ import VariantSelector from "@/components/products/VariantSelector";
 import CountdownTimer from "@/components/products/CountdownTimer";
 import FrequentlyBoughtTogether from "@/components/products/FrequentlyBoughtTogether";
 import UpgradeRecommendation from "@/components/products/UpgradeRecommendation";
-import VendorComparison from "@/components/products/VendorComparison";
+
 import PriceDropAlert from "@/components/products/PriceDropAlert";
 import ScentPairing from "@/components/products/ScentPairing";
 import SizeSelector from "@/components/products/SizeSelector";
