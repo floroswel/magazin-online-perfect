@@ -285,7 +285,7 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
             {menuSections.map((section, sIdx) => (
               <div key={sIdx}>
                 {section.title && !collapsed && (
-                  <p className="px-3 pt-5 pb-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-white/30">
+                  <p className="px-3 pt-5 pb-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-sidebar-foreground/40">
                     {section.title}
                   </p>
                 )}
