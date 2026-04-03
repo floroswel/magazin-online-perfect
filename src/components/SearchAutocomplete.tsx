@@ -132,15 +132,12 @@ export default function SearchAutocomplete({ className }: { className?: string }
               type="button"
               size="icon"
               variant="ghost"
-              className="absolute right-10 top-1 h-9 w-9 text-muted-foreground hover:text-foreground"
+              className="absolute right-1 top-1 h-9 w-9 text-muted-foreground hover:text-foreground"
               onClick={() => { setQuery(""); setSuggestions([]); setOpen(false); }}
             >
               <X className="h-4 w-4" />
             </Button>
           )}
-          <Button type="submit" size="icon" className="absolute right-1 top-1 h-9 w-9 rounded-md bg-primary hover:bg-primary/90">
-            <Search className="h-4 w-4" />
-          </Button>
         </div>
       </form>
 

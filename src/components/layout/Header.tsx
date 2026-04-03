@@ -76,7 +76,7 @@ export default function Header() {
             <div className="flex-1 max-w-3xl mx-6 hidden md:flex items-center">
               <div className="flex-1 relative flex">
                 <SearchAutocomplete
-                  className="flex-1 [&_input]:bg-background [&_input]:text-foreground [&_input]:placeholder:text-muted-foreground [&_input]:h-12 [&_input]:border [&_input]:border-border [&_input]:rounded-l-lg [&_input]:rounded-r-none [&_input]:px-5 [&_input]:pr-4 [&_input]:focus:ring-2 [&_input]:focus:ring-primary/30 [&_input]:focus:border-primary"
+                  className="flex-1 [&_input]:bg-background [&_input]:text-foreground [&_input]:placeholder:text-muted-foreground [&_input]:h-12 [&_input]:border-2 [&_input]:border-primary [&_input]:rounded-l-lg [&_input]:rounded-r-none [&_input]:px-5 [&_input]:pr-4 [&_input]:focus:ring-2 [&_input]:focus:ring-primary/30"
                 />
                 <button
                   onClick={() => navigate("/catalog")}
