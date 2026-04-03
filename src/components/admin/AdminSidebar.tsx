@@ -31,9 +31,16 @@ const menuSections: MenuSection[] = [
         label: "Comenzi", icon: ShoppingCart,
         children: [
           { label: "Toate Comenzile", path: "/admin/orders" },
+          { label: "Comenzi Noi", path: "/admin/orders/new" },
           { label: "Procesare Comenzi", path: "/admin/orders/processing" },
+          { label: "În Livrare", path: "/admin/orders/shipping" },
+          { label: "Livrate", path: "/admin/orders/delivered" },
+          { label: "Anulate", path: "/admin/orders/cancelled" },
+          { label: "Facturi", path: "/admin/orders/invoices" },
           { label: "Coșuri Abandonate", path: "/admin/customers/abandoned" },
           { label: "Retururi", path: "/admin/orders/returns" },
+          { label: "Probleme", path: "/admin/orders/issues" },
+          { label: "Statusuri", path: "/admin/orders/statuses" },
         ],
       },
       {
