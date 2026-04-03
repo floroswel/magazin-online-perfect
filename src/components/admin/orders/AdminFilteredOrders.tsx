@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -7,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { ro } from "date-fns/locale";
-import { Package, Search, RotateCcw, Eye, Download } from "lucide-react";
+import { Package, Search, RotateCcw, Eye, Download, TruckIcon, CheckCircle, XCircle, PlayCircle, ShoppingBag, DollarSign, Hash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { translateOrderStatus } from "@/lib/orderStatusLabels";
@@ -28,6 +29,20 @@ const STATUS_COLORS: Record<string, string> = {
   cancelled: "bg-red-100 text-red-800",
 };
 
+const NEXT_STATUS: Record<string, { status: string; label: string; icon: any }> = {
+  pending: { status: "processing", label: "Procesează", icon: PlayCircle },
+  processing: { status: "shipped", label: "Expediază", icon: TruckIcon },
+  shipped: { status: "delivered", label: "Marchează livrată", icon: CheckCircle },
+};
+
+const STATUS_TABS = [
+  { key: "new", label: "Noi", path: "/admin/orders/new" },
+  { key: "processing", label: "Procesare", path: "/admin/orders/processing" },
+  { key: "shipping", label: "În Livrare", path: "/admin/orders/shipping" },
+  { key: "delivered", label: "Livrate", path: "/admin/orders/delivered" },
+  { key: "cancelled", label: "Anulate", path: "/admin/orders/cancelled" },
+];
+
 interface Props {
   status: string;
   title: string;
@@ -36,6 +51,7 @@ interface Props {
 
 export default function AdminFilteredOrders({ status, title, description }: Props) {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const pageSize = 50;
@@ -67,13 +83,22 @@ export default function AdminFilteredOrders({ status, title, description }: Prop
   const totalPages = Math.ceil(filtered.length / pageSize);
   const paginated = filtered.slice(page * pageSize, (page + 1) * pageSize);
 
-  const restoreOrder = async (orderId: string) => {
-    await supabase.from("orders").update({ status: "pending" }).eq("id", orderId);
+  // KPI calculations
+  const totalValue = filtered.reduce((s: number, o: any) => s + Number(o.total || 0), 0);
+  const avgValue = filtered.length > 0 ? totalValue / filtered.length : 0;
+
+  const changeStatus = async (orderId: string, oldStatus: string, newStatus: string) => {
+    await supabase.from("orders").update({ status: newStatus }).eq("id", orderId);
     await supabase.from("order_timeline").insert({
-      order_id: orderId, action: "status_change", old_status: "cancelled", new_status: "pending", note: "Restaurat de admin",
+      order_id: orderId, action: "status_change", old_status: oldStatus, new_status: newStatus, note: "Actualizat de admin",
     });
     queryClient.invalidateQueries({ queryKey: ["filtered-orders"] });
     queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+    toast.success(`Comandă mutată în ${translateOrderStatus(newStatus)}`);
+  };
+
+  const restoreOrder = async (orderId: string) => {
+    await changeStatus(orderId, "cancelled", "pending");
     toast.success("Comandă restaurată!");
   };
 
@@ -88,8 +113,25 @@ export default function AdminFilteredOrders({ status, title, description }: Prop
     toast.success(`${filtered.length} comenzi exportate`);
   };
 
+  const nextAction = NEXT_STATUS[dbStatus];
+
   return (
     <div className="space-y-4">
+      {/* Status Tabs Navigation */}
+      <div className="flex gap-1 flex-wrap">
+        {STATUS_TABS.map(tab => (
+          <Button
+            key={tab.key}
+            variant={tab.key === status ? "default" : "outline"}
+            size="sm"
+            className="h-8 text-xs"
+            onClick={() => navigate(tab.path)}
+          >
+            {tab.label}
+          </Button>
+        ))}
+      </div>
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold">{title}</h1>
@@ -97,6 +139,38 @@ export default function AdminFilteredOrders({ status, title, description }: Prop
         </div>
         <Button variant="outline" size="sm" onClick={exportCSV}><Download className="w-4 h-4 mr-1" />Export</Button>
       </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-3 gap-3">
+        <Card>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-primary/10"><Hash className="w-5 h-5 text-primary" /></div>
+            <div>
+              <p className="text-2xl font-bold">{filtered.length}</p>
+              <p className="text-xs text-muted-foreground">Comenzi</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-primary/10"><DollarSign className="w-5 h-5 text-primary" /></div>
+            <div>
+              <p className="text-2xl font-bold">{totalValue.toLocaleString("ro-RO")} RON</p>
+              <p className="text-xs text-muted-foreground">Valoare totală</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-primary/10"><ShoppingBag className="w-5 h-5 text-primary" /></div>
+            <div>
+              <p className="text-2xl font-bold">{avgValue.toLocaleString("ro-RO", { maximumFractionDigits: 0 })} RON</p>
+              <p className="text-xs text-muted-foreground">Medie / comandă</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
@@ -126,12 +200,16 @@ export default function AdminFilteredOrders({ status, title, description }: Prop
                     <TableHead className="text-right">Total</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Data</TableHead>
-                    {dbStatus === "cancelled" && <TableHead>Acțiuni</TableHead>}
+                    <TableHead>Acțiuni</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {paginated.map((order: any) => (
-                    <TableRow key={order.id}>
+                    <TableRow
+                      key={order.id}
+                      className="cursor-pointer"
+                      onClick={() => navigate(`/admin/orders/${order.id}`)}
+                    >
                       <TableCell>
                         <p className="font-mono text-xs">#{order.order_number || order.id.slice(0, 8)}</p>
                       </TableCell>
@@ -147,13 +225,29 @@ export default function AdminFilteredOrders({ status, title, description }: Prop
                       <TableCell className="text-sm text-muted-foreground">
                         {format(new Date(order.created_at), "dd MMM yyyy", { locale: ro })}
                       </TableCell>
-                      {dbStatus === "cancelled" && (
-                        <TableCell>
-                          <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={() => restoreOrder(order.id)}>
-                            <RotateCcw className="w-3 h-3" />Restaurează
+                      <TableCell onClick={(e) => e.stopPropagation()}>
+                        <div className="flex gap-1">
+                          <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={() => navigate(`/admin/orders/${order.id}`)}>
+                            <Eye className="w-3 h-3" />
                           </Button>
-                        </TableCell>
-                      )}
+                          {nextAction && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-7 text-xs gap-1"
+                              onClick={() => changeStatus(order.id, dbStatus, nextAction.status)}
+                            >
+                              <nextAction.icon className="w-3 h-3" />
+                              {nextAction.label}
+                            </Button>
+                          )}
+                          {dbStatus === "cancelled" && (
+                            <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={() => restoreOrder(order.id)}>
+                              <RotateCcw className="w-3 h-3" />Restaurează
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
