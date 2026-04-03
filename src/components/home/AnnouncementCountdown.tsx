@@ -37,6 +37,7 @@ export default function AnnouncementCountdown() {
   const bgColor = announcement.bg_color || undefined;
   const textColor = announcement.text_color || undefined;
   const isMarquee = !!announcement.marquee;
+  const isMarqueeMobile = !!announcement.marquee_mobile;
 
   const timerBlock = (
     <span className="font-bold tabular-nums">
