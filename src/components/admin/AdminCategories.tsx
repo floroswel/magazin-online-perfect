@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, Pencil, Trash2, ChevronRight, ChevronDown, Eye, EyeOff, Upload, Image as ImageIcon, GripVertical, Zap } from "lucide-react";
+import { Plus, Pencil, Trash2, ChevronRight, ChevronDown, Eye, EyeOff, Upload, Image as ImageIcon, GripVertical, Zap, X } from "lucide-react";
 import { toast } from "sonner";
 import RichTextEditor from "@/components/ui/RichTextEditor";
 
