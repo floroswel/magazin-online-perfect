@@ -301,7 +301,7 @@ export default function AdminCategories() {
             {/* Icon & Parent */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Icon (emoji)</Label>
+                <Label>Icon (emoji) <span className="text-muted-foreground font-normal">– opțional</span></Label>
                 <div className="flex gap-2">
                   <Input value={form.icon} onChange={e => setForm(p => ({ ...p, icon: e.target.value }))} placeholder="📱" className="flex-1" />
                   {form.icon && (

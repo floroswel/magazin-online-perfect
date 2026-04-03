@@ -313,7 +313,17 @@ export default function AdminDynamicCategories() {
             </div>
             <div><Label>Descriere</Label><Textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} rows={2} /></div>
             <div className="grid grid-cols-3 gap-4">
-              <div><Label>Icon (emoji)</Label><Input value={form.icon} onChange={e => setForm(p => ({ ...p, icon: e.target.value }))} placeholder="🔥" /></div>
+              <div>
+                <Label>Icon (emoji) <span className="text-muted-foreground font-normal">– opțional</span></Label>
+                <div className="flex gap-2">
+                  <Input value={form.icon} onChange={e => setForm(p => ({ ...p, icon: e.target.value }))} placeholder="🔥" className="flex-1" />
+                  {form.icon && (
+                    <Button type="button" variant="outline" size="icon" className="shrink-0" onClick={() => setForm(p => ({ ...p, icon: "" }))}>
+                      <X className="w-4 h-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
               <div><Label>URL Imagine</Label><Input value={form.image_url} onChange={e => setForm(p => ({ ...p, image_url: e.target.value }))} placeholder="https://..." /></div>
               <div><Label>Ordine afișare</Label><Input type="number" value={form.display_order} onChange={e => setForm(p => ({ ...p, display_order: Number(e.target.value) }))} /></div>
             </div>
