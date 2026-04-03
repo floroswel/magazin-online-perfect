@@ -25,6 +25,7 @@ import AIGeneratorModal from "@/components/admin/products/AIGeneratorModal";
 import AttributeExtractorModal from "@/components/admin/products/AttributeExtractorModal";
 import { processProductImage, formatBytes } from "@/lib/imageResize";
 import ProductSizesEditor from "@/components/admin/products/ProductSizesEditor";
+import ProductVideoGenerator from "@/components/admin/products/ProductVideoGenerator";
 
 // ─── Types ───
 interface BundleComponent {
@@ -1156,6 +1157,20 @@ export default function AdminProducts() {
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Video Generator */}
+            {editingId && (
+              <div className="pt-3 border-t border-border">
+                <ProductVideoGenerator
+                  productId={editingId}
+                  productName={form.name}
+                  images={[form.image_url, ...form.images].filter(Boolean)}
+                  videos={(products?.find((p: any) => p.id === editingId) as any)?.videos || null}
+                  onVideoGenerated={() => queryClient.invalidateQueries({ queryKey: ["admin-products"] })}
+                  onVideoRemoved={() => queryClient.invalidateQueries({ queryKey: ["admin-products"] })}
+                />
               </div>
             )}
           </div>
