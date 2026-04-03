@@ -125,7 +125,7 @@ export default function Index() {
     brand_logos: showBrandLogos,
     quick_filters: showQuickFilters,
     coupon_collector: showCouponCollector,
-    top_vendors: showTopVendors,
+    
     buy_again: showBuyAgain,
     product_catalog: showProductCatalog,
   };
