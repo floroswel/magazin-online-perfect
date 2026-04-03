@@ -290,7 +290,7 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                   </p>
                 )}
                 {section.title && collapsed && (
-                  <div className="hidden lg:block mx-2 my-3 border-t border-white/10" />
+                  <div className="hidden lg:block mx-2 my-3 border-t border-sidebar-border" />
                 )}
 
                 {section.items.map((item) => {
