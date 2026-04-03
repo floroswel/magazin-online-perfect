@@ -17,6 +17,7 @@ export interface EditableContent {
     text_color: string;
     marquee: boolean;
     marquee_mobile: boolean;
+  };
   header_topbar: {
     phone: string;
     shipping_text: string;
