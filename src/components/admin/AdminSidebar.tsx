@@ -470,7 +470,7 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                 <TooltipTrigger asChild>
                   <button
                     onClick={onToggleCollapse}
-                    className="hidden lg:flex items-center justify-center w-full h-9 rounded-lg text-white/40 hover:text-white/70 hover:bg-white/5 transition-all"
+                    className="hidden lg:flex items-center justify-center w-full h-9 rounded-lg text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-all"
                   >
                     <PanelLeftOpen className="w-4 h-4" />
                   </button>
