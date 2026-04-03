@@ -55,9 +55,9 @@ const DEFAULTS: EditableContent = {
   header_nav: [
     { to: "/catalog?badge=deals", label: "Oferte MamaLucica", highlight: true },
     { to: "/catalog", label: "Catalog" },
-    { to: "/povestea-noastra", label: "Despre Noi" },
+    { to: "/despre-noi", label: "Despre Noi" },
     { to: "/blog", label: "Blog" },
-    { to: "/faq", label: "Contact" },
+    { to: "/contact", label: "Contact" },
   ],
   mobile_categories: [
     { name: "Lumânări Parfumate", slug: "lumanari-parfumate", icon: "🕯️" },
