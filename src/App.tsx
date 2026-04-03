@@ -141,6 +141,7 @@ const App = () => (
               <Route path="/politica-de-retur" element={<ErrorBoundary><PoliticaRetur /></ErrorBoundary>} />
               <Route path="/sitemap.xml" element={<SitemapXml />} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
+              <Route path="/:slug" element={<ErrorBoundary><CmsPage /></ErrorBoundary>} />
               <Route path="*" element={<ErrorBoundary><NotFound /></ErrorBoundary>} />
             </Routes>
             </MaintenanceGuard>
