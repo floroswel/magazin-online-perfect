@@ -116,7 +116,7 @@ const App = () => (
               <Route path="/povestea-noastra" element={<ErrorBoundary><CmsPage overrideSlug="despre-noi" /></ErrorBoundary>} />
               <Route path="/recenzii" element={<ErrorBoundary><Recenzii /></ErrorBoundary>} />
               <Route path="/unsubscribe" element={<ErrorBoundary><Unsubscribe /></ErrorBoundary>} />
-              <Route path="/vendor/:slug" element={<ErrorBoundary><VendorStore /></ErrorBoundary>} />
+              
               <Route path="/oferte" element={<ErrorBoundary><Oferte /></ErrorBoundary>} />
               <Route path="/de-incredere" element={<ErrorBoundary><DeIncredere /></ErrorBoundary>} />
               <Route path="/nou" element={<ErrorBoundary><NouLansari /></ErrorBoundary>} />
