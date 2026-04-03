@@ -63,17 +63,17 @@ export default function Footer() {
   }, [footerScripts]);
 
   const col2Links = texts.col2_links.length > 0 ? texts.col2_links.filter(l => l.active) : [
-    { label: "Despre noi", url: "/povestea-noastra", active: true },
+    { label: "Despre noi", url: "/despre-noi", active: true },
     { label: "Termeni si Conditii", url: "/termeni-si-conditii", active: true },
     { label: "Politica de Confidentialitate", url: "/politica-de-confidentialitate", active: true },
-    { label: "Politica de livrare", url: "/livrare-internationala", active: true },
-    { label: "Contact", url: "/faq", active: true },
+    { label: "Politica de livrare", url: "/livrare", active: true },
+    { label: "Contact", url: "/contact", active: true },
   ];
 
   const col3Links = texts.col3_links.length > 0 ? texts.col3_links.filter(l => l.active) : [
     { label: "Metode de Plata", url: "/page/plati", active: true },
-    { label: "Politica de Retur", url: "/politica-de-retur", active: true },
-    { label: "Garantia Produselor", url: "/page/garantie", active: true },
+    { label: "Politica de Retur", url: "/politica-retur", active: true },
+    { label: "Garantia Produselor", url: "/garantie", active: true },
     { label: "Solutionarea Online a Litigiilor", url: "#", active: true },
     { label: "ANPC", url: "https://anpc.ro", active: true },
     { label: "ANPC-SAL", url: "https://anpc.ro/ce-este-sal", active: true },

@@ -93,7 +93,7 @@ export default function BrandStory() {
               <Link to="/catalog" className="bg-primary text-primary-foreground font-semibold text-sm px-6 py-2.5 rounded flex items-center gap-2 hover:opacity-90 transition-opacity">
                 Explorează Colecția <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link to="/povestea-noastra" className="border border-white/20 text-white font-semibold text-sm px-6 py-2.5 rounded hover:bg-white/10 transition-colors">
+              <Link to="/despre-noi" className="border border-white/20 text-white font-semibold text-sm px-6 py-2.5 rounded hover:bg-white/10 transition-colors">
                 Povestea Noastră
               </Link>
             </div>
