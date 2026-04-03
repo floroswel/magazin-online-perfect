@@ -191,6 +191,8 @@ const AdminHeroSlides = lazy(() => import("./content/AdminHeroSlides"));
 const AdminPersonalizationOptions = lazy(() => import("./content/AdminPersonalizationOptions"));
 const AdminStaticPages = lazy(() => import("./content/AdminStaticPages"));
 const AdminExternalWebhooks = lazy(() => import("./integrations/AdminExternalWebhooks"));
+const AdminBreadcrumbSettings = lazy(() => import("./settings/AdminBreadcrumbSettings"));
+const AdminDomainSettings = lazy(() => import("./settings/AdminDomainSettings"));
 
 export default function AdminRoutes() {
   return (
@@ -444,6 +446,8 @@ export default function AdminRoutes() {
         <Route path="settings/360-slider" element={<Admin360SliderSettings />} />
         <Route path="settings/custom-404" element={<AdminCustom404Settings />} />
         <Route path="settings/configurator" element={<AdminConfiguratorSettings />} />
+        <Route path="settings/breadcrumbs" element={<AdminBreadcrumbSettings />} />
+        <Route path="settings/domains" element={<AdminDomainSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />
