@@ -31,19 +31,21 @@ export default function AnnouncementCountdown() {
   const desktopText = (announcement.text_desktop || "").replace("{threshold}", String(announcement.threshold || 200));
   const mobileText = (announcement.text_mobile || "").replace("{threshold}", String(announcement.threshold || 200));
 
-  // Hide bar if both texts are empty
+  // Hide bar if disabled or both texts are empty
+  if (announcement.enabled === false) return null;
   if (!desktopText.trim() && !mobileText.trim()) return null;
 
   const bgColor = announcement.bg_color || undefined;
   const textColor = announcement.text_color || undefined;
   const isMarquee = !!announcement.marquee;
   const isMarqueeMobile = !!announcement.marquee_mobile;
+  const showCountdown = announcement.show_countdown !== false;
 
-  const timerBlock = (
+  const timerBlock = showCountdown ? (
     <span className="font-bold tabular-nums">
       {pad(time.h)}:{pad(time.m)}:{pad(time.s)}
     </span>
-  );
+  ) : null;
 
   const content = (
     <>

@@ -209,6 +209,16 @@ export default function AdminEditableContent() {
         <TabsContent value="promo" className="space-y-3 mt-4">
           <Section title="Bara de Anunțuri (Countdown)" icon={Megaphone} defaultOpen>
             <div className="space-y-3">
+              <div className="flex items-center gap-4 flex-wrap border-b pb-3">
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" id="ann-enabled" checked={content.announcement.enabled !== false} onChange={e => set("announcement", { ...content.announcement, enabled: e.target.checked })} className="rounded" />
+                  <Label htmlFor="ann-enabled" className="text-sm cursor-pointer font-medium">Bara activă</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" id="ann-countdown" checked={content.announcement.show_countdown !== false} onChange={e => set("announcement", { ...content.announcement, show_countdown: e.target.checked })} className="rounded" />
+                  <Label htmlFor="ann-countdown" className="text-sm cursor-pointer">Afișează cronometru</Label>
+                </div>
+              </div>
               <div><Label>Text Desktop</Label><Textarea value={content.announcement.text_desktop} onChange={e => set("announcement", { ...content.announcement, text_desktop: e.target.value })} rows={2} /><p className="text-xs text-muted-foreground mt-1">Folosește {"{threshold}"} pentru pragul în lei</p></div>
               <div><Label>Text Mobil</Label><Textarea value={content.announcement.text_mobile} onChange={e => set("announcement", { ...content.announcement, text_mobile: e.target.value })} rows={2} /></div>
               <div className="max-w-[200px]"><Label>Prag Livrare Gratuită (lei)</Label><Input type="number" value={content.announcement.threshold} onChange={e => set("announcement", { ...content.announcement, threshold: Number(e.target.value) })} /></div>
