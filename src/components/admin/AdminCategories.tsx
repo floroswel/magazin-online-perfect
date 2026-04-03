@@ -229,7 +229,7 @@ export default function AdminCategories() {
               {expanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
             </button>
           ) : <span className="w-5" />}
-          <span className="text-lg">{cat.icon || "📁"}</span>
+          {cat.icon ? <span className="text-lg">{cat.icon}</span> : null}
           <span className="font-medium text-foreground flex-1">{cat.name}</span>
           <span className="text-xs text-muted-foreground">{prodCount} prod.</span>
           <Switch
