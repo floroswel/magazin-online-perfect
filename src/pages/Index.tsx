@@ -70,6 +70,7 @@ export default function Index() {
   const showTopVendors = useVisibility("top_vendors");
   const showBuyAgain = useVisibility("buy_again");
   const showBrandLogos = useVisibility("brand_logos");
+  const showProductCatalog = useVisibility("product_catalog");
 
   useEffect(() => {
     const fetchOrder = () => {
