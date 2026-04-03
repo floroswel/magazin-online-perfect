@@ -53,6 +53,23 @@ export default function AnnouncementCountdown() {
     </>
   );
 
+  const marqueeBlock = (
+    <div className="relative flex overflow-hidden">
+      <div className="animate-marquee-announcement flex items-center whitespace-nowrap gap-16 min-w-full justify-center shrink-0">
+        {content}
+        <span className="opacity-40 mx-4">✦</span>
+        {content}
+      </div>
+      <div className="animate-marquee-announcement flex items-center whitespace-nowrap gap-16 min-w-full justify-center shrink-0" aria-hidden>
+        {content}
+        <span className="opacity-40 mx-4">✦</span>
+        {content}
+      </div>
+    </div>
+  );
+
+  const staticBlock = content;
+
   return (
     <div
       className="text-center py-2 text-sm font-medium tracking-wide bg-primary text-primary-foreground overflow-hidden"
@@ -61,22 +78,14 @@ export default function AnnouncementCountdown() {
         ...(textColor ? { color: textColor } : {}),
       }}
     >
-      {isMarquee ? (
-        <div className="relative flex overflow-hidden">
-          <div className="animate-marquee-announcement flex items-center whitespace-nowrap gap-16 min-w-full justify-center shrink-0">
-            {content}
-            <span className="opacity-40 mx-4">✦</span>
-            {content}
-          </div>
-          <div className="animate-marquee-announcement flex items-center whitespace-nowrap gap-16 min-w-full justify-center shrink-0" aria-hidden>
-            {content}
-            <span className="opacity-40 mx-4">✦</span>
-            {content}
-          </div>
-        </div>
-      ) : (
-        content
-      )}
+      {/* Desktop */}
+      <div className="hidden sm:block">
+        {isMarquee ? marqueeBlock : staticBlock}
+      </div>
+      {/* Mobile */}
+      <div className="sm:hidden">
+        {isMarqueeMobile ? marqueeBlock : staticBlock}
+      </div>
     </div>
   );
 }
