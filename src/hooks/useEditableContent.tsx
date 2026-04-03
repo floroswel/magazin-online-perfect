@@ -56,6 +56,8 @@ const DEFAULTS: EditableContent = {
     text_color: "",
     marquee: false,
     marquee_mobile: false,
+    enabled: true,
+    show_countdown: true,
   },
   header_topbar: {
     phone: "📞 0800-123-456",
