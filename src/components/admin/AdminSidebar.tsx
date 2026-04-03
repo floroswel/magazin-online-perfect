@@ -274,7 +274,7 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
               </div>
             )}
           </Link>
-          <button onClick={onClose} className="lg:hidden p-1 rounded hover:bg-white/10 text-white/60">
+          <button onClick={onClose} className="lg:hidden p-1 rounded hover:bg-sidebar-accent text-sidebar-foreground">
             <X className="w-4 h-4" />
           </button>
         </div>
