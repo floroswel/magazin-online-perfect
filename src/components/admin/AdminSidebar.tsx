@@ -262,7 +262,7 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
         )}
       >
         {/* Logo */}
-        <div className="flex items-center justify-between px-4 h-14 border-b border-white/10 shrink-0">
+        <div className="flex items-center justify-between px-4 h-14 border-b border-sidebar-border shrink-0">
           <Link to="/admin" className="flex items-center gap-2 overflow-hidden" onClick={handleNavClick}>
             <div className="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center shrink-0">
               <Flame className="w-4 h-4 text-orange-400" />
