@@ -12,6 +12,7 @@ import ScentGuideTeaser from "@/components/home/ScentGuideTeaser";
 import ReviewsSection from "@/components/home/ReviewsSection";
 import NewsletterDiscount from "@/components/home/NewsletterDiscount";
 import FlashDeals from "@/components/home/FlashDeals";
+import HomepageCatalog from "@/components/home/HomepageCatalog";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
 import PersonalizedRecommendations from "@/components/home/PersonalizedRecommendations";
 import WelcomeBack from "@/components/home/WelcomeBack";
