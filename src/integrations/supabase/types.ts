@@ -2892,6 +2892,50 @@ export type Database = {
         }
         Relationships: []
       }
+      exit_intent_usage: {
+        Row: {
+          coupon_code: string
+          created_at: string
+          customer_address: string | null
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          id: string
+          order_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          coupon_code: string
+          created_at?: string
+          customer_address?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          id?: string
+          order_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          coupon_code?: string
+          created_at?: string
+          customer_address?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          id?: string
+          order_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exit_intent_usage_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       external_webhooks: {
         Row: {
           created_at: string | null
@@ -9679,6 +9723,15 @@ export type Database = {
     }
     Functions: {
       anonymize_user_data: { Args: { p_user_id: string }; Returns: Json }
+      check_exit_intent_fraud: {
+        Args: {
+          p_address?: string
+          p_email?: string
+          p_name?: string
+          p_phone?: string
+        }
+        Returns: boolean
+      }
       count_dynamic_category_products: {
         Args: { p_rules: Json }
         Returns: number
