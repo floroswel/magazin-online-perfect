@@ -43,7 +43,7 @@ export default function ProductDetail() {
   const { store_general } = useEditableContent();
   const { user } = useAuth();
   const { addToCart } = useCart();
-  const { addToComparison, isInComparison } = useComparison();
+  
   const { getProductDiscount } = usePricingRules();
   const { format, currency, convert } = useCurrency();
   const taxSettings = useTaxSettings();
