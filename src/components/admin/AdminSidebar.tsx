@@ -269,8 +269,8 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
             </div>
             {!collapsed && (
               <div>
-                <h2 className="font-bold text-sm text-white leading-tight">Mama Lucica</h2>
-                <p className="text-[9px] text-white/40 font-medium leading-none tracking-wider">ADMIN PANEL</p>
+                <h2 className="font-bold text-sm text-sidebar-primary-foreground leading-tight">Mama Lucica</h2>
+                <p className="text-[9px] text-sidebar-foreground/50 font-medium leading-none tracking-wider">ADMIN PANEL</p>
               </div>
             )}
           </Link>
