@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
 import { useEditableContent } from "@/hooks/useEditableContent";
@@ -9,48 +10,72 @@ import DOMPurify from "dompurify";
 
 export default function CmsPage({ overrideSlug }: { overrideSlug?: string }) {
   const { store_general } = useEditableContent();
-  usePageSeo({ title: store_general.store_name, description: `${store_general.store_slogan} — magazin online.` });
   const params = useParams<{ slug: string }>();
   const slug = overrideSlug ?? params.slug;
-  const [page, setPage] = useState<{ title: string; body_html: string | null; meta_title: string | null; meta_description: string | null } | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
+  const queryClient = useQueryClient();
 
+  const queryKey = ["cms_page", slug];
+
+  const { data: page, isLoading, isError } = useQuery({
+    queryKey,
+    queryFn: async () => {
+      if (!slug) return null;
+      const { data, error } = await supabase
+        .from("cms_pages")
+        .select("title, body_html, meta_title, meta_description")
+        .eq("slug", slug)
+        .eq("published", true)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!slug,
+    staleTime: 0,
+  });
+
+  // Realtime subscription — invalidate query on any change to this page
   useEffect(() => {
     if (!slug) return;
-
-    setLoading(true);
-    setNotFound(false);
-    setPage(null);
-
-    supabase
-      .from("cms_pages")
-      .select("title, body_html, meta_title, meta_description")
-      .eq("slug", slug)
-      .eq("published", true)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (data) {
-          setPage(data);
-          document.title = data.meta_title || data.title || store_general.store_name;
-          const metaDesc = document.querySelector('meta[name="description"]');
-          if (metaDesc && data.meta_description) metaDesc.setAttribute("content", data.meta_description);
-        } else {
-          setNotFound(true);
+    const channel = supabase
+      .channel(`cms-page-${slug}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "cms_pages",
+        },
+        (payload: any) => {
+          // Invalidate if this slug was affected or on any change (slug might not be in filter)
+          const changed = payload.new?.slug || payload.old?.slug;
+          if (!changed || changed === slug) {
+            queryClient.invalidateQueries({ queryKey });
+          }
         }
-        setLoading(false);
-      });
-  }, [slug, store_general.store_name]);
+      )
+      .subscribe();
 
-  if (loading) {
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [slug, queryClient, queryKey]);
+
+  usePageSeo({
+    title: page?.meta_title || page?.title || store_general.store_name,
+    description: page?.meta_description || `${store_general.store_slogan} — magazin online.`,
+  });
+
+  if (isLoading) {
     return (
       <Layout>
-        <div className="container py-20 flex justify-center"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>
+        <div className="container py-20 flex justify-center">
+          <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+        </div>
       </Layout>
     );
   }
 
-  if (notFound || !page) {
+  if (isError || !page) {
     return (
       <Layout>
         <div className="container py-20 text-center">
