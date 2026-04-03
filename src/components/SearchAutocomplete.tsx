@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrency } from "@/hooks/useCurrency";
-import { isCandleProductLike } from "@/lib/candleCatalog";
+
 
 interface Suggestion {
   id: string;
