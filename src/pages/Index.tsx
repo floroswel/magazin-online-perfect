@@ -167,7 +167,7 @@ export default function Index() {
     newsletter_section: <EB key="newsletter_section" fallback={null}><NewsletterDiscount /></EB>,
     quick_filters: <EB key="quick_filters" fallback={null}><QuickFilters /></EB>,
     coupon_collector: <EB key="coupon_collector" fallback={null}><CouponCollector /></EB>,
-    top_vendors: <EB key="top_vendors" fallback={null}><TopVendors /></EB>,
+    
     buy_again: <EB key="buy_again" fallback={null}><BuyAgain /></EB>,
     mood_selector: <EB key="mood_selector" fallback={null}><CandleMoodSelector /></EB>,
     product_catalog: <EB key="product_catalog" fallback={null}><HomepageCatalog /></EB>,
