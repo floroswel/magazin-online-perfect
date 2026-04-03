@@ -446,6 +446,8 @@ export default function AdminRoutes() {
         <Route path="settings/360-slider" element={<Admin360SliderSettings />} />
         <Route path="settings/custom-404" element={<AdminCustom404Settings />} />
         <Route path="settings/configurator" element={<AdminConfiguratorSettings />} />
+        <Route path="settings/breadcrumbs" element={<AdminBreadcrumbSettings />} />
+        <Route path="settings/domains" element={<AdminDomainSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}
         <Route path="users" element={<AdminUsers />} />
