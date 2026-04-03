@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { ChevronLeft, ChevronRight, X, ZoomIn, Maximize2, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, ZoomIn, Maximize2, Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Props {
@@ -17,15 +17,21 @@ export default function ProductImageGallery({ mainImage, images, videos, alt }: 
     ...(images || []).filter(img => img !== mainImage).map(url => ({ type: "image" as const, url })),
     ...(videos || []).map(url => ({ type: "video" as const, url })),
   ];
+
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [showFullscreen, setShowFullscreen] = useState(false);
   const [zoomActive, setZoomActive] = useState(false);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
+  const [videoPlaying, setVideoPlaying] = useState(false);
+  const [videoMuted, setVideoMuted] = useState(true);
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const thumbnailsRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const currentItem = allItems[selectedIndex] || { type: "image" as const, url: "/placeholder.svg" };
   const isVideo = currentItem.type === "video";
+  const hasVideo = allItems.some(item => item.type === "video");
+  const videoIndex = allItems.findIndex(item => item.type === "video");
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!imageContainerRef.current) return;
@@ -42,9 +48,40 @@ export default function ProductImageGallery({ mainImage, images, videos, alt }: 
     const newIndex = (index + allItems.length) % allItems.length;
     setSelectedIndex(newIndex);
     setZoomActive(false);
+    setVideoPlaying(false);
     if (thumbnailsRef.current) {
       const thumb = thumbnailsRef.current.children[newIndex] as HTMLElement;
       thumb?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
+  };
+
+  const handlePlayVideo = () => {
+    if (videoIndex >= 0) {
+      setSelectedIndex(videoIndex);
+      setVideoPlaying(true);
+      setTimeout(() => {
+        videoRef.current?.play();
+      }, 100);
+    }
+  };
+
+  const toggleVideoPlay = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play();
+        setVideoPlaying(true);
+      } else {
+        videoRef.current.pause();
+        setVideoPlaying(false);
+      }
+    }
+  };
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setVideoMuted(!videoMuted);
     }
   };
 
@@ -68,15 +105,39 @@ export default function ProductImageGallery({ mainImage, images, videos, alt }: 
           onClick={() => !isVideo && setShowFullscreen(true)}
         >
           {isVideo ? (
-            <video
-              src={currentItem.url}
-              className="w-full h-full object-contain p-2 bg-black"
-              controls
-              autoPlay
-              muted
-              loop
-              playsInline
-            />
+            <div className="w-full h-full bg-black relative">
+              <video
+                ref={videoRef}
+                src={currentItem.url}
+                className="w-full h-full object-contain"
+                autoPlay
+                muted={videoMuted}
+                loop
+                playsInline
+                onPlay={() => setVideoPlaying(true)}
+                onPause={() => setVideoPlaying(false)}
+              />
+              {/* Video controls overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-white hover:bg-white/20"
+                  onClick={(e) => { e.stopPropagation(); toggleVideoPlay(); }}
+                >
+                  {videoPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-white hover:bg-white/20"
+                  onClick={toggleMute}
+                >
+                  {videoMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                </Button>
+                <span className="text-white/70 text-xs ml-auto">Clip cinematic 6s</span>
+              </div>
+            </div>
           ) : (
             <>
               <img
@@ -105,6 +166,17 @@ export default function ProductImageGallery({ mainImage, images, videos, alt }: 
                   <Maximize2 className="h-4 w-4" />
                 </div>
               </div>
+
+              {/* Play Video button overlay — shown on image views when video exists */}
+              {hasVideo && !isVideo && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); handlePlayVideo(); }}
+                  className="absolute bottom-4 right-4 flex items-center gap-2 bg-black/70 hover:bg-black/85 text-white px-4 py-2 rounded-full shadow-lg transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+                >
+                  <Play className="h-4 w-4 fill-white" />
+                  <span className="text-sm font-medium">Play Video</span>
+                </button>
+              )}
             </>
           )}
 
@@ -157,8 +229,9 @@ export default function ProductImageGallery({ mainImage, images, videos, alt }: 
                   }`}
                 >
                   {item.type === "video" ? (
-                    <div className="w-full h-full bg-black flex items-center justify-center">
+                    <div className="w-full h-full bg-black flex items-center justify-center relative">
                       <Play className="h-5 w-5 text-white fill-white" />
+                      <span className="absolute bottom-0.5 right-0.5 text-[8px] text-white/70 font-medium">6s</span>
                     </div>
                   ) : (
                     <img

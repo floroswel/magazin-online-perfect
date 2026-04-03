@@ -4,7 +4,7 @@ import { generateProductVideo } from "@/lib/productVideoGenerator";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Video, Loader2, CheckCircle2, Trash2 } from "lucide-react";
+import { Video, Loader2, CheckCircle2, Trash2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
@@ -40,7 +40,7 @@ export default function ProductVideoGenerator({
     setProgress(0);
 
     try {
-      toast.info("Se generează clipul video din pozele produsului...");
+      toast.info("Se generează clipul video cinematic din pozele produsului...");
 
       const videoBlob = await generateProductVideo({
         imageUrls: allImages,
@@ -76,7 +76,7 @@ export default function ProductVideoGenerator({
       if (updateError) throw updateError;
 
       onVideoGenerated(videoUrl);
-      toast.success("Clip video generat și salvat cu succes!");
+      toast.success("Clip video cinematic generat și salvat cu succes!");
     } catch (err: any) {
       console.error("Video generation error:", err);
       toast.error(`Eroare la generare: ${err.message}`);
@@ -89,7 +89,6 @@ export default function ProductVideoGenerator({
   const handleRemoveVideo = async (videoUrl: string) => {
     setRemoving(videoUrl);
     try {
-      // Extract path from URL
       const urlParts = videoUrl.split("/product-videos/");
       if (urlParts[1]) {
         await supabase.storage.from("product-videos").remove([urlParts[1]]);
@@ -114,8 +113,8 @@ export default function ProductVideoGenerator({
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Video className="w-4 h-4 text-primary" />
-          <span className="text-sm font-medium">Clip Video AI</span>
+          <Sparkles className="w-4 h-4 text-primary" />
+          <span className="text-sm font-semibold">Generate 6s Product Video</span>
           {allImages.length < 2 && (
             <Badge variant="outline" className="text-xs text-muted-foreground">
               Min. 2 imagini
@@ -124,26 +123,33 @@ export default function ProductVideoGenerator({
         </div>
         <Button
           size="sm"
-          variant="outline"
           onClick={handleGenerate}
           disabled={generating || allImages.length < 2}
+          className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-md"
         >
           {generating ? (
             <>
-              <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-              {progress}%
+              <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+              Generare {progress}%
             </>
           ) : (
             <>
-              <Video className="w-3 h-3 mr-1" />
-              Generează Clip 6s
+              <Video className="w-3.5 h-3.5 mr-1.5" />
+              Generate 6s Product Video
             </>
           )}
         </Button>
       </div>
 
       {generating && (
-        <Progress value={progress} className="h-1.5" />
+        <div className="space-y-1">
+          <Progress value={progress} className="h-2" />
+          <p className="text-xs text-muted-foreground">
+            {progress < 10 ? "Se încarcă imaginile..." :
+             progress < 95 ? "Se renderizează clipul cinematic..." :
+             "Se finalizează..."}
+          </p>
+        </div>
       )}
 
       {videos && videos.length > 0 && (
@@ -151,22 +157,22 @@ export default function ProductVideoGenerator({
           {videos.map((videoUrl, i) => (
             <div
               key={i}
-              className="flex items-center gap-2 p-2 rounded-md border bg-muted/30"
+              className="flex items-center gap-3 p-2.5 rounded-lg border bg-muted/30"
             >
               <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
               <video
                 src={videoUrl}
-                className="w-24 h-14 rounded object-cover bg-black"
+                className="w-28 h-16 rounded-md object-cover bg-black"
                 muted
                 preload="metadata"
               />
               <span className="text-xs text-muted-foreground flex-1 truncate">
-                Clip #{i + 1}
+                Clip cinematic #{i + 1}
               </span>
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 w-7 p-0 text-destructive"
+                className="h-7 w-7 p-0 text-destructive hover:text-destructive"
                 onClick={() => handleRemoveVideo(videoUrl)}
                 disabled={removing === videoUrl}
               >
