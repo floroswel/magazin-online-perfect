@@ -170,6 +170,7 @@ export default function Index() {
     top_vendors: <EB key="top_vendors" fallback={null}><TopVendors /></EB>,
     buy_again: <EB key="buy_again" fallback={null}><BuyAgain /></EB>,
     mood_selector: <EB key="mood_selector" fallback={null}><CandleMoodSelector /></EB>,
+    product_catalog: <EB key="product_catalog" fallback={null}><HomepageCatalog /></EB>,
   }), [featured, loading, featuredRef]);
 
   return (
