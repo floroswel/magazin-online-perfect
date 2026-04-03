@@ -228,6 +228,7 @@ export default function ProductDetail() {
           <ProductImageGallery
             mainImage={activeImage || "/placeholder.svg"}
             images={product.images}
+            videos={(product as any).videos}
             alt={imageAlts[activeImage] || product.name}
           />
 
