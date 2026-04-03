@@ -1,51 +1,55 @@
 
 
-# VERSION 13.0 — Sync Fix & Hardcoded String Cleanup
+## Analiza secțiunii Comenzi — Ce lipsește și ce se poate îmbunătăți
 
-## Diagnosis
+### Situația curentă
 
-The central settings system (`useEditableContent` + `EditableContentProvider` + `AdminEditableContent`) **already exists and is correctly wired**:
-- Provider wraps the app in `App.tsx`
-- Supabase Realtime subscription is active on `app_settings`
-- All major components (Header, Footer, AnnouncementCountdown, WhyVentuza, ProcessSection, ScentGuideTeaser, TrustFooterStrip, SocialProofBar, SeoHead) already use `useEditableContent()`
+Sidebar-ul are 11 linkuri sub Comenzi. Toate au rute definite și componente funcționale:
+- **Toate Comenzile** — pagină completă (772 linii): filtre avansate, KPI-uri, realtime, tag-uri, acțiuni bulk, export CSV, paginare
+- **Comenzi Noi / Procesare / În Livrare / Livrate / Anulate** — folosesc `AdminFilteredOrders` (176 linii): tabel simplu cu search, paginare, export CSV
+- **Facturi** — pagină completă (773 linii): statusuri fiscale, e-factura ANAF
+- **Retururi** — pagină completă (357 linii): taburi, aprobare/respingere, note admin
+- **Probleme** — pagină minimală (60 linii): doar tabel read-only, fără acțiuni
+- **Statusuri** — pagină completă (267 linii): CRUD statusuri custom cu tranziții
 
-**Root cause of "changes not appearing"**: No `editable_*` rows exist in the database yet. The admin editor saves on demand — if nobody has clicked "Salvează Tot" in the Content Editor, all components fall back to hardcoded defaults. This is working as designed.
+---
 
-## What Actually Needs Fixing
+### Ce lipsește și ce trebuie îmbunătățit
 
-### 1. Seed default content on first save / app init
-Add an "Initialize Defaults" button in AdminEditableContent that writes all EDITABLE_DEFAULTS to the database, ensuring the round-trip works immediately.
+#### 1. AdminFilteredOrders — prea simplist față de pagina principală
+Paginile Comenzi Noi, Procesare, În Livrare, Livrate, Anulate sunt mult mai sărace decât „Toate Comenzile":
+- **Lipsește**: click pe rând pentru detalii comandă, acțiuni rapide pe status (ex: „Expediază" din pagina Procesare), filtre avansate (dată, valoare), KPI summary cards, acțiuni bulk, tag-uri
+- **Plan**: Voi adăuga link către detalii comandă, acțiuni contextuale per status (ex: buton „Marchează expediată" pe pagina Procesare), și KPI cards cu totalul filtrat
 
-### 2. Remove remaining hardcoded "MamaLucica" strings (5 files)
-These files still have hardcoded brand names instead of reading from `useEditableContent`:
+#### 2. AdminIssueOrders — pagină minimală, fără funcționalitate
+- **Lipsește**: acțiuni (rezolvă problema, contactează client, mută în alt status), filtre, search, export, detalii expandabile
+- **Plan**: Voi adăuga search, acțiuni rapide (restaurare, contact client, notă internă), și export CSV
 
-| File | Current | Fix |
-|------|---------|-----|
-| `src/pages/ProductDetail.tsx` | `"MamaLucica"` in SEO title | Read from `useEditableContent().store_general.store_name` |
-| `src/pages/CmsPage.tsx` | `"MamaLucica"` in page title | Read from `useEditableContent().store_general.store_name` |
-| `src/components/products/VendorComparison.tsx` | `"MamaLucica"` brand name | Read from `useEditableContent().store_general.store_name` |
-| `vite.config.ts` | PWA manifest `"Mama Lucica"` | Keep as-is (build-time only, not runtime) |
+#### 3. Coșuri Abandonate — lipsește funcționalitate de recuperare
+- **Verificare necesară**: componenta de abandoned carts probabil nu trimite email-uri automate de recuperare
+- **Plan**: Voi verifica pagina existentă și adăuga acțiuni de „Trimite reminder email" și statistici de recovery rate
 
-### 3. Consolidate `useStoreBranding` → `useEditableContent`
-`useStoreBranding` reads from `store_branding` key while `useEditableContent` reads from `editable_store_general`. This duplication causes confusion. Update `useStoreBranding` to delegate to `useEditableContent().store_general` so there's one source of truth.
+#### 4. Lipsă navigare între sub-pagini comenzi
+- Odată intrat pe o sub-pagină (ex: Comenzi Noi), nu poți naviga rapid la altă sub-pagină fără sidebar
+- **Plan**: Adaug tab-uri/breadcrumbs în header-ul fiecărei sub-pagini pentru navigare rapidă între statusuri
 
-### 4. Add "Inițializează" button in Admin Content Editor
-A one-click button that upserts all 10 `editable_*` keys with their current defaults into `app_settings`, ensuring the database has the rows and Realtime can propagate changes.
+#### 5. Dashboard KPI-uri pe sub-pagini
+- AdminFilteredOrders nu are carduri sumar (total comenzi, valoare totală, medie per comandă)
+- **Plan**: Adaug 3 KPI cards deasupra tabelului pe fiecare sub-pagină
 
-## Files Modified
+---
 
-| File | Change |
-|------|--------|
-| `src/components/admin/settings/AdminEditableContent.tsx` | Add "Initialize Defaults" button |
-| `src/hooks/useStoreBranding.tsx` | Delegate to `useEditableContent().store_general` |
-| `src/pages/ProductDetail.tsx` | Replace hardcoded "MamaLucica" with dynamic store name |
-| `src/pages/CmsPage.tsx` | Replace hardcoded "MamaLucica" with dynamic store name |
-| `src/components/products/VendorComparison.tsx` | Replace hardcoded "MamaLucica" with dynamic store name |
+### Fișiere afectate
 
-## How It Works After Fix
+| Fișier | Modificare |
+|--------|-----------|
+| `src/components/admin/orders/AdminFilteredOrders.tsx` | Adaug KPI cards, link detalii, acțiuni contextuale, tab-uri navigare |
+| `src/components/admin/orders/AdminIssueOrders.tsx` | Refactorizare completă: search, acțiuni, export |
+| `src/components/admin/customers/AdminAbandonedCarts.tsx` | Verificare + adăugare acțiuni recovery |
 
-1. Admin opens Content Editor → clicks "Inițializează Valori Default" (or just "Salvează Tot")
-2. All 10 `editable_*` rows are written to `app_settings`
-3. Realtime subscription fires → `useEditableContent` re-fetches → all components update instantly
-4. Any future edit + save propagates in under 10 seconds
+### Ordinea implementării
+
+1. Îmbunătățire `AdminFilteredOrders` — acțiuni contextuale + KPI + link detalii
+2. Refactorizare `AdminIssueOrders` — funcționalitate completă
+3. Verificare și îmbunătățire Coșuri Abandonate
 
