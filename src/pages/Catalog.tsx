@@ -80,7 +80,7 @@ export default function Catalog() {
   useEffect(() => {
     if (smartSlug) {
       supabase.from("dynamic_categories").select("id, name, description").eq("slug", smartSlug).eq("visible", true).maybeSingle()
-        .then(({ data }) => setSmartCategory(data && isCandleCollection(data as any) ? (data as any) : null));
+        .then(({ data }) => setSmartCategory(data as any));
     } else { setSmartCategory(null); }
   }, [smartSlug]);
 

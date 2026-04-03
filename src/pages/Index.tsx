@@ -135,7 +135,7 @@ export default function Index() {
   const sectionComponents: Record<string, React.ReactNode> = useMemo(() => ({
     hero_section: <EB key="hero_section" fallback={null}><HeroSlider /></EB>,
     social_proof_bar: <EB key="social_proof_bar" fallback={null}><SocialProofBar /></EB>,
-    collections_grid: <EB key="collections_grid" fallback={null}><CollectionsGrid /></EB>,
+    collections_grid: null,
     featured_products: (
       <EB key="featured_products" fallback={null}>
         <section className="container py-6 md:py-8 px-4" ref={featuredRef}>

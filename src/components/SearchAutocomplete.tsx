@@ -77,7 +77,7 @@ export default function SearchAutocomplete({ className }: { className?: string }
         result_limit: 6,
       });
       if (!error && data) {
-        setSuggestions((data as Suggestion[]).filter((item) => isCandleProductLike(item)));
+        setSuggestions(data as Suggestion[]);
       } else {
         setSuggestions([]);
       }
