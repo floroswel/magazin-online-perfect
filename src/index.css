@@ -113,6 +113,11 @@
     @apply border-border;
   }
 
+  html {
+    touch-action: manipulation;
+    -ms-touch-action: manipulation;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, sans-serif;
