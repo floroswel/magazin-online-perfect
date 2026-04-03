@@ -440,7 +440,7 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 w-full px-3 py-1.5 rounded-lg text-[13px] text-white/40 hover:text-red-400 hover:bg-white/5 transition-all"
+                className="flex items-center gap-2 w-full px-3 py-1.5 rounded-lg text-[13px] text-sidebar-foreground/60 hover:text-red-400 hover:bg-sidebar-accent/50 transition-all"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Deconectare</span>
