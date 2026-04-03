@@ -8153,6 +8153,47 @@ export type Database = {
         }
         Relationships: []
       }
+      sms_log: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          order_id: string | null
+          phone: string
+          sms_type: string
+          status: string
+          twilio_sid: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          order_id?: string | null
+          phone: string
+          sms_type?: string
+          status?: string
+          twilio_sid?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          order_id?: string | null
+          phone?: string
+          sms_type?: string
+          status?: string
+          twilio_sid?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sms_log_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       social_proof_analytics: {
         Row: {
           created_at: string
