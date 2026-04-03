@@ -13,6 +13,9 @@ export interface EditableContent {
     text_mobile: string;
     threshold: number;
     emoji: string;
+    bg_color: string;
+    text_color: string;
+    marquee: boolean;
   };
   header_topbar: {
     phone: string;
@@ -46,6 +49,9 @@ const DEFAULTS: EditableContent = {
     text_mobile: "🕯️ Livrare GRATUITĂ — ",
     threshold: 200,
     emoji: "🕯️",
+    bg_color: "",
+    text_color: "",
+    marquee: false,
   },
   header_topbar: {
     phone: "📞 0800-123-456",

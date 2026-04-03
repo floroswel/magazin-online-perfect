@@ -160,6 +160,17 @@
     animation-play-state: paused;
   }
 
+  @keyframes marquee-announcement {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+  .animate-marquee-announcement {
+    animation: marquee-announcement 20s linear infinite;
+  }
+  .animate-marquee-announcement:hover {
+    animation-play-state: paused;
+  }
+
   .reveal {
     opacity: 0;
     transform: translateY(24px);

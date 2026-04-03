@@ -212,6 +212,26 @@ export default function AdminEditableContent() {
               <div><Label>Text Desktop</Label><Textarea value={content.announcement.text_desktop} onChange={e => set("announcement", { ...content.announcement, text_desktop: e.target.value })} rows={2} /><p className="text-xs text-muted-foreground mt-1">Folosește {"{threshold}"} pentru pragul în lei</p></div>
               <div><Label>Text Mobil</Label><Textarea value={content.announcement.text_mobile} onChange={e => set("announcement", { ...content.announcement, text_mobile: e.target.value })} rows={2} /></div>
               <div className="max-w-[200px]"><Label>Prag Livrare Gratuită (lei)</Label><Input type="number" value={content.announcement.threshold} onChange={e => set("announcement", { ...content.announcement, threshold: Number(e.target.value) })} /></div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label className="text-xs">Culoare fundal</Label>
+                  <div className="flex items-center gap-2 mt-1">
+                    <input type="color" value={content.announcement.bg_color || "#D9773F"} onChange={e => set("announcement", { ...content.announcement, bg_color: e.target.value })} className="w-9 h-9 rounded border cursor-pointer p-0" />
+                    <Input value={content.announcement.bg_color || ""} onChange={e => set("announcement", { ...content.announcement, bg_color: e.target.value })} placeholder="#D9773F (implicit)" className="h-8 text-xs font-mono" />
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs">Culoare text</Label>
+                  <div className="flex items-center gap-2 mt-1">
+                    <input type="color" value={content.announcement.text_color || "#ffffff"} onChange={e => set("announcement", { ...content.announcement, text_color: e.target.value })} className="w-9 h-9 rounded border cursor-pointer p-0" />
+                    <Input value={content.announcement.text_color || ""} onChange={e => set("announcement", { ...content.announcement, text_color: e.target.value })} placeholder="#ffffff (implicit)" className="h-8 text-xs font-mono" />
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" id="marquee-toggle" checked={!!content.announcement.marquee} onChange={e => set("announcement", { ...content.announcement, marquee: e.target.checked })} className="rounded" />
+                <Label htmlFor="marquee-toggle" className="text-sm cursor-pointer">Text în mișcare (marquee dreapta → stânga)</Label>
+              </div>
             </div>
           </Section>
 
