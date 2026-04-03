@@ -73,16 +73,7 @@ const DEFAULTS: EditableContent = {
     { to: "/blog", label: "Blog" },
     { to: "/contact", label: "Contact" },
   ],
-  mobile_categories: [
-    { name: "Lumânări Parfumate", slug: "lumanari-parfumate", icon: "🕯️" },
-    { name: "Decorative", slug: "lumanari-decorative", icon: "✨" },
-    { name: "Cadouri & Seturi", slug: "cadouri-seturi", icon: "🎁" },
-    { name: "Aromaterapie", slug: "aromaterapie", icon: "🌿" },
-    { name: "Eveniment", slug: "lumanari-eveniment", icon: "🎉" },
-    { name: "Personalizare", slug: "personalizare", icon: "🎨" },
-    { name: "Accesorii", slug: "accesorii", icon: "🔧" },
-    { name: "Sezoniere", slug: "colectii-sezoniere", icon: "🍂" },
-  ],
+  mobile_categories: [],
   why_section: {
     title: "Mai mult decât o lumânare",
     items: [
