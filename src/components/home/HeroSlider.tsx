@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface HeroSlide {
@@ -13,9 +12,14 @@ interface HeroSlide {
 }
 
 const DEFAULT_SLIDES: HeroSlide[] = [
-  { id: "1", title: "Lumânări Artizanale Handmade", subtitle: "Fiecare lumânare e turnată manual cu dragoste și ingrediente naturale", cta: "DESCOPERĂ COLECȚIA", link: "/catalog", image: "https://images.unsplash.com/photo-1602607167093-5ac4af65e1cd?auto=format&w=1400&q=80" },
-  { id: "2", title: "Colecția de Sezon", subtitle: "Arome noi inspirate din natură — ediție limitată", cta: "VEZI NOUTĂȚILE", link: "/catalog?sort=newest", image: "https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&w=1400&q=80" },
-  { id: "3", title: "Seturi Cadou Premium", subtitle: "Dăruiește aromă și căldură — pachete elegante pentru orice ocazie", cta: "ALEGE CADOUL", link: "/catalog?category=cadouri-seturi", image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&w=1400&q=80" },
+  {
+    id: "1",
+    title: "TIMELESS STYLE FOR MODERN LIVES",
+    subtitle: "",
+    cta: "SHOP ALL PRODUCTS",
+    link: "/catalog",
+    image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&w=1600&q=80",
+  },
 ];
 
 export default function HeroSlider() {
@@ -37,22 +41,19 @@ export default function HeroSlider() {
 
   useEffect(() => {
     if (slides.length <= 1) return;
-    const id = setInterval(() => setCurrent((c) => (c + 1) % slides.length), 5000);
+    const id = setInterval(() => setCurrent((c) => (c + 1) % slides.length), 6000);
     return () => clearInterval(id);
   }, [slides.length]);
-
-  const prev = () => setCurrent((c) => (c - 1 + slides.length) % slides.length);
-  const next = () => setCurrent((c) => (c + 1) % slides.length);
 
   if (slides.length === 0) return null;
 
   return (
     <section className="relative w-full overflow-hidden">
-      <div className="relative h-[280px] sm:h-[380px] md:h-[460px] lg:h-[500px] bg-muted">
+      <div className="relative h-[85vh] min-h-[500px] max-h-[900px]">
         {slides.map((slide, i) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-700 ${i === current ? "opacity-100 z-10" : "opacity-0 z-0"}`}
+            className={`absolute inset-0 transition-opacity duration-1000 ${i === current ? "opacity-100 z-10" : "opacity-0 z-0"}`}
           >
             <img
               src={slide.image}
@@ -61,53 +62,43 @@ export default function HeroSlider() {
               loading={i === 0 ? "eager" : "lazy"}
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent" />
-            <div className="relative z-10 h-full flex items-center">
-              <div className="container px-4 md:px-8 max-w-3xl">
-                <div className="text-white max-w-lg">
-                  <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-[52px] mb-3 md:mb-5 leading-[1.1] drop-shadow-lg font-black">
-                    {slide.title}
-                  </h2>
-                  <p className="text-sm sm:text-base md:text-lg opacity-90 mb-6 md:mb-8 drop-shadow-md leading-relaxed max-w-md font-medium">
+            {/* Subtle overlay for text readability */}
+            <div className="absolute inset-0 bg-black/10" />
+
+            {/* Content — bottom-left large uppercase text */}
+            <div className="relative z-10 h-full flex items-end">
+              <div className="px-6 md:px-12 lg:px-16 pb-12 md:pb-16 lg:pb-20 max-w-4xl">
+                <h1 className="text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black uppercase leading-[0.95] tracking-tight mb-6 md:mb-8"
+                    style={{ fontStyle: 'italic' }}>
+                  {slide.title}
+                </h1>
+                {slide.subtitle && (
+                  <p className="text-white/80 text-sm md:text-base mb-6 max-w-md">
                     {slide.subtitle}
                   </p>
-                  <Link
-                    to={slide.link}
-                    className="inline-flex items-center justify-center bg-primary text-primary-foreground font-extrabold text-base px-10 py-4 rounded-lg hover:bg-secondary hover:shadow-xl transition-all min-h-[52px] uppercase tracking-wide"
-                  >
-                    {slide.cta}
-                  </Link>
-                </div>
+                )}
+                <Link
+                  to={slide.link}
+                  className="inline-flex items-center justify-center bg-white text-foreground font-medium text-sm px-8 py-3.5 hover:bg-foreground hover:text-white transition-colors uppercase tracking-widest"
+                >
+                  {slide.cta}
+                </Link>
               </div>
             </div>
           </div>
         ))}
 
+        {/* Minimal dot indicators */}
         {slides.length > 1 && (
-          <>
-            <button
-              onClick={prev}
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 bg-background/80 text-foreground hover:bg-background"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={next}
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 bg-background/80 text-foreground hover:bg-background"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-
-            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-              {slides.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrent(i)}
-                  className={`h-2.5 rounded-full transition-all ${i === current ? "w-8 bg-primary" : "w-2.5 bg-white/50 hover:bg-white/80"}`}
-                />
-              ))}
-            </div>
-          </>
+          <div className="absolute bottom-6 right-6 md:right-12 z-20 flex gap-2">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={`h-2 rounded-full transition-all ${i === current ? "w-6 bg-white" : "w-2 bg-white/40 hover:bg-white/70"}`}
+              />
+            ))}
+          </div>
         )}
       </div>
     </section>
