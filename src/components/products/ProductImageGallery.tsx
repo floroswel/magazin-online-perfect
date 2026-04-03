@@ -24,7 +24,8 @@ export default function ProductImageGallery({ mainImage, images, videos, alt }: 
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const thumbnailsRef = useRef<HTMLDivElement>(null);
 
-  const currentItem = allItems[selectedIndex] || { type: "image", url: "/placeholder.svg" };
+  const currentItem = allItems[selectedIndex] || { type: "image" as const, url: "/placeholder.svg" };
+  const isVideo = currentItem.type === "video";
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!imageContainerRef.current) return;
@@ -34,13 +35,13 @@ export default function ProductImageGallery({ mainImage, images, videos, alt }: 
     setZoomPos({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) });
   }, []);
 
-  const handleMouseEnter = () => setZoomActive(true);
+  const handleMouseEnter = () => !isVideo && setZoomActive(true);
   const handleMouseLeave = () => setZoomActive(false);
 
   const goTo = (index: number) => {
-    const newIndex = (index + allImages.length) % allImages.length;
+    const newIndex = (index + allItems.length) % allItems.length;
     setSelectedIndex(newIndex);
-    // Scroll thumbnail into view
+    setZoomActive(false);
     if (thumbnailsRef.current) {
       const thumb = thumbnailsRef.current.children[newIndex] as HTMLElement;
       thumb?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
@@ -56,50 +57,59 @@ export default function ProductImageGallery({ mainImage, images, videos, alt }: 
   return (
     <>
       <div className="space-y-3" onKeyDown={handleKeyDown} tabIndex={0} role="region" aria-label="Galerie imagini produs">
-        {/* Main image with zoom */}
+        {/* Main display */}
         <div
           ref={imageContainerRef}
-          className="relative bg-white rounded-lg border overflow-hidden cursor-crosshair group"
+          className={`relative bg-white rounded-lg border overflow-hidden group ${isVideo ? "cursor-default" : "cursor-crosshair"}`}
           style={{ aspectRatio: "1/1" }}
-          onMouseMove={handleMouseMove}
+          onMouseMove={!isVideo ? handleMouseMove : undefined}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          onClick={() => setShowFullscreen(true)}
+          onClick={() => !isVideo && setShowFullscreen(true)}
         >
-          {/* Normal image */}
-          <img
-            src={currentImage}
-            alt={alt}
-            className="w-full h-full object-contain p-6 transition-opacity duration-200"
-            style={{ opacity: zoomActive ? 0 : 1 }}
-            draggable={false}
-          />
-
-          {/* Zoomed image (visible on hover) */}
-          {zoomActive && (
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `url(${currentImage})`,
-                backgroundSize: "250%",
-                backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
-                backgroundRepeat: "no-repeat",
-              }}
+          {isVideo ? (
+            <video
+              src={currentItem.url}
+              className="w-full h-full object-contain p-2 bg-black"
+              controls
+              autoPlay
+              muted
+              loop
+              playsInline
             />
+          ) : (
+            <>
+              <img
+                src={currentItem.url}
+                alt={alt}
+                className="w-full h-full object-contain p-6 transition-opacity duration-200"
+                style={{ opacity: zoomActive ? 0 : 1 }}
+                draggable={false}
+              />
+              {zoomActive && (
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    backgroundImage: `url(${currentItem.url})`,
+                    backgroundSize: "250%",
+                    backgroundPosition: `${zoomPos.x}% ${zoomPos.y}%`,
+                    backgroundRepeat: "no-repeat",
+                  }}
+                />
+              )}
+              <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="bg-black/50 text-white rounded-full p-1.5">
+                  <ZoomIn className="h-4 w-4" />
+                </div>
+                <div className="bg-black/50 text-white rounded-full p-1.5">
+                  <Maximize2 className="h-4 w-4" />
+                </div>
+              </div>
+            </>
           )}
 
-          {/* Zoom indicator */}
-          <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="bg-black/50 text-white rounded-full p-1.5">
-              <ZoomIn className="h-4 w-4" />
-            </div>
-            <div className="bg-black/50 text-white rounded-full p-1.5">
-              <Maximize2 className="h-4 w-4" />
-            </div>
-          </div>
-
           {/* Navigation arrows */}
-          {allImages.length > 1 && (
+          {allItems.length > 1 && (
             <>
               <Button
                 variant="ghost"
@@ -120,38 +130,44 @@ export default function ProductImageGallery({ mainImage, images, videos, alt }: 
             </>
           )}
 
-          {/* Image counter */}
-          {allImages.length > 1 && (
+          {/* Counter */}
+          {allItems.length > 1 && (
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
-              {selectedIndex + 1} / {allImages.length}
+              {selectedIndex + 1} / {allItems.length}
             </div>
           )}
         </div>
 
         {/* Thumbnails strip */}
-        {allImages.length > 1 && (
+        {allItems.length > 1 && (
           <div className="relative">
             <div
               ref={thumbnailsRef}
               className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin"
               style={{ scrollbarWidth: "thin" }}
             >
-              {allImages.map((img, i) => (
+              {allItems.map((item, i) => (
                 <button
                   key={i}
                   onClick={() => goTo(i)}
-                  className={`flex-shrink-0 w-16 h-16 rounded-md border-2 overflow-hidden transition-all duration-200 ${
+                  className={`flex-shrink-0 w-16 h-16 rounded-md border-2 overflow-hidden transition-all duration-200 relative ${
                     i === selectedIndex
                       ? "border-primary ring-1 ring-primary/30 shadow-sm"
                       : "border-border hover:border-primary/50"
                   }`}
                 >
-                  <img
-                    src={img}
-                    alt={`${alt} - ${i + 1}`}
-                    className="w-full h-full object-contain p-1 bg-white"
-                    draggable={false}
-                  />
+                  {item.type === "video" ? (
+                    <div className="w-full h-full bg-black flex items-center justify-center">
+                      <Play className="h-5 w-5 text-white fill-white" />
+                    </div>
+                  ) : (
+                    <img
+                      src={item.url}
+                      alt={`${alt} - ${i + 1}`}
+                      className="w-full h-full object-contain p-1 bg-white"
+                      draggable={false}
+                    />
+                  )}
                 </button>
               ))}
             </div>
@@ -159,8 +175,8 @@ export default function ProductImageGallery({ mainImage, images, videos, alt }: 
         )}
       </div>
 
-      {/* Fullscreen lightbox */}
-      {showFullscreen && (
+      {/* Fullscreen lightbox (images only) */}
+      {showFullscreen && !isVideo && (
         <div
           className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center"
           onClick={() => setShowFullscreen(false)}
@@ -169,7 +185,6 @@ export default function ProductImageGallery({ mainImage, images, videos, alt }: 
           role="dialog"
           aria-label="Imagine mărită"
         >
-          {/* Close button */}
           <Button
             variant="ghost"
             size="icon"
@@ -179,17 +194,15 @@ export default function ProductImageGallery({ mainImage, images, videos, alt }: 
             <X className="h-6 w-6" />
           </Button>
 
-          {/* Full image */}
           <img
-            src={currentImage}
+            src={currentItem.url}
             alt={alt}
             className="max-w-[90vw] max-h-[85vh] object-contain select-none"
             onClick={(e) => e.stopPropagation()}
             draggable={false}
           />
 
-          {/* Navigation */}
-          {allImages.length > 1 && (
+          {allItems.length > 1 && (
             <>
               <Button
                 variant="ghost"
@@ -210,10 +223,9 @@ export default function ProductImageGallery({ mainImage, images, videos, alt }: 
             </>
           )}
 
-          {/* Thumbnail strip in fullscreen */}
-          {allImages.length > 1 && (
+          {allItems.length > 1 && (
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 bg-black/60 rounded-lg p-2 max-w-[80vw] overflow-x-auto">
-              {allImages.map((img, i) => (
+              {allItems.map((item, i) => (
                 <button
                   key={i}
                   onClick={(e) => { e.stopPropagation(); goTo(i); }}
@@ -221,7 +233,13 @@ export default function ProductImageGallery({ mainImage, images, videos, alt }: 
                     i === selectedIndex ? "border-white" : "border-transparent opacity-50 hover:opacity-80"
                   }`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-contain bg-white p-0.5" draggable={false} />
+                  {item.type === "video" ? (
+                    <div className="w-full h-full bg-black/80 flex items-center justify-center">
+                      <Play className="h-4 w-4 text-white fill-white" />
+                    </div>
+                  ) : (
+                    <img src={item.url} alt="" className="w-full h-full object-contain bg-white p-0.5" draggable={false} />
+                  )}
                 </button>
               ))}
             </div>
