@@ -16,6 +16,7 @@ export interface EditableContent {
     bg_color: string;
     text_color: string;
     marquee: boolean;
+    marquee_mobile: boolean;
   };
   header_topbar: {
     phone: string;
@@ -52,6 +53,7 @@ const DEFAULTS: EditableContent = {
     bg_color: "",
     text_color: "",
     marquee: false,
+    marquee_mobile: false,
   },
   header_topbar: {
     phone: "📞 0800-123-456",

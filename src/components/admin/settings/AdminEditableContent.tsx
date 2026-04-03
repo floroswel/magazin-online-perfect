@@ -228,9 +228,15 @@ export default function AdminEditableContent() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <input type="checkbox" id="marquee-toggle" checked={!!content.announcement.marquee} onChange={e => set("announcement", { ...content.announcement, marquee: e.target.checked })} className="rounded" />
-                <Label htmlFor="marquee-toggle" className="text-sm cursor-pointer">Text în mișcare (marquee dreapta → stânga)</Label>
+              <div className="flex items-center gap-4 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" id="marquee-toggle" checked={!!content.announcement.marquee} onChange={e => set("announcement", { ...content.announcement, marquee: e.target.checked })} className="rounded" />
+                  <Label htmlFor="marquee-toggle" className="text-sm cursor-pointer">Marquee Desktop</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" id="marquee-mobile-toggle" checked={!!content.announcement.marquee_mobile} onChange={e => set("announcement", { ...content.announcement, marquee_mobile: e.target.checked })} className="rounded" />
+                  <Label htmlFor="marquee-mobile-toggle" className="text-sm cursor-pointer">Marquee Mobil</Label>
+                </div>
               </div>
             </div>
           </Section>
