@@ -289,6 +289,7 @@ const menuSections: MenuSection[] = [
         label: "Setări", icon: Settings,
         children: [
           { label: "Generale", path: "/admin/settings/general", dividerBefore: "Magazin" },
+          { label: "Domenii", path: "/admin/settings/domains" },
           { label: "Abonament", path: "/admin/settings/store" },
           { label: "Checkout", path: "/admin/settings/checkout" },
           { label: "Coș", path: "/admin/settings/cart" },
