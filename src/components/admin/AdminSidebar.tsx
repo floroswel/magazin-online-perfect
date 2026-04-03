@@ -365,8 +365,8 @@ export default function AdminSidebar({ open, onClose, collapsed = false, onToggl
                         className={cn(
                           "flex items-center gap-2.5 w-full px-3 h-9 rounded-lg text-[13px] font-medium transition-all",
                           parentActive
-                            ? "text-white"
-                            : "text-white/60 hover:text-white/90 hover:bg-white/5"
+                            ? "text-sidebar-primary-foreground"
+                            : "text-sidebar-foreground hover:text-sidebar-accent-foreground hover:bg-sidebar-accent/50"
                         )}
                       >
                         <item.icon className="w-[18px] h-[18px] shrink-0" />
