@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShoppingCart, Heart, Star, Minus, Plus, ArrowLeft, GitCompare, MessageSquare, Truck, Package, Ruler, Bell } from "lucide-react";
+import { ShoppingCart, Heart, Star, Minus, Plus, ArrowLeft, MessageSquare, Truck, Package, Ruler, Bell } from "lucide-react";
 import ProductReviews from "@/components/products/ProductReviews";
 import ProductImageGallery from "@/components/products/ProductImageGallery";
 import VariantSelector from "@/components/products/VariantSelector";
