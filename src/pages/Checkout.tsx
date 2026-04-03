@@ -163,7 +163,28 @@ export default function Checkout() {
         const { count } = await supabase.from("orders").select("id", { count: "exact", head: true }).eq("user_id", user.id);
         if ((count || 0) > 0) { toast.error("Acest cod e valabil doar pentru prima comandă"); setCouponLoading(false); return; }
       }
-    if (coupon.specific_customer_id && coupon.specific_customer_id !== user.id) { toast.error("Acest cod nu este valabil pentru contul tău"); setCouponLoading(false); return; }
+      if (coupon.specific_customer_id && coupon.specific_customer_id !== user.id) { toast.error("Acest cod nu este valabil pentru contul tău"); setCouponLoading(false); return; }
+    }
+
+    // Anti-fraud check for exit-intent coupons
+    if (code.startsWith("EXIT")) {
+      const customerEmail = user?.email || form.email;
+      const customerPhone = form.phone;
+      const customerName = form.fullName;
+      const customerAddress = `${form.address} ${form.city} ${form.county}`.trim();
+
+      const { data: fraudCheck } = await (supabase as any).rpc("check_exit_intent_fraud", {
+        p_email: customerEmail || null,
+        p_phone: customerPhone || null,
+        p_name: customerName || null,
+        p_address: customerAddress || null,
+      });
+
+      if (fraudCheck === true) {
+        toast.error("Acest tip de cod promotional a fost deja folosit. Oferta este valabilă o singură dată per client.");
+        setCouponLoading(false);
+        return;
+      }
     }
 
     // Check product/category scope — find eligible items
