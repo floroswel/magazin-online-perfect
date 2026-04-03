@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShoppingCart, Heart, Star, Minus, Plus, ArrowLeft, GitCompare, MessageSquare, Truck, Package, Ruler, Bell } from "lucide-react";
+import { ShoppingCart, Heart, Star, Minus, Plus, ArrowLeft, MessageSquare, Truck, Package, Ruler, Bell } from "lucide-react";
 import ProductReviews from "@/components/products/ProductReviews";
 import ProductImageGallery from "@/components/products/ProductImageGallery";
 import VariantSelector from "@/components/products/VariantSelector";
 import CountdownTimer from "@/components/products/CountdownTimer";
 import FrequentlyBoughtTogether from "@/components/products/FrequentlyBoughtTogether";
 import UpgradeRecommendation from "@/components/products/UpgradeRecommendation";
-import VendorComparison from "@/components/products/VendorComparison";
+
 import PriceDropAlert from "@/components/products/PriceDropAlert";
 import ScentPairing from "@/components/products/ScentPairing";
 import SizeSelector from "@/components/products/SizeSelector";
@@ -27,7 +27,7 @@ import ProductCard from "@/components/products/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
-import { useComparison } from "@/hooks/useComparison";
+
 import { usePricingRules } from "@/hooks/usePricingRules";
 import { toast } from "sonner";
 import { safeJsonLd, sanitizeForJsonLd } from "@/lib/sanitize-json-ld";
@@ -43,7 +43,7 @@ export default function ProductDetail() {
   const { store_general } = useEditableContent();
   const { user } = useAuth();
   const { addToCart } = useCart();
-  const { addToComparison, isInComparison } = useComparison();
+  
   const { getProductDiscount } = usePricingRules();
   const { format, currency, convert } = useCurrency();
   const taxSettings = useTaxSettings();
@@ -329,13 +329,6 @@ export default function ProductDetail() {
               <Button variant="outline" size="lg" onClick={toggleFav}>
                 <Heart className={`h-5 w-5 ${isFav ? "fill-primary text-primary" : ""}`} />
               </Button>
-              <Button
-                variant="outline" size="lg"
-                onClick={() => product && addToComparison(product.id)}
-                className={isInComparison(product.id) ? "border-primary text-primary" : ""}
-              >
-                <GitCompare className="h-5 w-5" />
-              </Button>
             </div>
 
 
@@ -426,10 +419,6 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        {/* Vendor Comparison */}
-        <div className="mt-8">
-          <VendorComparison productName={product.name} productId={product.id} productPrice={product.price} brandId={product.brand_id} />
-        </div>
 
         {/* Tabs */}
         <Tabs defaultValue="description" className="mt-8">

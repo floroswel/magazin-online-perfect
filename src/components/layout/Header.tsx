@@ -223,7 +223,7 @@ export default function Header() {
             {[
               { to: "/", label: "Acasă" },
               { to: "/catalog", label: "Toate Produsele" },
-              { to: "/catalog?badge=deals", label: "🔥 Oferte" },
+              { to: "/catalog", label: "🔥 Promoții" },
               ...(user ? [{ to: "/account", label: "Contul meu" }, { to: "/favorites", label: "Favorite" }] : [{ to: "/auth", label: "Autentificare" }]),
               ...(isAdmin ? [{ to: "/admin", label: "Admin Panel" }] : []),
             ].map((link) => (

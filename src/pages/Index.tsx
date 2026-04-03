@@ -21,7 +21,7 @@ import BrandLogosCarousel from "@/components/home/BrandLogosCarousel";
 import QuickFilters from "@/components/home/QuickFilters";
 import CouponCollector from "@/components/home/CouponCollector";
 import CandleMoodSelector from "@/components/home/CandleMoodSelector";
-import TopVendors from "@/components/home/TopVendors";
+
 import BuyAgain from "@/components/home/BuyAgain";
 import { ProductCardSkeleton } from "@/components/ui/skeletons";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,7 +35,7 @@ import type { Tables } from "@/integrations/supabase/types";
 const DEFAULT_ORDER = [
   "hero_section", "social_proof_bar", "quick_filters", "mood_selector", "product_catalog", "collections_grid",
   "coupon_collector", "flash_deals", "scent_guide_teaser",
-  "featured_products", "personalized_recommendations", "top_vendors", "brand_story_section",
+  "featured_products", "personalized_recommendations", "brand_story_section",
   "bestsellers_section", "buy_again", "instagram_feed",
   "reviews_section", "brand_logos",
   "recently_viewed", "newsletter_section",
@@ -67,7 +67,7 @@ export default function Index() {
   const showInstagram = useVisibility("instagram_feed");
   const showQuickFilters = useVisibility("quick_filters");
   const showCouponCollector = useVisibility("coupon_collector");
-  const showTopVendors = useVisibility("top_vendors");
+  
   const showBuyAgain = useVisibility("buy_again");
   const showBrandLogos = useVisibility("brand_logos");
   const showProductCatalog = useVisibility("product_catalog");
@@ -125,7 +125,7 @@ export default function Index() {
     brand_logos: showBrandLogos,
     quick_filters: showQuickFilters,
     coupon_collector: showCouponCollector,
-    top_vendors: showTopVendors,
+    
     buy_again: showBuyAgain,
     product_catalog: showProductCatalog,
   };
@@ -167,7 +167,7 @@ export default function Index() {
     newsletter_section: <EB key="newsletter_section" fallback={null}><NewsletterDiscount /></EB>,
     quick_filters: <EB key="quick_filters" fallback={null}><QuickFilters /></EB>,
     coupon_collector: <EB key="coupon_collector" fallback={null}><CouponCollector /></EB>,
-    top_vendors: <EB key="top_vendors" fallback={null}><TopVendors /></EB>,
+    
     buy_again: <EB key="buy_again" fallback={null}><BuyAgain /></EB>,
     mood_selector: <EB key="mood_selector" fallback={null}><CandleMoodSelector /></EB>,
     product_catalog: <EB key="product_catalog" fallback={null}><HomepageCatalog /></EB>,

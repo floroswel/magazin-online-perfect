@@ -19,7 +19,7 @@ import OrderConfirmation from "./pages/OrderConfirmation";
 import Auth from "./pages/Auth";
 import Account from "./pages/Account";
 import Favorites from "./pages/Favorites";
-import Compare from "./pages/Compare";
+
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import CmsPage from "./pages/CmsPage";
@@ -100,7 +100,7 @@ const App = () => (
               <Route path="/reset-password" element={<ErrorBoundary><ResetPassword /></ErrorBoundary>} />
               <Route path="/account" element={<ErrorBoundary><Account /></ErrorBoundary>} />
               <Route path="/favorites" element={<ErrorBoundary><Favorites /></ErrorBoundary>} />
-              <Route path="/compare" element={<ErrorBoundary><Compare /></ErrorBoundary>} />
+              
               <Route path="/page/:slug" element={<ErrorBoundary><CmsPage /></ErrorBoundary>} />
               <Route path="/install" element={<ErrorBoundary><Install /></ErrorBoundary>} />
               <Route path="/afilieri" element={<ErrorBoundary><Affiliates /></ErrorBoundary>} />
