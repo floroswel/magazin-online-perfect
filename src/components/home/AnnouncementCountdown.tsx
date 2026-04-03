@@ -31,13 +31,48 @@ export default function AnnouncementCountdown() {
   const desktopText = (announcement.text_desktop || "").replace("{threshold}", String(announcement.threshold || 200));
   const mobileText = (announcement.text_mobile || "").replace("{threshold}", String(announcement.threshold || 200));
 
-  return (
-    <div className="text-center py-2 text-sm font-medium tracking-wide bg-primary text-primary-foreground">
+  const bgColor = announcement.bg_color || undefined;
+  const textColor = announcement.text_color || undefined;
+  const isMarquee = !!announcement.marquee;
+
+  const timerBlock = (
+    <span className="font-bold tabular-nums">
+      {pad(time.h)}:{pad(time.m)}:{pad(time.s)}
+    </span>
+  );
+
+  const content = (
+    <>
       <span className="hidden sm:inline">{desktopText}</span>
       <span className="sm:hidden">{mobileText}</span>
-      <span className="font-bold tabular-nums">
-        {pad(time.h)}:{pad(time.m)}:{pad(time.s)}
-      </span>
+      {timerBlock}
+    </>
+  );
+
+  return (
+    <div
+      className="text-center py-2 text-sm font-medium tracking-wide bg-primary text-primary-foreground overflow-hidden"
+      style={{
+        ...(bgColor ? { backgroundColor: bgColor } : {}),
+        ...(textColor ? { color: textColor } : {}),
+      }}
+    >
+      {isMarquee ? (
+        <div className="relative flex overflow-hidden">
+          <div className="animate-marquee-announcement flex items-center whitespace-nowrap gap-16 min-w-full justify-center shrink-0">
+            {content}
+            <span className="opacity-40 mx-4">✦</span>
+            {content}
+          </div>
+          <div className="animate-marquee-announcement flex items-center whitespace-nowrap gap-16 min-w-full justify-center shrink-0" aria-hidden>
+            {content}
+            <span className="opacity-40 mx-4">✦</span>
+            {content}
+          </div>
+        </div>
+      ) : (
+        content
+      )}
     </div>
   );
 }
