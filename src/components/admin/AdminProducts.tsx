@@ -1168,8 +1168,14 @@ export default function AdminProducts() {
                   productName={form.name}
                   images={[form.image_url, ...form.images].filter(Boolean)}
                   videos={(products?.find((p: any) => p.id === editingId) as any)?.videos || null}
-                  onVideoGenerated={() => queryClient.invalidateQueries({ queryKey: ["admin-products"] })}
-                  onVideoRemoved={() => queryClient.invalidateQueries({ queryKey: ["admin-products"] })}
+                  onVideoGenerated={(videoUrl: string) => {
+                    queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+                    queryClient.refetchQueries({ queryKey: ["admin-products"] });
+                  }}
+                  onVideoRemoved={(videoUrl: string) => {
+                    queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+                    queryClient.refetchQueries({ queryKey: ["admin-products"] });
+                  }}
                 />
               </div>
             )}
