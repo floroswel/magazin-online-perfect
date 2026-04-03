@@ -49,6 +49,9 @@ const DEFAULTS: EditableContent = {
     text_mobile: "🕯️ Livrare GRATUITĂ — ",
     threshold: 200,
     emoji: "🕯️",
+    bg_color: "",
+    text_color: "",
+    marquee: false,
   },
   header_topbar: {
     phone: "📞 0800-123-456",
