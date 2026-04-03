@@ -1,12 +1,15 @@
 import { useState, useRef, useCallback } from "react";
-import { ChevronLeft, ChevronRight, X, ZoomIn, Maximize2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, ZoomIn, Maximize2, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Props {
   mainImage: string;
   images?: string[] | null;
+  videos?: string[] | null;
   alt: string;
 }
+
+type GalleryItem = { type: "image"; url: string } | { type: "video"; url: string };
 
 export default function ProductImageGallery({ mainImage, images, alt }: Props) {
   const allImages = [mainImage, ...(images || []).filter(img => img !== mainImage)];
