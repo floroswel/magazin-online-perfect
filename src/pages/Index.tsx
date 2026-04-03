@@ -5,7 +5,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import ProductCard from "@/components/products/ProductCard";
 import HeroSlider from "@/components/home/HeroSlider";
 import SocialProofBar from "@/components/home/SocialProofBar";
-import CollectionsGrid from "@/components/home/CollectionsGrid";
+
 import BestSellers from "@/components/home/BestSellers";
 import BrandStory from "@/components/home/BrandStory";
 import ScentGuideTeaser from "@/components/home/ScentGuideTeaser";
