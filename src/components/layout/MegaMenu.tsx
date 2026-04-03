@@ -113,11 +113,7 @@ export default function MegaMenu() {
     fetchCategories();
   }, []);
 
-  const categories = megaCategories.length > 0 ? megaCategories : [
-    { name: "Lumânări Parfumate", slug: "lumanari-parfumate", icon: "🕯️", image: FALLBACK_IMAGES["lumanari-parfumate"]!, bannerImage: null, bannerLink: null, description: FALLBACK_DESCRIPTIONS["lumanari-parfumate"], productCount: 24, subs: [{ name: "Din Soia", slug: "lumanari-soia" }, { name: "Din Ceară de Albine", slug: "lumanari-ceara-albine" }, { name: "Uleiuri Esențiale", slug: "lumanari-uleiuri-esentiale" }, { name: "De Lux", slug: "lumanari-lux" }] },
-    { name: "Lumânări Decorative", slug: "lumanari-decorative", icon: "✨", image: FALLBACK_IMAGES["lumanari-decorative"]!, bannerImage: null, bannerLink: null, description: FALLBACK_DESCRIPTIONS["lumanari-decorative"], productCount: 18, subs: [{ name: "Sculptate", slug: "lumanari-sculptate" }, { name: "Colorate", slug: "lumanari-colorate" }, { name: "Cu Flori Uscate", slug: "lumanari-flori" }] },
-    { name: "Seturi Cadou", slug: "seturi-cadou", icon: "🎁", image: FALLBACK_IMAGES["seturi-cadou"]!, bannerImage: null, bannerLink: null, description: FALLBACK_DESCRIPTIONS["seturi-cadou"], productCount: 12, subs: [{ name: "Seturi Cadou", slug: "seturi-cadou-colectie" }, { name: "Gift Cards", slug: "gift-cards" }] },
-    { name: "Personalizare", slug: "lumanari-personalizate", icon: "🎨", image: FALLBACK_IMAGES["lumanari-personalizate"]!, bannerImage: null, bannerLink: null, description: FALLBACK_DESCRIPTIONS["lumanari-personalizate"], productCount: 8, subs: [{ name: "Gravură Laser", slug: "gravura-laser" }, { name: "Etichete Custom", slug: "etichete-custom" }] },
+  const categories = megaCategories;
   ];
 
   const active = categories.find((c) => c.slug === activeCat);
