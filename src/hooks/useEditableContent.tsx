@@ -17,6 +17,8 @@ export interface EditableContent {
     text_color: string;
     marquee: boolean;
     marquee_mobile: boolean;
+    enabled: boolean;
+    show_countdown: boolean;
   };
   header_topbar: {
     phone: string;
