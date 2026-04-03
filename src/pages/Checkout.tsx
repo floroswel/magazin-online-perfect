@@ -310,6 +310,21 @@ export default function Checkout() {
         await supabase.from("coupon_usage").insert({ coupon_id: ac.id, user_id: user.id, order_id: order.id });
       }
     }
+
+    // Record exit-intent coupon usage for anti-fraud
+    for (const ac of appliedCoupons) {
+      if (ac.code?.startsWith("EXIT")) {
+        await (supabase as any).from("exit_intent_usage").insert({
+          coupon_code: ac.code,
+          order_id: order.id,
+          customer_email: user?.email || form.email || null,
+          customer_phone: form.phone || null,
+          customer_name: form.fullName || null,
+          customer_address: `${form.address} ${form.city} ${form.county}`.trim() || null,
+          user_id: user?.id || null,
+        });
+      }
+    }
     if (user && pointsToUse > 0) await addPoints(-pointsToUse, "redeem", `Folosite la comandă #${order.id.slice(0, 8)}`, order.id);
     if (user && pointsEarned > 0 && pointsToUse < totalPoints) await addPoints(pointsEarned, "purchase", `Comandă #${order.id.slice(0, 8)}`, order.id);
 
