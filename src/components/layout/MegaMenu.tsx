@@ -114,7 +114,6 @@ export default function MegaMenu() {
   }, []);
 
   const categories = megaCategories;
-  ];
 
   const active = categories.find((c) => c.slug === activeCat);
 
