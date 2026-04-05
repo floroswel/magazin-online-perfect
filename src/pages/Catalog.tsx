@@ -31,13 +31,23 @@ const COLLECTION_META: Record<string, { title: string; description: string }> = 
 
 export default function Catalog() {
   const [params, setParams] = useSearchParams();
+  const location = useLocation();
   const q = params.get("q") || "";
   const categorySlug = params.get("category") || "";
-  const collection = params.get("collection") || "";
   const sale = params.get("sale") === "true";
   const freeShipping = params.get("free_shipping") === "true";
   const sort = params.get("sort") || "relevance";
   const page = parseInt(params.get("page") || "1", 10);
+
+  // Detect collection from URL path or query param
+  const PATH_COLLECTIONS: Record<string, string> = {
+    "/lichidare-stoc": "lichidare-stoc",
+    "/ultimele-bucati": "ultimele-bucati",
+    "/transport-gratuit": "livrare-gratuita",
+    "/oferte-speciale": "oferte-speciale",
+    "/editie-limitata": "editie-limitata",
+  };
+  const collection = PATH_COLLECTIONS[location.pathname] || params.get("collection") || "";
 
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(categorySlug ? [categorySlug] : []);
