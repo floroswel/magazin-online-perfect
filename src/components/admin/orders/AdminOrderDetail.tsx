@@ -22,6 +22,7 @@ import { format } from "date-fns";
 import { ro } from "date-fns/locale";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import AddProductToOrderDialog from "./AddProductToOrderDialog";
 
 const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   pending: { label: "În așteptare", color: "bg-yellow-500/15 text-yellow-600 border-yellow-500/30", icon: <Package className="w-3 h-3" /> },
@@ -57,6 +58,7 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
   const [manualCourier, setManualCourier] = useState("");
   const [manualAwb, setManualAwb] = useState("");
   const [savingAwb, setSavingAwb] = useState(false);
+  const [showAddProduct, setShowAddProduct] = useState(false);
 
   const { data: customStatuses = [] } = useQuery({
     queryKey: ["order-statuses"],
@@ -424,7 +426,14 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
         {/* ─── Left Column: Products + Totals ─── */}
         <div className="lg:col-span-2 space-y-4">
           <Card>
-            <CardHeader className="pb-2"><CardTitle className="text-sm">Produse comandate</CardTitle></CardHeader>
+            <CardHeader className="pb-2 flex flex-row items-center justify-between">
+              <CardTitle className="text-sm">Produse comandate</CardTitle>
+              {["pending", "processing", "confirmed"].includes(order.status) && (
+                <Button variant="outline" size="sm" onClick={() => setShowAddProduct(true)} className="h-7 text-xs gap-1">
+                  <Plus className="w-3.5 h-3.5" />Adaugă produs
+                </Button>
+              )}
+            </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
