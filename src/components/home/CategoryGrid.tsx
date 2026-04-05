@@ -1,7 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useEffect } from "react";
 
 const ICONS: Record<string, string> = {
   lumanari: "🕯", recipiente: "⬡", cadouri: "🎁", personalizate: "✨",
@@ -9,6 +10,8 @@ const ICONS: Record<string, string> = {
 };
 
 export default function CategoryGrid() {
+  const queryClient = useQueryClient();
+
   const { data: categories, isLoading } = useQuery({
     queryKey: ["categories-grid"],
     queryFn: async () => {
@@ -20,7 +23,19 @@ export default function CategoryGrid() {
         .limit(8);
       return data || [];
     },
+    staleTime: 0,
   });
+
+  // Realtime: instantly update when categories change
+  useEffect(() => {
+    const channel = supabase
+      .channel("categories-grid-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "categories" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["categories-grid"] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [queryClient]);
 
   return (
     <section className="bg-card py-6">

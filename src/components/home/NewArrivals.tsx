@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import ProductCard from "@/components/products/ProductCard";
@@ -7,6 +8,7 @@ import { useSettings } from "@/hooks/useSettings";
 
 export default function NewArrivals() {
   const settings = useSettings();
+  const queryClient = useQueryClient();
 
   const { data: products, isLoading } = useQuery({
     queryKey: ["new-arrivals"],
@@ -19,6 +21,17 @@ export default function NewArrivals() {
       return data || [];
     },
   });
+
+  // Realtime: instantly refresh when products change
+  useEffect(() => {
+    const channel = supabase
+      .channel("new-arrivals-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "products" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["new-arrivals"] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [queryClient]);
 
   const title = settings.new_arrivals_title || "🆕 Noutăți în Magazin";
 

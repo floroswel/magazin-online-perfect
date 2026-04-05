@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 
 const FALLBACK_BANNERS = [
   {
@@ -24,6 +25,8 @@ const FALLBACK_BANNERS = [
 ];
 
 export default function PromoBanners() {
+  const queryClient = useQueryClient();
+
   const { data: dbBanners } = useQuery({
     queryKey: ["promo-banners"],
     queryFn: async () => {
@@ -36,8 +39,19 @@ export default function PromoBanners() {
         .limit(2);
       return data || [];
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
   });
+
+  // Realtime: instantly refresh when banners change in admin
+  useEffect(() => {
+    const channel = supabase
+      .channel("promo-banners-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "banners" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["promo-banners"] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [queryClient]);
 
   const banners = dbBanners && dbBanners.length > 0
     ? dbBanners.map((b: any) => ({
