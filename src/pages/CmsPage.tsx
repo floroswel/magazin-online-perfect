@@ -11,7 +11,7 @@ export default function CmsPage({ overrideSlug }: { overrideSlug?: string }) {
   const { data: page, isLoading } = useQuery({
     queryKey: ["cms-page", slug],
     queryFn: async () => {
-      const { data } = await supabase.from("cms_pages").select("*").eq("slug", slug).eq("status", "published").maybeSingle();
+      const { data } = await supabase.from("cms_pages").select("title, slug, body_html, status, meta_description").eq("slug", slug).eq("status", "published").maybeSingle();
       return data;
     },
     enabled: !!slug,
