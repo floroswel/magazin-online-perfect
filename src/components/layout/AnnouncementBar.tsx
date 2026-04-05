@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { useEditableContent } from "@/hooks/useEditableContent";
+import { useSettings } from "@/hooks/useSettings";
 
 const STORAGE_KEY = "lumax_announcement_closed";
 
 export default function AnnouncementBar() {
   const { announcement } = useEditableContent();
+  const settings = useSettings();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -22,8 +24,17 @@ export default function AnnouncementBar() {
     sessionStorage.setItem(STORAGE_KEY, "1");
   };
 
+  const bgColor = announcement.bg_color || settings.announcement_bg || undefined;
+  const textColor = announcement.text_color || settings.announcement_text_color || undefined;
+
   return (
-    <div className="relative h-9 bg-lumax-red text-white text-xs font-semibold overflow-hidden flex items-center z-50">
+    <div
+      className="relative h-9 bg-lumax-red text-white text-xs font-semibold overflow-hidden flex items-center z-50"
+      style={{
+        backgroundColor: bgColor,
+        color: textColor,
+      }}
+    >
       <div className="animate-marquee whitespace-nowrap flex">
         <span className="px-8">{text}</span>
         <span className="px-8">{text}</span>

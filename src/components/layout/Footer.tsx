@@ -1,17 +1,18 @@
 import { Link } from "react-router-dom";
 import { useEditableContent } from "@/hooks/useEditableContent";
+import { useSettings } from "@/hooks/useSettings";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const FOOTER_LINKS_COL1 = [
+const DEFAULT_LINKS_COL1 = [
   { label: "Despre noi", to: "/despre-noi" },
   { label: "Blog", to: "/blog" },
   { label: "Recenzii", to: "/recenzii" },
   { label: "Contact", to: "/contact" },
 ];
 
-const FOOTER_LINKS_COL2 = [
+const DEFAULT_LINKS_COL2 = [
   { label: "Cum comand?", to: "/faq" },
   { label: "Livrare și retur", to: "/politica-de-retur" },
   { label: "Garanții", to: "/page/garantie" },
@@ -21,8 +22,40 @@ const FOOTER_LINKS_COL2 = [
 
 export default function Footer() {
   const content = useEditableContent();
+  const settings = useSettings();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const siteName = settings.site_name || "LUMAX";
+  const siteTagline = settings.site_tagline || "Magazinul tău de încredere din România";
+
+  // Footer columns from DB or fallback
+  let col1Links = DEFAULT_LINKS_COL1;
+  let col2Links = DEFAULT_LINKS_COL2;
+  try {
+    const parsed1 = JSON.parse(settings.footer_col1_links || "[]");
+    if (Array.isArray(parsed1) && parsed1.length > 0) col1Links = parsed1;
+  } catch {}
+  try {
+    const parsed2 = JSON.parse(settings.footer_col2_links || "[]");
+    if (Array.isArray(parsed2) && parsed2.length > 0) col2Links = parsed2;
+  } catch {}
+
+  // Social links from DB
+  const socials = [
+    { icon: "FB", url: settings.social_facebook },
+    { icon: "IG", url: settings.social_instagram },
+    { icon: "TT", url: settings.social_tiktok },
+    { icon: "YT", url: settings.social_youtube },
+  ].filter(s => s.url);
+
+  // If no DB socials, show placeholder icons
+  const displaySocials = socials.length > 0 ? socials : [
+    { icon: "FB", url: "#" },
+    { icon: "IG", url: "#" },
+    { icon: "TT", url: "#" },
+    { icon: "YT", url: "#" },
+  ];
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,6 +66,8 @@ export default function Footer() {
     setEmail("");
     toast.success("Te-ai abonat cu succes!");
   };
+
+  const copyrightText = settings.copyright_text || `© ${new Date().getFullYear()} ${siteName} SRL. Toate drepturile rezervate.`;
 
   return (
     <footer>
@@ -63,26 +98,30 @@ export default function Footer() {
       </div>
 
       {/* Main footer */}
-      <div className="bg-[#1A2332] py-10 md:py-12">
+      <div className="py-10 md:py-12" style={{ background: settings.footer_upper_bg || "#1A2332" }}>
         <div className="lumax-container grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <h3 className="text-2xl font-black text-white mb-1">LUMAX</h3>
-            <p className="text-sm text-gray-400 mb-3">
-              Magazinul tău de încredere din România
-            </p>
+            {settings.logo_url && settings.logo_visible !== "false" ? (
+              <img src={settings.logo_url} alt={siteName} style={{ height: "36px", objectFit: "contain" }} className="mb-1" />
+            ) : (
+              <h3 className="text-2xl font-black text-white mb-1">{siteName}</h3>
+            )}
+            <p className="text-sm text-gray-400 mb-3">{siteTagline}</p>
             <div className="flex items-center gap-1 mb-4">
               <span className="text-lumax-yellow text-sm">★★★★★</span>
               <span className="text-xs text-white">1000+ clienți mulțumiți</span>
             </div>
             <div className="flex gap-2">
-              {["FB", "IG", "TT", "YT"].map((s) => (
+              {displaySocials.map((s) => (
                 <a
-                  key={s}
-                  href="#"
+                  key={s.icon}
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-xs text-white font-bold hover:bg-primary transition-colors"
                 >
-                  {s}
+                  {s.icon}
                 </a>
               ))}
             </div>
@@ -91,12 +130,12 @@ export default function Footer() {
           {/* Info links */}
           <div>
             <h4 className="text-[11px] font-bold text-white uppercase tracking-widest mb-4">
-              Informații
+              {settings.footer_col1_title || "Informații"}
             </h4>
             <ul className="space-y-1.5">
-              {FOOTER_LINKS_COL1.map((l) => (
-                <li key={l.to}>
-                  <Link to={l.to} className="text-[13px] text-gray-400 hover:text-white transition-colors">
+              {col1Links.map((l: any) => (
+                <li key={l.to || l.url}>
+                  <Link to={l.to || l.url} className="text-[13px] text-gray-400 hover:text-white transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -107,12 +146,12 @@ export default function Footer() {
           {/* Help links */}
           <div>
             <h4 className="text-[11px] font-bold text-white uppercase tracking-widest mb-4">
-              Ajutor
+              {settings.footer_col2_title || "Ajutor"}
             </h4>
             <ul className="space-y-1.5">
-              {FOOTER_LINKS_COL2.map((l) => (
-                <li key={l.to}>
-                  <Link to={l.to} className="text-[13px] text-gray-400 hover:text-white transition-colors">
+              {col2Links.map((l: any) => (
+                <li key={l.to || l.url}>
+                  <Link to={l.to || l.url} className="text-[13px] text-gray-400 hover:text-white transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -126,27 +165,28 @@ export default function Footer() {
               Contact
             </h4>
             <div className="space-y-2 text-[13px] text-gray-400">
-              <p>📞 {content.header_topbar.phone || "0800-123-456"}</p>
-              <p>✉️ {content.store_general.store_email}</p>
-              <p>📍 București, România</p>
-              <p>⏰ Luni - Vineri, 9:00 - 17:00</p>
+              <p>📞 {settings.contact_phone || content.header_topbar.phone || "0800-123-456"}</p>
+              <p>✉️ {settings.contact_email || content.store_general.store_email}</p>
+              <p>📍 {settings.contact_address || "București, România"}</p>
+              <p>⏰ {settings.contact_schedule || "Luni - Vineri, 9:00 - 17:00"}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Bottom bar */}
-      <div className="bg-[#111] py-3.5 border-t border-white/5">
+      <div className="py-3.5 border-t border-white/5" style={{ background: settings.footer_lower_bg || "#111" }}>
         <div className="lumax-container flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span className="text-xs text-gray-500">
-            © {new Date().getFullYear()} LUMAX SRL. Toate drepturile rezervate.
-          </span>
+          <span className="text-xs text-gray-500">{copyrightText}</span>
           <div className="flex items-center gap-3">
-            <img src="/images/eu-sol.png" alt="SOL" className="h-6 opacity-60" />
+            {(settings.anpc_display === "widget" || settings.anpc_display === "ambele") && (
+              <img src="/images/eu-sol.png" alt="SOL" className="h-6 opacity-60" />
+            )}
+            {(settings.anpc_display === "link" || settings.anpc_display === "ambele" || !settings.anpc_display) && (
+              <img src="/images/eu-sol.png" alt="SOL" className="h-6 opacity-60" />
+            )}
           </div>
-          <span className="text-xs text-gray-500">
-            Visa · Mastercard · Netopia
-          </span>
+          <span className="text-xs text-gray-500">Visa · Mastercard · Netopia</span>
         </div>
       </div>
     </footer>

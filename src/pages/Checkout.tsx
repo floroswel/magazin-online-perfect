@@ -1,26 +1,60 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { useCart } from "@/hooks/useCart";
 import { useCurrency } from "@/hooks/useCurrency";
 import { useAuth } from "@/hooks/useAuth";
+import { useSettings } from "@/hooks/useSettings";
 import { usePageSeo } from "@/components/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import { toast } from "sonner";
 
 const STEPS = ["Date personale", "Adresa", "Livrare", "Plată"];
 const COUNTIES = ["Alba","Arad","Argeș","Bacău","Bihor","Bistrița-Năsăud","Botoșani","Brașov","Brăila","București","Buzău","Caraș-Severin","Călărași","Cluj","Constanța","Covasna","Dâmbovița","Dolj","Galați","Giurgiu","Gorj","Harghita","Hunedoara","Ialomița","Iași","Ilfov","Maramureș","Mehedinți","Mureș","Neamț","Olt","Prahova","Satu Mare","Sălaj","Sibiu","Suceava","Teleorman","Timiș","Tulcea","Vaslui","Vâlcea","Vrancea"];
 
-const FREE_SHIPPING = 200;
+interface ShippingMethod {
+  id: string;
+  name: string;
+  description: string | null;
+  icon: string;
+  price: number;
+  free_above: number | null;
+  estimated_days: string | null;
+}
+
+const DEFAULT_SHIPPING: ShippingMethod[] = [
+  { id: "standard", name: "Standard", description: "Livrare în 3-5 zile lucrătoare", icon: "🚚", price: 25, free_above: 200, estimated_days: "3-5 zile" },
+  { id: "express", name: "Curier Express", description: "Livrare în 1-2 zile lucrătoare", icon: "⚡", price: 35, free_above: null, estimated_days: "1-2 zile" },
+  { id: "pickup", name: "Ridicare personală", description: "Ridicare din magazin", icon: "🏪", price: 0, free_above: null, estimated_days: "Imediat" },
+];
 
 export default function Checkout() {
   const { items, totalPrice, clearCart } = useCart();
   const { format } = useCurrency();
   const { user } = useAuth();
+  const settings = useSettings();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+
+  const rambursCostValue = parseInt(settings.ramburs_extra_cost || "5");
+  const siteName = settings.site_name || "LUMAX";
+
+  const { data: shippingMethodsDB } = useQuery({
+    queryKey: ["shipping-methods"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("shipping_methods")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order");
+      return (data || []) as ShippingMethod[];
+    },
+  });
+
+  const shippingMethods = shippingMethodsDB && shippingMethodsDB.length > 0 ? shippingMethodsDB : DEFAULT_SHIPPING;
 
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: user?.email || "", phone: "",
@@ -29,10 +63,20 @@ export default function Checkout() {
     gdprAccepted: false, newsletter: false,
   });
 
-  usePageSeo({ title: "Finalizare Comandă | LUMAX", noindex: true });
+  // Set default shipping method from DB
+  useEffect(() => {
+    if (shippingMethods.length > 0 && !shippingMethods.find(m => m.id === form.shippingMethod || m.name === form.shippingMethod)) {
+      setForm(prev => ({ ...prev, shippingMethod: shippingMethods[0].id || shippingMethods[0].name }));
+    }
+  }, [shippingMethods]);
 
-  const shippingCost = form.shippingMethod === "pickup" ? 0 : form.shippingMethod === "express" ? 35 : totalPrice >= FREE_SHIPPING ? 0 : 25;
-  const rambursCost = form.paymentMethod === "ramburs" ? 5 : 0;
+  usePageSeo({ title: `Finalizare Comandă | ${siteName}`, noindex: true });
+
+  const selectedMethod = shippingMethods.find(m => m.id === form.shippingMethod || m.name === form.shippingMethod) || shippingMethods[0];
+  const shippingCost = selectedMethod
+    ? (selectedMethod.free_above && totalPrice >= selectedMethod.free_above ? 0 : selectedMethod.price)
+    : 0;
+  const rambursCost = form.paymentMethod === "ramburs" ? rambursCostValue : 0;
   const finalTotal = totalPrice + shippingCost + rambursCost;
 
   const updateForm = (key: string, val: any) => setForm(prev => ({ ...prev, [key]: val }));
@@ -79,7 +123,6 @@ export default function Checkout() {
       const { data: order, error } = await supabase.from("orders").insert(orderData as any).select("id, order_number").single();
       if (error) throw error;
 
-      // Order items
       const orderItems = items.map(item => ({
         order_id: order.id,
         product_id: item.product_id,
@@ -91,7 +134,6 @@ export default function Checkout() {
       }));
       await supabase.from("order_items").insert(orderItems as any);
 
-      // Send confirmation email
       supabase.functions.invoke("send-email", {
         body: { type: "order_confirmation", to: form.email, data: { orderId: order.id, orderNumber: order.order_number, total: finalTotal, name: form.firstName } },
       }).catch(console.error);
@@ -99,7 +141,6 @@ export default function Checkout() {
       await clearCart();
 
       if (form.paymentMethod === "card") {
-        // Redirect to Netopia
         try {
           const { data: payData } = await supabase.functions.invoke("netopia-payment", {
             body: { orderId: order.id, amount: finalTotal, email: form.email, firstName: form.firstName, lastName: form.lastName },
@@ -190,30 +231,31 @@ export default function Checkout() {
             {step === 2 && (
               <div className="space-y-3">
                 <h2 className="text-lg font-bold">Metoda de livrare</h2>
-                {[
-                  { v: "standard", icon: "🚚", title: "Standard", desc: "Livrare în 3-5 zile lucrătoare", price: totalPrice >= FREE_SHIPPING ? "GRATUIT" : "25 lei" },
-                  { v: "express", icon: "⚡", title: "Curier Express", desc: "Livrare în 1-2 zile lucrătoare", price: "35 lei" },
-                  { v: "pickup", icon: "🏪", title: "Ridicare personală", desc: "Ridicare din magazin", price: "GRATUIT" },
-                ].map(o => (
-                  <button
-                    key={o.v}
-                    onClick={() => updateForm("shippingMethod", o.v)}
-                    className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
-                      form.shippingMethod === o.v ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl">{o.icon}</span>
-                        <div>
-                          <p className="text-sm font-bold">{o.title}</p>
-                          <p className="text-xs text-muted-foreground">{o.desc}</p>
+                {shippingMethods.map(method => {
+                  const methodKey = method.id || method.name;
+                  const isFree = method.free_above && totalPrice >= method.free_above;
+                  const displayPrice = method.price === 0 || isFree ? "GRATUIT" : `${method.price} lei`;
+                  return (
+                    <button
+                      key={methodKey}
+                      onClick={() => updateForm("shippingMethod", methodKey)}
+                      className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
+                        form.shippingMethod === methodKey ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <span className="text-xl">{method.icon || "🚚"}</span>
+                          <div>
+                            <p className="text-sm font-bold">{method.name}</p>
+                            <p className="text-xs text-muted-foreground">{method.description}{method.estimated_days ? ` · ${method.estimated_days}` : ""}</p>
+                          </div>
                         </div>
+                        <span className={`text-sm font-bold ${displayPrice === "GRATUIT" ? "text-lumax-green" : "text-foreground"}`}>{displayPrice}</span>
                       </div>
-                      <span className={`text-sm font-bold ${o.price === "GRATUIT" ? "text-lumax-green" : "text-foreground"}`}>{o.price}</span>
-                    </div>
-                  </button>
-                ))}
+                    </button>
+                  );
+                })}
               </div>
             )}
 
@@ -222,7 +264,7 @@ export default function Checkout() {
                 <h2 className="text-lg font-bold">Metoda de plată</h2>
                 {[
                   { v: "card", icon: "💳", title: "Plata cu cardul", desc: "Visa, Mastercard — Powered by Netopia" },
-                  { v: "ramburs", icon: "💵", title: "Ramburs la curier", desc: "Plătești la primirea coletului (+5 lei)" },
+                  { v: "ramburs", icon: "💵", title: "Ramburs la curier", desc: `Plătești la primirea coletului (+${rambursCostValue} lei)` },
                   { v: "transfer", icon: "🏦", title: "Transfer bancar (OP)", desc: "Plătești după plasarea comenzii" },
                 ].map(o => (
                   <button
@@ -241,6 +283,16 @@ export default function Checkout() {
                     </div>
                   </button>
                 ))}
+
+                {/* Transfer bancar IBAN info */}
+                {form.paymentMethod === "transfer" && (
+                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mt-2 space-y-1 text-sm">
+                    <p className="font-bold text-foreground">Detalii transfer bancar:</p>
+                    <p className="text-muted-foreground">Bancă: <span className="font-semibold text-foreground">{settings.company_bank || "Banca Transilvania"}</span></p>
+                    <p className="text-muted-foreground">IBAN: <span className="font-semibold text-foreground">{settings.company_iban || "RO00XXXX0000000000000000"}</span></p>
+                    <p className="text-muted-foreground">Beneficiar: <span className="font-semibold text-foreground">{settings.company_name || "LUMAX SRL"}</span></p>
+                  </div>
+                )}
 
                 <div className="space-y-3 mt-6">
                   <label className="flex items-start gap-2 cursor-pointer">

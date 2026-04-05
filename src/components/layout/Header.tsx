@@ -7,6 +7,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 import { useEditableContent } from "@/hooks/useEditableContent";
+import { useSettings } from "@/hooks/useSettings";
 import { useCurrency } from "@/hooks/useCurrency";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -35,13 +36,14 @@ interface SearchResult {
 // ═══════════════════════════════════════════
 function TopInfoBar() {
   const { header_topbar } = useEditableContent();
+  const settings = useSettings();
 
   return (
     <div className="hidden md:block border-b border-border bg-card">
       <div className="lumax-container flex items-center justify-between h-8 text-[11px] text-muted-foreground">
         <div className="flex items-center gap-5">
           <span>🚚 {header_topbar.shipping_text || "Livrare gratuită peste 200 lei"}</span>
-          <span>↩️ Retururi gratuite 30 zile</span>
+          <span>↩️ Retururi gratuite {settings.return_days || "30"} zile</span>
           <span>🔒 Plată securizată</span>
         </div>
         <div className="flex items-center gap-3">
@@ -64,6 +66,7 @@ function MainHeader({ categories }: { categories: Category[] }) {
   const { user, signOut } = useAuth();
   const { items, totalItems, totalPrice, removeFromCart } = useCart();
   const { format } = useCurrency();
+  const settings = useSettings();
   const isMobile = useIsMobile();
 
   const [query, setQuery] = useState("");
@@ -77,7 +80,9 @@ function MainHeader({ categories }: { categories: Category[] }) {
   const cartRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
 
-  // Close dropdowns on outside click
+  const siteName = settings.site_name || "LUMAX";
+  const siteTagline = settings.site_tagline || "magazin de încredere";
+
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) setShowResults(false);
@@ -111,15 +116,19 @@ function MainHeader({ categories }: { categories: Category[] }) {
   const parentCats = categories.filter(c => !c.parent_id && c.show_in_nav);
 
   return (
-    <div className="bg-card border-b border-border" style={{ boxShadow: "var(--shadow-sm)" }}>
+    <div className="bg-card border-b border-border" style={{ boxShadow: "var(--shadow-sm)", background: settings.header_bg || undefined }}>
       <div className="lumax-container flex items-center gap-4 md:gap-5 h-[60px] md:h-[70px]">
         {/* Logo */}
         <Link to="/" className="flex-shrink-0 flex flex-col leading-none">
-          <span className="text-xl md:text-2xl font-black tracking-tight text-primary">LUMAX</span>
-          <span className="text-[9px] md:text-[10px] text-muted-foreground tracking-widest uppercase">magazin de încredere</span>
+          {settings.logo_url && settings.logo_visible !== "false" ? (
+            <img src={settings.logo_url} alt={siteName} style={{ height: "40px", objectFit: "contain" }} />
+          ) : (
+            <span className="text-xl md:text-2xl font-black tracking-tight text-primary">{siteName}</span>
+          )}
+          <span className="text-[9px] md:text-[10px] text-muted-foreground tracking-widest uppercase">{siteTagline}</span>
         </Link>
 
-        {/* Search bar — hidden on mobile, shown in bottom nav */}
+        {/* Search bar */}
         {!isMobile && (
           <div ref={searchRef} className="relative flex-1 max-w-[600px]">
             <div className="flex border-2 border-primary rounded-md overflow-hidden h-[46px]">
@@ -149,7 +158,6 @@ function MainHeader({ categories }: { categories: Category[] }) {
               </button>
             </div>
 
-            {/* Autocomplete dropdown */}
             {showResults && (
               <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-b-md shadow-lg z-50 max-h-[400px] overflow-y-auto">
                 {results.length === 0 ? (
@@ -191,16 +199,11 @@ function MainHeader({ categories }: { categories: Category[] }) {
 
         {/* Right icons */}
         <div className="flex items-center gap-1 ml-auto">
-          {/* Wishlist */}
-          <Link
-            to="/favorites"
-            className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-md hover:bg-secondary transition-colors"
-          >
+          <Link to="/favorites" className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-md hover:bg-secondary transition-colors">
             <Heart className="h-[22px] w-[22px] text-muted-foreground" />
             <span className="text-[10px] text-muted-foreground hidden md:block">Favorite</span>
           </Link>
 
-          {/* Account dropdown */}
           <div
             ref={accountRef}
             className="relative"
@@ -273,17 +276,13 @@ function MainHeader({ categories }: { categories: Category[] }) {
             )}
           </div>
 
-          {/* Cart */}
           <div
             ref={cartRef}
             className="relative"
             onMouseEnter={() => !isMobile && setShowMiniCart(true)}
             onMouseLeave={() => !isMobile && setShowMiniCart(false)}
           >
-            <Link
-              to="/cart"
-              className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-md hover:bg-secondary transition-colors relative"
-            >
+            <Link to="/cart" className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-md hover:bg-secondary transition-colors relative">
               <ShoppingCart className="h-[22px] w-[22px] text-muted-foreground" />
               {totalItems > 0 && (
                 <span className="absolute -top-0.5 right-0 min-w-[18px] h-[18px] bg-destructive text-destructive-foreground text-[10px] font-bold rounded-full flex items-center justify-center px-1">
@@ -299,10 +298,7 @@ function MainHeader({ categories }: { categories: Category[] }) {
                   <div className="text-center py-6">
                     <ShoppingCart className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
                     <p className="text-sm text-muted-foreground mb-3">Coșul tău este gol</p>
-                    <Link
-                      to="/catalog"
-                      className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:bg-lumax-blue-dark transition-colors"
-                    >
+                    <Link to="/catalog" className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:bg-lumax-blue-dark transition-colors">
                       Descoperă produse
                     </Link>
                   </div>
@@ -312,19 +308,12 @@ function MainHeader({ categories }: { categories: Category[] }) {
                     <div className="space-y-3 max-h-[200px] overflow-y-auto">
                       {items.slice(0, 3).map(item => (
                         <div key={item.id} className="flex items-center gap-3">
-                          <img
-                            src={item.product.image_url || "/placeholder.svg"}
-                            alt={item.product.name}
-                            className="w-12 h-12 object-contain rounded bg-secondary flex-shrink-0"
-                          />
+                          <img src={item.product.image_url || "/placeholder.svg"} alt={item.product.name} className="w-12 h-12 object-contain rounded bg-secondary flex-shrink-0" />
                           <div className="flex-1 min-w-0">
                             <p className="text-xs font-medium truncate">{item.product.name}</p>
                             <p className="text-xs text-primary font-semibold">{item.quantity} × {format(item.product.price)}</p>
                           </div>
-                          <button
-                            onClick={(e) => { e.preventDefault(); removeFromCart(item.product_id); }}
-                            className="p-1 hover:bg-secondary rounded transition-colors"
-                          >
+                          <button onClick={(e) => { e.preventDefault(); removeFromCart(item.product_id); }} className="p-1 hover:bg-secondary rounded transition-colors">
                             <X className="h-3.5 w-3.5 text-muted-foreground" />
                           </button>
                         </div>
@@ -335,16 +324,10 @@ function MainHeader({ categories }: { categories: Category[] }) {
                         <span>Total:</span>
                         <span>{format(totalPrice)}</span>
                       </div>
-                      <Link
-                        to="/cart"
-                        className="block w-full text-center py-2 border-2 border-primary text-primary rounded-md text-sm font-semibold hover:bg-primary hover:text-primary-foreground transition-colors mb-2"
-                      >
+                      <Link to="/cart" className="block w-full text-center py-2 border-2 border-primary text-primary rounded-md text-sm font-semibold hover:bg-primary hover:text-primary-foreground transition-colors mb-2">
                         Mergi la coș
                       </Link>
-                      <Link
-                        to="/checkout"
-                        className="block w-full text-center py-2 bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:bg-lumax-blue-dark transition-colors"
-                      >
+                      <Link to="/checkout" className="block w-full text-center py-2 bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:bg-lumax-blue-dark transition-colors">
                         Finalizează comanda
                       </Link>
                     </div>
@@ -367,13 +350,14 @@ function NavBar({ categories }: { categories: Category[] }) {
   const [hoveredCat, setHoveredCat] = useState<string | null>(null);
   const megaRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
+  const settings = useSettings();
 
   if (isMobile) return null;
 
   const parentCats = categories.filter(c => !c.parent_id && c.show_in_nav);
   const childrenOf = (parentId: string) => categories.filter(c => c.parent_id === parentId);
 
-  const navLinks = [
+  const defaultNavLinks = [
     { label: "🔥 Oferte", to: "/oferte", badge: "HOT", badgeColor: "bg-destructive" },
     { label: "⭐ Bestsellers", to: "/catalog?sort=bestseller" },
     { label: "🆕 Noutăți", to: "/nou", badge: "NOU", badgeColor: "bg-lumax-green" },
@@ -382,10 +366,22 @@ function NavBar({ categories }: { categories: Category[] }) {
     { label: "📞 Contact", to: "/contact" },
   ];
 
+  let navLinks = defaultNavLinks;
+  try {
+    const parsed = JSON.parse(settings.nav_links || "[]");
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      navLinks = parsed.map((l: any) => ({
+        label: l.label,
+        to: l.url || l.to,
+        badge: l.badge,
+        badgeColor: l.badgeColor || (l.badge === "HOT" ? "bg-destructive" : l.badge === "NOU" ? "bg-lumax-green" : "bg-primary"),
+      }));
+    }
+  } catch {}
+
   return (
-    <div className="bg-primary sticky top-0 z-[100]" style={{ boxShadow: "0 2px 4px rgba(0,102,255,0.3)" }}>
+    <div className="bg-primary sticky top-0 z-[100]" style={{ boxShadow: "0 2px 4px rgba(0,102,255,0.3)", background: settings.nav_bar_color || undefined }}>
       <div className="lumax-container flex items-center h-11">
-        {/* Toate Categoriile */}
         <div
           ref={megaRef}
           className="relative"
@@ -400,7 +396,6 @@ function NavBar({ categories }: { categories: Category[] }) {
 
           {megaOpen && (
             <div className="absolute top-11 left-0 flex z-[200]">
-              {/* Main category list */}
               <div className="w-[260px] bg-card border border-border rounded-bl-lg shadow-lg max-h-[400px] overflow-y-auto">
                 {parentCats.map(cat => (
                   <div
@@ -419,7 +414,6 @@ function NavBar({ categories }: { categories: Category[] }) {
                 )}
               </div>
 
-              {/* Sub-category panel */}
               {hoveredCat && childrenOf(hoveredCat).length > 0 && (
                 <div className="w-[240px] bg-card border border-l-0 border-border rounded-br-lg shadow-lg max-h-[400px] overflow-y-auto">
                   {childrenOf(hoveredCat).map(sub => (
@@ -437,7 +431,6 @@ function NavBar({ categories }: { categories: Category[] }) {
           )}
         </div>
 
-        {/* Nav links */}
         <nav className="flex items-center h-11 ml-2">
           {navLinks.map((link) => (
             <Link
@@ -463,7 +456,8 @@ function NavBar({ categories }: { categories: Category[] }) {
 // LAYER 4 — PROMO TICKER (yellow)
 // ═══════════════════════════════════════════
 function PromoTicker() {
-  const text = "⚡ FLASH SALE: -50% la produse selectate!  ·  🚚 TRANSPORT GRATUIT comenzi > 200 lei!  ·  🎁 CADOU la comenzi > 300 lei!  ·  ⭐ CALITATE GARANTATĂ sau banii înapoi!";
+  const settings = useSettings();
+  const text = settings.ticker_text || "⚡ FLASH SALE: -50% la produse selectate!  ·  🚚 TRANSPORT GRATUIT comenzi > 200 lei!  ·  🎁 CADOU la comenzi > 300 lei!  ·  ⭐ CALITATE GARANTATĂ sau banii înapoi!";
 
   return (
     <div className="h-8 bg-lumax-yellow text-foreground text-xs font-bold overflow-hidden flex items-center">
