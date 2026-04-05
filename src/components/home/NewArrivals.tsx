@@ -3,8 +3,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import ProductCard from "@/components/products/ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSettings } from "@/hooks/useSettings";
 
 export default function NewArrivals() {
+  const settings = useSettings();
+
   const { data: products, isLoading } = useQuery({
     queryKey: ["new-arrivals"],
     queryFn: async () => {
@@ -17,11 +20,13 @@ export default function NewArrivals() {
     },
   });
 
+  const title = settings.new_arrivals_title || "🆕 Noutăți în Magazin";
+
   return (
     <section className="bg-secondary py-6">
       <div className="lumax-container">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="section-title mb-0">🆕 Noutăți în Magazin</h2>
+          <h2 className="section-title mb-0">{title}</h2>
           <Link to="/catalog?sort=newest" className="text-primary text-[13px] font-medium hover:underline">
             Vezi toate noutățile →
           </Link>

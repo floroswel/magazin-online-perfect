@@ -4,25 +4,28 @@ import Layout from "@/components/layout/Layout";
 import { useCart } from "@/hooks/useCart";
 import { useCurrency } from "@/hooks/useCurrency";
 import { useAuth } from "@/hooks/useAuth";
+import { useSettings } from "@/hooks/useSettings";
 import { usePageSeo } from "@/components/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
 import { Minus, Plus, Trash2, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 
-const FREE_SHIPPING = 200;
-const SHIPPING_COST = 25;
-
 export default function Cart() {
   const { items, removeFromCart, updateQuantity, totalPrice, totalItems } = useCart();
   const { format } = useCurrency();
   const { user } = useAuth();
+  const settings = useSettings();
   const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState("");
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [couponLoading, setCouponLoading] = useState(false);
   const [couponError, setCouponError] = useState("");
 
-  usePageSeo({ title: `Coșul meu (${totalItems}) | LUMAX`, description: "Verifică produsele din coș și finalizează comanda." });
+  const FREE_SHIPPING = parseInt(settings.free_shipping_threshold || "200");
+  const SHIPPING_COST = parseInt(settings.default_shipping_cost || "25");
+  const siteName = settings.site_name || "LUMAX";
+
+  usePageSeo({ title: `Coșul meu (${totalItems}) | ${siteName}`, description: "Verifică produsele din coș și finalizează comanda." });
 
   const shippingCost = totalPrice >= FREE_SHIPPING ? 0 : SHIPPING_COST;
   const finalTotal = totalPrice + shippingCost - couponDiscount;
@@ -88,7 +91,7 @@ export default function Cart() {
                   <img src={item.product.image_url || "/placeholder.svg"} alt={item.product.name} className="w-full h-full object-cover" />
                 </Link>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-bold text-primary uppercase">LUMAX</p>
+                  <p className="text-[10px] font-bold text-primary uppercase">{siteName}</p>
                   <Link to={`/product/${item.product.slug}`} className="text-sm font-semibold text-foreground hover:text-primary line-clamp-2">{item.product.name}</Link>
                   <p className="text-[11px] text-lumax-green font-semibold mt-0.5">✅ În stoc</p>
                 </div>

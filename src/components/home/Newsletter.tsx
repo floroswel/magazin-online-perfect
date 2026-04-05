@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useSettings } from "@/hooks/useSettings";
 import { toast } from "sonner";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const settings = useSettings();
+
+  const title = settings.newsletter_title || "Abonează-te și primești 10% reducere";
+  const subtitle = settings.newsletter_subtitle || "Fii primul care află despre oferte exclusive și produse noi";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,15 +27,11 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="bg-lumax-blue-light py-12">
+    <section className="py-12" style={{ background: settings.newsletter_bg || undefined, backgroundColor: settings.newsletter_bg ? undefined : "hsl(var(--lumax-blue-light, 217 100% 95%))" }}>
       <div className="lumax-container flex flex-col md:flex-row items-center gap-8 md:gap-12">
         <div className="md:w-[60%]">
-          <h2 className="text-xl md:text-2xl font-extrabold text-lumax-blue-darker mb-2">
-            Abonează-te și primești 10% reducere
-          </h2>
-          <p className="text-[15px] text-muted-foreground mb-3">
-            Fii primul care află despre oferte exclusive și produse noi
-          </p>
+          <h2 className="text-xl md:text-2xl font-extrabold text-foreground mb-2">{title}</h2>
+          <p className="text-[15px] text-muted-foreground mb-3">{subtitle}</p>
           <p className="text-xs text-muted-foreground/70">
             ✅ Peste 5000 abonați · ✅ Fără spam · ✅ Dezabonare oricând
           </p>

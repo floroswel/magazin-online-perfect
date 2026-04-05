@@ -4,9 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import ProductCard from "@/components/products/ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSettings } from "@/hooks/useSettings";
 
 export default function BestSellers() {
   const [activeTab, setActiveTab] = useState<string | null>(null);
+  const settings = useSettings();
 
   const { data: categories } = useQuery({
     queryKey: ["cat-tabs"],
@@ -36,12 +38,13 @@ export default function BestSellers() {
   });
 
   const tabs = [{ id: null, name: "Toate" }, ...(categories || []).map((c) => ({ id: c.id, name: c.name }))];
+  const title = settings.bestsellers_title || "⭐ Cele Mai Vândute";
 
   return (
     <section className="bg-card py-6">
       <div className="lumax-container">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
-          <h2 className="section-title mb-0">⭐ Cele Mai Vândute</h2>
+          <h2 className="section-title mb-0">{title}</h2>
           <div className="flex items-center gap-2 overflow-x-auto">
             {tabs.map((t) => (
               <button
