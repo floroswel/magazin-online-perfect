@@ -299,10 +299,10 @@ export default function ProductDetail() {
             {/* Delivery box */}
             <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 space-y-3">
               {[
-                { icon: Truck, title: "Livrare gratuită", sub: "La comenzi > 200 lei" },
-                { icon: RotateCcw, title: "Retur 30 zile", sub: "Fără întrebări" },
+                { icon: Truck, title: "Livrare gratuită", sub: `La comenzi > ${settings.free_shipping_threshold || "200"} lei` },
+                { icon: RotateCcw, title: `Retur ${settings.return_days || "30"} zile`, sub: "Fără întrebări" },
                 { icon: Shield, title: "Plată securizată", sub: "SSL 256-bit" },
-                { icon: Package, title: "Livrat în 24-48h", sub: "Curier rapid" },
+                { icon: Package, title: `Livrat în ${settings.delivery_time || "24-48h"}`, sub: settings.delivery_description || "Curier rapid" },
               ].map(({ icon: Icon, title, sub }) => (
                 <div key={title} className="flex items-center gap-3">
                   <Icon className="h-5 w-5 text-primary flex-shrink-0" />
