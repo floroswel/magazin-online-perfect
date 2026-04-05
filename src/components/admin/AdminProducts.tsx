@@ -378,13 +378,6 @@ export default function AdminProducts() {
         product_type: product.product_type,
         bundle_pricing_mode: product.bundle_pricing_mode,
         bundle_discount_percent: product.bundle_discount_percent,
-        badge_new: product.badge_new,
-        badge_bestseller: product.badge_bestseller,
-        badge_promo: product.badge_promo,
-        badge_exclusive: product.badge_exclusive,
-        badge_gift: product.badge_gift,
-        badge_custom_text: product.badge_custom_text || null,
-        badge_custom_color: product.badge_custom_color || null,
       };
 
       if (!payload.meta_title && product.name) {
