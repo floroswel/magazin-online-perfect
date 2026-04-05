@@ -143,7 +143,7 @@ function ProductCardInner({ product, eager = false }: Props) {
       {/* Body */}
       <div className="p-3 flex-1 flex flex-col">
         <span className="text-[10px] font-bold text-primary uppercase tracking-wider mb-1">
-          {(product as any).brand?.name || product.brand || siteName}
+          {(product as any).brand?.name || (product as any).brand || siteName}
         </span>
         <h3 className="text-[13px] font-medium text-foreground leading-snug mb-1.5 flex-1 line-clamp-2 hover:text-primary transition-colors">
           {product.name}
