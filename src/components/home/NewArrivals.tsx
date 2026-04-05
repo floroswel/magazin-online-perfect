@@ -13,6 +13,16 @@ export default function NewArrivals() {
   const { data: products, isLoading } = useQuery({
     queryKey: ["new-arrivals"],
     queryFn: async () => {
+      // First try products explicitly marked as new
+      const { data: flagged } = await supabase
+        .from("products")
+        .select("*")
+        .eq("badge_new", true)
+        .eq("status", "active")
+        .order("created_at", { ascending: false })
+        .limit(10);
+      if (flagged && flagged.length > 0) return flagged;
+      // Fallback: most recent products
       const { data } = await supabase
         .from("products")
         .select("*")

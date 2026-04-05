@@ -27,13 +27,25 @@ export default function BestSellers() {
   const { data: products, isLoading } = useQuery({
     queryKey: ["bestsellers", activeTab],
     queryFn: async () => {
+      // First try products explicitly marked as bestseller
       let q = supabase
+        .from("products")
+        .select("*")
+        .eq("badge_bestseller", true)
+        .eq("status", "active")
+        .order("total_sold", { ascending: false })
+        .limit(10);
+      if (activeTab) q = q.eq("category_id", activeTab);
+      const { data: flagged } = await q;
+      if (flagged && flagged.length > 0) return flagged;
+      // Fallback: top sold products
+      let q2 = supabase
         .from("products")
         .select("*")
         .order("total_sold", { ascending: false })
         .limit(10);
-      if (activeTab) q = q.eq("category_id", activeTab);
-      const { data } = await q;
+      if (activeTab) q2 = q2.eq("category_id", activeTab);
+      const { data } = await q2;
       return data || [];
     },
   });
