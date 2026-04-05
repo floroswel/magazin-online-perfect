@@ -5883,6 +5883,7 @@ export type Database = {
           burn_hours: number | null
           canonical_url: string | null
           category_id: string | null
+          collections: string[] | null
           cost_price: number | null
           created_at: string
           description: string | null
@@ -5942,6 +5943,7 @@ export type Database = {
           burn_hours?: number | null
           canonical_url?: string | null
           category_id?: string | null
+          collections?: string[] | null
           cost_price?: number | null
           created_at?: string
           description?: string | null
@@ -6001,6 +6003,7 @@ export type Database = {
           burn_hours?: number | null
           canonical_url?: string | null
           category_id?: string | null
+          collections?: string[] | null
           cost_price?: number | null
           created_at?: string
           description?: string | null
