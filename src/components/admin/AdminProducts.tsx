@@ -64,6 +64,7 @@ interface ProductForm {
   badge_gift: boolean;
   badge_custom_text: string;
   badge_custom_color: string;
+  collections: string[];
   category_id: string | null;
   additional_category_ids: string[];
   tags: string[];
@@ -115,6 +116,7 @@ const emptyForm: ProductForm = {
   featured: false, visible: true, status: "active",
   badge_new: false, badge_bestseller: false, badge_promo: false,
   badge_exclusive: false, badge_gift: false, badge_custom_text: "", badge_custom_color: "",
+  collections: [],
   category_id: null, additional_category_ids: [], tags: [],
   specs: {}, meta_title: "", meta_description: "", related_product_ids: [],
   product_type: "simple", bundle_pricing_mode: "fixed", bundle_discount_percent: 0, bundle_components: [],
@@ -359,6 +361,7 @@ export default function AdminProducts() {
         badge_gift: product.badge_gift ?? false,
         badge_custom_text: product.badge_custom_text || "",
         badge_custom_color: product.badge_custom_color || "",
+        collections: product.collections || [],
         category_id: product.category_id,
         tags: product.tags,
         price: product.price,
@@ -378,6 +381,7 @@ export default function AdminProducts() {
         product_type: product.product_type,
         bundle_pricing_mode: product.bundle_pricing_mode,
         bundle_discount_percent: product.bundle_discount_percent,
+        collections: product.collections || [],
       };
 
       if (!payload.meta_title && product.name) {
@@ -574,6 +578,7 @@ export default function AdminProducts() {
       badge_gift: product.badge_gift || false,
       badge_custom_text: product.badge_custom_text || "",
       badge_custom_color: product.badge_custom_color || "",
+      collections: (product as any).collections || [],
       category_id: product.category_id || null,
       additional_category_ids: additionalCats,
       tags: product.tags || [],
