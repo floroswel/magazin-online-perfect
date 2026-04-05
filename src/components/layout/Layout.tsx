@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import CookieConsent from "@/components/CookieConsent";
 import SeoHead from "@/components/SeoHead";
@@ -5,10 +6,16 @@ import Header from "./Header";
 import Footer from "./Footer";
 import MobileBottomNav from "./MobileBottomNav";
 import AnnouncementBar from "./AnnouncementBar";
+import SocialProofPopup from "@/components/SocialProofPopup";
+import QuickViewModal from "@/components/products/QuickViewModal";
+import { QuickViewProvider } from "@/components/products/ProductCard";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith("/admin");
+  const [quickViewId, setQuickViewId] = useState<string | null>(null);
+
+  const quickViewCtx = useMemo(() => ({ open: (id: string) => setQuickViewId(id) }), []);
 
   if (isAdmin) {
     return (
@@ -20,15 +27,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     );
   }
 
+  const isCheckoutOrCart = location.pathname === "/checkout" || location.pathname === "/cos" || location.pathname === "/cart";
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <SeoHead />
-      <AnnouncementBar />
-      <Header />
-      <main className="flex-1 pb-16 md:pb-0">{children}</main>
-      <Footer />
-      <MobileBottomNav />
-      <CookieConsent />
-    </div>
+    <QuickViewProvider.Provider value={quickViewCtx}>
+      <div className="min-h-screen flex flex-col">
+        <SeoHead />
+        <AnnouncementBar />
+        <Header />
+        <main className="flex-1 pb-16 md:pb-0">{children}</main>
+        <Footer />
+        <MobileBottomNav />
+        <CookieConsent />
+        {!isCheckoutOrCart && <SocialProofPopup />}
+        <QuickViewModal productId={quickViewId} onClose={() => setQuickViewId(null)} />
+      </div>
+    </QuickViewProvider.Provider>
   );
 }
