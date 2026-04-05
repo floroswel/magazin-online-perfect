@@ -967,7 +967,11 @@ export type Database = {
       banners: {
         Row: {
           active: boolean
+          badge_text: string | null
+          bg_color: string | null
           created_at: string
+          cta_link: string | null
+          cta_text: string | null
           ends_at: string | null
           id: string
           image_url: string | null
@@ -975,11 +979,16 @@ export type Database = {
           placement: string
           sort_order: number
           starts_at: string | null
+          subtitle: string | null
           title: string
         }
         Insert: {
           active?: boolean
+          badge_text?: string | null
+          bg_color?: string | null
           created_at?: string
+          cta_link?: string | null
+          cta_text?: string | null
           ends_at?: string | null
           id?: string
           image_url?: string | null
@@ -987,11 +996,16 @@ export type Database = {
           placement?: string
           sort_order?: number
           starts_at?: string | null
+          subtitle?: string | null
           title: string
         }
         Update: {
           active?: boolean
+          badge_text?: string | null
+          bg_color?: string | null
           created_at?: string
+          cta_link?: string | null
+          cta_text?: string | null
           ends_at?: string | null
           id?: string
           image_url?: string | null
@@ -999,6 +1013,7 @@ export type Database = {
           placement?: string
           sort_order?: number
           starts_at?: string | null
+          subtitle?: string | null
           title?: string
         }
         Relationships: []
@@ -7683,6 +7698,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      shipping_methods: {
+        Row: {
+          created_at: string
+          description: string | null
+          estimated_days: string | null
+          free_above: number | null
+          icon: string | null
+          id: string
+          is_active: boolean
+          name: string
+          price: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          estimated_days?: string | null
+          free_above?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          price?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          estimated_days?: string | null
+          free_above?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          price?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       site_banners: {
         Row: {
