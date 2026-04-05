@@ -381,7 +381,6 @@ export default function AdminProducts() {
         product_type: product.product_type,
         bundle_pricing_mode: product.bundle_pricing_mode,
         bundle_discount_percent: product.bundle_discount_percent,
-        collections: product.collections || [],
       };
 
       if (!payload.meta_title && product.name) {
