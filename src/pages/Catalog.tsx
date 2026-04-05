@@ -93,28 +93,21 @@ export default function Catalog() {
         if (catIds.length > 0) query = query.in("category_id", catIds);
       }
 
-      // Collection filter — manual + auto-rules
+      // Collection filter — manual tags + auto-rules
       if (collection) {
-        query = query.contains("collections", [collection]);
-        // For auto-rules, we also include products matching conditions
-        // This is handled by the OR below after the manual filter
-      }
-
-      // Free shipping filter
-      if (freeShipping) {
-        query = query.gte("price", 200); // Uses threshold logic
-      }
-
-      // Sale filter
-      if (sale) {
-        query = query.not("old_price", "is", null);
-      }
-
-      // Auto-collection rules (applied on top of manual selections)
-      if (collection === "ultimele-bucati") {
-        query = query.gt("stock", 0).lte("stock", 5);
-      } else if (collection === "lichidare-stoc") {
-        query = query.gt("stock", 0).lte("stock", 3);
+        if (collection === "ultimele-bucati") {
+          // Auto-rule: stock 1-5 OR manually tagged
+          query = query.or(`collections.cs.{ultimele-bucati},and(stock.gt.0,stock.lte.5)`);
+        } else if (collection === "lichidare-stoc") {
+          // Auto-rule: stock 1-3 OR manually tagged
+          query = query.or(`collections.cs.{lichidare-stoc},and(stock.gt.0,stock.lte.3)`);
+        } else if (collection === "livrare-gratuita") {
+          // Auto-rule: price >= threshold OR manually tagged
+          query = query.or(`collections.cs.{livrare-gratuita},price.gte.200`);
+        } else {
+          // Manual only
+          query = query.contains("collections", [collection]);
+        }
       }
 
       // Price filter
