@@ -57,6 +57,13 @@ interface ProductForm {
   featured: boolean;
   visible: boolean;
   status: string;
+  badge_new: boolean;
+  badge_bestseller: boolean;
+  badge_promo: boolean;
+  badge_exclusive: boolean;
+  badge_gift: boolean;
+  badge_custom_text: string;
+  badge_custom_color: string;
   category_id: string | null;
   additional_category_ids: string[];
   tags: string[];
@@ -106,6 +113,8 @@ const emptyForm: ProductForm = {
   weight_kg: null, length_cm: null, width_cm: null, height_cm: null,
   brand_id: null, image_url: "", images: [], image_alts: {},
   featured: false, visible: true, status: "active",
+  badge_new: false, badge_bestseller: false, badge_promo: false,
+  badge_exclusive: false, badge_gift: false, badge_custom_text: "", badge_custom_color: "",
   category_id: null, additional_category_ids: [], tags: [],
   specs: {}, meta_title: "", meta_description: "", related_product_ids: [],
   product_type: "simple", bundle_pricing_mode: "fixed", bundle_discount_percent: 0, bundle_components: [],
@@ -343,6 +352,13 @@ export default function AdminProducts() {
         featured: product.featured,
         visible: product.visible,
         status: product.status,
+        badge_new: product.badge_new ?? false,
+        badge_bestseller: product.badge_bestseller ?? false,
+        badge_promo: product.badge_promo ?? false,
+        badge_exclusive: product.badge_exclusive ?? false,
+        badge_gift: product.badge_gift ?? false,
+        badge_custom_text: product.badge_custom_text || "",
+        badge_custom_color: product.badge_custom_color || "",
         category_id: product.category_id,
         tags: product.tags,
         price: product.price,
@@ -551,6 +567,13 @@ export default function AdminProducts() {
       featured: product.featured || false,
       visible: product.visible ?? true,
       status: product.status || "active",
+      badge_new: product.badge_new || false,
+      badge_bestseller: product.badge_bestseller || false,
+      badge_promo: product.badge_promo || false,
+      badge_exclusive: product.badge_exclusive || false,
+      badge_gift: product.badge_gift || false,
+      badge_custom_text: product.badge_custom_text || "",
+      badge_custom_color: product.badge_custom_color || "",
       category_id: product.category_id || null,
       additional_category_ids: additionalCats,
       tags: product.tags || [],
@@ -688,6 +711,71 @@ export default function AdminProducts() {
               <div className="flex items-center gap-3 pt-6">
                 <Switch checked={form.visible} onCheckedChange={(c) => setForm({ ...form, visible: c })} id="visible" />
                 <Label htmlFor="visible" className="text-sm">Vizibil pe site</Label>
+              </div>
+            </div>
+
+            {/* ─── Plasare pe Homepage & Etichete ─── */}
+            <div className="pt-3 border-t border-border space-y-3">
+              <Label className="text-base font-semibold flex items-center gap-2">
+                <Tag className="w-4 h-4" /> Plasare pe Homepage & Etichete
+              </Label>
+              <p className="text-xs text-muted-foreground">Alege în ce secțiuni apare produsul pe pagina principală și ce etichete afișează.</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <label className="flex items-center gap-2.5 p-2.5 rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                  <Switch checked={form.badge_promo} onCheckedChange={(c) => setForm({ ...form, badge_promo: c })} />
+                  <div>
+                    <span className="text-sm font-medium">🔥 Oferte Flash</span>
+                    <p className="text-[10px] text-muted-foreground">Apare în bara de oferte</p>
+                  </div>
+                </label>
+                <label className="flex items-center gap-2.5 p-2.5 rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                  <Switch checked={form.badge_bestseller} onCheckedChange={(c) => setForm({ ...form, badge_bestseller: c })} />
+                  <div>
+                    <span className="text-sm font-medium">⭐ Bestseller</span>
+                    <p className="text-[10px] text-muted-foreground">Secțiunea Cele Mai Vândute</p>
+                  </div>
+                </label>
+                <label className="flex items-center gap-2.5 p-2.5 rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                  <Switch checked={form.badge_new} onCheckedChange={(c) => setForm({ ...form, badge_new: c })} />
+                  <div>
+                    <span className="text-sm font-medium">🆕 Noutate</span>
+                    <p className="text-[10px] text-muted-foreground">Secțiunea Noutăți + badge NOU</p>
+                  </div>
+                </label>
+                <label className="flex items-center gap-2.5 p-2.5 rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                  <Switch checked={form.badge_exclusive} onCheckedChange={(c) => setForm({ ...form, badge_exclusive: c })} />
+                  <div>
+                    <span className="text-sm font-medium">💎 Exclusiv</span>
+                    <p className="text-[10px] text-muted-foreground">Etichetă exclusivitate</p>
+                  </div>
+                </label>
+                <label className="flex items-center gap-2.5 p-2.5 rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                  <Switch checked={form.badge_gift} onCheckedChange={(c) => setForm({ ...form, badge_gift: c })} />
+                  <div>
+                    <span className="text-sm font-medium">🎁 Cadou</span>
+                    <p className="text-[10px] text-muted-foreground">Ideal pentru cadouri</p>
+                  </div>
+                </label>
+                <label className="flex items-center gap-2.5 p-2.5 rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                  <Switch checked={form.featured} onCheckedChange={(c) => setForm({ ...form, featured: c })} />
+                  <div>
+                    <span className="text-sm font-medium">⭐ Recomandat</span>
+                    <p className="text-[10px] text-muted-foreground">Produse recomandate</p>
+                  </div>
+                </label>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-sm">Etichetă personalizată</Label>
+                  <Input value={form.badge_custom_text} onChange={(e) => setForm({ ...form, badge_custom_text: e.target.value })} placeholder="ex: EDIȚIE LIMITATĂ" maxLength={20} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-sm">Culoare etichetă</Label>
+                  <div className="flex gap-2">
+                    <Input type="color" value={form.badge_custom_color || "#FF6600"} onChange={(e) => setForm({ ...form, badge_custom_color: e.target.value })} className="w-12 h-9 p-1 cursor-pointer" />
+                    <Input value={form.badge_custom_color} onChange={(e) => setForm({ ...form, badge_custom_color: e.target.value })} placeholder="#FF6600" className="flex-1" />
+                  </div>
+                </div>
               </div>
             </div>
 

@@ -31,6 +31,15 @@ export default function FlashDealsBar() {
   const { data: deals } = useQuery({
     queryKey: ["flash-deals"],
     queryFn: async () => {
+      // First try products explicitly marked as promo
+      const { data: promo } = await supabase
+        .from("products")
+        .select("id, name, slug, price, old_price, image_url")
+        .eq("badge_promo", true)
+        .eq("status", "active")
+        .limit(10);
+      if (promo && promo.length > 0) return promo;
+      // Fallback: products with old_price (discount)
       const { data } = await supabase
         .from("products")
         .select("id, name, slug, price, old_price, image_url")
