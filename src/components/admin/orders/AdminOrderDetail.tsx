@@ -944,6 +944,14 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Add product to order */}
+      <AddProductToOrderDialog
+        open={showAddProduct}
+        onOpenChange={setShowAddProduct}
+        orderId={orderId}
+        existingProductIds={(order.order_items || []).map((i: any) => i.product_id)}
+      />
     </div>
   );
 }
