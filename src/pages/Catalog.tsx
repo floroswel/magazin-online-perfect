@@ -243,9 +243,21 @@ export default function Catalog() {
         <nav className="text-xs text-muted-foreground">
           <Link to="/" className="hover:text-primary">Acasă</Link>
           <span className="mx-1.5">/</span>
-          <span className="text-foreground font-medium">Catalog</span>
+          {collectionMeta ? (
+            <span className="text-foreground font-medium">{collectionMeta.title}</span>
+          ) : (
+            <span className="text-foreground font-medium">Catalog</span>
+          )}
         </nav>
       </div>
+
+      {/* Collection header */}
+      {collectionMeta && (
+        <div className="lumax-container pb-4">
+          <h1 className="text-2xl font-bold text-foreground">{collectionMeta.title}</h1>
+          <p className="text-sm text-muted-foreground">{collectionMeta.description}</p>
+        </div>
+      )}
 
       <div className="lumax-container pb-12">
         <div className="flex gap-6">
