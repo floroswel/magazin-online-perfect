@@ -110,6 +110,16 @@ export default function Catalog() {
         }
       }
 
+      // Free shipping filter (standalone, not from collection)
+      if (freeShipping && !collection) {
+        query = query.gte("price", 200);
+      }
+
+      // Sale filter
+      if (sale) {
+        query = query.not("old_price", "is", null);
+      }
+
       // Price filter
       query = query.gte("price", priceRange[0]).lte("price", priceRange[1]);
 
