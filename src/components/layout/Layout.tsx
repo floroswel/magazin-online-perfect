@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import CookieConsent from "@/components/CookieConsent";
 import SeoHead from "@/components/SeoHead";
 import Header from "./Header";
+import Footer from "./Footer";
 import MobileBottomNav from "./MobileBottomNav";
 import AnnouncementBar from "./AnnouncementBar";
 
@@ -25,6 +26,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <AnnouncementBar />
       <Header />
       <main className="flex-1 pb-16 md:pb-0">{children}</main>
+      <Footer />
       <MobileBottomNav />
       <CookieConsent />
     </div>
