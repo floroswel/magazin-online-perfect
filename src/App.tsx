@@ -92,6 +92,11 @@ const App = () => (
             <Routes>
               <Route path="/" element={<ErrorBoundary><Index /></ErrorBoundary>} />
               <Route path="/catalog" element={<ErrorBoundary><Catalog /></ErrorBoundary>} />
+              <Route path="/lichidare-stoc" element={<ErrorBoundary><Catalog /></ErrorBoundary>} />
+              <Route path="/ultimele-bucati" element={<ErrorBoundary><Catalog /></ErrorBoundary>} />
+              <Route path="/transport-gratuit" element={<ErrorBoundary><Catalog /></ErrorBoundary>} />
+              <Route path="/oferte-speciale" element={<ErrorBoundary><Catalog /></ErrorBoundary>} />
+              <Route path="/editie-limitata" element={<ErrorBoundary><Catalog /></ErrorBoundary>} />
               <Route path="/product/:slug" element={<ErrorBoundary><ProductDetail /></ErrorBoundary>} />
               <Route path="/cart" element={<ErrorBoundary><Cart /></ErrorBoundary>} />
               <Route path="/checkout" element={<ErrorBoundary><Checkout /></ErrorBoundary>} />

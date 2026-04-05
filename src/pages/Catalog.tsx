@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, Link, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Layout from "@/components/layout/Layout";
@@ -20,21 +20,46 @@ const SORT_OPTIONS = [
   { value: "rating", label: "Rating" },
 ];
 
+const COLLECTION_META: Record<string, { title: string; description: string }> = {
+  "livrare-gratuita": { title: "🚚 Livrare Gratuită", description: "Produse cu transport gratuit inclus" },
+  "lichidare-stoc": { title: "🔥 Lichidare Stoc", description: "Ultimele produse la prețuri reduse" },
+  "ultimele-bucati": { title: "⏳ Ultimele Bucăți", description: "Stoc limitat — nu rata ocazia!" },
+  "oferte-speciale": { title: "💰 Oferte Speciale", description: "Cele mai bune oferte din magazin" },
+  "cadouri": { title: "🎁 Cadouri", description: "Produse ideale pentru cadouri" },
+  "editie-limitata": { title: "💎 Ediție Limitată", description: "Produse exclusive, disponibile limitat" },
+};
+
 export default function Catalog() {
   const [params, setParams] = useSearchParams();
+  const location = useLocation();
   const q = params.get("q") || "";
   const categorySlug = params.get("category") || "";
   const sale = params.get("sale") === "true";
+  const freeShipping = params.get("free_shipping") === "true";
   const sort = params.get("sort") || "relevance";
   const page = parseInt(params.get("page") || "1", 10);
+
+  // Detect collection from URL path or query param
+  const PATH_COLLECTIONS: Record<string, string> = {
+    "/lichidare-stoc": "lichidare-stoc",
+    "/ultimele-bucati": "ultimele-bucati",
+    "/transport-gratuit": "livrare-gratuita",
+    "/oferte-speciale": "oferte-speciale",
+    "/editie-limitata": "editie-limitata",
+  };
+  const collection = PATH_COLLECTIONS[location.pathname] || params.get("collection") || "";
 
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(categorySlug ? [categorySlug] : []);
   const [stockFilter, setStockFilter] = useState<string>("in_stock");
 
+  const collectionMeta = collection ? COLLECTION_META[collection] : null;
+
   usePageSeo({
-    title: q ? `Rezultate pentru "${q}" | LUMAX` : "Catalog Produse | LUMAX",
-    description: "Descoperă toate produsele LUMAX. Livrare rapidă, prețuri competitive.",
+    title: collectionMeta
+      ? `${collectionMeta.title} | LUMAX`
+      : q ? `Rezultate pentru "${q}" | LUMAX` : "Catalog Produse | LUMAX",
+    description: collectionMeta?.description || "Descoperă toate produsele LUMAX. Livrare rapidă, prețuri competitive.",
   });
 
   useEffect(() => {
@@ -53,7 +78,7 @@ export default function Catalog() {
   });
 
   const { data: productsData, isLoading } = useQuery({
-    queryKey: ["catalog-products", q, selectedCategories, sale, sort, page, priceRange, stockFilter],
+    queryKey: ["catalog-products", q, selectedCategories, sale, freeShipping, collection, sort, page, priceRange, stockFilter],
     queryFn: async () => {
       let query = supabase.from("products").select("*, category:categories(slug, name)", { count: "exact" });
 
@@ -68,6 +93,28 @@ export default function Catalog() {
         if (catIds.length > 0) query = query.in("category_id", catIds);
       }
 
+      // Collection filter — manual tags + auto-rules
+      if (collection) {
+        if (collection === "ultimele-bucati") {
+          // Auto-rule: stock 1-5 OR manually tagged
+          query = query.or(`collections.cs.{ultimele-bucati},and(stock.gt.0,stock.lte.5)`);
+        } else if (collection === "lichidare-stoc") {
+          // Auto-rule: stock 1-3 OR manually tagged
+          query = query.or(`collections.cs.{lichidare-stoc},and(stock.gt.0,stock.lte.3)`);
+        } else if (collection === "livrare-gratuita") {
+          // Auto-rule: price >= threshold OR manually tagged
+          query = query.or(`collections.cs.{livrare-gratuita},price.gte.200`);
+        } else {
+          // Manual only
+          query = query.contains("collections", [collection]);
+        }
+      }
+
+      // Free shipping filter (standalone, not from collection)
+      if (freeShipping && !collection) {
+        query = query.gte("price", 200);
+      }
+
       // Sale filter
       if (sale) {
         query = query.not("old_price", "is", null);
@@ -76,8 +123,8 @@ export default function Catalog() {
       // Price filter
       query = query.gte("price", priceRange[0]).lte("price", priceRange[1]);
 
-      // Stock filter
-      if (stockFilter === "in_stock") query = query.gt("stock", 0);
+      // Stock filter (skip if collection already handles stock)
+      if (!collection && stockFilter === "in_stock") query = query.gt("stock", 0);
 
       // Sort
       switch (sort) {
@@ -209,9 +256,21 @@ export default function Catalog() {
         <nav className="text-xs text-muted-foreground">
           <Link to="/" className="hover:text-primary">Acasă</Link>
           <span className="mx-1.5">/</span>
-          <span className="text-foreground font-medium">Catalog</span>
+          {collectionMeta ? (
+            <span className="text-foreground font-medium">{collectionMeta.title}</span>
+          ) : (
+            <span className="text-foreground font-medium">Catalog</span>
+          )}
         </nav>
       </div>
+
+      {/* Collection header */}
+      {collectionMeta && (
+        <div className="lumax-container pb-4">
+          <h1 className="text-2xl font-bold text-foreground">{collectionMeta.title}</h1>
+          <p className="text-sm text-muted-foreground">{collectionMeta.description}</p>
+        </div>
+      )}
 
       <div className="lumax-container pb-12">
         <div className="flex gap-6">
