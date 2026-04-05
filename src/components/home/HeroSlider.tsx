@@ -16,6 +16,7 @@ const DEFAULTS = [
 ];
 
 export default function HeroSlider() {
+  const queryClient = useQueryClient();
   const { data: slides } = useQuery({
     queryKey: ["hero-banners"],
     queryFn: async () => {
@@ -28,6 +29,16 @@ export default function HeroSlider() {
       return data && data.length > 0 ? data : null;
     },
   });
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("hero-banners-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "banners" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["hero-banners"] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [queryClient]);
 
   const items = slides || DEFAULTS;
   const [idx, setIdx] = useState(0);
