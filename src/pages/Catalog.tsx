@@ -43,9 +43,13 @@ export default function Catalog() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(categorySlug ? [categorySlug] : []);
   const [stockFilter, setStockFilter] = useState<string>("in_stock");
 
+  const collectionMeta = collection ? COLLECTION_META[collection] : null;
+
   usePageSeo({
-    title: q ? `Rezultate pentru "${q}" | LUMAX` : "Catalog Produse | LUMAX",
-    description: "Descoperă toate produsele LUMAX. Livrare rapidă, prețuri competitive.",
+    title: collectionMeta
+      ? `${collectionMeta.title} | LUMAX`
+      : q ? `Rezultate pentru "${q}" | LUMAX` : "Catalog Produse | LUMAX",
+    description: collectionMeta?.description || "Descoperă toate produsele LUMAX. Livrare rapidă, prețuri competitive.",
   });
 
   useEffect(() => {
@@ -64,7 +68,7 @@ export default function Catalog() {
   });
 
   const { data: productsData, isLoading } = useQuery({
-    queryKey: ["catalog-products", q, selectedCategories, sale, sort, page, priceRange, stockFilter],
+    queryKey: ["catalog-products", q, selectedCategories, sale, freeShipping, collection, sort, page, priceRange, stockFilter],
     queryFn: async () => {
       let query = supabase.from("products").select("*, category:categories(slug, name)", { count: "exact" });
 
@@ -79,16 +83,35 @@ export default function Catalog() {
         if (catIds.length > 0) query = query.in("category_id", catIds);
       }
 
+      // Collection filter — manual + auto-rules
+      if (collection) {
+        query = query.contains("collections", [collection]);
+        // For auto-rules, we also include products matching conditions
+        // This is handled by the OR below after the manual filter
+      }
+
+      // Free shipping filter
+      if (freeShipping) {
+        query = query.gte("price", 200); // Uses threshold logic
+      }
+
       // Sale filter
       if (sale) {
         query = query.not("old_price", "is", null);
       }
 
+      // Auto-collection rules (applied on top of manual selections)
+      if (collection === "ultimele-bucati") {
+        query = query.gt("stock", 0).lte("stock", 5);
+      } else if (collection === "lichidare-stoc") {
+        query = query.gt("stock", 0).lte("stock", 3);
+      }
+
       // Price filter
       query = query.gte("price", priceRange[0]).lte("price", priceRange[1]);
 
-      // Stock filter
-      if (stockFilter === "in_stock") query = query.gt("stock", 0);
+      // Stock filter (skip if collection already handles stock)
+      if (!collection && stockFilter === "in_stock") query = query.gt("stock", 0);
 
       // Sort
       switch (sort) {
