@@ -83,7 +83,9 @@ export default function ProductDetail() {
     : 0;
 
   const isOutOfStock = product?.stock != null && product.stock <= 0;
-  const isLowStock = product?.stock != null && product.stock > 0 && product.stock < 10;
+  const settings = useSettings();
+  const lowStockThreshold = parseInt(settings.low_stock_threshold || "5");
+  const isLowStock = product?.stock != null && product.stock > 0 && product.stock < lowStockThreshold;
 
   const images = product?.images?.length ? product.images : product?.image_url ? [product.image_url] : ["/placeholder.svg"];
 
