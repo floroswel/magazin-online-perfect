@@ -25,8 +25,19 @@ function useCountdownToMidnight() {
 }
 
 export default function FlashDealsBar() {
+  const queryClient = useQueryClient();
   const countdown = useCountdownToMidnight();
   const { format } = useCurrency();
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("flash-deals-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "products" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["flash-deals"] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [queryClient]);
 
   const { data: deals } = useQuery({
     queryKey: ["flash-deals"],
