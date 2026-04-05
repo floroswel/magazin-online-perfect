@@ -432,9 +432,9 @@ function NavBar({ categories }: { categories: Category[] }) {
         </div>
 
         <nav className="flex items-center h-11 ml-2">
-          {navLinks.map((link) => (
+          {navLinks.map((link, idx) => (
             <Link
-              key={link.to}
+              key={`${link.to}-${idx}`}
               to={link.to}
               className="relative flex items-center h-11 px-3 text-[13px] font-medium text-white/90 hover:text-white transition-colors"
             >
@@ -471,12 +471,12 @@ function PromoTicker() {
 }
 
 // ═══════════════════════════════════════════
-// HEADER COMPOSITE
+// HEADER COMPOSITE — with realtime categories
 // ═══════════════════════════════════════════
 export default function Header() {
   const [categories, setCategories] = useState<Category[]>([]);
 
-  useEffect(() => {
+  const fetchCategories = () => {
     supabase
       .from("categories")
       .select("id, name, slug, icon, parent_id, display_order, show_in_nav")
@@ -485,6 +485,18 @@ export default function Header() {
       .then(({ data }) => {
         if (data) setCategories(data);
       });
+  };
+
+  useEffect(() => {
+    fetchCategories();
+    // Realtime: instantly update categories when admin changes them
+    const channel = supabase
+      .channel("header-categories-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "categories" }, () => {
+        fetchCategories();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   return (

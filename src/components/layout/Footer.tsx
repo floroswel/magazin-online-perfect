@@ -13,7 +13,7 @@ const DEFAULT_LINKS_COL1 = [
 ];
 
 const DEFAULT_LINKS_COL2 = [
-  { label: "Cum comand?", to: "/faq" },
+  { label: "Cum comand?", to: "/cum-comand" },
   { label: "Livrare și retur", to: "/politica-de-retur" },
   { label: "Garanții", to: "/page/garantie" },
   { label: "FAQ", to: "/faq" },
@@ -113,9 +113,9 @@ export default function Footer() {
               <span className="text-xs text-white">1000+ clienți mulțumiți</span>
             </div>
             <div className="flex gap-2">
-              {displaySocials.map((s) => (
+              {displaySocials.map((s, idx) => (
                 <a
-                  key={s.icon}
+                  key={`${s.icon}-${idx}`}
                   href={s.url}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -133,8 +133,8 @@ export default function Footer() {
               {settings.footer_col1_title || "Informații"}
             </h4>
             <ul className="space-y-1.5">
-              {col1Links.map((l: any) => (
-                <li key={l.to || l.url}>
+              {col1Links.map((l: any, idx: number) => (
+                <li key={`col1-${idx}`}>
                   <Link to={l.to || l.url} className="text-[13px] text-gray-400 hover:text-white transition-colors">
                     {l.label}
                   </Link>
@@ -149,8 +149,8 @@ export default function Footer() {
               {settings.footer_col2_title || "Ajutor"}
             </h4>
             <ul className="space-y-1.5">
-              {col2Links.map((l: any) => (
-                <li key={l.to || l.url}>
+              {col2Links.map((l: any, idx: number) => (
+                <li key={`col2-${idx}`}>
                   <Link to={l.to || l.url} className="text-[13px] text-gray-400 hover:text-white transition-colors">
                     {l.label}
                   </Link>

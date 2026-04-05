@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import ProductCard from "@/components/products/ProductCard";
@@ -9,6 +9,7 @@ import { useSettings } from "@/hooks/useSettings";
 export default function BestSellers() {
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const settings = useSettings();
+  const queryClient = useQueryClient();
 
   const { data: categories } = useQuery({
     queryKey: ["cat-tabs"],
@@ -36,6 +37,17 @@ export default function BestSellers() {
       return data || [];
     },
   });
+
+  // Realtime: instantly refresh when products change
+  useEffect(() => {
+    const channel = supabase
+      .channel("bestsellers-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "products" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["bestsellers"] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [queryClient]);
 
   const tabs = [{ id: null, name: "Toate" }, ...(categories || []).map((c) => ({ id: c.id, name: c.name }))];
   const title = settings.bestsellers_title || "⭐ Cele Mai Vândute";
