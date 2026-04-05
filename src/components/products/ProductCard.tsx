@@ -63,6 +63,10 @@ function ProductCardInner({ product, eager = false }: Props) {
   const isOutOfStock = product.stock !== null && product.stock !== undefined && product.stock <= 0;
   const isLowStock = product.stock !== null && product.stock !== undefined && product.stock > 0 && product.stock < lowStockThreshold;
   const isNew = (product as any).badge_new;
+  const isExclusive = (product as any).badge_exclusive;
+  const isGift = (product as any).badge_gift;
+  const customBadgeText = (product as any).badge_custom_text;
+  const customBadgeColor = (product as any).badge_custom_color;
 
   return (
     <Link
@@ -101,6 +105,21 @@ function ProductCardInner({ product, eager = false }: Props) {
           {isOutOfStock && (
             <span className="bg-muted-foreground text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
               Stoc epuizat
+            </span>
+          )}
+          {isExclusive && (
+            <span className="bg-purple-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
+              💎 EXCLUSIV
+            </span>
+          )}
+          {isGift && (
+            <span className="bg-pink-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
+              🎁 CADOU
+            </span>
+          )}
+          {customBadgeText && (
+            <span className="text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm" style={{ backgroundColor: customBadgeColor || '#FF6600' }}>
+              {customBadgeText}
             </span>
           )}
         </div>
