@@ -9,14 +9,14 @@ export default function SitemapXml() {
       const siteUrl = (window.location.origin).replace(/\/$/, "");
 
       const [productsRes, categoriesRes, postsRes] = await Promise.all([
-        supabase.from("products").select("slug, updated_at").eq("visible", true).order("updated_at", { ascending: false }).limit(1000),
-        supabase.from("categories").select("slug, updated_at").eq("visible", true),
+        supabase.from("products").select("slug, created_at").eq("visible", true).order("created_at", { ascending: false }).limit(1000),
+        supabase.from("categories").select("slug, created_at").eq("visible", true),
         supabase.from("blog_posts").select("slug, updated_at").eq("status", "published"),
       ]);
 
-      const products = productsRes.data || [];
-      const categories = categoriesRes.data || [];
-      const posts = postsRes.data || [];
+      const products = (productsRes.data || []) as any[];
+      const categories = (categoriesRes.data || []) as any[];
+      const posts = (postsRes.data || []) as any[];
 
       const staticPages = [
         { path: "/", priority: "1.0", freq: "daily" },
@@ -24,8 +24,6 @@ export default function SitemapXml() {
         { path: "/quiz-parfum", priority: "0.7", freq: "monthly" },
         { path: "/recenzii", priority: "0.6", freq: "weekly" },
         { path: "/personalizare", priority: "0.6", freq: "monthly" },
-        { path: "/corporate-gifting", priority: "0.5", freq: "monthly" },
-        { path: "/ingrijire-lumanari", priority: "0.5", freq: "monthly" },
       ];
 
       let xmlStr = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
@@ -39,7 +37,7 @@ export default function SitemapXml() {
       }
 
       for (const p of products) {
-        const lastmod = p.updated_at ? `<lastmod>${p.updated_at.slice(0, 10)}</lastmod>` : "";
+        const lastmod = p.created_at ? `<lastmod>${p.created_at.slice(0, 10)}</lastmod>` : "";
         xmlStr += `\n  <url><loc>${siteUrl}/product/${p.slug}</loc>${lastmod}<changefreq>weekly</changefreq><priority>0.8</priority></url>`;
       }
 
@@ -55,7 +53,6 @@ export default function SitemapXml() {
 
   useEffect(() => {
     if (xml) {
-      // Replace the page content with raw XML
       document.open("text/xml");
       document.write(xml);
       document.close();

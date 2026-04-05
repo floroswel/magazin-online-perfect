@@ -6,6 +6,7 @@ import { useCurrency } from "@/hooks/useCurrency";
 import { usePricingRules } from "@/hooks/usePricingRules";
 import { usePromotions } from "@/hooks/usePromotions";
 import { usePrefetch } from "@/hooks/usePrefetch";
+import { useSettings } from "@/hooks/useSettings";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -20,8 +21,14 @@ function ProductCardInner({ product, eager = false }: Props) {
   const { getProductDiscount } = usePricingRules();
   const { getProductPromotion } = usePromotions();
   const { prefetchProduct } = usePrefetch();
+  const settings = useSettings();
   const [addedToCart, setAddedToCart] = useState(false);
   const [liked, setLiked] = useState(false);
+
+  const FREE_SHIPPING = parseInt(settings.free_shipping_threshold || "200");
+  const SHIPPING_COST = parseInt(settings.default_shipping_cost || "25");
+  const lowStockThreshold = parseInt(settings.low_stock_threshold || "5");
+  const siteName = settings.site_name || "LUMAX";
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -54,7 +61,7 @@ function ProductCardInner({ product, eager = false }: Props) {
     : 0;
 
   const isOutOfStock = product.stock !== null && product.stock !== undefined && product.stock <= 0;
-  const isLowStock = product.stock !== null && product.stock !== undefined && product.stock > 0 && product.stock < 5;
+  const isLowStock = product.stock !== null && product.stock !== undefined && product.stock > 0 && product.stock < lowStockThreshold;
   const isNew = (product as any).badge_new;
 
   return (
@@ -136,7 +143,7 @@ function ProductCardInner({ product, eager = false }: Props) {
       {/* Body */}
       <div className="p-3 flex-1 flex flex-col">
         <span className="text-[10px] font-bold text-primary uppercase tracking-wider mb-1">
-          LUMAX
+          {(product as any).brand?.name || product.brand || siteName}
         </span>
         <h3 className="text-[13px] font-medium text-foreground leading-snug mb-1.5 flex-1 line-clamp-2 hover:text-primary transition-colors">
           {product.name}
@@ -170,7 +177,7 @@ function ProductCardInner({ product, eager = false }: Props) {
 
         {/* Shipping hint */}
         <p className="text-[10px] font-semibold text-lumax-green mb-2">
-          {effectivePrice >= 200 ? "🚚 Transport gratuit" : "🚚 Transport 25 lei"}
+          {effectivePrice >= FREE_SHIPPING ? "🚚 Transport gratuit" : `🚚 Transport ${SHIPPING_COST} lei`}
         </p>
 
         {/* Add to cart button */}

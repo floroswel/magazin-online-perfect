@@ -8,19 +8,22 @@ import TrustStrip from "@/components/home/TrustStrip";
 import NewArrivals from "@/components/home/NewArrivals";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
 import Newsletter from "@/components/home/Newsletter";
+import { useSettings } from "@/hooks/useSettings";
 
 export default function Index() {
+  const settings = useSettings();
+
   return (
     <Layout>
-      <HeroSlider />
-      <FlashDealsBar />
-      <CategoryGrid />
-      <PromoBanners />
-      <BestSellers />
-      <TrustStrip />
-      <NewArrivals />
-      <RecentlyViewed />
-      <Newsletter />
+      {settings.show_hero !== "false" && <HeroSlider />}
+      {settings.show_flash_deals !== "false" && <FlashDealsBar />}
+      {settings.show_categories !== "false" && <CategoryGrid />}
+      {settings.show_promo_banners !== "false" && <PromoBanners />}
+      {settings.show_featured !== "false" && <BestSellers />}
+      {settings.show_trust !== "false" && <TrustStrip />}
+      {settings.show_new_arrivals !== "false" && <NewArrivals />}
+      {settings.show_recently_viewed !== "false" && <RecentlyViewed />}
+      {settings.show_newsletter !== "false" && <Newsletter />}
     </Layout>
   );
 }
