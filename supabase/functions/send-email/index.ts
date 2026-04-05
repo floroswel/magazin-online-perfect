@@ -316,6 +316,22 @@ function reviewRequestHTML(data: Record<string, any>) {
   ${footer()}`;
 }
 
+function backInStockHTML(data: Record<string, any>) {
+  return `${header("Produsul dorit este din nou în stoc!", "🎉")}
+    <p style="color:${BRAND.textColor};font-size:15px">Bună!</p>
+    <p style="color:${BRAND.mutedColor};font-size:14px">Vești bune! Produsul pe care l-ai dorit este din nou disponibil:</p>
+    <div style="background:#fff;padding:20px;border-radius:8px;margin:20px 0;border:1px solid #F5E6D3;text-align:center">
+      ${data.product_image ? `<img src="${data.product_image}" alt="${data.product_name}" style="width:120px;height:120px;object-fit:cover;border-radius:12px;margin:0 auto 12px" />` : ""}
+      <p style="margin:0;font-size:18px;font-weight:bold;color:${BRAND.textColor}">${data.product_name || "Produs"}</p>
+      ${data.product_price ? `<p style="margin:8px 0 0;font-size:20px;font-weight:bold;color:${BRAND.color}">${Number(data.product_price).toFixed(2)} RON</p>` : ""}
+    </div>
+    <p style="color:${BRAND.mutedColor};font-size:13px;text-align:center">⚠️ Stocul este limitat — comandă acum pentru a nu rata!</p>
+    <div style="text-align:center;margin-top:20px">
+      ${btn("Cumpără acum →", data.product_url ? `https://mamalucica.ro${data.product_url}` : "https://mamalucica.ro/catalog")}
+    </div>
+  ${footer()}`;
+}
+
 function weeklyReportHTML(data: Record<string, any>) {
   return data.html || `${header("Raport Săptămânal", "📊")}<p>Raport gol</p>${footer()}`;
 }
@@ -399,6 +415,10 @@ serve(async (req) => {
       case "review_request":
         subject = `Cum a fost experiența cu comanda #${(data.orderNumber || data.orderId || "").slice(0, 8)}? ⭐`;
         html = reviewRequestHTML(data);
+        break;
+      case "back_in_stock":
+        subject = `${data.product_name || "Produsul dorit"} este din nou în stoc! 🎉 — Mama Lucica`;
+        html = backInStockHTML(data);
         break;
       case "weekly_report":
         subject = `📊 Raport săptămânal Mama Lucica — ${new Date().toLocaleDateString("ro-RO")}`;
