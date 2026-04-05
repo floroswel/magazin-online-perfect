@@ -20,11 +20,22 @@ const SORT_OPTIONS = [
   { value: "rating", label: "Rating" },
 ];
 
+const COLLECTION_META: Record<string, { title: string; description: string }> = {
+  "livrare-gratuita": { title: "🚚 Livrare Gratuită", description: "Produse cu transport gratuit inclus" },
+  "lichidare-stoc": { title: "🔥 Lichidare Stoc", description: "Ultimele produse la prețuri reduse" },
+  "ultimele-bucati": { title: "⏳ Ultimele Bucăți", description: "Stoc limitat — nu rata ocazia!" },
+  "oferte-speciale": { title: "💰 Oferte Speciale", description: "Cele mai bune oferte din magazin" },
+  "cadouri": { title: "🎁 Cadouri", description: "Produse ideale pentru cadouri" },
+  "editie-limitata": { title: "💎 Ediție Limitată", description: "Produse exclusive, disponibile limitat" },
+};
+
 export default function Catalog() {
   const [params, setParams] = useSearchParams();
   const q = params.get("q") || "";
   const categorySlug = params.get("category") || "";
+  const collection = params.get("collection") || "";
   const sale = params.get("sale") === "true";
+  const freeShipping = params.get("free_shipping") === "true";
   const sort = params.get("sort") || "relevance";
   const page = parseInt(params.get("page") || "1", 10);
 

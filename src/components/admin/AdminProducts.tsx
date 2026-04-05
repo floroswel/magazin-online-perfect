@@ -783,7 +783,43 @@ export default function AdminProducts() {
               </div>
             </div>
 
-            {/* Specs */}
+            {/* ─── Colecții Speciale (pagini virtuale) ─── */}
+            <div className="pt-3 border-t border-border space-y-3">
+              <Label className="text-base font-semibold flex items-center gap-2">
+                📂 Colecții Speciale
+              </Label>
+              <p className="text-xs text-muted-foreground">
+                Selectează paginile virtuale în care apare acest produs (pe lângă categoria principală). Unele colecții se populează și automat.
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {[
+                  { key: "livrare-gratuita", label: "🚚 Livrare Gratuită", desc: "Produse cu transport gratuit" },
+                  { key: "lichidare-stoc", label: "🔥 Lichidare Stoc", desc: "Auto: stoc ≤ 3 + vândute > 50%" },
+                  { key: "ultimele-bucati", label: "⏳ Ultimele Bucăți", desc: "Auto: stoc ≤ 5 bucăți" },
+                  { key: "oferte-speciale", label: "💰 Oferte Speciale", desc: "Pagina de oferte speciale" },
+                  { key: "cadouri", label: "🎁 Cadouri", desc: "Secțiunea de cadouri" },
+                  { key: "editie-limitata", label: "💎 Ediție Limitată", desc: "Produse exclusive" },
+                ].map(col => (
+                  <label key={col.key} className="flex items-center gap-2.5 p-2.5 rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-colors">
+                    <Checkbox
+                      checked={form.collections.includes(col.key)}
+                      onCheckedChange={(checked) => {
+                        setForm(f => ({
+                          ...f,
+                          collections: checked
+                            ? [...f.collections, col.key]
+                            : f.collections.filter(c => c !== col.key),
+                        }));
+                      }}
+                    />
+                    <div>
+                      <span className="text-sm font-medium">{col.label}</span>
+                      <p className="text-[10px] text-muted-foreground">{col.desc}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
             <div className="space-y-2 pt-2 border-t border-border">
               <div className="flex items-center justify-between">
                 <Label>Specificații tehnice</Label>
