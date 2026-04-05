@@ -1,0 +1,79 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
+import ProductCard from "@/components/products/ProductCard";
+import { Skeleton } from "@/components/ui/skeleton";
+
+export default function BestSellers() {
+  const [activeTab, setActiveTab] = useState<string | null>(null);
+
+  const { data: categories } = useQuery({
+    queryKey: ["cat-tabs"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("categories")
+        .select("id, name, slug")
+        .eq("visible", true)
+        .order("display_order")
+        .limit(4);
+      return data || [];
+    },
+  });
+
+  const { data: products, isLoading } = useQuery({
+    queryKey: ["bestsellers", activeTab],
+    queryFn: async () => {
+      let q = supabase
+        .from("products")
+        .select("*")
+        .order("total_sold", { ascending: false })
+        .limit(10);
+      if (activeTab) q = q.eq("category_id", activeTab);
+      const { data } = await q;
+      return data || [];
+    },
+  });
+
+  const tabs = [{ id: null, name: "Toate" }, ...(categories || []).map((c) => ({ id: c.id, name: c.name }))];
+
+  return (
+    <section className="bg-card py-6">
+      <div className="lumax-container">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+          <h2 className="section-title mb-0">⭐ Cele Mai Vândute</h2>
+          <div className="flex items-center gap-2 overflow-x-auto">
+            {tabs.map((t) => (
+              <button
+                key={t.id ?? "all"}
+                onClick={() => setActiveTab(t.id)}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors whitespace-nowrap ${
+                  activeTab === t.id
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-card text-muted-foreground border-border hover:border-primary"
+                }`}
+              >
+                {t.name}
+              </button>
+            ))}
+            <Link to="/catalog" className="text-primary text-[13px] font-medium hover:underline whitespace-nowrap ml-2">
+              Vezi toate →
+            </Link>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          {isLoading
+            ? Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="space-y-2">
+                  <Skeleton className="aspect-square rounded-xl" />
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+              ))
+            : products?.map((p) => <ProductCard key={p.id} product={p} />)}
+        </div>
+      </div>
+    </section>
+  );
+}

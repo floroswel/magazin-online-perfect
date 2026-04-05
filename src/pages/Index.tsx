@@ -1,11 +1,26 @@
 import Layout from "@/components/layout/Layout";
+import HeroSlider from "@/components/home/HeroSlider";
+import FlashDealsBar from "@/components/home/FlashDealsBar";
+import CategoryGrid from "@/components/home/CategoryGrid";
+import PromoBanners from "@/components/home/PromoBanners";
+import BestSellers from "@/components/home/BestSellers";
+import TrustStrip from "@/components/home/TrustStrip";
+import NewArrivals from "@/components/home/NewArrivals";
+import RecentlyViewed from "@/components/home/RecentlyViewed";
+import Newsletter from "@/components/home/Newsletter";
 
 export default function Index() {
   return (
     <Layout>
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-muted-foreground text-lg">LUMAX theme — ready to build</p>
-      </div>
+      <HeroSlider />
+      <FlashDealsBar />
+      <CategoryGrid />
+      <PromoBanners />
+      <BestSellers />
+      <TrustStrip />
+      <NewArrivals />
+      <RecentlyViewed />
+      <Newsletter />
     </Layout>
   );
 }
