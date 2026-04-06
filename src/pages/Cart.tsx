@@ -14,7 +14,7 @@ export default function Cart() {
   const { items, removeFromCart, updateQuantity, totalPrice, totalItems } = useCart();
   const { format } = useCurrency();
   const { user } = useAuth();
-  const settings = useSettings();
+  const { settings } = useSettings();
   const navigate = useNavigate();
   const [couponCode, setCouponCode] = useState("");
   const [couponDiscount, setCouponDiscount] = useState(0);

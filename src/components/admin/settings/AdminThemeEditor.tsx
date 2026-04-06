@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useSettings } from "@/hooks/useSettings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -159,35 +158,17 @@ h1,h2,h3{font-family:'${headingFont}',serif}
 }
 
 export default function AdminThemeEditor() {
-  const settings = useSettings();
-  const [saving, setSaving] = useState<string | null>(null);
-  const [localSettings, setLocalSettings] = useState<Record<string, string>>({});
-
-  // Sync from context
-  useEffect(() => {
-    setLocalSettings(prev => {
-      const merged = { ...prev };
-      // Only overwrite keys that aren't being actively edited
-      for (const [k, v] of Object.entries(settings)) {
-        if (saving !== k) merged[k] = v;
-      }
-      return merged;
-    });
-  }, [settings, saving]);
+  const { settings, updateSetting } = useSettings();
+  const [saveStatus, setSaveStatus] = useState("");
+  const [customCssDraft, setCustomCssDraft] = useState("");
 
   const saveSetting = useCallback(async (key: string, value: string) => {
-    setSaving(key);
-    setLocalSettings(prev => ({ ...prev, [key]: value }));
+    await updateSetting(key, value);
+    setSaveStatus("✅ Salvat");
+    setTimeout(() => setSaveStatus(""), 2000);
+  }, [updateSetting]);
 
-    const { error } = await supabase.from("app_settings").upsert(
-      { key, value_json: value, updated_at: new Date().toISOString() },
-      { onConflict: "key" }
-    );
-    if (error) toast.error(`Eroare la salvare: ${error.message}`);
-    setSaving(null);
-  }, []);
-
-  const get = (key: string, fallback: string = "") => localSettings[key] || fallback;
+  const get = (key: string, fallback: string = "") => settings[key] || fallback;
 
   return (
     <div className="space-y-4">
@@ -196,6 +177,9 @@ export default function AdminThemeEditor() {
           <h1 className="text-2xl font-bold text-foreground">Editor Temă</h1>
           <p className="text-sm text-muted-foreground">Modificările se aplică instant pe site</p>
         </div>
+        {saveStatus && (
+          <span className="text-sm font-medium text-green-600 animate-in fade-in">{saveStatus}</span>
+        )}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-6">
@@ -339,12 +323,12 @@ export default function AdminThemeEditor() {
             </CardHeader>
             <CardContent>
               <Textarea
-                value={get("custom_css", "")}
-                onChange={e => setLocalSettings(prev => ({ ...prev, custom_css: e.target.value }))}
+                value={customCssDraft || get("custom_css", "")}
+                onChange={e => setCustomCssDraft(e.target.value)}
                 placeholder="/* Adaugă CSS personalizat aici */"
                 className="font-mono text-xs min-h-[160px]"
               />
-              <Button size="sm" className="mt-3" onClick={() => saveSetting("custom_css", localSettings.custom_css || "")}>
+              <Button size="sm" className="mt-3" onClick={() => saveSetting("custom_css", customCssDraft || get("custom_css", ""))}>
                 Aplică CSS
               </Button>
             </CardContent>
@@ -352,7 +336,7 @@ export default function AdminThemeEditor() {
         </div>
 
         {/* Right: Live Preview */}
-        <LivePreview settings={localSettings} />
+        <LivePreview settings={settings} />
       </div>
     </div>
   );

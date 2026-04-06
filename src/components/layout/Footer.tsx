@@ -19,7 +19,7 @@ const DEFAULT_LINKS_COL2 = [
 
 export default function Footer() {
   const content = useEditableContent();
-  const settings = useSettings();
+  const { settings } = useSettings();
 
   const siteName = settings.site_name || "LUMAX";
   const siteTagline = settings.site_tagline || "Magazinul tău de încredere din România";

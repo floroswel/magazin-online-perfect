@@ -26,7 +26,7 @@ function ProductCardInner({ product, eager = false }: Props) {
   const { getProductDiscount } = usePricingRules();
   const { getProductPromotion } = usePromotions();
   const { prefetchProduct } = usePrefetch();
-  const settings = useSettings();
+  const { settings } = useSettings();
   const [addedToCart, setAddedToCart] = useState(false);
   const [liked, setLiked] = useState(false);
 

@@ -7,7 +7,7 @@ const STORAGE_KEY = "lumax_announcement_closed";
 
 export default function AnnouncementBar() {
   const { announcement } = useEditableContent();
-  const settings = useSettings();
+  const { settings } = useSettings();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {

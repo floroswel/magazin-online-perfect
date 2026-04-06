@@ -8,7 +8,7 @@ import { useSettings } from "@/hooks/useSettings";
 
 export default function BestSellers() {
   const [activeTab, setActiveTab] = useState<string | null>(null);
-  const settings = useSettings();
+  const { settings } = useSettings();
   const queryClient = useQueryClient();
 
   const { data: categories } = useQuery({

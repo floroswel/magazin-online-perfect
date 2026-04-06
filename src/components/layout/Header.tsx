@@ -36,7 +36,7 @@ interface SearchResult {
 // ═══════════════════════════════════════════
 function TopInfoBar() {
   const { header_topbar } = useEditableContent();
-  const settings = useSettings();
+  const { settings } = useSettings();
 
   return (
     <div className="hidden md:block border-b border-border bg-card">
@@ -66,7 +66,7 @@ function MainHeader({ categories }: { categories: Category[] }) {
   const { user, signOut } = useAuth();
   const { items, totalItems, totalPrice, removeFromCart } = useCart();
   const { format } = useCurrency();
-  const settings = useSettings();
+  const { settings } = useSettings();
   const isMobile = useIsMobile();
 
   const [query, setQuery] = useState("");
@@ -350,7 +350,7 @@ function NavBar({ categories }: { categories: Category[] }) {
   const [hoveredCat, setHoveredCat] = useState<string | null>(null);
   const megaRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
-  const settings = useSettings();
+  const { settings } = useSettings();
 
   if (isMobile) return null;
 
@@ -457,7 +457,7 @@ function NavBar({ categories }: { categories: Category[] }) {
 // LAYER 4 — PROMO TICKER (yellow)
 // ═══════════════════════════════════════════
 function PromoTicker() {
-  const settings = useSettings();
+  const { settings } = useSettings();
   const text = settings.ticker_text || "⚡ FLASH SALE: -50% la produse selectate!  ·  🚚 TRANSPORT GRATUIT comenzi > 200 lei!  ·  🎁 CADOU la comenzi > 300 lei!  ·  ⭐ CALITATE GARANTATĂ sau banii înapoi!";
 
   return (

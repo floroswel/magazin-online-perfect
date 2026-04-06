@@ -34,7 +34,7 @@ export default function Checkout() {
   const { items, totalPrice, clearCart } = useCart();
   const { format } = useCurrency();
   const { user } = useAuth();
-  const settings = useSettings();
+  const { settings } = useSettings();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);

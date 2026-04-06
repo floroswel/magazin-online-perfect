@@ -3,7 +3,15 @@ import { supabase } from "@/integrations/supabase/client";
 
 type SettingsMap = Record<string, string>;
 
-const SettingsContext = createContext<SettingsMap>({});
+interface SettingsContextValue {
+  settings: SettingsMap;
+  updateSetting: (key: string, value: string) => Promise<void>;
+}
+
+const SettingsContext = createContext<SettingsContextValue>({
+  settings: {},
+  updateSetting: async () => {},
+});
 
 // All the app_settings keys we load for the storefront
 const SETTINGS_KEYS = [
@@ -82,6 +90,7 @@ function applyCSSVariables(s: SettingsMap) {
       root.style.setProperty("--ring", hsl);
       root.style.setProperty("--primary-foreground", isLightHSL(hsl) ? "220 15% 15%" : "0 0% 100%");
     }
+    root.style.setProperty("--lumax-blue", s.primary_color);
   }
   if (s.secondary_color) {
     const hsl = hexToHSL(s.secondary_color);
@@ -89,6 +98,7 @@ function applyCSSVariables(s: SettingsMap) {
       root.style.setProperty("--secondary", hsl);
       root.style.setProperty("--secondary-foreground", isLightHSL(hsl) ? "220 15% 15%" : "0 0% 100%");
     }
+    root.style.setProperty("--lumax-dark", s.secondary_color);
   }
   if (s.accent_color) {
     const hsl = hexToHSL(s.accent_color);
@@ -96,6 +106,7 @@ function applyCSSVariables(s: SettingsMap) {
       root.style.setProperty("--destructive", hsl);
       root.style.setProperty("--destructive-foreground", isLightHSL(hsl) ? "220 15% 15%" : "0 0% 100%");
     }
+    root.style.setProperty("--lumax-red", s.accent_color);
   }
   if (s.background_color) {
     const hsl = hexToHSL(s.background_color);
@@ -109,6 +120,7 @@ function applyCSSVariables(s: SettingsMap) {
       root.style.setProperty("--foreground", hsl);
       root.style.setProperty("--card-foreground", hsl);
     }
+    root.style.setProperty("--lumax-text", s.text_color);
   }
 
   // ━━ Buttons ━━
@@ -121,7 +133,10 @@ function applyCSSVariables(s: SettingsMap) {
 
   // ━━ Header & Nav ━━
   if (s.header_bg) root.style.setProperty("--header-bg", s.header_bg);
-  if (s.nav_bar_color) root.style.setProperty("--nav-bar-color", s.nav_bar_color);
+  if (s.nav_bar_color) {
+    root.style.setProperty("--nav-bar-color", s.nav_bar_color);
+    root.style.setProperty("--lumax-blue-dark", s.nav_bar_color);
+  }
   if (s.announcement_bg) root.style.setProperty("--announcement-bg", s.announcement_bg);
   if (s.announcement_text_color) root.style.setProperty("--announcement-text", s.announcement_text_color);
 
@@ -182,12 +197,32 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const map: SettingsMap = {};
     data.forEach((row: any) => {
       const val = row.value_json;
-      // Unwrap JSON strings — stored as '"value"' in DB
       map[row.key] = typeof val === "string" ? val : JSON.stringify(val);
     });
     setSettings(map);
     applyCSSVariables(map);
   }, []);
+
+  const updateSetting = useCallback(async (key: string, value: string) => {
+    // Optimistic update — apply CSS immediately
+    setSettings(prev => {
+      const updated = { ...prev, [key]: value };
+      applyCSSVariables(updated);
+      return updated;
+    });
+
+    // Persist to DB
+    const { error } = await supabase.from("app_settings").upsert(
+      { key, value_json: value, updated_at: new Date().toISOString() },
+      { onConflict: "key" }
+    );
+
+    if (error) {
+      console.error("Settings save error:", error);
+      // Rollback on failure
+      fetchSettings();
+    }
+  }, [fetchSettings]);
 
   useEffect(() => {
     fetchSettings();
@@ -214,12 +249,12 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   }, [fetchSettings]);
 
   return (
-    <SettingsContext.Provider value={settings}>
+    <SettingsContext.Provider value={{ settings, updateSetting }}>
       {children}
     </SettingsContext.Provider>
   );
 }
 
-export function useSettings(): SettingsMap {
+export function useSettings() {
   return useContext(SettingsContext);
 }

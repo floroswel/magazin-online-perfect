@@ -16,7 +16,7 @@ interface Props {
 export default function QuickViewModal({ productId, onClose }: Props) {
   const { addToCart } = useCart();
   const { format } = useCurrency();
-  const settings = useSettings();
+  const { settings } = useSettings();
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
