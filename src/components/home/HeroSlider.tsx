@@ -115,17 +115,27 @@ export default function HeroSlider() {
         </div>
 
         {/* Right panel */}
-        <div className="hidden md:flex w-[40%] items-center justify-center bg-white/5 relative"
-          style={{ background: "linear-gradient(135deg, hsl(217 100% 50%) 0%, hsl(217 100% 60%) 100%)" }}
+        <div className="hidden md:flex w-[40%] items-center justify-center relative overflow-hidden"
+          style={{ background: "linear-gradient(135deg, hsl(217 100% 50%) 0%, hsl(217 80% 65%) 100%)" }}
         >
+          {/* Decorative circles */}
+          <div className="absolute -top-10 -right-10 w-[200px] h-[200px] rounded-full bg-white/5" />
+          <div className="absolute bottom-10 left-5 w-[100px] h-[100px] rounded-full bg-white/5" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[260px] h-[260px] rounded-full border-2 border-white/10" />
           {slide.image_url ? (
             <img
               src={slide.image_url}
               alt={slide.title || "Hero"}
-              className="max-h-[380px] object-contain drop-shadow-2xl"
+              className="max-h-[380px] object-contain drop-shadow-2xl relative z-[1]"
             />
           ) : (
-            <span className="text-[120px]">🕯</span>
+            <div className="relative z-[1] flex flex-col items-center gap-4">
+              <span className="text-[100px] drop-shadow-lg animate-pulse">🕯</span>
+              <div className="text-center">
+                <p className="text-white/60 text-sm font-medium">Colecție Artizanală</p>
+                <p className="text-white text-lg font-bold">100% Ceară de Soia</p>
+              </div>
+            </div>
           )}
         </div>
       </div>

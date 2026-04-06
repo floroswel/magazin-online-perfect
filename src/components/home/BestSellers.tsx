@@ -89,7 +89,13 @@ export default function BestSellers() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        <div className={`grid gap-3 ${
+          products && products.length <= 2
+            ? "grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 max-w-2xl"
+            : products && products.length <= 4
+            ? "grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+            : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
+        }`}>
           {isLoading
             ? Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="space-y-2">

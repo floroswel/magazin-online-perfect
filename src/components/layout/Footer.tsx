@@ -98,19 +98,19 @@ export default function Footer() {
       </div>
 
       {/* Main footer */}
-      <div className="py-10 md:py-12" style={{ background: settings.footer_upper_bg || "#1A2332" }}>
+      <div className="py-10 md:py-12" style={{ background: settings.footer_upper_bg || "hsl(220 50% 12%)" }}>
         <div className="lumax-container grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             {settings.logo_url && settings.logo_visible !== "false" ? (
               <img src={settings.logo_url} alt={siteName} style={{ height: "36px", objectFit: "contain" }} className="mb-1" />
             ) : (
-              <h3 className="text-2xl font-black text-white mb-1">{siteName}</h3>
+              <h3 className="text-2xl font-black text-primary-foreground mb-1">{siteName}</h3>
             )}
-            <p className="text-sm text-gray-400 mb-3">{siteTagline}</p>
+            <p className="text-sm text-primary-foreground/60 mb-3">{siteTagline}</p>
             <div className="flex items-center gap-1 mb-4">
               <span className="text-lumax-yellow text-sm">★★★★★</span>
-              <span className="text-xs text-white">1000+ clienți mulțumiți</span>
+              <span className="text-xs text-primary-foreground/80">1000+ clienți mulțumiți</span>
             </div>
             <div className="flex gap-2">
               {displaySocials.map((s, idx) => (
@@ -119,7 +119,7 @@ export default function Footer() {
                   href={s.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-xs text-white font-bold hover:bg-primary transition-colors"
+                  className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center text-xs text-primary-foreground font-bold hover:bg-primary transition-colors"
                 >
                   {s.icon}
                 </a>
@@ -129,13 +129,13 @@ export default function Footer() {
 
           {/* Info links */}
           <div>
-            <h4 className="text-[11px] font-bold text-white uppercase tracking-widest mb-4">
+            <h4 className="text-[11px] font-bold text-primary-foreground uppercase tracking-widest mb-4">
               {settings.footer_col1_title || "Informații"}
             </h4>
             <ul className="space-y-1.5">
               {col1Links.map((l: any, idx: number) => (
                 <li key={`col1-${idx}`}>
-                  <Link to={l.to || l.url} className="text-[13px] text-gray-400 hover:text-white transition-colors">
+                  <Link to={l.to || l.url} className="text-[13px] text-primary-foreground/60 hover:text-primary-foreground transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -145,13 +145,13 @@ export default function Footer() {
 
           {/* Help links */}
           <div>
-            <h4 className="text-[11px] font-bold text-white uppercase tracking-widest mb-4">
+            <h4 className="text-[11px] font-bold text-primary-foreground uppercase tracking-widest mb-4">
               {settings.footer_col2_title || "Ajutor"}
             </h4>
             <ul className="space-y-1.5">
               {col2Links.map((l: any, idx: number) => (
                 <li key={`col2-${idx}`}>
-                  <Link to={l.to || l.url} className="text-[13px] text-gray-400 hover:text-white transition-colors">
+                  <Link to={l.to || l.url} className="text-[13px] text-primary-foreground/60 hover:text-primary-foreground transition-colors">
                     {l.label}
                   </Link>
                 </li>
@@ -161,10 +161,10 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="text-[11px] font-bold text-white uppercase tracking-widest mb-4">
+            <h4 className="text-[11px] font-bold text-primary-foreground uppercase tracking-widest mb-4">
               Contact
             </h4>
-            <div className="space-y-2 text-[13px] text-gray-400">
+            <div className="space-y-2 text-[13px] text-primary-foreground/60">
               <p>📞 {settings.contact_phone || content.header_topbar.phone || "0800-123-456"}</p>
               <p>✉️ {settings.contact_email || content.store_general.store_email}</p>
               <p>📍 {settings.contact_address || "București, România"}</p>
@@ -175,18 +175,17 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="py-3.5 border-t border-white/5" style={{ background: settings.footer_lower_bg || "#111" }}>
+      <div className="py-3.5 border-t border-primary-foreground/5" style={{ background: settings.footer_lower_bg || "hsl(220 50% 8%)" }}>
         <div className="lumax-container flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span className="text-xs text-gray-500">{copyrightText}</span>
+          <span className="text-xs text-muted-foreground">{copyrightText}</span>
           <div className="flex items-center gap-3">
-            {(settings.anpc_display === "widget" || settings.anpc_display === "ambele") && (
-              <img src="/images/eu-sol.png" alt="SOL" className="h-6 opacity-60" />
-            )}
-            {(settings.anpc_display === "link" || settings.anpc_display === "ambele" || !settings.anpc_display) && (
-              <img src="/images/eu-sol.png" alt="SOL" className="h-6 opacity-60" />
+            {(settings.anpc_display === "widget" || settings.anpc_display === "ambele" || settings.anpc_display === "link" || !settings.anpc_display) && (
+              <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer">
+                <img src="/images/eu-sol.png" alt="Soluționare Online a Litigiilor" className="h-6 opacity-60 hover:opacity-100 transition-opacity" />
+              </a>
             )}
           </div>
-          <span className="text-xs text-gray-500">Visa · Mastercard · Netopia</span>
+          <span className="text-xs text-muted-foreground">Visa · Mastercard · Netopia</span>
         </div>
       </div>
     </footer>
