@@ -66,7 +66,7 @@ interface Settings {
 const DEFAULT_SETTINGS: Settings = {
   enabled: true,
   show_on_pages: ["all"],
-  initial_delay_sec: 5,
+  initial_delay_sec: 15,
   display_duration_sec: 6,
   interval_between_sec: 4,
   cooldown_after_close_min: 5,
@@ -75,7 +75,7 @@ const DEFAULT_SETTINGS: Settings = {
   show_mobile: true,
   show_desktop: true,
   purchases_enabled: true,
-  purchases_source: "real",
+  purchases_source: "mixed",
   purchases_days_back: 30,
   name_format: "name_city",
   purchases_template: "{name} a cumpărat {product}",
