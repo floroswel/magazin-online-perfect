@@ -96,7 +96,9 @@ export default function Footer() {
         <div className="lumax-container grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            {settings.logo_url && settings.logo_visible !== "false" ? (
+            {!settings.site_name && !settings.logo_url ? (
+              <div style={{ width: "120px", height: "36px" }} className="mb-1" />
+            ) : settings.logo_url && settings.logo_visible !== "false" ? (
               <img src={settings.logo_url} alt={siteName} style={{ height: "36px", objectFit: "contain" }} className="mb-1" />
             ) : (
               <h3 className="text-2xl font-black text-primary-foreground mb-1">{siteName}</h3>
