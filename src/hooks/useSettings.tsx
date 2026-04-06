@@ -225,8 +225,6 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const updateSetting = useCallback(async (key: string, value: string) => {
-    console.log("updateSetting called:", key, value);
-
     // Optimistic update — apply CSS immediately
     setSettings(prev => {
       const updated = { ...prev, [key]: value };
@@ -234,25 +232,28 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       return updated;
     });
 
-    // Persist to DB
-    console.log("Saving to DB...");
-    const { data, error } = await supabase
+    // Try to store as proper JSON if it's valid JSON, otherwise store as string
+    let dbValue: any = value;
+    try {
+      const parsed = JSON.parse(value);
+      if (typeof parsed === "object" && parsed !== null) {
+        dbValue = parsed; // Store arrays/objects as proper JSON, not double-encoded strings
+      }
+    } catch {}
+
+    const { error } = await supabase
       .from("app_settings")
       .upsert(
-        { key, value_json: value, updated_at: new Date().toISOString() },
+        { key, value_json: dbValue, updated_at: new Date().toISOString() },
         { onConflict: "key" }
       )
       .select("key, value_json");
 
-    console.log("DB result:", { data, error });
-
     if (error) {
-      console.error("SAVE FAILED:", error.message, error.code);
+      console.error("Settings save failed:", error.message);
       fetchSettings();
       return false;
     }
-
-    console.log("Saved successfully!");
     return true;
   }, [fetchSettings]);
 

@@ -120,12 +120,16 @@ function MainHeader({ categories }: { categories: Category[] }) {
       <div className="lumax-container flex items-center gap-4 md:gap-5 h-[60px] md:h-[70px]">
         {/* Logo */}
         <Link to="/" className="flex-shrink-0 flex flex-col leading-none">
-          {settings.logo_url && settings.logo_visible !== "false" ? (
+          {!settings.site_name && !settings.logo_url ? (
+            <div style={{ width: "120px", height: "40px" }} />
+          ) : settings.logo_url && settings.logo_visible !== "false" ? (
             <img src={settings.logo_url} alt={siteName} style={{ height: "40px", objectFit: "contain" }} />
           ) : (
             <span className="text-xl md:text-2xl font-black tracking-tight text-primary">{siteName}</span>
           )}
-          <span className="text-[9px] md:text-[10px] text-muted-foreground tracking-widest uppercase">{siteTagline}</span>
+          {(settings.site_name || settings.logo_url) && (
+            <span className="text-[9px] md:text-[10px] text-muted-foreground tracking-widest uppercase">{siteTagline}</span>
+          )}
         </Link>
 
         {/* Search bar */}
