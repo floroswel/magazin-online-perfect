@@ -80,8 +80,18 @@ function MainHeader({ categories }: { categories: Category[] }) {
   const cartRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
 
-  const siteName = settings.site_name || "LUMAX";
-  const siteTagline = settings.site_tagline || "magazin de încredere";
+  const siteName = settings.header_store_name || settings.site_name || "";
+  const siteTagline = settings.header_tagline || settings.site_tagline || "";
+
+  useEffect(() => {
+    if (settings.header_store_name) {
+      document.title = settings.header_store_name;
+    }
+    if (settings.header_favicon_url) {
+      const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+      if (link) link.href = settings.header_favicon_url;
+    }
+  }, [settings.header_store_name, settings.header_favicon_url]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
