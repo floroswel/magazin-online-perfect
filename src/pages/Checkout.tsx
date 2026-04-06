@@ -134,8 +134,61 @@ export default function Checkout() {
       }));
       await supabase.from("order_items").insert(orderItems as any);
 
+      // Send order confirmation email to customer
       supabase.functions.invoke("send-email", {
-        body: { type: "order_confirmation", to: form.email, data: { orderId: order.id, orderNumber: order.order_number, total: finalTotal, name: form.firstName } },
+        body: {
+          type: "order_placed",
+          to: form.email,
+          data: {
+            orderId: order.id,
+            orderNumber: order.order_number,
+            customerName: `${form.firstName} ${form.lastName}`,
+            total: finalTotal,
+            paymentMethod: form.paymentMethod,
+            items: items.map(item => ({
+              name: item.product.name,
+              quantity: item.quantity,
+              price: item.product.price,
+              image_url: item.product.image_url,
+            })),
+            shippingAddress: {
+              fullName: `${form.firstName} ${form.lastName}`,
+              phone: form.phone,
+              address: form.street,
+              city: form.city,
+              county: form.county,
+              postalCode: form.postalCode,
+            },
+          },
+        },
+      }).catch(console.error);
+
+      // Notify admin about new order
+      supabase.functions.invoke("send-email", {
+        body: {
+          type: "admin_new_order",
+          to: settings.contact_email || "admin@mamalucica.ro",
+          data: {
+            orderId: order.id,
+            orderNumber: order.order_number,
+            customerName: `${form.firstName} ${form.lastName}`,
+            email: form.email,
+            total: finalTotal,
+            paymentMethod: form.paymentMethod,
+            items: items.map(item => ({
+              name: item.product.name,
+              quantity: item.quantity,
+              price: item.product.price,
+            })),
+            shippingAddress: {
+              fullName: `${form.firstName} ${form.lastName}`,
+              phone: form.phone,
+              address: form.street,
+              city: form.city,
+              county: form.county,
+            },
+          },
+        },
       }).catch(console.error);
 
       await clearCart();
