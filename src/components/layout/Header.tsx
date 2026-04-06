@@ -38,13 +38,10 @@ function TopInfoBar() {
   const { header_topbar } = useEditableContent();
   const { settings: s } = useSettings();
 
-  // If ticker1 is explicitly hidden, fall back to static bar
-  const ticker1Enabled = s.ticker1_show !== "false";
-  const ticker1Text = s.ticker1_text || header_topbar.shipping_text || "Livrare gratuită peste 200 lei";
+  const ticker1Text = s.ticker1_text?.trim();
   const speed = parseInt(s.ticker1_speed || "30");
   const dir = s.ticker1_direction === "right" ? "reverse" : "normal";
 
-  // Social proof in ticker1?
   const [socialMessages, setSocialMessages] = useState<string[]>([]);
   useEffect(() => {
     if (s.ticker_social_proof_show === "true" && s.ticker_social_proof_position === "ticker1") {
@@ -53,9 +50,8 @@ function TopInfoBar() {
     }
   }, [s.ticker_social_proof_show, s.ticker_social_proof_position, s.ticker_social_proof_limit]);
 
-  if (!ticker1Enabled) return null;
+  if (s.ticker1_show !== "true" || !ticker1Text) return null;
 
-  // Build display text
   let displayText = ticker1Text;
   if (socialMessages.length > 0) {
     displayText = [ticker1Text, ...socialMessages.map(m => "🛒 " + m)].join("  ·  ");
