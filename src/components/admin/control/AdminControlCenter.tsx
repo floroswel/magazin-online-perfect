@@ -15,16 +15,14 @@ export default function AdminControlCenter() {
   const [importing, setImporting] = useState(false);
 
   const handleExport = async () => {
-    const [vis, theme, banners, layout] = await Promise.all([
+    const [vis, banners, layout] = await Promise.all([
       (supabase as any).from("site_visibility_settings").select("*"),
-      (supabase as any).from("site_theme_settings").select("*"),
       (supabase as any).from("site_banners").select("*"),
       (supabase as any).from("site_layout_settings").select("*"),
     ]);
     const backup = {
       exported_at: new Date().toISOString(),
       visibility: vis.data,
-      theme: theme.data,
       banners: banners.data,
       layout: layout.data,
     };
@@ -54,13 +52,6 @@ export default function AdminControlCenter() {
             await (supabase as any)
               .from("site_visibility_settings")
               .upsert({ ...row, updated_at: new Date().toISOString() }, { onConflict: "element_key" });
-          }
-        }
-        if (data.theme) {
-          for (const row of data.theme) {
-            await (supabase as any)
-              .from("site_theme_settings")
-              .upsert({ ...row, updated_at: new Date().toISOString() }, { onConflict: "setting_key" });
           }
         }
         if (data.layout) {
