@@ -34,6 +34,7 @@ import Affiliates from "./pages/Affiliates";
 import RecoverCart from "./pages/RecoverCart";
 import Unsubscribe from "./pages/Unsubscribe";
 import Personalizare from "./pages/Personalizare";
+import Contact from "./pages/Contact";
 
 import CorporateGifting from "./pages/CorporateGifting";
 import QuizParfum from "./pages/QuizParfum";
@@ -133,7 +134,7 @@ const App = () => (
               <Route path="/colectii-sezoniere" element={<ErrorBoundary><SeasonalCollections /></ErrorBoundary>} />
               <Route path="/virtual-try-on" element={<ErrorBoundary><VirtualTryOn /></ErrorBoundary>} />
               <Route path="/post-delivery/:token" element={<ErrorBoundary><PostDelivery /></ErrorBoundary>} />
-              <Route path="/contact" element={<ErrorBoundary><CmsPage overrideSlug="contact" /></ErrorBoundary>} />
+              <Route path="/contact" element={<ErrorBoundary><Contact /></ErrorBoundary>} />
               <Route path="/politica-de-confidentialitate" element={<ErrorBoundary><CmsPage overrideSlug="politica-de-confidentialitate" /></ErrorBoundary>} />
               <Route path="/termeni-si-conditii" element={<ErrorBoundary><CmsPage overrideSlug="termeni-si-conditii" /></ErrorBoundary>} />
               <Route path="/politica-de-cookies" element={<ErrorBoundary><CmsPage overrideSlug="politica-cookie" /></ErrorBoundary>} />

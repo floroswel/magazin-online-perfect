@@ -159,6 +159,7 @@ const menuSections: MenuSection[] = [
         children: [
           { label: "Blog", path: "/admin/content/blog", dividerBefore: "Publicare" },
           { label: "Pagini CMS", path: "/admin/content/pages" },
+          { label: "Contact", path: "/admin/settings/contact" },
           { label: "Pagini Legale", path: "/admin/content/legal" },
           { label: "Landing Pages", path: "/admin/content/landing" },
           { label: "Page Builder", path: "/admin/content/page-builder" },
@@ -208,6 +209,7 @@ const menuSections: MenuSection[] = [
           { label: "Culori & Fonturi", path: "/admin/settings/theme#colors" },
           { label: "Favicon & Logo", path: "/admin/settings/theme#branding" },
           { label: "Editor Conținut Site", path: "/admin/settings/content-editor" },
+          { label: "Contact", path: "/admin/settings/contact" },
           { label: "Layout Homepage", path: "/admin/content/homepage", dividerBefore: "Pagini & Secțiuni" },
           { label: "Hero Slider", path: "/admin/content/hero-slides" },
           { label: "Page Builder", path: "/admin/content/page-builder" },
