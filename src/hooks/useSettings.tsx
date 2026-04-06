@@ -21,9 +21,14 @@ const SETTINGS_KEYS = [
   "company_iban", "company_bank", "company_name",
   // Branding
   "logo_url", "logo_visible", "site_name", "site_tagline", "favicon_url",
-  // Social
+  // Social (legacy)
   "social_facebook", "social_instagram", "social_tiktok", "social_youtube", "social_pinterest",
-  // Footer
+  // Footer (new footer_* keys)
+  "footer_store_name", "footer_tagline", "footer_email", "footer_phone",
+  "footer_address", "footer_schedule", "footer_facebook_url", "footer_tiktok_url",
+  "footer_instagram_url", "footer_copyright_name", "footer_reviews_count",
+  "footer_show_payment_icons", "footer_payment_methods",
+  // Footer (legacy)
   "footer_col1_title", "footer_col1_links", "footer_col2_title", "footer_col2_links",
   "contact_phone", "contact_email", "contact_address", "contact_schedule",
   "copyright_text", "anpc_display", "footer_upper_bg", "footer_lower_bg",
