@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useSettings } from "@/hooks/useSettings";
 import { useSettings } from "@/hooks/useSettings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -178,6 +178,9 @@ export default function AdminThemeEditor() {
           <h1 className="text-2xl font-bold text-foreground">Editor Temă</h1>
           <p className="text-sm text-muted-foreground">Modificările se aplică instant pe site</p>
         </div>
+        {saveStatus && (
+          <span className="text-sm font-medium text-green-600 animate-in fade-in">{saveStatus}</span>
+        )}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-6">
