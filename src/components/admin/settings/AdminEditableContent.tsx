@@ -195,6 +195,8 @@ export default function AdminEditableContent() {
             </div>
           </Section>
 
+          <NavLinksEditor />
+
           <Section title="Categorii Mobile" icon={Layers}>
             <div className="space-y-2">
               {content.mobile_categories.map((cat, i) => (
