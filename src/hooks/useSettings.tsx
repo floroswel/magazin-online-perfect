@@ -29,11 +29,10 @@ const SETTINGS_KEYS = [
   "header_main_bg_color", "header_navbar_bg_color", "header_ticker_bg_color", "header_ticker_text_color",
   "header_ticker_messages", "header_show_ticker", "header_phone_display", "header_topbar_links",
   // Footer (new footer_* keys)
-  "footer_store_name", "footer_tagline", "footer_description", "footer_email", "footer_phone",
+  "footer_store_name", "footer_tagline", "footer_email", "footer_phone",
   "footer_address", "footer_schedule", "footer_facebook_url", "footer_tiktok_url",
   "footer_instagram_url", "footer_copyright_name", "footer_reviews_count",
   "footer_show_payment_icons", "footer_payment_methods",
-  "footer_products_links", "footer_info_links", "footer_show_anpc", "footer_made_in_romania",
   // Footer (legacy)
   "footer_col1_title", "footer_col1_links", "footer_col2_title", "footer_col2_links",
   "contact_phone", "contact_email", "contact_address", "contact_schedule",
