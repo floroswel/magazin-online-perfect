@@ -11,7 +11,7 @@ import Newsletter from "@/components/home/Newsletter";
 import { useSettings } from "@/hooks/useSettings";
 
 export default function Index() {
-  const settings = useSettings();
+  const { settings } = useSettings();
 
   return (
     <Layout>

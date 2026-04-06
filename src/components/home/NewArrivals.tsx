@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSettings } from "@/hooks/useSettings";
 
 export default function NewArrivals() {
-  const settings = useSettings();
+  const { settings } = useSettings();
   const queryClient = useQueryClient();
 
   const { data: products, isLoading } = useQuery({

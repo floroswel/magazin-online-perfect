@@ -14,7 +14,7 @@ const DEFAULT_BADGES: TrustBadge[] = [
 ];
 
 export default function TrustStrip() {
-  const settings = useSettings();
+  const { settings } = useSettings();
 
   let badges: TrustBadge[] = DEFAULT_BADGES;
   try {
