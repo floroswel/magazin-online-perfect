@@ -117,12 +117,21 @@ export default function Contact() {
                   {s.contact_cod_fiscal && <p>Cod Fiscal: <strong>{s.contact_cod_fiscal}</strong></p>}
                   {s.contact_nr_reg_com && <p>Nr. Reg. Com.: <strong>{s.contact_nr_reg_com}</strong></p>}
                   {s.contact_sediu_social && <p>Sediu Social: <strong>{s.contact_sediu_social}</strong></p>}
-                  {s.contact_show_cont_bancar === "true" && s.contact_cont_bancar && (
-                    <p>Cont Bancar: <strong>{s.contact_cont_bancar}</strong></p>
-                  )}
-                  {s.contact_show_banca === "true" && s.contact_banca && (
-                    <p>Bancă: <strong>{s.contact_banca}</strong></p>
-                  )}
+                  {s.contact_show_cont_bancar === "true" && (() => {
+                    let accounts: { iban: string; bank: string }[] = [];
+                    try { accounts = JSON.parse(s.contact_bank_accounts || "[]"); } catch { accounts = []; }
+                    if (!Array.isArray(accounts)) accounts = [];
+                    // Fallback to old single fields
+                    if (accounts.length === 0 && s.contact_cont_bancar) {
+                      accounts = [{ iban: s.contact_cont_bancar, bank: s.contact_banca || "" }];
+                    }
+                    return accounts.filter(a => a.iban).map((acc, i) => (
+                      <div key={i}>
+                        <p>Cont Bancar: <strong>{acc.iban}</strong></p>
+                        {acc.bank && <p>Bancă: <strong>{acc.bank}</strong></p>}
+                      </div>
+                    ));
+                  })()}
                   {s.contact_capital_social && <p>Capital Social: <strong>{s.contact_capital_social}</strong></p>}
                 </div>
               </div>

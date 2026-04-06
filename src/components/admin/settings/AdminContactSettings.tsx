@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import { useSettings } from "@/hooks/useSettings";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +9,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Plus, Trash2, Upload } from "lucide-react";
+
+interface BankAccount {
+  iban: string;
+  bank: string;
+}
 
 function Toggle({ label, k, s, save }: { label: string; k: string; s: Record<string, string>; save: (k: string, v: string) => void }) {
   return (
@@ -82,14 +87,33 @@ export default function AdminContactSettings() {
           <Field label="Cod Fiscal" k="contact_cod_fiscal" s={s} save={save} />
           <Field label="Nr. Reg. Com." k="contact_nr_reg_com" s={s} save={save} />
           <Field label="Sediu Social" k="contact_sediu_social" s={s} save={save} />
-          <div className="grid grid-cols-2 gap-4">
-            <Field label="Cont Bancar" k="contact_cont_bancar" s={s} save={save} />
-            <Toggle label="Afișează cont" k="contact_show_cont_bancar" s={s} save={save} />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <Field label="Bancă" k="contact_banca" s={s} save={save} />
-            <Toggle label="Afișează banca" k="contact_show_banca" s={s} save={save} />
-          </div>
+          <Toggle label="Afișează conturi bancare" k="contact_show_cont_bancar" s={s} save={save} />
+          {(() => {
+            let accounts: BankAccount[] = [];
+            try { accounts = JSON.parse(s.contact_bank_accounts || "[]"); } catch { accounts = []; }
+            if (!Array.isArray(accounts)) accounts = [];
+            // Migrate old single account
+            if (accounts.length === 0 && s.contact_cont_bancar) {
+              accounts = [{ iban: s.contact_cont_bancar, bank: s.contact_banca || "" }];
+            }
+            const setAccounts = (accs: BankAccount[]) => save("contact_bank_accounts", JSON.stringify(accs));
+            return (
+              <div className="space-y-3">
+                {accounts.map((acc, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Input placeholder="IBAN" value={acc.iban} onChange={e => { const arr = [...accounts]; arr[i] = { ...arr[i], iban: e.target.value }; setAccounts(arr); }} className="flex-1" />
+                    <Input placeholder="Numele băncii" value={acc.bank} onChange={e => { const arr = [...accounts]; arr[i] = { ...arr[i], bank: e.target.value }; setAccounts(arr); }} className="flex-1" />
+                    <Button variant="ghost" size="icon" onClick={() => setAccounts(accounts.filter((_, j) => j !== i))}>
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
+                ))}
+                <Button variant="outline" size="sm" onClick={() => setAccounts([...accounts, { iban: "", bank: "" }])}>
+                  <Plus className="h-4 w-4 mr-1" /> Adaugă cont bancar
+                </Button>
+              </div>
+            );
+          })()}
           <Field label="Capital Social" k="contact_capital_social" s={s} save={save} />
         </CardContent>
       </Card>
