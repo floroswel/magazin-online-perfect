@@ -23,6 +23,11 @@ const SETTINGS_KEYS = [
   "logo_url", "logo_visible", "site_name", "site_tagline", "favicon_url",
   // Social (legacy)
   "social_facebook", "social_instagram", "social_tiktok", "social_youtube", "social_pinterest",
+  // Header (new header_* keys)
+  "header_store_name", "header_tagline", "header_logo_url", "header_favicon_url",
+  "header_show_topbar", "header_topbar_text", "header_topbar_bg_color", "header_topbar_text_color",
+  "header_main_bg_color", "header_navbar_bg_color", "header_ticker_bg_color", "header_ticker_text_color",
+  "header_ticker_messages", "header_show_ticker", "header_phone_display", "header_topbar_links",
   // Footer (new footer_* keys)
   "footer_store_name", "footer_tagline", "footer_email", "footer_phone",
   "footer_address", "footer_schedule", "footer_facebook_url", "footer_tiktok_url",
