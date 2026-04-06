@@ -37,6 +37,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="min-h-screen flex flex-col">
         <SeoHead />
         <SiteAlert />
+        <Ticker1Bar />
+        <Ticker2Bar />
         <AnnouncementBar />
         <Header />
         <main className="flex-1 pb-16 md:pb-0">{children}</main>
