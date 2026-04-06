@@ -28,19 +28,35 @@ const SETTINGS_KEYS = [
   "header_show_topbar", "header_topbar_text", "header_topbar_bg_color", "header_topbar_text_color",
   "header_main_bg_color", "header_navbar_bg_color", "header_ticker_bg_color", "header_ticker_text_color",
   "header_ticker_messages", "header_show_ticker", "header_phone_display", "header_topbar_links",
-  // Footer (new footer_* keys)
-  "footer_store_name", "footer_tagline", "footer_email", "footer_phone",
-  "footer_address", "footer_schedule", "footer_facebook_url", "footer_tiktok_url",
-  "footer_instagram_url", "footer_copyright_name", "footer_reviews_count",
-  "footer_show_payment_icons", "footer_payment_methods",
-  // Footer legal / company
-  "footer_company_name", "footer_cui", "footer_reg_com", "footer_capital_social",
-  "footer_anpc_show", "footer_anpc_url", "footer_anpc_logo_url",
-  "footer_sal_show", "footer_sal_url",
-  "footer_sol_show", "footer_sol_url",
+  // Footer identity & display
+  "footer_store_name", "footer_tagline", "footer_logo_url", "footer_show",
+  // Footer legal
+  "footer_company_name", "footer_cui", "footer_reg_com", "footer_capital_social", "footer_show_legal_data",
+  // Footer contact
+  "footer_email", "footer_phone", "footer_address", "footer_schedule",
+  "footer_show_email", "footer_show_phone", "footer_show_address", "footer_show_schedule",
+  // Footer social
+  "footer_facebook_url", "footer_instagram_url", "footer_tiktok_url", "footer_youtube_url", "footer_pinterest_url",
+  // Footer columns
+  "footer_show_products_col", "footer_products_title", "footer_products_links",
+  "footer_show_info_col", "footer_info_title", "footer_info_links",
+  "footer_show_contact_col", "footer_contact_title",
+  // Footer ANPC / SAL / SOL
+  "footer_anpc_show", "footer_anpc_url", "footer_anpc_logo_url", "footer_anpc_text",
+  "footer_sal_show", "footer_sal_url", "footer_sal_text",
+  "footer_sol_show", "footer_sol_url", "footer_sol_text",
+  // Footer partners
   "footer_partner_emag_show", "footer_partner_emag_url", "footer_partner_emag_logo",
   "footer_partner_compari_show", "footer_partner_compari_url", "footer_partner_compari_logo",
   "footer_partner_price_show", "footer_partner_price_url", "footer_partner_price_logo",
+  // Footer payment & reviews
+  "footer_show_payment_icons", "footer_payment_methods",
+  "footer_show_reviews", "footer_reviews_count", "footer_reviews_text",
+  // Footer copyright
+  "footer_copyright_name", "footer_made_in_romania", "footer_made_text",
+  // Footer colors
+  "footer_bg_color", "footer_text_color", "footer_title_color", "footer_link_color",
+  "footer_link_hover_color", "footer_border_color", "footer_bottom_bg_color",
   // Footer (legacy)
   "footer_col1_title", "footer_col1_links", "footer_col2_title", "footer_col2_links",
   "contact_phone", "contact_email", "contact_address", "contact_schedule",
