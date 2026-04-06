@@ -56,9 +56,9 @@ export default function Contact() {
               </div>
 
               {sent ? (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
-                  <p className="text-green-700 font-semibold">✅ Mesajul a fost trimis!</p>
-                  <p className="text-green-600 text-sm mt-1">Te contactăm în cel mult 1 zi lucrătoare.</p>
+                <div className="bg-secondary/30 border border-primary/20 rounded-lg p-6 text-center">
+                  <p className="text-primary font-semibold">✅ Mesajul a fost trimis!</p>
+                  <p className="text-muted-foreground text-sm mt-1">Te contactăm în cel mult 1 zi lucrătoare.</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
