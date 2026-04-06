@@ -20,8 +20,6 @@ const DEFAULT_LINKS_COL2 = [
 export default function Footer() {
   const content = useEditableContent();
   const settings = useSettings();
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const siteName = settings.site_name || "LUMAX";
   const siteTagline = settings.site_tagline || "Magazinul tău de încredere din România";
@@ -53,16 +51,6 @@ export default function Footer() {
     { icon: "TT", url: "#" },
     { icon: "YT", url: "#" },
   ];
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setLoading(true);
-    await supabase.from("subscribers" as any).insert({ email });
-    setLoading(false);
-    setEmail("");
-    toast.success("Te-ai abonat cu succes!");
-  };
 
   const copyrightText = settings.copyright_text || `© ${new Date().getFullYear()} ${siteName} SRL. Toate drepturile rezervate.`;
 
