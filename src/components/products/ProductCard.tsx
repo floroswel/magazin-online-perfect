@@ -1,7 +1,9 @@
-import { memo, useState, createContext, useContext } from "react";
+import { memo, useState, useEffect, createContext, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Heart, Eye, ShoppingCart, Check } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 // Context for quick view
 const QuickViewContext = createContext<{ open: (id: string) => void }>({ open: () => {} });
@@ -22,6 +24,7 @@ interface Props {
 
 function ProductCardInner({ product, eager = false }: Props) {
   const { addToCart } = useCart();
+  const { user } = useAuth();
   const { format } = useCurrency();
   const { getProductDiscount } = usePricingRules();
   const { getProductPromotion } = usePromotions();
@@ -35,6 +38,13 @@ function ProductCardInner({ product, eager = false }: Props) {
   const lowStockThreshold = parseInt(settings.low_stock_threshold || "5");
   const siteName = settings.site_name || "LUMAX";
 
+  // Check if product is already in favorites
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("favorites").select("id").eq("user_id", user.id).eq("product_id", product.id).maybeSingle()
+      .then(({ data }) => { if (data) setLiked(true); });
+  }, [user, product.id]);
+
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -45,11 +55,22 @@ function ProductCardInner({ product, eager = false }: Props) {
     setTimeout(() => setAddedToCart(false), 1500);
   };
 
-  const handleWishlist = (e: React.MouseEvent) => {
+  const handleWishlist = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setLiked(!liked);
-    toast.success(liked ? "Eliminat din favorite" : "Adăugat la favorite");
+    if (!user) {
+      toast.error("Autentifică-te pentru a salva la favorite");
+      return;
+    }
+    if (liked) {
+      await supabase.from("favorites").delete().eq("user_id", user.id).eq("product_id", product.id);
+      setLiked(false);
+      toast.success("Eliminat din favorite");
+    } else {
+      await supabase.from("favorites").insert({ user_id: user.id, product_id: product.id });
+      setLiked(true);
+      toast.success("Adăugat la favorite");
+    }
   };
 
   const pricingDiscount = getProductDiscount(product);

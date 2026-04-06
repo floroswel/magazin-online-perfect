@@ -420,7 +420,7 @@ function NavBar({ categories }: { categories: Category[] }) {
   })();
 
   return (
-    <div className="bg-primary sticky top-0 z-[100]" style={{ boxShadow: "0 2px 4px rgba(0,102,255,0.3)", background: settings.nav_bar_color || undefined }}>
+    <div className="bg-primary sticky top-0 z-[100]" id="lumax-navbar" style={{ boxShadow: "0 2px 4px rgba(0,0,0,0.15)", background: settings.nav_bar_color || undefined }}>
       <div className="lumax-container flex items-center h-11">
         <div
           ref={megaRef}
