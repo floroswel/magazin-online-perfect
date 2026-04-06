@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect } from "react";
+import { useSettings } from "@/hooks/useSettings";
 
 const ICONS: Record<string, string> = {
   lumanari: "🕯", recipiente: "⬡", cadouri: "🎁", personalizate: "✨",
@@ -11,6 +12,7 @@ const ICONS: Record<string, string> = {
 
 export default function CategoryGrid() {
   const queryClient = useQueryClient();
+  const { settings } = useSettings();
 
   const { data: categories, isLoading } = useQuery({
     queryKey: ["categories-grid"],
@@ -41,7 +43,7 @@ export default function CategoryGrid() {
     <section className="bg-card py-6">
       <div className="lumax-container">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="section-title mb-0">🗂 Categoriile Noastre</h2>
+          <h2 className="section-title mb-0">{settings.categories_title || "🗂 Categoriile Noastre"}</h2>
           <Link to="/catalog" className="text-primary text-[13px] font-medium hover:underline">
             Vezi toate →
           </Link>

@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { useCurrency } from "@/hooks/useCurrency";
+import { useSettings } from "@/hooks/useSettings";
 
 function useCountdownToMidnight() {
   const [time, setTime] = useState("");
@@ -28,6 +29,7 @@ export default function FlashDealsBar() {
   const queryClient = useQueryClient();
   const countdown = useCountdownToMidnight();
   const { format } = useCurrency();
+  const { settings } = useSettings();
 
   useEffect(() => {
     const channel = supabase
@@ -68,7 +70,7 @@ export default function FlashDealsBar() {
       <div className="lumax-container flex items-center h-[60px] gap-4">
         {/* Left label */}
         <div className="flex-shrink-0 flex items-center gap-3 pr-4 border-r-2 border-destructive">
-          <span className="text-destructive text-[13px] font-extrabold tracking-wide">⚡ OFERTE FLASH</span>
+          <span className="text-destructive text-[13px] font-extrabold tracking-wide">{settings.flash_deals_title || "⚡ OFERTE FLASH"}</span>
           <span className="font-mono text-xl font-extrabold text-foreground">{countdown}</span>
         </div>
 

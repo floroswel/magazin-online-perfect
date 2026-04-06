@@ -50,16 +50,16 @@ function Section({ title, icon: Icon, children, defaultOpen = false }: {
   );
 }
 
-const SECTION_TOGGLES = [
+const SECTION_TOGGLES: { key: string; label: string; desc: string; titleKey?: string; titlePlaceholder?: string; subtitleKey?: string; subtitlePlaceholder?: string }[] = [
   { key: "show_hero", label: "Hero Slider", desc: "Slideshow-ul principal din partea de sus" },
-  { key: "show_flash_deals", label: "Flash Deals", desc: "Bara cu oferte cu timp limitat" },
-  { key: "show_categories", label: "Categorii", desc: "Grid-ul de categorii pe homepage" },
+  { key: "show_flash_deals", label: "Flash Deals", desc: "Bara cu oferte cu timp limitat", titleKey: "flash_deals_title", titlePlaceholder: "⚡ Oferte Flash" },
+  { key: "show_categories", label: "Categorii", desc: "Grid-ul de categorii pe homepage", titleKey: "categories_title", titlePlaceholder: "🗂 Categoriile Noastre" },
   { key: "show_promo_banners", label: "Bannere Promo", desc: "Bannerele promoționale" },
-  { key: "show_featured", label: "Bestsellers", desc: "Secțiunea produse populare" },
+  { key: "show_featured", label: "Bestsellers", desc: "Secțiunea produse populare", titleKey: "bestsellers_title", titlePlaceholder: "⭐ Cele Mai Vândute" },
   { key: "show_trust", label: "Trust Strip", desc: "Bara cu badge-uri de încredere" },
-  { key: "show_new_arrivals", label: "Noutăți", desc: "Secțiunea produse noi" },
+  { key: "show_new_arrivals", label: "Noutăți", desc: "Secțiunea produse noi", titleKey: "new_arrivals_title", titlePlaceholder: "🆕 Noutăți în Magazin" },
   { key: "show_recently_viewed", label: "Văzute Recent", desc: "Produse vizualizate recent" },
-  { key: "show_newsletter", label: "Newsletter", desc: "Secțiunea de abonare newsletter" },
+  { key: "show_newsletter", label: "Newsletter", desc: "Secțiunea de abonare newsletter", titleKey: "newsletter_title", titlePlaceholder: "Abonează-te la newsletter", subtitleKey: "newsletter_subtitle", subtitlePlaceholder: "Primești 10% reducere la prima comandă" },
   { key: "show_social_proof", label: "Social Proof", desc: "Popup-uri de social proof" },
 ];
 
@@ -271,18 +271,43 @@ export default function AdminEditableContent() {
 
         {/* ═══ SECȚIUNI HOMEPAGE ═══ */}
         <TabsContent value="sections" className="space-y-3 mt-4">
-          <Section title="Vizibilitate Secțiuni Homepage" icon={ToggleLeft} defaultOpen>
-            <div className="space-y-3">
-              {SECTION_TOGGLES.map(({ key, label, desc }) => (
-                <div key={key} className="flex items-center justify-between py-2 border-b border-border last:border-b-0">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{label}</p>
-                    <p className="text-xs text-muted-foreground">{desc}</p>
+          <Section title="Vizibilitate & Titluri Secțiuni Homepage" icon={ToggleLeft} defaultOpen>
+            <div className="space-y-1">
+              {SECTION_TOGGLES.map(({ key, label, desc, titleKey, titlePlaceholder, subtitleKey, subtitlePlaceholder }) => (
+                <div key={key} className="py-3 border-b border-border last:border-b-0">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{label}</p>
+                      <p className="text-xs text-muted-foreground">{desc}</p>
+                    </div>
+                    <Switch
+                      checked={settings[key] !== "false"}
+                      onCheckedChange={(checked) => {
+                        console.log("Toggle:", key, checked);
+                        updateSetting(key, checked ? "true" : "false");
+                      }}
+                    />
                   </div>
-                  <Switch
-                    checked={settings[key] !== "false"}
-                    onCheckedChange={(checked) => updateSetting(key, checked ? "true" : "false")}
-                  />
+                  {titleKey && (
+                    <div className="mt-2 space-y-2">
+                      <SectionTitleField
+                        label="Titlu secțiune"
+                        settingKey={titleKey}
+                        placeholder={titlePlaceholder || ""}
+                        settings={settings}
+                        updateSetting={updateSetting}
+                      />
+                      {subtitleKey && (
+                        <SectionTitleField
+                          label="Subtitlu"
+                          settingKey={subtitleKey}
+                          placeholder={subtitlePlaceholder || ""}
+                          settings={settings}
+                          updateSetting={updateSetting}
+                        />
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -410,6 +435,37 @@ function ContactField({ label, desc, settingKey, settings, updateSetting, placeh
           onBlur={handleSave}
           placeholder={placeholder}
           className="mt-1.5 h-8 text-sm"
+        />
+      </div>
+      {saved && <span className="text-xs text-green-600 shrink-0">✅</span>}
+    </div>
+  );
+}
+
+function SectionTitleField({ label, settingKey, placeholder, settings, updateSetting }: {
+  label: string; settingKey: string; placeholder: string;
+  settings: Record<string, string>; updateSetting: (key: string, value: string) => Promise<boolean>;
+}) {
+  const [local, setLocal] = useState(settings[settingKey] || "");
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => { setLocal(settings[settingKey] || ""); }, [settings[settingKey]]);
+
+  const handleSave = async () => {
+    const ok = await updateSetting(settingKey, local);
+    if (ok) { setSaved(true); setTimeout(() => setSaved(false), 2000); }
+  };
+
+  return (
+    <div className="flex items-center gap-2">
+      <div className="flex-1">
+        <Label className="text-xs text-muted-foreground">{label}</Label>
+        <Input
+          value={local}
+          onChange={e => setLocal(e.target.value)}
+          onBlur={handleSave}
+          placeholder={placeholder}
+          className="h-8 text-sm"
         />
       </div>
       {saved && <span className="text-xs text-green-600 shrink-0">✅</span>}
