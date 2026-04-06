@@ -53,8 +53,14 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         schema: "public",
         table: "app_settings",
       }, (payload: any) => {
-        if (SETTINGS_KEYS.includes(payload.new?.key)) {
-          fetchSettings();
+        const newRow = payload.new;
+        if (newRow?.key && SETTINGS_KEYS.includes(newRow.key)) {
+          // Incremental update instead of full refetch
+          setSettings(prev => {
+            const val = newRow.value_json;
+            const parsed = typeof val === "string" ? val : JSON.stringify(val);
+            return { ...prev, [newRow.key]: parsed };
+          });
         }
       })
       .subscribe();
