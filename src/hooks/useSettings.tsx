@@ -35,6 +35,7 @@ const SETTINGS_KEYS = [
   // Misc
   "low_stock_threshold", "nav_bar_color", "header_bg",
   "bestsellers_title", "new_arrivals_title",
+  "flash_deals_title", "categories_title",
   "newsletter_title", "newsletter_subtitle", "newsletter_bg",
   "delivery_time", "return_days", "delivery_description",
   "reviews_enabled", "catalog_items_per_page", "catalog_default_sort",
