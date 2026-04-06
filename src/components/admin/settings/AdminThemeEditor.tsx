@@ -1,468 +1,359 @@
-import { useState, useEffect, useCallback, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useSettings } from "@/hooks/useSettings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Save, Eye, RotateCcw, Paintbrush, Type, Square, Layout, Code } from "lucide-react";
-// Local ThemeSettings type for the advanced admin editor (writes to app_settings)
-interface ThemeSettings {
-  colors: {
-    primary: string; primaryForeground: string; secondary: string; secondaryForeground: string;
-    background: string; foreground: string; card: string; muted: string; mutedForeground: string;
-    accent: string; accentForeground: string; destructive: string; border: string;
-  };
-  typography: {
-    fontFamily: string; fontFamilyHeadings: string; baseFontSize: number;
-    h1Size: number; h2Size: number; h3Size: number;
-    h1Weight: string; h2Weight: string; h3Weight: string;
-    bodyWeight: string; lineHeight: number;
-  };
-  buttons: {
-    borderRadius: number; paddingX: number; paddingY: number; fontWeight: string;
-    textTransform: "none" | "uppercase" | "capitalize"; hoverEffect: "darken" | "lighten" | "shadow" | "scale";
-  };
-  layout: {
-    containerMaxWidth: number; sectionSpacing: number; cardBorderRadius: number;
-    headerStyle: "gradient" | "solid" | "transparent";
-  };
-  customCss: string;
-  isPublished: boolean;
-}
+import { Palette, Type, Square, Layout, Eye, Loader2, Code, Monitor } from "lucide-react";
 
 const GOOGLE_FONTS = [
-  "Inter", "Roboto", "Open Sans", "Montserrat", "Lato", "Poppins", "Nunito", "Raleway",
-  "Playfair Display", "Merriweather", "Source Sans 3", "DM Sans", "Outfit", "Manrope",
+  "Inter", "Roboto", "Open Sans", "Montserrat", "Lato", "Poppins",
+  "Raleway", "Playfair Display", "Merriweather", "Nunito", "DM Sans",
+  "Outfit", "Manrope", "Source Sans 3",
 ];
 
-const DEFAULT_THEME: ThemeSettings = {
-  colors: {
-    primary: "#e87722",
-    primaryForeground: "#ffffff",
-    secondary: "#1e3a5f",
-    secondaryForeground: "#ffffff",
-    background: "#f5f7fa",
-    foreground: "#1a2332",
-    card: "#ffffff",
-    muted: "#ebeef2",
-    mutedForeground: "#6b7a8d",
-    accent: "#e87722",
-    accentForeground: "#ffffff",
-    destructive: "#e53e3e",
-    border: "#dce1e8",
-  },
-  typography: {
-    fontFamily: "Inter",
-    fontFamilyHeadings: "Inter",
-    baseFontSize: 16,
-    h1Size: 36,
-    h2Size: 28,
-    h3Size: 22,
-    h1Weight: "800",
-    h2Weight: "700",
-    h3Weight: "600",
-    bodyWeight: "400",
-    lineHeight: 1.6,
-  },
-  buttons: {
-    borderRadius: 8,
-    paddingX: 24,
-    paddingY: 12,
-    fontWeight: "600",
-    textTransform: "none" as "none" | "uppercase" | "capitalize",
-    hoverEffect: "darken" as "darken" | "lighten" | "shadow" | "scale",
-  },
-  layout: {
-    containerMaxWidth: 1280,
-    sectionSpacing: 40,
-    cardBorderRadius: 12,
-    headerStyle: "gradient" as "gradient" | "solid" | "transparent",
-  },
-  customCss: "",
-  isPublished: true,
-};
-
-function hexToHsl(hex: string): string {
-  const r = parseInt(hex.slice(1, 3), 16) / 255;
-  const g = parseInt(hex.slice(3, 5), 16) / 255;
-  const b = parseInt(hex.slice(5, 7), 16) / 255;
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  let h = 0, s = 0;
-  const l = (max + min) / 2;
-  if (max !== min) {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-    else if (max === g) h = ((b - r) / d + 2) / 6;
-    else h = ((r - g) / d + 4) / 6;
-  }
-  return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
+interface ColorRowProps {
+  label: string;
+  description: string;
+  settingKey: string;
+  value: string;
+  onSave: (key: string, val: string) => void;
 }
 
-function ColorField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+function ColorRow({ label, description, settingKey, value, onSave }: ColorRowProps) {
+  const [local, setLocal] = useState(value);
+  useEffect(() => { setLocal(value); }, [value]);
+
+  const commit = (v: string) => {
+    setLocal(v);
+    if (/^#[0-9A-Fa-f]{6}$/.test(v)) onSave(settingKey, v);
+  };
+
   return (
-    <div className="flex items-center gap-3">
-      <div className="relative">
-        <input type="color" value={value} onChange={e => onChange(e.target.value)}
-          className="w-10 h-10 rounded-lg border cursor-pointer" style={{ padding: 0 }} />
+    <div className="flex items-center gap-3 py-3 border-b border-border last:border-b-0">
+      <div className="w-9 h-9 rounded-full border-2 border-border shrink-0" style={{ background: local }} />
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold text-foreground">{label}</p>
+        <p className="text-xs text-muted-foreground">{description}</p>
       </div>
-      <div className="flex-1">
-        <Label className="text-xs text-muted-foreground">{label}</Label>
-        <Input value={value} onChange={e => onChange(e.target.value)} className="h-8 text-xs font-mono" />
+      <Input
+        value={local}
+        onChange={e => commit(e.target.value)}
+        className="w-[100px] h-8 text-xs font-mono"
+      />
+      <input
+        type="color"
+        value={local}
+        onChange={e => commit(e.target.value)}
+        className="w-9 h-9 rounded-lg border-0 cursor-pointer p-0 shrink-0"
+      />
+    </div>
+  );
+}
+
+function LivePreview({ settings }: { settings: Record<string, string> }) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+    const doc = iframe.contentDocument;
+    if (!doc) return;
+
+    const p = settings;
+    const primary = p.primary_color || "#0066FF";
+    const secondary = p.secondary_color || "#111111";
+    const accent = p.accent_color || "#FF3300";
+    const bg = p.background_color || "#FFFFFF";
+    const text = p.text_color || "#111827";
+    const navBg = p.nav_bar_color || primary;
+    const headerBg = p.header_bg || "#FFFFFF";
+    const annBg = p.announcement_bg || accent;
+    const annText = p.announcement_text_color || "#FFFFFF";
+    const btnBg = p.btn_primary_bg || primary;
+    const btnText = p.btn_primary_text || "#FFFFFF";
+    const ctaBg = p.cta_bg || accent;
+    const ctaText = p.cta_text || "#FFFFFF";
+    const trustBg = p.trust_strip_color || primary;
+    const nlBg = p.newsletter_bg || "#E8F0FF";
+    const footerUp = p.footer_upper_bg || "#1A2332";
+    const footerLo = p.footer_lower_bg || "#111111";
+    const radius = p.btn_border_radius || "6";
+    const headingFont = p.heading_font || "Inter";
+    const bodyFont = p.body_font || "Inter";
+
+    const fontsToLoad = new Set<string>();
+    if (headingFont !== "Inter") fontsToLoad.add(headingFont);
+    if (bodyFont !== "Inter") fontsToLoad.add(bodyFont);
+    const fontLink = fontsToLoad.size > 0
+      ? `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?${Array.from(fontsToLoad).map(f => `family=${f.replace(/ /g, "+")}:wght@400;600;700`).join("&")}&display=swap">`
+      : "";
+
+    doc.open();
+    doc.write(`<!DOCTYPE html><html><head>${fontLink}
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'${bodyFont}',system-ui,sans-serif;background:${bg};color:${text};font-size:12px;line-height:1.5}
+h1,h2,h3{font-family:'${headingFont}',serif}
+.ann{background:${annBg};color:${annText};text-align:center;padding:4px;font-size:10px;font-weight:500}
+.hdr{background:${headerBg};padding:8px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee}
+.hdr h3{font-size:14px;color:${text}}
+.nav{background:${navBg};padding:6px 12px;display:flex;gap:10px}
+.nav span{color:#fff;font-size:10px;opacity:.85}
+.hero{background:linear-gradient(135deg,${primary},${secondary});color:#fff;padding:20px 12px;text-align:center}
+.hero h2{font-size:16px;margin-bottom:4px;color:#fff}
+.hero p{font-size:10px;opacity:.9;margin-bottom:10px}
+.btn{padding:6px 16px;border:none;border-radius:${radius}px;font-size:11px;font-weight:600;cursor:pointer}
+.btn-p{background:${btnBg};color:${btnText}}
+.btn-c{background:${ctaBg};color:${ctaText}}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px}
+.card{border:1px solid #e5e7eb;border-radius:${radius}px;overflow:hidden;background:${bg}}
+.card-img{height:50px;background:linear-gradient(45deg,${primary}22,${accent}22);display:flex;align-items:center;justify-content:center;font-size:20px}
+.card-b{padding:6px}
+.card-b h3{font-size:11px;margin-bottom:2px}
+.card-b p{font-size:9px;color:#888}
+.card-price{color:${accent};font-weight:700;font-size:12px;margin-top:2px}
+.trust{background:${trustBg};color:#fff;padding:6px;text-align:center;font-size:9px;display:flex;gap:12px;justify-content:center}
+.nl{background:${nlBg};padding:12px;text-align:center}
+.nl h3{font-size:12px;margin-bottom:4px;color:${text}}
+.nl p{font-size:9px;color:#888}
+.foot-u{background:${footerUp};color:#ccc;padding:10px 12px;font-size:9px}
+.foot-l{background:${footerLo};color:#888;padding:6px 12px;font-size:8px;text-align:center}
+.btns{display:flex;gap:6px;justify-content:center;padding:8px}
+</style></head><body>
+<div class="ann">🔥 Transport GRATUIT la comenzi peste 200 RON</div>
+<div class="hdr"><h3>🕯 LUMAX</h3><span style="font-size:10px;color:#888">🔍 Cont 🛒</span></div>
+<div class="nav"><span>Acasă</span><span>Lumânări</span><span>Seturi</span><span>Oferte</span></div>
+<div class="hero"><h2>Lumânări Artizanale</h2><p>Descoperă colecția noastră</p><button class="btn btn-c">Cumpără Acum</button></div>
+<div class="cards">
+<div class="card"><div class="card-img">🕯</div><div class="card-b"><h3>Lavandă & Miere</h3><p>200g soia</p><div class="card-price">89 RON</div></div></div>
+<div class="card"><div class="card-img">🌿</div><div class="card-b"><h3>Eucalipt Fresh</h3><p>300g soia</p><div class="card-price">119 RON</div></div></div>
+<div class="card"><div class="card-img">🍊</div><div class="card-b"><h3>Citrice Vanilie</h3><p>250g soia</p><div class="card-price">95 RON</div></div></div>
+</div>
+<div class="btns"><button class="btn btn-p">Adaugă în Coș</button><button class="btn btn-c">Cumpără Acum</button></div>
+<div class="trust">✓ Livrare Rapidă ✓ Produse Naturale ✓ Garanție 30 Zile</div>
+<div class="nl"><h3>Newsletter</h3><p>Abonează-te pentru oferte</p></div>
+<div class="foot-u">LUMAX · Contact · Despre Noi · Termeni</div>
+<div class="foot-l">© 2026 LUMAX. Toate drepturile rezervate.</div>
+</body></html>`);
+    doc.close();
+  }, [settings]);
+
+  return (
+    <div className="sticky top-4">
+      <div className="flex items-center gap-2 mb-3">
+        <Monitor className="w-4 h-4 text-primary" />
+        <span className="text-sm font-semibold">Preview Live</span>
+      </div>
+      <div className="border border-border rounded-lg overflow-hidden shadow-lg bg-background">
+        <iframe ref={iframeRef} className="w-full border-0" style={{ height: "520px" }} title="Theme Preview" />
       </div>
     </div>
   );
 }
 
 export default function AdminThemeEditor() {
-  const [theme, setTheme] = useState<ThemeSettings>(DEFAULT_THEME);
-  const [savedTheme, setSavedTheme] = useState<ThemeSettings>(DEFAULT_THEME);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [previewOpen, setPreviewOpen] = useState(false);
+  const settings = useSettings();
+  const [saving, setSaving] = useState<string | null>(null);
+  const [localSettings, setLocalSettings] = useState<Record<string, string>>({});
 
+  // Sync from context
   useEffect(() => {
-    supabase.from("app_settings").select("*").eq("key", "theme_settings").maybeSingle().then(({ data }) => {
-      if (data?.value_json) {
-        const loaded = { ...DEFAULT_THEME, ...(data.value_json as unknown as ThemeSettings) };
-        setTheme(loaded);
-        setSavedTheme(loaded);
+    setLocalSettings(prev => {
+      const merged = { ...prev };
+      // Only overwrite keys that aren't being actively edited
+      for (const [k, v] of Object.entries(settings)) {
+        if (saving !== k) merged[k] = v;
       }
-      setLoading(false);
+      return merged;
     });
-  }, []);
+  }, [settings, saving]);
 
-  const setColor = (key: string, val: string) => setTheme(t => ({ ...t, colors: { ...t.colors, [key]: val } }));
-  const setTypo = (key: string, val: any) => setTheme(t => ({ ...t, typography: { ...t.typography, [key]: val } }));
-  const setBtn = (key: string, val: any) => setTheme(t => ({ ...t, buttons: { ...t.buttons, [key]: val } }));
-  const setLay = (key: string, val: any) => setTheme(t => ({ ...t, layout: { ...t.layout, [key]: val } }));
+  const saveSetting = useCallback(async (key: string, value: string) => {
+    setSaving(key);
+    setLocalSettings(prev => ({ ...prev, [key]: value }));
 
-  const save = async (publish: boolean) => {
-    setSaving(true);
-    const payload = { ...theme, isPublished: publish };
     const { error } = await supabase.from("app_settings").upsert(
-      { key: "theme_settings", value_json: payload as any, description: "Theme customization settings" },
+      { key, value_json: value, updated_at: new Date().toISOString() },
       { onConflict: "key" }
     );
-    if (error) { toast.error(error.message); }
-    else {
-      toast.success(publish ? "Tema publicată!" : "Draft salvat (nepublicat)");
-      setSavedTheme(payload);
-      setTheme(payload);
+    if (error) toast.error(`Eroare la salvare: ${error.message}`);
+    setSaving(null);
+  }, []);
 
-      // Sync to site_theme_settings so storefront picks up changes in real-time
-      if (publish) {
-        const c = payload.colors;
-        const t = payload.typography;
-        const b = payload.buttons;
-        const syncRows = [
-          { setting_key: "primary_color", value_json: hexToHsl(c.primary) },
-          { setting_key: "secondary_color", value_json: hexToHsl(c.secondary) },
-          { setting_key: "accent_color", value_json: hexToHsl(c.accent) },
-          { setting_key: "background_color", value_json: hexToHsl(c.background) },
-          { setting_key: "text_color", value_json: hexToHsl(c.foreground) },
-          { setting_key: "font_family", value_json: t.fontFamily },
-          { setting_key: "heading_font", value_json: t.fontFamilyHeadings },
-          { setting_key: "heading_weight", value_json: Number(t.h1Weight) >= 800 ? "extrabold" : Number(t.h1Weight) >= 700 ? "bold" : "semibold" },
-          { setting_key: "border_radius", value_json: b.borderRadius },
-          { setting_key: "button_hover", value_json: b.hoverEffect },
-          { setting_key: "button_shape", value_json: b.borderRadius >= 9999 ? "pill" : b.borderRadius === 0 ? "square" : "rounded" },
-          { setting_key: "button_style", value_json: "filled" },
-          { setting_key: "spacing_density", value_json: payload.layout.sectionSpacing <= 24 ? "compact" : payload.layout.sectionSpacing <= 40 ? "normal" : "spacious" },
-          { setting_key: "font_size_scale", value_json: t.baseFontSize <= 14 ? "small" : t.baseFontSize <= 16 ? "medium" : t.baseFontSize <= 18 ? "large" : "xl" },
-          { setting_key: "line_height", value_json: t.lineHeight <= 1.4 ? "compact" : t.lineHeight <= 1.6 ? "normal" : "relaxed" },
-        ];
-        for (const row of syncRows) {
-          await (supabase as any).from("site_theme_settings").upsert(
-            { ...row, updated_at: new Date().toISOString() },
-            { onConflict: "setting_key" }
-          );
-        }
-      }
-    }
-    setSaving(false);
-  };
-
-  const reset = () => { setTheme(DEFAULT_THEME); toast.info("Resetat la valorile implicite (nesalvat)"); };
-
-  const generatePreviewCss = useCallback(() => {
-    const c = theme.colors;
-    const t = theme.typography;
-    const b = theme.buttons;
-    const l = theme.layout;
-    return `:root {
-  --background: ${hexToHsl(c.background)};
-  --foreground: ${hexToHsl(c.foreground)};
-  --card: ${hexToHsl(c.card)};
-  --card-foreground: ${hexToHsl(c.foreground)};
-  --primary: ${hexToHsl(c.primary)};
-  --primary-foreground: ${hexToHsl(c.primaryForeground)};
-  --secondary: ${hexToHsl(c.secondary)};
-  --secondary-foreground: ${hexToHsl(c.secondaryForeground)};
-  --muted: ${hexToHsl(c.muted)};
-  --muted-foreground: ${hexToHsl(c.mutedForeground)};
-  --accent: ${hexToHsl(c.accent)};
-  --accent-foreground: ${hexToHsl(c.accentForeground)};
-  --destructive: ${hexToHsl(c.destructive)};
-  --border: ${hexToHsl(c.border)};
-  --input: ${hexToHsl(c.border)};
-  --ring: ${hexToHsl(c.primary)};
-  --radius: ${b.borderRadius / 16}rem;
-}
-body { font-family: '${t.fontFamily}', system-ui, sans-serif; font-size: ${t.baseFontSize}px; line-height: ${t.lineHeight}; }
-h1, h2, h3, h4, h5, h6 { font-family: '${t.fontFamilyHeadings}', system-ui, sans-serif; }
-h1 { font-size: ${t.h1Size}px; font-weight: ${t.h1Weight}; }
-h2 { font-size: ${t.h2Size}px; font-weight: ${t.h2Weight}; }
-h3 { font-size: ${t.h3Size}px; font-weight: ${t.h3Weight}; }
-.container { max-width: ${l.containerMaxWidth}px; }
-${theme.customCss || ""}`;
-  }, [theme]);
-
-  const openPreview = () => {
-    const css = generatePreviewCss();
-    const fonts = [theme.typography.fontFamily, theme.typography.fontFamilyHeadings]
-      .filter((f, i, a) => a.indexOf(f) === i).map(f => f.replace(/ /g, "+")).join("&family=");
-    const previewUrl = `${window.location.origin}/?_themePreview=1`;
-    const w = window.open(previewUrl, "_themePreview");
-    if (w) {
-      setTimeout(() => {
-        try {
-          const link = w.document.createElement("link");
-          link.href = `https://fonts.googleapis.com/css2?family=${fonts}:wght@400;500;600;700;800&display=swap`;
-          link.rel = "stylesheet";
-          w.document.head.appendChild(link);
-          const style = w.document.createElement("style");
-          style.id = "theme-preview-override";
-          style.textContent = css;
-          w.document.head.appendChild(style);
-        } catch { /* cross-origin fallback */ }
-      }, 2000);
-    }
-    setPreviewOpen(true);
-  };
-
-  if (loading) return <Card><CardContent className="py-12 text-center text-muted-foreground">Se încarcă setările temei...</CardContent></Card>;
-
-  const hasChanges = JSON.stringify(theme) !== JSON.stringify(savedTheme);
-
-  // Lazy load extended sections
-  const AdminThemeEditorExtended = lazy(() => import("./AdminThemeEditorExtended"));
+  const get = (key: string, fallback: string = "") => localSettings[key] || fallback;
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Personalizare Temă</h1>
-          <p className="text-sm text-muted-foreground">Modifică designul magazinului fără a scrie cod</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={reset}><RotateCcw className="h-4 w-4 mr-1" /> Resetează</Button>
-          <Button variant="outline" size="sm" onClick={openPreview}><Eye className="h-4 w-4 mr-1" /> Previzualizează</Button>
-          <Button variant="secondary" size="sm" onClick={() => save(false)} disabled={saving}>Salvează Draft</Button>
-          <Button size="sm" onClick={() => save(true)} disabled={saving}><Save className="h-4 w-4 mr-1" /> Publică</Button>
+          <h1 className="text-2xl font-bold text-foreground">Editor Temă</h1>
+          <p className="text-sm text-muted-foreground">Modificările se aplică instant pe site</p>
         </div>
       </div>
 
-      {hasChanges && (
-        <div className="bg-accent/10 border border-accent/30 text-accent-foreground text-sm px-4 py-2 rounded-lg">
-          ⚠️ Ai modificări nesalvate. Apasă „Publică" pentru a le aplica live.
-        </div>
-      )}
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-6">
+        <div className="space-y-5">
 
-      <Tabs defaultValue="colors">
-        <TabsList className="grid grid-cols-5 w-full max-w-xl">
-          <TabsTrigger value="colors"><Paintbrush className="h-4 w-4 mr-1" /> Culori</TabsTrigger>
-          <TabsTrigger value="typography"><Type className="h-4 w-4 mr-1" /> Tipografie</TabsTrigger>
-          <TabsTrigger value="buttons"><Square className="h-4 w-4 mr-1" /> Butoane</TabsTrigger>
-          <TabsTrigger value="layout"><Layout className="h-4 w-4 mr-1" /> Layout</TabsTrigger>
-          <TabsTrigger value="css"><Code className="h-4 w-4 mr-1" /> CSS</TabsTrigger>
-        </TabsList>
-
-        {/* ══════ CULORI ══════ */}
-        <TabsContent value="colors">
+          {/* ══════ SECTION 1: CULORI PRINCIPALE ══════ */}
           <Card>
-            <CardHeader><CardTitle className="text-lg">Culori</CardTitle></CardHeader>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Palette className="w-4 h-4 text-primary" /> Culori Principale
+              </CardTitle>
+            </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <ColorField label="Primară (butoane, accente)" value={theme.colors.primary} onChange={v => setColor("primary", v)} />
-                <ColorField label="Primară Text" value={theme.colors.primaryForeground} onChange={v => setColor("primaryForeground", v)} />
-                <ColorField label="Secundară (header, sidebar)" value={theme.colors.secondary} onChange={v => setColor("secondary", v)} />
-                <ColorField label="Secundară Text" value={theme.colors.secondaryForeground} onChange={v => setColor("secondaryForeground", v)} />
-                <ColorField label="Fundal pagină" value={theme.colors.background} onChange={v => setColor("background", v)} />
-                <ColorField label="Text principal" value={theme.colors.foreground} onChange={v => setColor("foreground", v)} />
-                <ColorField label="Card / panou" value={theme.colors.card} onChange={v => setColor("card", v)} />
-                <ColorField label="Muted (fundal secundar)" value={theme.colors.muted} onChange={v => setColor("muted", v)} />
-                <ColorField label="Text secundar" value={theme.colors.mutedForeground} onChange={v => setColor("mutedForeground", v)} />
-                <ColorField label="Accent" value={theme.colors.accent} onChange={v => setColor("accent", v)} />
-                <ColorField label="Eroare / Destructiv" value={theme.colors.destructive} onChange={v => setColor("destructive", v)} />
-                <ColorField label="Borduri" value={theme.colors.border} onChange={v => setColor("border", v)} />
-              </div>
-              <Separator className="my-6" />
-              <h3 className="font-semibold text-sm mb-3">Previzualizare rapidă</h3>
-              <div className="flex gap-3 flex-wrap">
-                <button style={{ background: theme.colors.primary, color: theme.colors.primaryForeground, borderRadius: theme.buttons.borderRadius, padding: `${theme.buttons.paddingY}px ${theme.buttons.paddingX}px`, fontWeight: theme.buttons.fontWeight }}>Buton Primar</button>
-                <button style={{ background: theme.colors.secondary, color: theme.colors.secondaryForeground, borderRadius: theme.buttons.borderRadius, padding: `${theme.buttons.paddingY}px ${theme.buttons.paddingX}px`, fontWeight: theme.buttons.fontWeight }}>Buton Secundar</button>
-                <button style={{ background: "transparent", color: theme.colors.primary, border: `2px solid ${theme.colors.primary}`, borderRadius: theme.buttons.borderRadius, padding: `${theme.buttons.paddingY}px ${theme.buttons.paddingX}px`, fontWeight: theme.buttons.fontWeight }}>Buton Outline</button>
-                <div style={{ background: theme.colors.card, border: `1px solid ${theme.colors.border}`, borderRadius: theme.layout.cardBorderRadius, padding: 16 }}>
-                  <p style={{ color: theme.colors.foreground, fontWeight: 600 }}>Card exemplu</p>
-                  <p style={{ color: theme.colors.mutedForeground, fontSize: 14 }}>Text secundar</p>
-                </div>
-              </div>
+              <ColorRow label="Culoare Primară" description="Butoane, navigare, link-uri" settingKey="primary_color" value={get("primary_color", "#0066FF")} onSave={saveSetting} />
+              <ColorRow label="Culoare Secundară" description="Text, elemente dark" settingKey="secondary_color" value={get("secondary_color", "#111111")} onSave={saveSetting} />
+              <ColorRow label="Culoare Accent" description="Badge-uri, CTA, reduceri" settingKey="accent_color" value={get("accent_color", "#FF3300")} onSave={saveSetting} />
+              <ColorRow label="Fundal Site" description="Culoarea de fundal principală" settingKey="background_color" value={get("background_color", "#FFFFFF")} onSave={saveSetting} />
+              <ColorRow label="Text Principal" description="Culoarea textului" settingKey="text_color" value={get("text_color", "#111827")} onSave={saveSetting} />
             </CardContent>
           </Card>
-        </TabsContent>
 
-        {/* ══════ TIPOGRAFIE ══════ */}
-        <TabsContent value="typography">
+          {/* ══════ SECTION 2: HEADER & NAVIGARE ══════ */}
           <Card>
-            <CardHeader><CardTitle className="text-lg">Tipografie</CardTitle></CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label>Font Body</Label>
-                  <Select value={theme.typography.fontFamily} onValueChange={v => setTypo("fontFamily", v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{GOOGLE_FONTS.map(f => <SelectItem key={f} value={f}><span style={{ fontFamily: f }}>{f}</span></SelectItem>)}</SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>Font Titluri</Label>
-                  <Select value={theme.typography.fontFamilyHeadings} onValueChange={v => setTypo("fontFamilyHeadings", v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{GOOGLE_FONTS.map(f => <SelectItem key={f} value={f}><span style={{ fontFamily: f }}>{f}</span></SelectItem>)}</SelectContent>
-                  </Select>
-                </div>
-                <div><Label>Dimensiune bază (px)</Label><Input type="number" value={theme.typography.baseFontSize} onChange={e => setTypo("baseFontSize", Number(e.target.value))} /></div>
-                <div><Label>Line Height</Label><Input type="number" step="0.1" value={theme.typography.lineHeight} onChange={e => setTypo("lineHeight", Number(e.target.value))} /></div>
-              </div>
-              <Separator />
-              <h3 className="font-semibold text-sm">Titluri</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {(["h1", "h2", "h3"] as const).map(h => (
-                  <div key={h} className="space-y-2">
-                    <Label className="uppercase text-xs">{h}</Label>
-                    <Input type="number" value={theme.typography[`${h}Size`]} onChange={e => setTypo(`${h}Size`, Number(e.target.value))} placeholder="Dimensiune (px)" />
-                    <Select value={theme.typography[`${h}Weight`]} onValueChange={v => setTypo(`${h}Weight`, v)}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        {["400", "500", "600", "700", "800", "900"].map(w => <SelectItem key={w} value={w}>{w}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                ))}
-              </div>
-              <Separator />
-              <h3 className="font-semibold text-sm">Previzualizare</h3>
-              <div style={{ fontFamily: `'${theme.typography.fontFamily}', sans-serif` }}>
-                <h1 style={{ fontFamily: `'${theme.typography.fontFamilyHeadings}', sans-serif`, fontSize: theme.typography.h1Size, fontWeight: Number(theme.typography.h1Weight) }}>Titlu H1</h1>
-                <h2 style={{ fontFamily: `'${theme.typography.fontFamilyHeadings}', sans-serif`, fontSize: theme.typography.h2Size, fontWeight: Number(theme.typography.h2Weight) }}>Titlu H2</h2>
-                <h3 style={{ fontFamily: `'${theme.typography.fontFamilyHeadings}', sans-serif`, fontSize: theme.typography.h3Size, fontWeight: Number(theme.typography.h3Weight) }}>Titlu H3</h3>
-                <p style={{ fontSize: theme.typography.baseFontSize, lineHeight: theme.typography.lineHeight }}>Acesta este un paragraf de exemplu pentru previzualizare font body.</p>
-              </div>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Layout className="w-4 h-4 text-primary" /> Header & Navigare
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ColorRow label="Fundal Header" description="Bara principală cu logo" settingKey="header_bg" value={get("header_bg", "#FFFFFF")} onSave={saveSetting} />
+              <ColorRow label="Bara Navigare" description="Mega-menu, categoriole" settingKey="nav_bar_color" value={get("nav_bar_color", "#0066FF")} onSave={saveSetting} />
+              <ColorRow label="Announcement Bar - Fundal" description="Bara de sus cu promoții" settingKey="announcement_bg" value={get("announcement_bg", "#FF3300")} onSave={saveSetting} />
+              <ColorRow label="Announcement Bar - Text" description="Textul din bara de sus" settingKey="announcement_text_color" value={get("announcement_text_color", "#FFFFFF")} onSave={saveSetting} />
             </CardContent>
           </Card>
-        </TabsContent>
 
-        {/* ══════ BUTOANE ══════ */}
-        <TabsContent value="buttons">
+          {/* ══════ SECTION 3: BUTOANE ══════ */}
           <Card>
-            <CardHeader><CardTitle className="text-lg">Stiluri Butoane</CardTitle></CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><Label>Border Radius (px)</Label><Input type="number" value={theme.buttons.borderRadius} onChange={e => setBtn("borderRadius", Number(e.target.value))} /></div>
-                <div><Label>Padding Orizontal (px)</Label><Input type="number" value={theme.buttons.paddingX} onChange={e => setBtn("paddingX", Number(e.target.value))} /></div>
-                <div><Label>Padding Vertical (px)</Label><Input type="number" value={theme.buttons.paddingY} onChange={e => setBtn("paddingY", Number(e.target.value))} /></div>
-                <div>
-                  <Label>Font Weight</Label>
-                  <Select value={theme.buttons.fontWeight} onValueChange={v => setBtn("fontWeight", v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {["400", "500", "600", "700", "800"].map(w => <SelectItem key={w} value={w}>{w}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>Text Transform</Label>
-                  <Select value={theme.buttons.textTransform} onValueChange={v => setBtn("textTransform", v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">Normal</SelectItem>
-                      <SelectItem value="uppercase">UPPERCASE</SelectItem>
-                      <SelectItem value="capitalize">Capitalize</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>Efect Hover</Label>
-                  <Select value={theme.buttons.hoverEffect} onValueChange={v => setBtn("hoverEffect", v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="darken">Întunecă</SelectItem>
-                      <SelectItem value="lighten">Luminează</SelectItem>
-                      <SelectItem value="shadow">Umbră</SelectItem>
-                      <SelectItem value="scale">Mărește</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* ══════ LAYOUT ══════ */}
-        <TabsContent value="layout">
-          <Card>
-            <CardHeader><CardTitle className="text-lg">Layout & Spațiere</CardTitle></CardHeader>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Square className="w-4 h-4 text-primary" /> Butoane
+              </CardTitle>
+            </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><Label>Lățime maximă container (px)</Label><Input type="number" value={theme.layout.containerMaxWidth} onChange={e => setLay("containerMaxWidth", Number(e.target.value))} /></div>
-                <div><Label>Spațiere secțiuni (px)</Label><Input type="number" value={theme.layout.sectionSpacing} onChange={e => setLay("sectionSpacing", Number(e.target.value))} /></div>
-                <div><Label>Border Radius Carduri (px)</Label><Input type="number" value={theme.layout.cardBorderRadius} onChange={e => setLay("cardBorderRadius", Number(e.target.value))} /></div>
+              <ColorRow label="Buton Principal - Fundal" description="Adaugă în Coș, acțiuni principale" settingKey="btn_primary_bg" value={get("btn_primary_bg", "#0066FF")} onSave={saveSetting} />
+              <ColorRow label="Buton Principal - Text" description="Textul de pe butoane" settingKey="btn_primary_text" value={get("btn_primary_text", "#FFFFFF")} onSave={saveSetting} />
+              <ColorRow label="Buton Principal - Hover" description="Culoarea la hover" settingKey="btn_primary_hover" value={get("btn_primary_hover", "#0052CC")} onSave={saveSetting} />
+              <ColorRow label="CTA - Fundal" description="Butoane Cumpără Acum" settingKey="cta_bg" value={get("cta_bg", "#FF3300")} onSave={saveSetting} />
+              <ColorRow label="CTA - Text" description="Textul de pe CTA" settingKey="cta_text" value={get("cta_text", "#FFFFFF")} onSave={saveSetting} />
+              <Separator />
+              <div>
+                <Label className="text-sm font-medium">Rotunjire Butoane: {get("btn_border_radius", "6")}px</Label>
+                <Slider
+                  value={[parseInt(get("btn_border_radius", "6"))]}
+                  onValueChange={([v]) => saveSetting("btn_border_radius", String(v))}
+                  min={0} max={50} step={1} className="mt-2"
+                />
+                <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                  <span>Pătrat</span><span>Rotund</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* ══════ SECTION 4: CULORI SECȚIUNI ══════ */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Layout className="w-4 h-4 text-primary" /> Culori Secțiuni
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ColorRow label="Trust Strip" description="Bara de încredere" settingKey="trust_strip_color" value={get("trust_strip_color", "#0066FF")} onSave={saveSetting} />
+              <ColorRow label="Newsletter" description="Secțiunea newsletter" settingKey="newsletter_bg" value={get("newsletter_bg", "#E8F0FF")} onSave={saveSetting} />
+              <ColorRow label="Footer Superior" description="Partea de sus a footer-ului" settingKey="footer_upper_bg" value={get("footer_upper_bg", "#1A2332")} onSave={saveSetting} />
+              <ColorRow label="Footer Inferior" description="Partea de jos a footer-ului" settingKey="footer_lower_bg" value={get("footer_lower_bg", "#111111")} onSave={saveSetting} />
+            </CardContent>
+          </Card>
+
+          {/* ══════ SECTION 5: TIPOGRAFIE ══════ */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Type className="w-4 h-4 text-primary" /> Tipografie
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <Label>Stil Header</Label>
-                  <Select value={theme.layout.headerStyle} onValueChange={v => setLay("headerStyle", v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                  <Label className="text-xs">Font Titluri</Label>
+                  <Select value={get("heading_font", "Inter")} onValueChange={v => saveSetting("heading_font", v)}>
+                    <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="gradient">Gradient</SelectItem>
-                      <SelectItem value="solid">Solid</SelectItem>
-                      <SelectItem value="transparent">Transparent</SelectItem>
+                      {GOOGLE_FONTS.map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-xs">Font Body</Label>
+                  <Select value={get("body_font", "Inter")} onValueChange={v => saveSetting("body_font", v)}>
+                    <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {GOOGLE_FONTS.map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-xs">Dimensiune Text</Label>
+                  <Select value={get("font_size_scale", "1")} onValueChange={v => saveSetting("font_size_scale", v)}>
+                    <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0.9">Mic (0.9x)</SelectItem>
+                      <SelectItem value="1">Normal (1x)</SelectItem>
+                      <SelectItem value="1.1">Mare (1.1x)</SelectItem>
+                      <SelectItem value="1.2">Foarte Mare (1.2x)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-xs">Mărime Titluri</Label>
+                  <Select value={get("heading_size", "standard")} onValueChange={v => saveSetting("heading_size", v)}>
+                    <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="compact">Compact</SelectItem>
+                      <SelectItem value="standard">Standard</SelectItem>
+                      <SelectItem value="large">Mare</SelectItem>
+                      <SelectItem value="xl">Foarte Mare</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
 
-        {/* ══════ CSS CUSTOM ══════ */}
-        <TabsContent value="css">
+          {/* ══════ SECTION 6: CSS CUSTOM ══════ */}
           <Card>
-            <CardHeader><CardTitle className="text-lg">CSS Personalizat</CardTitle></CardHeader>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Code className="w-4 h-4 text-primary" /> CSS Personalizat
+              </CardTitle>
+            </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-3">
-                Scrie CSS suplimentar care se aplică global în magazin. Atenție: CSS-ul invalid poate afecta aspectul.
-              </p>
               <Textarea
-                value={theme.customCss}
-                onChange={e => setTheme(t => ({ ...t, customCss: e.target.value }))}
-                rows={16}
-                className="font-mono text-sm"
-                placeholder={`/* Exemplu: */\n.product-card:hover {\n  transform: scale(1.02);\n  box-shadow: 0 8px 24px rgba(0,0,0,0.12);\n}`}
+                value={get("custom_css", "")}
+                onChange={e => setLocalSettings(prev => ({ ...prev, custom_css: e.target.value }))}
+                placeholder="/* Adaugă CSS personalizat aici */"
+                className="font-mono text-xs min-h-[160px]"
               />
+              <Button size="sm" className="mt-3" onClick={() => saveSetting("custom_css", localSettings.custom_css || "")}>
+                Aplică CSS
+              </Button>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
 
-      {/* Gomag Extended Design Sections */}
-      <Suspense fallback={<div className="py-8 text-center text-muted-foreground">Se încarcă secțiuni suplimentare...</div>}>
-        <AdminThemeEditorExtended />
-      </Suspense>
+        {/* Right: Live Preview */}
+        <LivePreview settings={localSettings} />
+      </div>
     </div>
   );
 }
