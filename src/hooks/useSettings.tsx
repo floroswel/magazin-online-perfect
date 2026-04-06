@@ -33,6 +33,14 @@ const SETTINGS_KEYS = [
   "footer_address", "footer_schedule", "footer_facebook_url", "footer_tiktok_url",
   "footer_instagram_url", "footer_copyright_name", "footer_reviews_count",
   "footer_show_payment_icons", "footer_payment_methods",
+  // Footer legal / company
+  "footer_company_name", "footer_cui", "footer_reg_com", "footer_capital_social",
+  "footer_anpc_show", "footer_anpc_url", "footer_anpc_logo_url",
+  "footer_sal_show", "footer_sal_url",
+  "footer_sol_show", "footer_sol_url",
+  "footer_partner_emag_show", "footer_partner_emag_url", "footer_partner_emag_logo",
+  "footer_partner_compari_show", "footer_partner_compari_url", "footer_partner_compari_logo",
+  "footer_partner_price_show", "footer_partner_price_url", "footer_partner_price_logo",
   // Footer (legacy)
   "footer_col1_title", "footer_col1_links", "footer_col2_title", "footer_col2_links",
   "contact_phone", "contact_email", "contact_address", "contact_schedule",

@@ -78,6 +78,25 @@ export default function Footer() {
   const showPaymentIcons = settings.footer_show_payment_icons === "true";
   const paymentMethods = settings.footer_payment_methods || "Visa · Mastercard · Netopia";
 
+  // Legal / company info
+  const companyName = settings.footer_company_name || "";
+  const cui = settings.footer_cui || "";
+  const regCom = settings.footer_reg_com || "";
+  const capitalSocial = settings.footer_capital_social || "";
+
+  const showAnpc = settings.footer_anpc_show === "true";
+  const anpcUrl = settings.footer_anpc_url || "https://anpc.gov.ro";
+  const showSal = settings.footer_sal_show === "true";
+  const salUrl = settings.footer_sal_url || "https://anpc.gov.ro/ce-facem/sal/";
+  const showSol = settings.footer_sol_show === "true";
+  const solUrl = settings.footer_sol_url || "https://ec.europa.eu/consumers/odr";
+
+  const partners = [
+    { key: "emag", show: settings.footer_partner_emag_show === "true", url: settings.footer_partner_emag_url, logo: settings.footer_partner_emag_logo, label: "eMAG Marketplace" },
+    { key: "compari", show: settings.footer_partner_compari_show === "true", url: settings.footer_partner_compari_url, logo: settings.footer_partner_compari_logo, label: "Compari.ro" },
+    { key: "price", show: settings.footer_partner_price_show === "true", url: settings.footer_partner_price_url, logo: settings.footer_partner_price_logo, label: "Price.ro" },
+  ].filter(p => p.show);
+
   return (
     <footer>
       {/* Main footer */}
@@ -162,15 +181,51 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* Legal badges bar */}
+      {(showAnpc || showSal || showSol || partners.length > 0) && (
+        <div className="py-4 border-t border-primary-foreground/10" style={{ background: settings.footer_lower_bg || "hsl(220 50% 8%)" }}>
+          <div className="lumax-container flex flex-wrap items-center justify-center gap-4">
+            {showAnpc && (
+              <a href={anpcUrl} target="_blank" rel="noopener noreferrer" className="opacity-60 hover:opacity-100 transition-opacity" title="ANPC">
+                {settings.footer_anpc_logo_url ? (
+                  <img src={settings.footer_anpc_logo_url} alt="ANPC" className="h-7" />
+                ) : (
+                  <span className="text-xs text-primary-foreground/70 border border-primary-foreground/20 rounded px-2 py-1">ANPC</span>
+                )}
+              </a>
+            )}
+            {showSal && (
+              <a href={salUrl} target="_blank" rel="noopener noreferrer" className="opacity-60 hover:opacity-100 transition-opacity" title="SAL – Soluționarea Alternativă a Litigiilor">
+                <span className="text-xs text-primary-foreground/70 border border-primary-foreground/20 rounded px-2 py-1">SAL</span>
+              </a>
+            )}
+            {showSol && (
+              <a href={solUrl} target="_blank" rel="noopener noreferrer" className="opacity-60 hover:opacity-100 transition-opacity" title="SOL – Soluționare Online a Litigiilor">
+                <img src="/images/eu-sol.png" alt="Soluționare Online a Litigiilor" className="h-7" />
+              </a>
+            )}
+            {partners.map(p => (
+              <a key={p.key} href={p.url} target="_blank" rel="noopener noreferrer" className="opacity-60 hover:opacity-100 transition-opacity" title={p.label}>
+                {p.logo ? (
+                  <img src={p.logo} alt={p.label} className="h-7" />
+                ) : (
+                  <span className="text-xs text-primary-foreground/70 border border-primary-foreground/20 rounded px-2 py-1">{p.label}</span>
+                )}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Bottom bar */}
       <div className="py-3.5 border-t border-primary-foreground/5" style={{ background: settings.footer_lower_bg || "hsl(220 50% 8%)" }}>
         <div className="lumax-container flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span className="text-xs text-muted-foreground">{copyrightText}</span>
-          <div className="flex items-center gap-3">
-            {(settings.anpc_display === "widget" || settings.anpc_display === "ambele" || settings.anpc_display === "link" || !settings.anpc_display) && (
-              <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer">
-                <img src="/images/eu-sol.png" alt="Soluționare Online a Litigiilor" className="h-6 opacity-60 hover:opacity-100 transition-opacity" />
-              </a>
+          <div className="text-center sm:text-left">
+            <span className="text-xs text-muted-foreground">{copyrightText}</span>
+            {(companyName || cui || regCom) && (
+              <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                {[companyName, cui && `CUI: ${cui}`, regCom && `Reg. Com.: ${regCom}`, capitalSocial && `Capital social: ${capitalSocial}`].filter(Boolean).join(" · ")}
+              </p>
             )}
           </div>
           {showPaymentIcons && (
