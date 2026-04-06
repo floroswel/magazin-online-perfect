@@ -30,47 +30,46 @@ const PinterestIcon = () => (
 
 /* ── Payment SVG icons ── */
 const VisaIcon = () => (
-  <svg viewBox="0 0 48 32" width="48" height="32" fill="none">
-    <rect width="48" height="32" rx="4" fill="#fff" stroke="#E2E8F0"/>
+  <svg viewBox="0 0 48 32" width="44" height="28" fill="none">
+    <rect width="48" height="32" rx="4" fill="#fff" stroke="#CBD5E1"/>
     <text x="24" y="20" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#1A1F71">VISA</text>
   </svg>
 );
 const MastercardIcon = () => (
-  <svg viewBox="0 0 48 32" width="48" height="32" fill="none">
-    <rect width="48" height="32" rx="4" fill="#fff" stroke="#E2E8F0"/>
+  <svg viewBox="0 0 48 32" width="44" height="28" fill="none">
+    <rect width="48" height="32" rx="4" fill="#fff" stroke="#CBD5E1"/>
     <circle cx="19" cy="16" r="8" fill="#EB001B" opacity="0.8"/>
     <circle cx="29" cy="16" r="8" fill="#F79E1B" opacity="0.8"/>
   </svg>
 );
 const NetopiaIcon = () => (
-  <svg viewBox="0 0 48 32" width="48" height="32" fill="none">
-    <rect width="48" height="32" rx="4" fill="#fff" stroke="#E2E8F0"/>
+  <svg viewBox="0 0 48 32" width="44" height="28" fill="none">
+    <rect width="48" height="32" rx="4" fill="#fff" stroke="#CBD5E1"/>
     <text x="24" y="19" textAnchor="middle" fontSize="8" fontWeight="bold" fill="#00A651">NETOPIA</text>
   </svg>
 );
 const RambursIcon = () => (
-  <svg viewBox="0 0 48 32" width="48" height="32" fill="none">
-    <rect width="48" height="32" rx="4" fill="#fff" stroke="#E2E8F0"/>
-    <text x="24" y="15" textAnchor="middle" fontSize="7" fontWeight="600" fill="#475569">Plată la</text>
-    <text x="24" y="23" textAnchor="middle" fontSize="7" fontWeight="600" fill="#475569">livrare</text>
+  <svg viewBox="0 0 56 32" width="52" height="28" fill="none">
+    <rect width="56" height="32" rx="4" fill="#fff" stroke="#CBD5E1"/>
+    <text x="28" y="14" textAnchor="middle" fontSize="7" fontWeight="600" fill="#475569">Plată la</text>
+    <text x="28" y="23" textAnchor="middle" fontSize="7" fontWeight="600" fill="#475569">livrare</text>
   </svg>
 );
 const TBIIcon = () => (
-  <svg viewBox="0 0 48 32" width="48" height="32" fill="none">
-    <rect width="48" height="32" rx="4" fill="#fff" stroke="#E2E8F0"/>
+  <svg viewBox="0 0 48 32" width="44" height="28" fill="none">
+    <rect width="48" height="32" rx="4" fill="#fff" stroke="#CBD5E1"/>
     <text x="24" y="19" textAnchor="middle" fontSize="9" fontWeight="bold" fill="#0066FF">TBI</text>
   </svg>
 );
 
 const SOCIAL_DEFS = [
   { key: "footer_facebook_url", label: "Facebook", icon: <FacebookIcon /> },
-  { key: "footer_instagram_url", label: "Instagram", icon: <InstagramIcon /> },
-  { key: "footer_tiktok_url", label: "TikTok", icon: <TikTokIcon /> },
   { key: "footer_youtube_url", label: "YouTube", icon: <YouTubeIcon /> },
+  { key: "footer_tiktok_url", label: "TikTok", icon: <TikTokIcon /> },
+  { key: "footer_instagram_url", label: "Instagram", icon: <InstagramIcon /> },
   { key: "footer_pinterest_url", label: "Pinterest", icon: <PinterestIcon /> },
 ];
 
-/** Parse pipe-delimited link format: "Label:/path|Label2:/path2" */
 function parsePipeLinks(raw: string): { label: string; to: string }[] {
   if (!raw) return [];
   return raw.split("|").map((entry) => {
@@ -115,17 +114,17 @@ export default function Footer() {
   const bottomTextColor = s.footer_bottom_text_color || "#64748B";
   const contactBtnColor = s.footer_contact_btn_color || "#0066FF";
 
-  /* ── Column 1 – Magazin ── */
+  /* ── Col 1 ── */
   const col1Show = s.footer_col1_show !== "false";
   const col1Title = s.footer_col1_title || "Magazin";
   const col1Links = parseLinks(s.footer_col1_links || "");
 
-  /* ── Column 2 – Clienți ── */
+  /* ── Col 2 ── */
   const col2Show = s.footer_col2_show !== "false";
   const col2Title = s.footer_col2_title || "Clienți";
   const col2Links = parseLinks(s.footer_col2_links || "");
 
-  /* ── Column 3 – Date comerciale ── */
+  /* ── Col 3 – Date comerciale ── */
   const col3Show = s.footer_col3_show !== "false";
   const col3Title = s.footer_col3_title || "Date comerciale";
   const companyName = s.footer_company_name || "";
@@ -135,7 +134,7 @@ export default function Footer() {
   const addressStreet = s.footer_address_street || "";
   const addressCity = s.footer_address_city || "";
 
-  /* ── Column 4 – Suport clienți ── */
+  /* ── Col 4 – Suport clienți ── */
   const col4Show = s.footer_col4_show !== "false";
   const col4Title = s.footer_col4_title || "Suport clienți";
   const col4SupportText = s.footer_col4_support_text || "";
@@ -163,17 +162,17 @@ export default function Footer() {
     { key: "ramburs", show: s.footer_payment_ramburs_show === "true", icon: <RambursIcon />, label: "Ramburs" },
   ].filter((p) => p.show);
 
-  /* ── Copyright ── */
-  const copyrightName = s.footer_copyright_name || s.footer_store_name || "Mama Lucica SRL";
-  const showMadeIn = s.footer_made_in_romania_show === "true";
-  const madeText = s.footer_made_in_romania_text || "Made with ❤️ în România";
-
   /* ── Partners ── */
   const partners = [
-    { key: "emag", show: s.footer_partner_emag_show === "true", url: s.footer_partner_emag_url, logo: s.footer_partner_emag_logo, label: "eMAG Marketplace" },
+    { key: "emag", show: s.footer_partner_emag_show === "true", url: s.footer_partner_emag_url, logo: s.footer_partner_emag_logo, label: "eMAG" },
     { key: "compari", show: s.footer_partner_compari_show === "true", url: s.footer_partner_compari_url, logo: s.footer_partner_compari_logo, label: "Compari.ro" },
     { key: "price", show: s.footer_partner_price_show === "true", url: s.footer_partner_price_url, logo: s.footer_partner_price_logo, label: "Price.ro" },
   ].filter((p) => p.show);
+
+  /* ── Copyright ── */
+  const copyrightName = s.footer_copyright_name || "Mama Lucica SRL";
+  const showMadeIn = s.footer_made_in_romania_show === "true";
+  const madeText = s.footer_made_in_romania_text || "Made with ❤️ în România";
 
   const renderLink = (l: { label: string; to: string }, idx: number) => {
     const style: React.CSSProperties = { color: linkColor };
@@ -201,44 +200,34 @@ export default function Footer() {
 
   return (
     <footer>
-      {/* ━━ Main 4-column grid ━━ */}
+      {/* ━━ RÂND 1 — 4 coloane ━━ */}
       <div className="py-10 md:py-12" style={{ background: bgColor }}>
         <div className="lumax-container grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
 
           {/* Col 1 – Magazin */}
           {col1Show && col1Links.length > 0 && (
             <div>
-              <h4 className="text-[12px] font-bold uppercase tracking-wider mb-3" style={{ color: titleColor }}>
-                {col1Title}
-              </h4>
-              <ul className="space-y-1">
-                {col1Links.map(renderLink)}
-              </ul>
+              <h4 className="text-[12px] font-bold uppercase tracking-wider mb-3" style={{ color: titleColor }}>{col1Title}</h4>
+              <ul className="space-y-1">{col1Links.map(renderLink)}</ul>
             </div>
           )}
 
           {/* Col 2 – Clienți */}
           {col2Show && col2Links.length > 0 && (
             <div>
-              <h4 className="text-[12px] font-bold uppercase tracking-wider mb-3" style={{ color: titleColor }}>
-                {col2Title}
-              </h4>
-              <ul className="space-y-1">
-                {col2Links.map(renderLink)}
-              </ul>
+              <h4 className="text-[12px] font-bold uppercase tracking-wider mb-3" style={{ color: titleColor }}>{col2Title}</h4>
+              <ul className="space-y-1">{col2Links.map(renderLink)}</ul>
             </div>
           )}
 
           {/* Col 3 – Date comerciale */}
           {col3Show && (
             <div>
-              <h4 className="text-[12px] font-bold uppercase tracking-wider mb-3" style={{ color: titleColor }}>
-                {col3Title}
-              </h4>
+              <h4 className="text-[12px] font-bold uppercase tracking-wider mb-3" style={{ color: titleColor }}>{col3Title}</h4>
               <div className="space-y-1 text-[13px] leading-relaxed" style={{ color: textColor }}>
                 {companyName && <p className="font-medium">{companyName}</p>}
-                {cui && <p>CUI: {cui}</p>}
                 {regCom && <p>Reg. Com.: {regCom}</p>}
+                {cui && <p>CUI: {cui}</p>}
                 {capitalSocial && <p>Capital social: {capitalSocial}</p>}
                 {addressStreet && <p>{addressStreet}</p>}
                 {addressCity && <p>{addressCity}</p>}
@@ -249,19 +238,16 @@ export default function Footer() {
           {/* Col 4 – Suport clienți */}
           {col4Show && (
             <div>
-              <h4 className="text-[12px] font-bold uppercase tracking-wider mb-3" style={{ color: titleColor }}>
-                {col4Title}
-              </h4>
+              <h4 className="text-[12px] font-bold uppercase tracking-wider mb-3" style={{ color: titleColor }}>{col4Title}</h4>
               <div className="space-y-2 text-[13px] leading-relaxed" style={{ color: textColor }}>
+                {col4SupportText && <p className="text-[12px]">{col4SupportText}</p>}
                 {phone && (
                   <p>
                     📞{" "}
                     <a href={`tel:${phone}`} className="font-semibold transition-colors" style={{ color: titleColor }}
                       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = linkHoverColor; }}
                       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = titleColor; }}
-                    >
-                      {phone}
-                    </a>
+                    >{phone}</a>
                   </p>
                 )}
                 {email && (
@@ -270,20 +256,15 @@ export default function Footer() {
                     <a href={`mailto:${email}`} className="transition-colors" style={{ color: linkColor }}
                       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = linkHoverColor; }}
                       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = linkColor; }}
-                    >
-                      {email}
-                    </a>
+                    >{email}</a>
                   </p>
                 )}
-                {col4SupportText && <p className="text-[12px] mt-1" style={{ color: textColor }}>{col4SupportText}</p>}
                 {showContactBtn && (
                   <Link
                     to={contactBtnUrl}
                     className="inline-block mt-2 px-5 py-2 rounded-md text-[13px] font-semibold text-white transition-opacity hover:opacity-90"
                     style={{ background: contactBtnColor }}
-                  >
-                    {contactBtnText}
-                  </Link>
+                  >{contactBtnText}</Link>
                 )}
               </div>
             </div>
@@ -291,7 +272,7 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* ━━ Social media row ━━ */}
+      {/* ━━ RÂND 2 — Social media centrat ━━ */}
       {showSocial && activeSocials.length > 0 && (
         <div className="py-4" style={{ background: bgColor, borderTop: `1px solid ${bottomBg}` }}>
           <div className="lumax-container flex items-center justify-center gap-3">
@@ -306,71 +287,78 @@ export default function Footer() {
                 style={{ background: bottomBg, color: textColor }}
                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = linkHoverColor; (e.currentTarget as HTMLElement).style.color = "#fff"; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = bottomBg; (e.currentTarget as HTMLElement).style.color = textColor; }}
-              >
-                {sc.icon}
-              </a>
+              >{sc.icon}</a>
             ))}
           </div>
         </div>
       )}
 
-      {/* ━━ ANPC / SAL / Partners badges ━━ */}
-      {(showAnpc || showSal || partners.length > 0) && (
-        <div className="py-4" style={{ background: bgColor, borderTop: `1px solid ${bottomBg}` }}>
-          <div className="lumax-container flex flex-wrap items-center justify-center gap-6">
-            {showAnpc && (
-              <a href={s.footer_anpc_url || "https://anpc.ro/ce-este-sal/"} target="_blank" rel="noopener noreferrer"
-                className="opacity-70 hover:opacity-100 transition-opacity" title={s.footer_anpc_alt || "ANPC SAL"}>
-                {s.footer_anpc_logo_url ? (
-                  <img src={s.footer_anpc_logo_url} alt={s.footer_anpc_alt || "ANPC SAL"} className="h-10" />
-                ) : (
-                  <span className="text-xs border rounded px-3 py-1.5" style={{ color: textColor, borderColor: bottomBg }}>ANPC</span>
-                )}
-              </a>
-            )}
-            {showSal && (
-              <a href={s.footer_sal_url || "https://ec.europa.eu/consumers/odr"} target="_blank" rel="noopener noreferrer"
-                className="opacity-70 hover:opacity-100 transition-opacity" title={s.footer_sal_alt || "SOL"}>
-                {s.footer_sal_logo_url ? (
-                  <img src={s.footer_sal_logo_url} alt={s.footer_sal_alt || "SOL"} className="h-10" />
-                ) : (
-                  <span className="text-xs border rounded px-3 py-1.5" style={{ color: textColor, borderColor: bottomBg }}>SOL</span>
-                )}
-              </a>
-            )}
-            {partners.map((p) => (
-              <a key={p.key} href={p.url} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity" title={p.label}>
-                {p.logo ? <img src={p.logo} alt={p.label} className="h-8" /> : (
-                  <span className="text-xs border rounded px-3 py-1.5" style={{ color: textColor, borderColor: bottomBg }}>{p.label}</span>
-                )}
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* ━━ RÂND 3 — Bottom bar ━━ */}
+      <div className="py-5" style={{ background: bottomBg }}>
+        <div className="lumax-container flex flex-col items-center gap-4">
+          {/* Row A: Copyright + Payment + Partners */}
+          <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* Left: Copyright */}
+            <div className="text-center sm:text-left shrink-0">
+              <span className="text-xs font-medium" style={{ color: bottomTextColor }}>
+                © {new Date().getFullYear()} {copyrightName}. Toate drepturile rezervate.
+              </span>
+              {showMadeIn && (
+                <p className="text-[11px] mt-0.5" style={{ color: bottomTextColor }}>{madeText}</p>
+              )}
+            </div>
 
-      {/* ━━ Payment icons row ━━ */}
-      {showPayment && paymentItems.length > 0 && (
-        <div className="py-4" style={{ background: bgColor, borderTop: `1px solid ${bottomBg}` }}>
-          <div className="lumax-container flex flex-wrap items-center justify-center gap-3">
-            {paymentItems.map((p) => (
-              <div key={p.key} title={p.label}>
-                {p.icon}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+            {/* Right: Payment icons + Badges */}
+            <div className="flex flex-col items-center sm:items-end gap-3">
+              {/* Payment icons */}
+              {showPayment && paymentItems.length > 0 && (
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  {paymentItems.map((p) => (
+                    <div key={p.key} title={p.label}>{p.icon}</div>
+                  ))}
+                </div>
+              )}
 
-      {/* ━━ Bottom copyright bar ━━ */}
-      <div className="py-3.5" style={{ background: bottomBg }}>
-        <div className="lumax-container flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span className="text-xs" style={{ color: bottomTextColor }}>
-            © {new Date().getFullYear()} {copyrightName}. Toate drepturile rezervate.
-          </span>
-          {showMadeIn && (
-            <span className="text-xs" style={{ color: bottomTextColor }}>{madeText}</span>
-          )}
+              {/* ANPC / SAL logos */}
+              {(showAnpc || showSal) && (
+                <div className="flex flex-wrap items-center justify-center gap-4">
+                  {showAnpc && (
+                    <a href={s.footer_anpc_url || "https://anpc.ro/ce-este-sal/"} target="_blank" rel="noopener noreferrer"
+                      className="opacity-80 hover:opacity-100 transition-opacity" title={s.footer_anpc_alt || "ANPC SAL"}>
+                      {s.footer_anpc_logo_url ? (
+                        <img src={s.footer_anpc_logo_url} alt={s.footer_anpc_alt || "ANPC SAL"} style={{ height: "40px", maxWidth: "250px" }} className="object-contain" />
+                      ) : (
+                        <span className="text-[11px] border rounded px-3 py-1" style={{ color: bottomTextColor, borderColor: bottomTextColor + "40" }}>ANPC SAL</span>
+                      )}
+                    </a>
+                  )}
+                  {showSal && (
+                    <a href={s.footer_sal_url || "https://ec.europa.eu/consumers/odr"} target="_blank" rel="noopener noreferrer"
+                      className="opacity-80 hover:opacity-100 transition-opacity" title={s.footer_sal_alt || "SOL"}>
+                      {s.footer_sal_logo_url ? (
+                        <img src={s.footer_sal_logo_url} alt={s.footer_sal_alt || "SOL"} style={{ height: "40px", maxWidth: "250px" }} className="object-contain" />
+                      ) : (
+                        <span className="text-[11px] border rounded px-3 py-1" style={{ color: bottomTextColor, borderColor: bottomTextColor + "40" }}>SOL</span>
+                      )}
+                    </a>
+                  )}
+                </div>
+              )}
+
+              {/* Marketplace partners */}
+              {partners.length > 0 && (
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  {partners.map((p) => (
+                    <a key={p.key} href={p.url} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity" title={p.label}>
+                      {p.logo ? <img src={p.logo} alt={p.label} className="h-6" /> : (
+                        <span className="text-[11px] border rounded px-2 py-1" style={{ color: bottomTextColor, borderColor: bottomTextColor + "40" }}>{p.label}</span>
+                      )}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </footer>
