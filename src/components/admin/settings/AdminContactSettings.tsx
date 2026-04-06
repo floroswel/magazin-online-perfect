@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import { useSettings } from "@/hooks/useSettings";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +9,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Plus, Trash2, Upload } from "lucide-react";
+
+interface BankAccount {
+  iban: string;
+  bank: string;
+}
 
 function Toggle({ label, k, s, save }: { label: string; k: string; s: Record<string, string>; save: (k: string, v: string) => void }) {
   return (
