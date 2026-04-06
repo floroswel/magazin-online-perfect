@@ -221,7 +221,7 @@ function MainHeader({ categories }: { categories: Category[] }) {
             </button>
 
             {showAccount && !isMobile && (
-              <div className="absolute right-0 top-full mt-1 w-56 bg-card border border-border rounded-lg shadow-lg z-50 py-2">
+              <div className="absolute right-0 top-full w-56 bg-card border border-border rounded-lg shadow-lg z-[250] py-2 pt-3">
                 {!user ? (
                   <>
                     <div className="px-4 py-2 space-y-2">
