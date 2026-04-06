@@ -81,14 +81,21 @@ function ProductCardInner({ product, eager = false }: Props) {
     >
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-secondary">
-        <img
-          src={product.image_url || "/placeholder.svg"}
-          alt={product.name || "Produs"}
-          width={400}
-          height={400}
-          loading={eager ? "eager" : "lazy"}
-          className="w-full h-full object-cover transition-transform duration-400 group-hover:scale-[1.07]"
-        />
+        {product.image_url ? (
+          <img
+            src={product.image_url}
+            alt={product.name || "Produs"}
+            width={400}
+            height={400}
+            loading={eager ? "eager" : "lazy"}
+            className="w-full h-full object-cover transition-transform duration-400 group-hover:scale-[1.07]"
+          />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-muted to-secondary text-muted-foreground/40">
+            <span className="text-5xl mb-2">🕯</span>
+            <span className="text-[10px] font-medium">Imagine indisponibilă</span>
+          </div>
+        )}
 
         {/* Badges */}
         <div className="absolute top-2 left-2 flex flex-col gap-1 z-[2]">
