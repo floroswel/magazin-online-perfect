@@ -37,28 +37,39 @@ const SETTINGS_KEYS = [
   "footer_show_email", "footer_show_phone", "footer_show_address", "footer_show_schedule",
   // Footer social
   "footer_facebook_url", "footer_instagram_url", "footer_tiktok_url", "footer_youtube_url", "footer_pinterest_url",
-  // Footer columns
+  // Footer columns (new 4-col layout)
+  "footer_col1_title", "footer_col1_links", "footer_col1_show",
+  "footer_col2_title", "footer_col2_links", "footer_col2_show",
+  "footer_col3_title", "footer_col3_show",
+  "footer_col4_title", "footer_col4_show", "footer_col4_support_text",
+  // Footer legacy columns
   "footer_show_products_col", "footer_products_title", "footer_products_links",
   "footer_show_info_col", "footer_info_title", "footer_info_links",
   "footer_show_contact_col", "footer_contact_title",
-  // Footer ANPC / SAL / SOL
-  "footer_anpc_show", "footer_anpc_url", "footer_anpc_logo_url", "footer_anpc_text",
-  "footer_sal_show", "footer_sal_url", "footer_sal_text",
-  "footer_sol_show", "footer_sol_url", "footer_sol_text",
+  // Footer company address
+  "footer_address_street", "footer_address_city",
+  // Footer contact button
+  "footer_show_contact_btn", "footer_contact_btn_text", "footer_contact_btn_url",
+  // Footer social
+  "footer_social_show",
+  // Footer ANPC / SAL logos
+  "footer_anpc_show", "footer_anpc_url", "footer_anpc_logo_url", "footer_anpc_alt",
+  "footer_sal_show", "footer_sal_url", "footer_sal_logo_url", "footer_sal_alt",
   // Footer partners
   "footer_partner_emag_show", "footer_partner_emag_url", "footer_partner_emag_logo",
   "footer_partner_compari_show", "footer_partner_compari_url", "footer_partner_compari_logo",
   "footer_partner_price_show", "footer_partner_price_url", "footer_partner_price_logo",
-  // Footer payment & reviews
-  "footer_show_payment_icons", "footer_payment_methods",
-  "footer_show_reviews", "footer_reviews_count", "footer_reviews_text",
+  // Footer payment icons
+  "footer_show_payment_icons",
+  "footer_payment_netopia_show", "footer_payment_visa_show", "footer_payment_mastercard_show",
+  "footer_payment_tbi_show", "footer_payment_ramburs_show",
   // Footer copyright
-  "footer_copyright_name", "footer_made_in_romania", "footer_made_text",
+  "footer_copyright_name", "footer_copyright_year_auto",
+  "footer_made_in_romania_show", "footer_made_in_romania_text",
   // Footer colors
   "footer_bg_color", "footer_text_color", "footer_title_color", "footer_link_color",
-  "footer_link_hover_color", "footer_border_color", "footer_bottom_bg_color",
-  // Footer (legacy)
-  "footer_col1_title", "footer_col1_links", "footer_col2_title", "footer_col2_links",
+  "footer_link_hover_color", "footer_bottom_bg_color", "footer_bottom_text_color",
+  "footer_contact_btn_color",
   "contact_phone", "contact_email", "contact_address", "contact_schedule",
   "copyright_text", "anpc_display", "footer_upper_bg", "footer_lower_bg",
   // Navigation
