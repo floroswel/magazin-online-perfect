@@ -135,12 +135,12 @@ export default function QuickViewModal({ productId, onClose }: Props) {
                 {/* Badges */}
                 <div className="absolute top-2 left-2 flex flex-col gap-1">
                   {discount > 0 && (
-                    <span className="bg-destructive text-destructive-foreground text-[10px] font-extrabold px-1.5 py-0.5 rounded-sm">
+                    <span className="text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded-sm" style={{ background: 'var(--badge-sale-color, #FF3300)' }}>
                       -{discount}%
                     </span>
                   )}
                   {(product as any).badge_new && (
-                    <span className="bg-lumax-green text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">NOU</span>
+                    <span className="text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm" style={{ background: 'var(--badge-new-color, #00A650)' }}>NOU</span>
                   )}
                   {isOutOfStock && (
                     <span className="bg-muted-foreground text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">Stoc epuizat</span>
@@ -176,7 +176,7 @@ export default function QuickViewModal({ productId, onClose }: Props) {
               {/* Rating */}
               {product.rating && product.rating > 0 && (
                 <div className="flex items-center gap-1.5 mb-2">
-                  <span className="text-lumax-yellow text-xs">
+                  <span className="text-xs" style={{ color: 'var(--stars-color, #FFB800)' }}>
                     {"★".repeat(Math.round(product.rating))}{"☆".repeat(5 - Math.round(product.rating))}
                   </span>
                   <span className="text-xs text-muted-foreground">({reviewCount || product.review_count || 0})</span>
@@ -188,12 +188,12 @@ export default function QuickViewModal({ productId, onClose }: Props) {
                 {product.old_price && product.old_price > product.price && (
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="text-sm text-muted-foreground line-through">{format(product.old_price)}</span>
-                    <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1 py-0.5 rounded">-{discount}%</span>
+                    <span className="text-white text-[10px] font-bold px-1 py-0.5 rounded" style={{ background: 'var(--badge-sale-color, #FF3300)' }}>-{discount}%</span>
                   </div>
                 )}
-                <p className="text-2xl font-black text-destructive">{format(product.price)}</p>
+                <p className="text-2xl font-black" style={{ color: 'var(--product-price-color, #FF3300)' }}>{format(product.price)}</p>
                 {product.old_price && product.old_price > product.price && (
-                  <p className="text-xs font-semibold text-lumax-green mt-0.5">Economisești {format(product.old_price - product.price)}</p>
+                  <p className="text-xs font-semibold mt-0.5" style={{ color: 'var(--savings-color, #00A650)' }}>Economisești {format(product.old_price - product.price)}</p>
                 )}
               </div>
 
