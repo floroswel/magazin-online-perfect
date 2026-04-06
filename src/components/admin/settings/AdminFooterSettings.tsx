@@ -275,8 +275,8 @@ export default function AdminFooterSettings() {
         <CardHeader><CardTitle className="text-base">9. Copyright & Branding</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <SettingInput label="Nume copyright (ex: Mama Lucica SRL)" settingKey="footer_copyright_name" s={s} save={save} />
-          <SettingToggle label="Afișează „Made with ❤️ în România"" settingKey="footer_made_in_romania_show" s={s} save={save} />
-          <SettingInput label="Text „Made in" (personalizabil)" settingKey="footer_made_in_romania_text" s={s} save={save} />
+          <SettingToggle label={'Afișează "Made with ❤️ în România"'} settingKey="footer_made_in_romania_show" s={s} save={save} />
+          <SettingInput label={'Text "Made in" (personalizabil)'} settingKey="footer_made_in_romania_text" s={s} save={save} />
         </CardContent>
       </Card>
 
