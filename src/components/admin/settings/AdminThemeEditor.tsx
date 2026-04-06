@@ -161,6 +161,7 @@ h1,h2,h3{font-family:'${headingFont}',serif}
 export default function AdminThemeEditor() {
   const { settings, updateSetting } = useSettings();
   const [saveStatus, setSaveStatus] = useState("");
+  const [customCssDraft, setCustomCssDraft] = useState("");
 
   const saveSetting = useCallback(async (key: string, value: string) => {
     await updateSetting(key, value);
@@ -320,12 +321,12 @@ export default function AdminThemeEditor() {
             </CardHeader>
             <CardContent>
               <Textarea
-                value={get("custom_css", "")}
-                onChange={e => setLocalSettings(prev => ({ ...prev, custom_css: e.target.value }))}
+                value={customCssDraft || get("custom_css", "")}
+                onChange={e => setCustomCssDraft(e.target.value)}
                 placeholder="/* Adaugă CSS personalizat aici */"
                 className="font-mono text-xs min-h-[160px]"
               />
-              <Button size="sm" className="mt-3" onClick={() => saveSetting("custom_css", localSettings.custom_css || "")}>
+              <Button size="sm" className="mt-3" onClick={() => saveSetting("custom_css", customCssDraft || get("custom_css", ""))}>
                 Aplică CSS
               </Button>
             </CardContent>
@@ -333,7 +334,7 @@ export default function AdminThemeEditor() {
         </div>
 
         {/* Right: Live Preview */}
-        <LivePreview settings={localSettings} />
+        <LivePreview settings={settings} />
       </div>
     </div>
   );
