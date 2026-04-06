@@ -189,7 +189,7 @@ const AdminControlCenter = lazy(() => import("./control/AdminControlCenter"));
 const AdminConfiguratorSettings = lazy(() => import("./settings/AdminConfiguratorSettings"));
 const AdminHeroSlides = lazy(() => import("./content/AdminHeroSlides"));
 const AdminPersonalizationOptions = lazy(() => import("./content/AdminPersonalizationOptions"));
-const AdminStaticPages = lazy(() => import("./content/AdminStaticPages"));
+const AdminStaticPages = lazy(() => import("./content/AdminCmsPages"));
 const AdminExternalWebhooks = lazy(() => import("./integrations/AdminExternalWebhooks"));
 const AdminBreadcrumbSettings = lazy(() => import("./settings/AdminBreadcrumbSettings"));
 const AdminDomainSettings = lazy(() => import("./settings/AdminDomainSettings"));
