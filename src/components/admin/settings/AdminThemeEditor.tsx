@@ -159,35 +159,16 @@ h1,h2,h3{font-family:'${headingFont}',serif}
 }
 
 export default function AdminThemeEditor() {
-  const settings = useSettings();
-  const [saving, setSaving] = useState<string | null>(null);
-  const [localSettings, setLocalSettings] = useState<Record<string, string>>({});
-
-  // Sync from context
-  useEffect(() => {
-    setLocalSettings(prev => {
-      const merged = { ...prev };
-      // Only overwrite keys that aren't being actively edited
-      for (const [k, v] of Object.entries(settings)) {
-        if (saving !== k) merged[k] = v;
-      }
-      return merged;
-    });
-  }, [settings, saving]);
+  const { settings, updateSetting } = useSettings();
+  const [saveStatus, setSaveStatus] = useState("");
 
   const saveSetting = useCallback(async (key: string, value: string) => {
-    setSaving(key);
-    setLocalSettings(prev => ({ ...prev, [key]: value }));
+    await updateSetting(key, value);
+    setSaveStatus("✅ Salvat");
+    setTimeout(() => setSaveStatus(""), 2000);
+  }, [updateSetting]);
 
-    const { error } = await supabase.from("app_settings").upsert(
-      { key, value_json: value, updated_at: new Date().toISOString() },
-      { onConflict: "key" }
-    );
-    if (error) toast.error(`Eroare la salvare: ${error.message}`);
-    setSaving(null);
-  }, []);
-
-  const get = (key: string, fallback: string = "") => localSettings[key] || fallback;
+  const get = (key: string, fallback: string = "") => settings[key] || fallback;
 
   return (
     <div className="space-y-4">
