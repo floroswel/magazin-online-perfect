@@ -73,7 +73,7 @@ const SOCIAL_DEFS = [
 function parsePipeLinks(raw: string): { label: string; to: string }[] {
   if (!raw) return [];
   return raw.split("|").map((entry) => {
-    const idx = entry.lastIndexOf(":");
+    const idx = entry.indexOf(":");
     if (idx <= 0) return null;
     const label = entry.slice(0, idx).trim();
     const to = entry.slice(idx + 1).trim();
@@ -295,70 +295,64 @@ export default function Footer() {
 
       {/* ━━ RÂND 3 — Bottom bar ━━ */}
       <div className="py-5" style={{ background: bottomBg }}>
-        <div className="lumax-container flex flex-col items-center gap-4">
-          {/* Row A: Copyright + Payment + Partners */}
-          <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4">
-            {/* Left: Copyright */}
-            <div className="text-center sm:text-left shrink-0">
-              <span className="text-xs font-medium" style={{ color: bottomTextColor }}>
-                © {new Date().getFullYear()} {copyrightName}. Toate drepturile rezervate.
-              </span>
-              {showMadeIn && (
-                <p className="text-[11px] mt-0.5" style={{ color: bottomTextColor }}>{madeText}</p>
-              )}
-            </div>
-
-            {/* Right: Payment icons + Badges */}
-            <div className="flex flex-col items-center sm:items-end gap-3">
-              {/* Payment icons */}
-              {showPayment && paymentItems.length > 0 && (
-                <div className="flex flex-wrap items-center justify-center gap-2">
-                  {paymentItems.map((p) => (
-                    <div key={p.key} title={p.label}>{p.icon}</div>
-                  ))}
-                </div>
-              )}
-
-              {/* ANPC / SAL logos */}
-              {(showAnpc || showSal) && (
-                <div className="flex flex-wrap items-center justify-center gap-4">
-                  {showAnpc && (
-                    <a href={s.footer_anpc_url || "https://anpc.ro/ce-este-sal/"} target="_blank" rel="noopener noreferrer"
-                      className="opacity-80 hover:opacity-100 transition-opacity" title={s.footer_anpc_alt || "ANPC SAL"}>
-                      {s.footer_anpc_logo_url ? (
-                        <img src={s.footer_anpc_logo_url} alt={s.footer_anpc_alt || "ANPC SAL"} style={{ height: "40px", maxWidth: "250px" }} className="object-contain" />
-                      ) : (
-                        <span className="text-[11px] border rounded px-3 py-1" style={{ color: bottomTextColor, borderColor: bottomTextColor + "40" }}>ANPC SAL</span>
-                      )}
-                    </a>
-                  )}
-                  {showSal && (
-                    <a href={s.footer_sal_url || "https://ec.europa.eu/consumers/odr"} target="_blank" rel="noopener noreferrer"
-                      className="opacity-80 hover:opacity-100 transition-opacity" title={s.footer_sal_alt || "SOL"}>
-                      {s.footer_sal_logo_url ? (
-                        <img src={s.footer_sal_logo_url} alt={s.footer_sal_alt || "SOL"} style={{ height: "40px", maxWidth: "250px" }} className="object-contain" />
-                      ) : (
-                        <span className="text-[11px] border rounded px-3 py-1" style={{ color: bottomTextColor, borderColor: bottomTextColor + "40" }}>SOL</span>
-                      )}
-                    </a>
-                  )}
-                </div>
-              )}
-
-              {/* Marketplace partners */}
-              {partners.length > 0 && (
-                <div className="flex flex-wrap items-center justify-center gap-3">
-                  {partners.map((p) => (
-                    <a key={p.key} href={p.url} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity" title={p.label}>
-                      {p.logo ? <img src={p.logo} alt={p.label} className="h-6" /> : (
-                        <span className="text-[11px] border rounded px-2 py-1" style={{ color: bottomTextColor, borderColor: bottomTextColor + "40" }}>{p.label}</span>
-                      )}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
+        <div className="lumax-container flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* Left: Copyright */}
+          <div className="text-center sm:text-left shrink-0">
+            <span className="text-xs font-medium" style={{ color: bottomTextColor }}>
+              © {new Date().getFullYear()} {copyrightName}. Toate drepturile rezervate.
+            </span>
+            {showMadeIn && (
+              <p className="text-[11px] mt-0.5" style={{ color: bottomTextColor }}>{madeText}</p>
+            )}
           </div>
+
+          {/* Center: ANPC/SAL logos + Partners */}
+          <div className="flex flex-col items-center gap-3">
+            {(showAnpc || showSal) && (
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                {showAnpc && (
+                  <a href={s.footer_anpc_url || "https://anpc.ro/ce-este-sal/"} target="_blank" rel="noopener noreferrer"
+                    className="opacity-80 hover:opacity-100 transition-opacity" title={s.footer_anpc_alt || "ANPC SAL"}>
+                    {s.footer_anpc_logo_url ? (
+                      <img src={s.footer_anpc_logo_url} alt={s.footer_anpc_alt || "ANPC SAL"} style={{ height: "40px", maxWidth: "250px" }} className="object-contain" />
+                    ) : (
+                      <span className="text-[11px] border rounded px-3 py-1" style={{ color: bottomTextColor, borderColor: bottomTextColor + "40" }}>ANPC SAL</span>
+                    )}
+                  </a>
+                )}
+                {showSal && (
+                  <a href={s.footer_sal_url || "https://ec.europa.eu/consumers/odr"} target="_blank" rel="noopener noreferrer"
+                    className="opacity-80 hover:opacity-100 transition-opacity" title={s.footer_sal_alt || "SOL"}>
+                    {s.footer_sal_logo_url ? (
+                      <img src={s.footer_sal_logo_url} alt={s.footer_sal_alt || "SOL"} style={{ height: "40px", maxWidth: "250px" }} className="object-contain" />
+                    ) : (
+                      <span className="text-[11px] border rounded px-3 py-1" style={{ color: bottomTextColor, borderColor: bottomTextColor + "40" }}>SOL</span>
+                    )}
+                  </a>
+                )}
+              </div>
+            )}
+            {partners.length > 0 && (
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                {partners.map((p) => (
+                  <a key={p.key} href={p.url} target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity" title={p.label}>
+                    {p.logo ? <img src={p.logo} alt={p.label} className="h-6" /> : (
+                      <span className="text-[11px] border rounded px-2 py-1" style={{ color: bottomTextColor, borderColor: bottomTextColor + "40" }}>{p.label}</span>
+                    )}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right: Payment icons */}
+          {showPayment && paymentItems.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-2 shrink-0">
+              {paymentItems.map((p) => (
+                <div key={p.key} title={p.label}>{p.icon}</div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </footer>
