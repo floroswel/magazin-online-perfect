@@ -113,6 +113,22 @@ const SETTINGS_KEYS = [
   // ━━ Product & catalog colors ━━
   "product_price_color", "product_stars_color", "badge_sale_color",
   "badge_new_color", "free_shipping_color", "savings_color",
+  // ━━ Contact page ━━
+  "contact_form_show", "contact_form_title", "contact_form_subtitle",
+  "contact_form_btn_text", "contact_form_btn_color", "contact_form_gdpr_text", "contact_form_receiver_email",
+  "contact_company_show", "contact_company_title", "contact_cod_fiscal", "contact_nr_reg_com",
+  "contact_sediu_social", "contact_cont_bancar", "contact_banca", "contact_capital_social",
+  "contact_show_cont_bancar", "contact_show_banca",
+  "contact_section_contact_show", "contact_email_show", "contact_phone_show", "contact_address_show",
+  "contact_cod_postal", "contact_cod_postal_show",
+  "contact_support_show", "contact_support_title", "contact_support_text",
+  "contact_docs_show", "contact_docs_anpc_text",
+  "contact_doc1_show", "contact_doc1_label", "contact_doc1_url",
+  "contact_doc2_show", "contact_doc2_label", "contact_doc2_url",
+  "contact_doc3_show", "contact_doc3_label", "contact_doc3_url",
+  "contact_doc4_show", "contact_doc4_label", "contact_doc4_url",
+  "contact_caen_show", "contact_caen_codes",
+  "contact_map_show", "contact_map_embed_url",
 ];
 
 /* ── Convert a hex color (#RRGGBB) to the HSL string Shadcn expects ("H S% L%") ── */
