@@ -358,26 +358,31 @@ function NavBar({ categories }: { categories: Category[] }) {
   const childrenOf = (parentId: string) => categories.filter(c => c.parent_id === parentId);
 
   const defaultNavLinks = [
-    { label: "🔥 Oferte", to: "/oferte", badge: "HOT", badgeColor: "bg-destructive" },
-    { label: "⭐ Bestsellers", to: "/catalog?sort=bestseller" },
-    { label: "🆕 Noutăți", to: "/nou", badge: "NOU", badgeColor: "bg-lumax-green" },
-    { label: "🎁 Cadouri", to: "/card-cadou" },
-    { label: "🚚 Livrare Gratuită", to: "/catalog?free_shipping=true" },
-    { label: "📞 Contact", to: "/contact" },
+    { icon: "🔥", label: "Oferte", to: "/oferte", badge: "HOT", badge_color: "#FF3300" },
+    { icon: "⭐", label: "Bestsellers", to: "/catalog?sort=bestseller", badge: "", badge_color: "" },
+    { icon: "🆕", label: "Noutăți", to: "/nou", badge: "NOU", badge_color: "#00A650" },
+    { icon: "🎁", label: "Cadouri", to: "/card-cadou", badge: "", badge_color: "" },
+    { icon: "🚚", label: "Livrare Gratuită", to: "/catalog?free_shipping=true", badge: "", badge_color: "" },
+    { icon: "📞", label: "Contact", to: "/contact", badge: "", badge_color: "" },
   ];
 
-  let navLinks = defaultNavLinks;
-  try {
-    const parsed = JSON.parse(settings.nav_links || "[]");
-    if (Array.isArray(parsed) && parsed.length > 0) {
-      navLinks = parsed.map((l: any) => ({
-        label: l.label,
-        to: l.url || l.to,
-        badge: l.badge,
-        badgeColor: l.badgeColor || (l.badge === "HOT" ? "bg-destructive" : l.badge === "NOU" ? "bg-lumax-green" : "bg-primary"),
-      }));
-    }
-  } catch {}
+  const navLinks = (() => {
+    try {
+      const parsed = JSON.parse(settings.nav_links || "[]");
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed
+          .filter((l: any) => l.active !== false)
+          .map((l: any) => ({
+            icon: l.icon || "",
+            label: l.label,
+            to: l.url || l.to,
+            badge: l.badge || "",
+            badge_color: l.badge_color || "#FF3300",
+          }));
+      }
+    } catch {}
+    return defaultNavLinks;
+  })();
 
   return (
     <div className="bg-primary sticky top-0 z-[100]" style={{ boxShadow: "0 2px 4px rgba(0,102,255,0.3)", background: settings.nav_bar_color || undefined }}>
@@ -437,11 +442,15 @@ function NavBar({ categories }: { categories: Category[] }) {
             <Link
               key={`${link.to}-${idx}`}
               to={link.to}
-              className="relative flex items-center h-11 px-3 text-[13px] font-medium text-white/90 hover:text-white transition-colors"
+              className="relative flex items-center gap-1 h-11 px-3 text-[13px] font-medium text-white/90 hover:text-white transition-colors"
             >
+              {link.icon && <span className="text-sm">{link.icon}</span>}
               {link.label}
               {link.badge && (
-                <span className={`ml-1.5 px-1.5 py-0.5 text-[9px] font-bold rounded-full text-white ${link.badgeColor}`}>
+                <span
+                  className="ml-1 px-1.5 py-0.5 text-[9px] font-bold rounded text-white"
+                  style={{ background: link.badge_color || "#FF3300" }}
+                >
                   {link.badge}
                 </span>
               )}

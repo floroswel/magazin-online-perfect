@@ -409,6 +409,115 @@ export default function AdminEditableContent() {
   );
 }
 
+// ═══ NAV LINKS EDITOR ═══
+const DEFAULT_NAV_LINKS = [
+  { id: "1", label: "Oferte", url: "/catalog?sale=true", icon: "🔥", badge: "HOT", badge_color: "#FF3300", active: true },
+  { id: "2", label: "Bestsellers", url: "/catalog?sort=best_selling", icon: "⭐", badge: "", badge_color: "", active: true },
+  { id: "3", label: "Noutati", url: "/catalog?sort=newest", icon: "🆕", badge: "NOU", badge_color: "#00A650", active: true },
+  { id: "4", label: "Cadouri", url: "/catalog?category=cadouri", icon: "🎁", badge: "", badge_color: "", active: true },
+  { id: "5", label: "Livrare Gratuita", url: "/catalog?free_shipping=true", icon: "🚚", badge: "", badge_color: "", active: true },
+  { id: "6", label: "Contact", url: "/contact", icon: "📞", badge: "", badge_color: "", active: true },
+];
+
+interface NavLink { id: string; label: string; url: string; icon: string; badge: string; badge_color: string; active: boolean }
+
+function NavLinksEditor() {
+  const { settings, updateSetting } = useSettings();
+  const [showAdd, setShowAdd] = useState(false);
+  const [newLink, setNewLink] = useState({ icon: "", label: "", url: "", badge: "", badge_color: "#FF3300" });
+
+  const navLinks: NavLink[] = (() => {
+    try {
+      const parsed = JSON.parse(settings.nav_links || "[]");
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_NAV_LINKS;
+    } catch { return DEFAULT_NAV_LINKS; }
+  })();
+
+  const saveLinks = (links: NavLink[]) => {
+    updateSetting("nav_links", JSON.stringify(links));
+  };
+
+  const handleEdit = (id: string, field: string, value: any) => {
+    saveLinks(navLinks.map(l => l.id === id ? { ...l, [field]: value } : l));
+  };
+
+  const handleDelete = (id: string) => {
+    if (!confirm("Ștergi acest link?")) return;
+    saveLinks(navLinks.filter(l => l.id !== id));
+  };
+
+  const handleAdd = () => {
+    if (!newLink.label || !newLink.url) { toast.error("Label și URL sunt obligatorii"); return; }
+    saveLinks([...navLinks, { ...newLink, id: Date.now().toString(), active: true } as NavLink]);
+    setNewLink({ icon: "", label: "", url: "", badge: "", badge_color: "#FF3300" });
+    setShowAdd(false);
+    toast.success("Link adăugat!");
+  };
+
+  const handleReorder = (fromIdx: number, toIdx: number) => {
+    if (toIdx < 0 || toIdx >= navLinks.length) return;
+    const updated = [...navLinks];
+    const [moved] = updated.splice(fromIdx, 1);
+    updated.splice(toIdx, 0, moved);
+    saveLinks(updated);
+  };
+
+  return (
+    <Section title="Link-uri Bara Navigare Albastră" icon={Navigation} defaultOpen>
+      <p className="text-xs text-muted-foreground mb-3">Editează, adaugă sau șterge link-urile din bara albastră de navigare</p>
+
+      <div className="space-y-2 mb-3">
+        {navLinks.map((link, idx) => (
+          <Card key={link.id} className="p-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              {/* Reorder buttons */}
+              <div className="flex flex-col gap-0.5">
+                <button onClick={() => handleReorder(idx, idx - 1)} disabled={idx === 0} className="text-xs text-muted-foreground hover:text-foreground disabled:opacity-30">▲</button>
+                <button onClick={() => handleReorder(idx, idx + 1)} disabled={idx === navLinks.length - 1} className="text-xs text-muted-foreground hover:text-foreground disabled:opacity-30">▼</button>
+              </div>
+              {/* Icon */}
+              <Input value={link.icon} onChange={e => handleEdit(link.id, "icon", e.target.value)} className="w-14 h-8 text-center" placeholder="🔥" />
+              {/* Label */}
+              <Input value={link.label} onChange={e => handleEdit(link.id, "label", e.target.value)} className="flex-1 min-w-[100px] h-8" placeholder="Label" />
+              {/* URL */}
+              <Input value={link.url} onChange={e => handleEdit(link.id, "url", e.target.value)} className="flex-1 min-w-[140px] h-8" placeholder="/catalog?..." />
+              {/* Badge */}
+              <Input value={link.badge} onChange={e => handleEdit(link.id, "badge", e.target.value)} className="w-16 h-8" placeholder="HOT" />
+              {/* Badge color */}
+              <input type="color" value={link.badge_color || "#FF3300"} onChange={e => handleEdit(link.id, "badge_color", e.target.value)} className="w-8 h-8 rounded cursor-pointer border-0 p-0" />
+              {/* Active toggle */}
+              <Switch checked={link.active !== false} onCheckedChange={checked => handleEdit(link.id, "active", checked)} />
+              {/* Delete */}
+              <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive shrink-0" onClick={() => handleDelete(link.id)}>
+                <Trash2 className="w-3 h-3" />
+              </Button>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {showAdd ? (
+        <Card className="p-3 space-y-2 border-dashed border-primary">
+          <p className="text-sm font-semibold text-foreground">Adaugă Link Nou</p>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            <Input value={newLink.icon} onChange={e => setNewLink(p => ({ ...p, icon: e.target.value }))} placeholder="🎪 Icon" className="h-8" />
+            <Input value={newLink.label} onChange={e => setNewLink(p => ({ ...p, label: e.target.value }))} placeholder="Label *" className="h-8" />
+            <Input value={newLink.url} onChange={e => setNewLink(p => ({ ...p, url: e.target.value }))} placeholder="URL * /catalog?..." className="h-8 col-span-2 sm:col-span-1" />
+            <Input value={newLink.badge} onChange={e => setNewLink(p => ({ ...p, badge: e.target.value }))} placeholder="Badge" className="h-8" />
+            <input type="color" value={newLink.badge_color} onChange={e => setNewLink(p => ({ ...p, badge_color: e.target.value }))} className="w-8 h-8 rounded cursor-pointer border-0 p-0" />
+          </div>
+          <div className="flex gap-2">
+            <Button size="sm" onClick={handleAdd}><Plus className="w-3 h-3 mr-1" /> Adaugă</Button>
+            <Button size="sm" variant="outline" onClick={() => setShowAdd(false)}>Anulează</Button>
+          </div>
+        </Card>
+      ) : (
+        <Button size="sm" variant="outline" onClick={() => setShowAdd(true)}><Plus className="w-3 h-3 mr-1" /> Adaugă Link</Button>
+      )}
+    </Section>
+  );
+}
+
 function ContactField({ label, desc, settingKey, settings, updateSetting, placeholder }: {
   label: string; desc: string; settingKey: string;
   settings: Record<string, string>; updateSetting: (key: string, value: string) => Promise<boolean>;
