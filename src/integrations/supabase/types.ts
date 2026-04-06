@@ -9873,6 +9873,12 @@ export type Database = {
           product_id: string
         }[]
       }
+      get_social_proof_messages: {
+        Args: { limit_count?: number }
+        Returns: {
+          message: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
