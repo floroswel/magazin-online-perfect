@@ -17,7 +17,9 @@ export default function AnnouncementBar() {
 
   if (!visible || !announcement.enabled) return null;
 
-  const text = announcement.text_desktop || "🔥 OFERTA ZILEI: -30%! 🚚 Transport gratuit >200 lei! ⭐ 1000+ clienti multumiti! 🎁 Cadou la comenzi >300 lei!";
+  const threshold = settings.free_shipping_threshold || "200";
+  const rawText = announcement.text_desktop || "🔥 OFERTA ZILEI: -30%! 🚚 Transport gratuit >200 lei! ⭐ 1000+ clienti multumiti! 🎁 Cadou la comenzi >300 lei!";
+  const text = rawText.replace(/\{threshold\}/gi, threshold).replace(/\{(\d+)\}/g, (_, num) => num);
 
   const handleClose = () => {
     setVisible(false);
