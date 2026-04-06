@@ -9,7 +9,7 @@ import { useCart } from "@/hooks/useCart";
 import { useCurrency } from "@/hooks/useCurrency";
 import { usePageSeo } from "@/components/SeoHead";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
-import { Heart, Share2, Minus, Plus, Truck, RotateCcw, Shield, Package } from "lucide-react";
+import { Heart, Share2, Minus, Plus, Truck, RotateCcw, Shield, Package, Bell } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 
@@ -30,6 +30,9 @@ export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [liked, setLiked] = useState(false);
+  const [notifyEmail, setNotifyEmail] = useState("");
+  const [notifySubmitted, setNotifySubmitted] = useState(false);
+  const [notifyLoading, setNotifyLoading] = useState(false);
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", slug],
@@ -285,12 +288,63 @@ export default function ProductDetail() {
 
             {/* Actions */}
             <div className="space-y-2.5 mb-4">
-              <button onClick={handleAdd} disabled={isOutOfStock} className="w-full h-[52px] bg-primary text-primary-foreground text-[15px] font-bold rounded-lg hover:bg-lumax-blue-dark transition-colors disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed">
-                {isOutOfStock ? "Stoc Epuizat" : "Adaugă în Coș"}
-              </button>
-              <button onClick={handleBuyNow} disabled={isOutOfStock} className="w-full h-[52px] bg-destructive text-destructive-foreground text-[15px] font-bold rounded-lg hover:opacity-90 transition-opacity disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed">
-                Cumpără Acum
-              </button>
+              {isOutOfStock ? (
+                /* Back in stock notification form */
+                <div className="bg-destructive/5 border border-destructive/20 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Bell className="h-4 w-4 text-destructive" />
+                    <span className="text-sm font-bold text-foreground">Anunță-mă când revine în stoc</span>
+                  </div>
+                  {notifySubmitted ? (
+                    <p className="text-sm text-lumax-green font-semibold">✅ Te vom anunța pe email când produsul revine!</p>
+                  ) : (
+                    <div className="flex gap-2">
+                      <input
+                        type="email"
+                        value={notifyEmail}
+                        onChange={e => setNotifyEmail(e.target.value)}
+                        placeholder="email@exemplu.ro"
+                        className="flex-1 h-10 px-3 border border-border rounded-md text-sm bg-background focus:ring-primary focus:border-primary"
+                      />
+                      <button
+                        disabled={!notifyEmail || notifyLoading}
+                        onClick={async () => {
+                          if (!product || !notifyEmail) return;
+                          setNotifyLoading(true);
+                          const { error } = await supabase.from("back_in_stock_notifications").insert({
+                            product_id: product.id,
+                            email: notifyEmail,
+                          });
+                          setNotifyLoading(false);
+                          if (error) {
+                            if (error.code === "23505") {
+                              toast.info("Ești deja înscris pentru notificare!");
+                              setNotifySubmitted(true);
+                            } else {
+                              toast.error("Eroare la înscriere");
+                            }
+                          } else {
+                            setNotifySubmitted(true);
+                            toast.success("Te vom anunța când revine în stoc!");
+                          }
+                        }}
+                        className="h-10 px-4 bg-destructive text-destructive-foreground text-sm font-bold rounded-md hover:opacity-90 disabled:opacity-50"
+                      >
+                        {notifyLoading ? "..." : "Notifică-mă"}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <button onClick={handleAdd} className="w-full h-[52px] bg-primary text-primary-foreground text-[15px] font-bold rounded-lg hover:bg-lumax-blue-dark transition-colors">
+                    Adaugă în Coș
+                  </button>
+                  <button onClick={handleBuyNow} className="w-full h-[52px] bg-destructive text-destructive-foreground text-[15px] font-bold rounded-lg hover:opacity-90 transition-opacity">
+                    Cumpără Acum
+                  </button>
+                </>
+              )}
               <button onClick={() => { setLiked(!liked); toast.success(liked ? "Eliminat din favorite" : "Adăugat la favorite"); }} className="w-full h-11 bg-transparent border-2 border-primary text-primary text-sm font-semibold rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors">
                 <Heart className="inline h-4 w-4 mr-1.5" fill={liked ? "currentColor" : "none"} /> {liked ? "Salvat la Favorite" : "Adaugă la Favorite"}
               </button>
