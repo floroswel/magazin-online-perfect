@@ -100,12 +100,12 @@ function ProductCardInner({ product, eager = false }: Props) {
         {/* Badges */}
         <div className="absolute top-2 left-2 flex flex-col gap-1 z-[2]">
           {discount > 0 && (
-            <span className="bg-destructive text-destructive-foreground text-[10px] font-extrabold px-1.5 py-0.5 rounded-sm">
+            <span className="text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded-sm" style={{ background: 'var(--badge-sale-color, #FF3300)' }}>
               -{discount}%
             </span>
           )}
           {isNew && (
-            <span className="bg-lumax-green text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
+            <span className="text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm" style={{ background: 'var(--badge-new-color, #00A650)' }}>
               NOU
             </span>
           )}
@@ -177,7 +177,7 @@ function ProductCardInner({ product, eager = false }: Props) {
         {/* Rating */}
         {(product as any).avg_rating > 0 && (
           <div className="flex items-center gap-1 mb-1.5">
-            <span className="text-lumax-yellow text-[11px]">
+            <span className="text-[11px]" style={{ color: 'var(--stars-color, #FFB800)' }}>
               {"★".repeat(Math.round((product as any).avg_rating))}
               {"☆".repeat(5 - Math.round((product as any).avg_rating))}
             </span>
@@ -189,11 +189,11 @@ function ProductCardInner({ product, eager = false }: Props) {
 
         {/* Price */}
         <div className="flex items-baseline flex-wrap gap-1.5 mb-1">
-          <span className="text-lg font-extrabold text-destructive">{format(effectivePrice)}</span>
+          <span className="text-lg font-extrabold" style={{ color: 'var(--product-price-color, #FF3300)' }}>{format(effectivePrice)}</span>
           {showOldPrice && (
             <>
               <span className="text-xs text-muted-foreground line-through">{format(showOldPrice)}</span>
-              <span className="text-[11px] font-semibold text-lumax-green">
+              <span className="text-[11px] font-semibold" style={{ color: 'var(--savings-color, #00A650)' }}>
                 -{format(showOldPrice - effectivePrice)}
               </span>
             </>
@@ -201,7 +201,7 @@ function ProductCardInner({ product, eager = false }: Props) {
         </div>
 
         {/* Shipping hint */}
-        <p className="text-[10px] font-semibold text-lumax-green mb-2">
+        <p className="text-[10px] font-semibold mb-2" style={{ color: 'var(--free-shipping-color, #00A650)' }}>
           {effectivePrice >= FREE_SHIPPING ? "🚚 Transport gratuit" : `🚚 Transport ${SHIPPING_COST} lei`}
         </p>
 

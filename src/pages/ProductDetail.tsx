@@ -206,7 +206,7 @@ export default function ProductDetail() {
                 </div>
               )}
               {discount > 0 && (
-                <span className="absolute top-3 left-3 bg-destructive text-destructive-foreground text-xs font-extrabold px-2 py-1 rounded">
+                <span className="absolute top-3 left-3 text-white text-xs font-extrabold px-2 py-1 rounded" style={{ background: 'var(--badge-sale-color, #FF3300)' }}>
                   -{discount}%
                 </span>
               )}
@@ -244,7 +244,7 @@ export default function ProductDetail() {
             {/* Rating */}
             {product.rating && product.rating > 0 && (
               <div className="flex items-center gap-2 mb-2 text-sm">
-                <span className="text-lumax-yellow">
+                <span style={{ color: 'var(--stars-color, #FFB800)' }}>
                   {"★".repeat(Math.round(product.rating))}{"☆".repeat(5 - Math.round(product.rating))}
                 </span>
                 <span className="text-muted-foreground text-xs">{product.rating} din 5 ({product.review_count || 0} recenzii)</span>
@@ -260,12 +260,12 @@ export default function ProductDetail() {
               {product.old_price && product.old_price > product.price && (
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-base text-muted-foreground line-through">{format(product.old_price)}</span>
-                  <span className="bg-destructive text-destructive-foreground text-xs font-bold px-1.5 py-0.5 rounded">-{discount}%</span>
+                  <span className="text-white text-xs font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--badge-sale-color, #FF3300)' }}>-{discount}%</span>
                 </div>
               )}
-              <p className="text-3xl font-black text-destructive">{format(product.price)}</p>
+              <p className="text-3xl font-black" style={{ color: 'var(--product-price-color, #FF3300)' }}>{format(product.price)}</p>
               {product.old_price && product.old_price > product.price && (
-                <p className="text-sm font-semibold text-lumax-green mt-1">Economisești {format(product.old_price - product.price)}</p>
+                <p className="text-sm font-semibold mt-1" style={{ color: 'var(--savings-color, #00A650)' }}>Economisești {format(product.old_price - product.price)}</p>
               )}
             </div>
 
