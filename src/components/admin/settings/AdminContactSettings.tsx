@@ -1,5 +1,6 @@
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { useSettings } from "@/hooks/useSettings";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Upload } from "lucide-react";
 
 function Toggle({ label, k, s, save }: { label: string; k: string; s: Record<string, string>; save: (k: string, v: string) => void }) {
   return (
@@ -129,10 +130,35 @@ export default function AdminContactSettings() {
             <div key={i} className="border rounded p-3 space-y-2">
               <Toggle label={`Document ${i}`} k={`contact_doc${i}_show`} s={s} save={save} />
               <Field label="Label" k={`contact_doc${i}_label`} s={s} save={save} />
-              <Field label="URL document (PDF)" k={`contact_doc${i}_url`} s={s} save={save} placeholder="https://..." />
+              <div className="space-y-1">
+                <Label>Fișier document (PDF/imagine)</Label>
+                <div className="flex gap-2 items-center">
+                  <Input value={s[`contact_doc${i}_url`] || ""} placeholder="https://... sau încarcă fișier" onChange={e => save(`contact_doc${i}_url`, e.target.value)} className="flex-1" />
+                  <Button variant="outline" size="sm" onClick={() => {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = '.pdf,.jpg,.jpeg,.png,.webp';
+                    input.onchange = async (ev) => {
+                      const file = (ev.target as HTMLInputElement).files?.[0];
+                      if (!file) return;
+                      const ext = file.name.split('.').pop();
+                      const path = `anpc-docs/doc${i}-${Date.now()}.${ext}`;
+                      toast.info("Se încarcă...");
+                      const { error } = await supabase.storage.from("product-images").upload(path, file);
+                      if (error) { toast.error("Eroare upload: " + error.message); return; }
+                      const { data: { publicUrl } } = supabase.storage.from("product-images").getPublicUrl(path);
+                      save(`contact_doc${i}_url`, publicUrl);
+                      toast.success("Document încărcat cu succes!");
+                    };
+                    input.click();
+                  }}>
+                    <Upload className="h-4 w-4 mr-1" /> Încarcă
+                  </Button>
+                </div>
+              </div>
               {s[`contact_doc${i}_url`] && (
                 <a href={s[`contact_doc${i}_url`]} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">
-                  Preview link →
+                  Preview document →
                 </a>
               )}
             </div>
