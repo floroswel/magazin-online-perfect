@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { checkAndNotifyBackInStock } from "@/lib/backInStockNotify";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -146,6 +147,12 @@ export default function AdminStockManager() {
       });
       await supabase.from("products").update({ stock: newStock }).eq("id", productId);
       setProducts((prev) => prev.map((p) => p.id === productId ? { ...p, stock: newStock } : p));
+      checkAndNotifyBackInStock(productId, product.stock, newStock);
+    }
+
+    // Also check for warehouse-level restocks
+    if (editWarehouseId && editWarehouseId !== "total") {
+      checkAndNotifyBackInStock(productId, product.stock, products.find(p => p.id === productId)?.stock ?? newStock);
     }
 
     setEditingId(null);
