@@ -42,6 +42,7 @@ export default function Footer() {
     { icon: "IG", url: settings.social_instagram },
     { icon: "TT", url: settings.social_tiktok },
     { icon: "YT", url: settings.social_youtube },
+    { icon: "PI", url: settings.social_pinterest },
   ].filter(s => s.url);
 
   // If no DB socials, show placeholder icons
