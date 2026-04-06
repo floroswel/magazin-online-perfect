@@ -135,7 +135,7 @@ function MainHeader({ categories }: { categories: Category[] }) {
               <select
                 value={selectedCat}
                 onChange={(e) => setSelectedCat(e.target.value)}
-                className="bg-secondary border-none border-r border-border px-3 min-w-[130px] text-xs text-muted-foreground outline-none cursor-pointer"
+                className="bg-muted border-none border-r border-border px-3 min-w-[130px] text-xs text-foreground outline-none cursor-pointer"
               >
                 <option value="">Toate categoriile</option>
                 {parentCats.map(c => (
@@ -211,7 +211,7 @@ function MainHeader({ categories }: { categories: Category[] }) {
             onMouseLeave={() => !isMobile && setShowAccount(false)}
           >
             <button
-              onClick={() => isMobile && (user ? navigate("/account") : navigate("/auth"))}
+              onClick={() => { if (isMobile) { user ? navigate("/account") : navigate("/auth"); } else { setShowAccount(prev => !prev); } }}
               className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-md hover:bg-secondary transition-colors"
             >
               <User className="h-[22px] w-[22px] text-muted-foreground" />
@@ -398,8 +398,9 @@ function NavBar({ categories }: { categories: Category[] }) {
             <div className="absolute top-11 left-0 flex z-[200]">
               <div className="w-[260px] bg-card border border-border rounded-bl-lg shadow-lg max-h-[400px] overflow-y-auto">
                 {parentCats.map(cat => (
-                  <div
+                  <Link
                     key={cat.id}
+                    to={`/catalog?category=${cat.slug}`}
                     onMouseEnter={() => setHoveredCat(cat.id)}
                     className={`flex items-center gap-3 px-4 h-11 text-sm cursor-pointer transition-colors ${
                       hoveredCat === cat.id ? "bg-lumax-blue-light text-primary" : "hover:bg-secondary"
@@ -407,7 +408,7 @@ function NavBar({ categories }: { categories: Category[] }) {
                   >
                     <span className="flex-1">{cat.name}</span>
                     {childrenOf(cat.id).length > 0 && <ChevronRight className="h-4 w-4 text-muted-foreground" />}
-                  </div>
+                  </Link>
                 ))}
                 {parentCats.length === 0 && (
                   <div className="p-4 text-sm text-muted-foreground text-center">Adaugă categorii din admin</div>
