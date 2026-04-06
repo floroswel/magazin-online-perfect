@@ -1,9 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEditableContent } from "@/hooks/useEditableContent";
 import { useSettings } from "@/hooks/useSettings";
-import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 
 const DEFAULT_LINKS_COL1 = [
   { label: "Despre noi", to: "/despre-noi" },
