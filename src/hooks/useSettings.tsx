@@ -54,6 +54,8 @@ const SETTINGS_KEYS = [
   "custom_css",
   // ━━ Trust icons ━━
   "trust_icons",
+  // ━━ Homepage raw JSON settings ━━
+  "header_trust_bar", "homepage_benefits",
   // ━━ Product & catalog colors ━━
   "product_price_color", "product_stars_color", "badge_sale_color",
   "badge_new_color", "free_shipping_color", "savings_color",
@@ -211,7 +213,12 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const map: SettingsMap = {};
     data.forEach((row: any) => {
       const val = row.value_json;
-      map[row.key] = typeof val === "string" ? val : JSON.stringify(val);
+      const strVal = typeof val === "string" ? val : JSON.stringify(val);
+      map[row.key] = strVal;
+      // Store raw JSON for complex settings (arrays/objects)
+      if (typeof val !== "string" && val !== null) {
+        map[`_raw_${row.key}`] = JSON.stringify(val);
+      }
     });
     setSettings(map);
     applyCSSVariables(map);

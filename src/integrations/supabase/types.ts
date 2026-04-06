@@ -3558,6 +3558,51 @@ export type Database = {
           },
         ]
       }
+      landing_pages: {
+        Row: {
+          content: string | null
+          conversions: number | null
+          created_at: string
+          hero_image: string | null
+          id: string
+          meta_description: string | null
+          meta_title: string | null
+          name: string
+          published: boolean | null
+          slug: string
+          updated_at: string
+          visits: number | null
+        }
+        Insert: {
+          content?: string | null
+          conversions?: number | null
+          created_at?: string
+          hero_image?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          name: string
+          published?: boolean | null
+          slug: string
+          updated_at?: string
+          visits?: number | null
+        }
+        Update: {
+          content?: string | null
+          conversions?: number | null
+          created_at?: string
+          hero_image?: string | null
+          id?: string
+          meta_description?: string | null
+          meta_title?: string | null
+          name?: string
+          published?: boolean | null
+          slug?: string
+          updated_at?: string
+          visits?: number | null
+        }
+        Relationships: []
+      }
       loyalty_levels: {
         Row: {
           benefits: string[] | null

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import HomepageSectionOrder from "./HomepageSectionOrder";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -93,8 +93,7 @@ export default function ControlLayout() {
         </div>
       </div>
 
-      {/* Homepage Section Order */}
-      <HomepageSectionOrder />
+
 
       {/* Header Layout */}
       <Card className="border-border bg-card">

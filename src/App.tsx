@@ -23,6 +23,7 @@ import Favorites from "./pages/Favorites";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import CmsPage from "./pages/CmsPage";
+import LandingPage from "./pages/LandingPage";
 import Install from "./pages/Install";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -137,6 +138,7 @@ const App = () => (
               <Route path="/termeni-si-conditii" element={<ErrorBoundary><CmsPage overrideSlug="termeni-si-conditii" /></ErrorBoundary>} />
               <Route path="/politica-de-cookies" element={<ErrorBoundary><CmsPage overrideSlug="politica-cookie" /></ErrorBoundary>} />
               <Route path="/politica-de-retur" element={<ErrorBoundary><CmsPage overrideSlug="politica-retur" /></ErrorBoundary>} />
+              <Route path="/lp/:slug" element={<ErrorBoundary><LandingPage /></ErrorBoundary>} />
               <Route path="/sitemap.xml" element={<SitemapXml />} />
               <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
               <Route path="/:slug" element={<ErrorBoundary><CmsPage /></ErrorBoundary>} />
