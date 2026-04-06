@@ -1,7 +1,12 @@
-import { memo, useState } from "react";
+import { memo, useState, createContext, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Heart, Eye, ShoppingCart, Check } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
+
+// Context for quick view
+const QuickViewContext = createContext<{ open: (id: string) => void }>({ open: () => {} });
+export const QuickViewProvider = QuickViewContext;
+export function useQuickView() { return useContext(QuickViewContext); }
 import { useCurrency } from "@/hooks/useCurrency";
 import { usePricingRules } from "@/hooks/usePricingRules";
 import { usePromotions } from "@/hooks/usePromotions";
@@ -136,13 +141,7 @@ function ProductCardInner({ product, eager = false }: Props) {
 
         {/* Quick actions overlay */}
         <div className="absolute bottom-0 left-0 right-0 bg-foreground/75 flex flex-col gap-1 p-2 translate-y-full group-hover:translate-y-0 transition-transform duration-200 z-[3]">
-          <Link
-            to={`/product/${product.slug}`}
-            className="bg-card text-foreground text-xs font-semibold text-center py-2 rounded-sm hover:bg-secondary transition-colors"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Eye className="inline h-3.5 w-3.5 mr-1.5" />Vizualizare rapidă
-          </Link>
+          <QuickViewButton productId={product.id} />
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
@@ -209,6 +208,18 @@ function ProductCardInner({ product, eager = false }: Props) {
         </button>
       </div>
     </Link>
+  );
+}
+
+function QuickViewButton({ productId }: { productId: string }) {
+  const { open } = useQuickView();
+  return (
+    <button
+      onClick={(e) => { e.preventDefault(); e.stopPropagation(); open(productId); }}
+      className="bg-card text-foreground text-xs font-semibold text-center py-2 rounded-sm hover:bg-secondary transition-colors"
+    >
+      <Eye className="inline h-3.5 w-3.5 mr-1.5" />Vizualizare rapidă
+    </button>
   );
 }
 

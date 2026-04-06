@@ -151,14 +151,35 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
       order_id: orderId, action: "status_change", old_status: order.status, new_status: newStatus, note: statusNote || null,
     });
     if (sendEmailOnStatus && order.user_email) {
+      const emailType = newStatus === "shipped" ? "shipping_update" : "order_status";
+      const items = (order.order_items || []).map((i: any) => ({
+        name: i.product_name || i.products?.name || "Produs",
+        quantity: i.quantity,
+        price: i.unit_price || i.price,
+        image_url: i.image_url || i.products?.image_url,
+      }));
       supabase.functions.invoke("send-email", {
-        body: { type: "order_status", to: order.user_email, data: { orderId, status: newStatus } },
+        body: {
+          type: emailType,
+          to: order.user_email,
+          data: {
+            orderId: order.id,
+            orderNumber: order.order_number,
+            status: newStatus,
+            customerName: (order.shipping_address as any)?.fullName || (order.shipping_address as any)?.full_name || "",
+            trackingNumber: (order as any).awb_number || (order as any).tracking_number || "",
+            courierName: (order as any).courier || "",
+            total: order.total,
+            items,
+            shippingAddress: order.shipping_address,
+          },
+        },
       }).catch(console.error);
     }
     queryClient.invalidateQueries({ queryKey: ["admin-order-detail", orderId] });
     queryClient.invalidateQueries({ queryKey: ["order-timeline", orderId] });
     queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
-    toast.success(`Status schimbat la ${statusConfig[newStatus]?.label || newStatus}`);
+    toast.success(`Status schimbat + ${sendEmailOnStatus ? "email trimis" : "fără email"}`);
     setShowStatusDialog(false);
     setStatusNote("");
   };

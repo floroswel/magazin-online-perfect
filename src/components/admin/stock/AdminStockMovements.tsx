@@ -103,7 +103,12 @@ export default function AdminStockMovements() {
     // Also update products.stock
     const { data: prod } = await supabase.from("products").select("stock").eq("id", form.product_id).single();
     if (prod) {
-      await supabase.from("products").update({ stock: Math.max(0, prod.stock + delta) }).eq("id", form.product_id);
+      const oldStock = prod.stock;
+      const newStock = Math.max(0, prod.stock + delta);
+      await supabase.from("products").update({ stock: newStock }).eq("id", form.product_id);
+      // Check back-in-stock notifications
+      const { checkAndNotifyBackInStock } = await import("@/lib/backInStockNotify");
+      checkAndNotifyBackInStock(form.product_id, oldStock, newStock);
     }
 
     toast.success("Mișcare stoc înregistrată!");
