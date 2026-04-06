@@ -5,12 +5,12 @@ type SettingsMap = Record<string, string>;
 
 interface SettingsContextValue {
   settings: SettingsMap;
-  updateSetting: (key: string, value: string) => Promise<void>;
+  updateSetting: (key: string, value: string) => Promise<boolean>;
 }
 
 const SettingsContext = createContext<SettingsContextValue>({
   settings: {},
-  updateSetting: async () => {},
+  updateSetting: async () => false,
 });
 
 // All the app_settings keys we load for the storefront
@@ -204,6 +204,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const updateSetting = useCallback(async (key: string, value: string) => {
+    console.log("updateSetting called:", key, value);
+
     // Optimistic update — apply CSS immediately
     setSettings(prev => {
       const updated = { ...prev, [key]: value };
@@ -212,16 +214,25 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     });
 
     // Persist to DB
-    const { error } = await supabase.from("app_settings").upsert(
-      { key, value_json: value, updated_at: new Date().toISOString() },
-      { onConflict: "key" }
-    );
+    console.log("Saving to DB...");
+    const { data, error } = await supabase
+      .from("app_settings")
+      .upsert(
+        { key, value_json: value, updated_at: new Date().toISOString() },
+        { onConflict: "key" }
+      )
+      .select("key, value_json");
+
+    console.log("DB result:", { data, error });
 
     if (error) {
-      console.error("Settings save error:", error);
-      // Rollback on failure
+      console.error("SAVE FAILED:", error.message, error.code);
       fetchSettings();
+      return false;
     }
+
+    console.log("Saved successfully!");
+    return true;
   }, [fetchSettings]);
 
   useEffect(() => {
