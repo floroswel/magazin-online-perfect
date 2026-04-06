@@ -85,6 +85,15 @@ const SETTINGS_KEYS = [
   "delivery_time", "return_days", "delivery_description",
   "reviews_enabled", "catalog_items_per_page", "catalog_default_sort",
   "robots_txt", "loyalty_enabled",
+  // ━━ Ticker bars ━━
+  "ticker1_show", "ticker1_text", "ticker1_bg_color", "ticker1_text_color", "ticker1_speed", "ticker1_direction",
+  "ticker2_show", "ticker2_messages", "ticker2_bg_color", "ticker2_text_color", "ticker2_speed", "ticker2_direction", "ticker2_separator",
+  // ━━ Social proof ticker ━━
+  "ticker_social_proof_show", "ticker_social_proof_source", "ticker_social_proof_template",
+  "ticker_social_proof_limit", "ticker_social_proof_min_delay_minutes", "ticker_social_proof_anonymize", "ticker_social_proof_position",
+  // ━━ Site alert ━━
+  "site_alert_show", "site_alert_text", "site_alert_type", "site_alert_bg_color", "site_alert_text_color",
+  "site_alert_dismissible", "site_alert_link_text", "site_alert_link_url",
   // ━━ Theme colors ━━
   "primary_color", "secondary_color", "accent_color",
   "background_color", "text_color",

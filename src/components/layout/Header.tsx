@@ -32,26 +32,51 @@ interface SearchResult {
 }
 
 // ═══════════════════════════════════════════
-// LAYER 1 — TOP INFO BAR
+// LAYER 1 — TOP INFO BAR (Ticker 1 — configurable)
 // ═══════════════════════════════════════════
 function TopInfoBar() {
   const { header_topbar } = useEditableContent();
-  const { settings } = useSettings();
+  const { settings: s } = useSettings();
+
+  // If ticker1 is explicitly hidden, fall back to static bar
+  const ticker1Enabled = s.ticker1_show !== "false";
+  const ticker1Text = s.ticker1_text || header_topbar.shipping_text || "Livrare gratuită peste 200 lei";
+  const speed = parseInt(s.ticker1_speed || "30");
+  const dir = s.ticker1_direction === "right" ? "reverse" : "normal";
+
+  // Social proof in ticker1?
+  const [socialMessages, setSocialMessages] = useState<string[]>([]);
+  useEffect(() => {
+    if (s.ticker_social_proof_show === "true" && s.ticker_social_proof_position === "ticker1") {
+      supabase.rpc("get_social_proof_messages", { limit_count: parseInt(s.ticker_social_proof_limit || "10") })
+        .then(({ data }) => { if (data) setSocialMessages((data as any[]).map((r: any) => r.message)); });
+    }
+  }, [s.ticker_social_proof_show, s.ticker_social_proof_position, s.ticker_social_proof_limit]);
+
+  if (!ticker1Enabled) return null;
+
+  // Build display text
+  let displayText = ticker1Text;
+  if (socialMessages.length > 0) {
+    displayText = [ticker1Text, ...socialMessages.map(m => "🛒 " + m)].join("  ·  ");
+  }
 
   return (
-    <div className="hidden md:block border-b border-border bg-card">
-      <div className="lumax-container flex items-center justify-between h-8 text-[11px] text-muted-foreground">
-        <div className="flex items-center gap-5">
-          <span>🚚 {header_topbar.shipping_text || "Livrare gratuită peste 200 lei"}</span>
-          <span>↩️ Retururi gratuite {settings.return_days || "30"} zile</span>
-          <span>🔒 Plată securizată</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link to="/account" className="hover:text-foreground transition-colors">Contul meu</Link>
-          <span className="text-border">|</span>
-          <Link to="/account" className="hover:text-foreground transition-colors">Comenzile mele</Link>
-          <span className="text-border">|</span>
-          <Link to="/contact" className="hover:text-foreground transition-colors">Contact</Link>
+    <div
+      className="hidden md:block border-b border-border overflow-hidden"
+      style={{
+        backgroundColor: s.ticker1_bg_color || undefined,
+        color: s.ticker1_text_color || undefined,
+      }}
+    >
+      <div className="h-8 flex items-center overflow-hidden">
+        <div
+          className="animate-marquee whitespace-nowrap flex text-[11px] font-medium"
+          style={{ animationDuration: `${speed}s`, animationDirection: dir }}
+        >
+          <span className="px-8">{displayText}</span>
+          <span className="px-8">{displayText}</span>
+          <span className="px-8">{displayText}</span>
         </div>
       </div>
     </div>
@@ -477,15 +502,57 @@ function NavBar({ categories }: { categories: Category[] }) {
 }
 
 // ═══════════════════════════════════════════
-// LAYER 4 — PROMO TICKER (yellow)
+// LAYER 4 — PROMO TICKER (configurable from admin)
 // ═══════════════════════════════════════════
 function PromoTicker() {
-  const { settings } = useSettings();
-  const text = settings.ticker_text || "⚡ FLASH SALE: -50% la produse selectate!  ·  🚚 TRANSPORT GRATUIT comenzi > 200 lei!  ·  🎁 CADOU la comenzi > 300 lei!  ·  ⭐ CALITATE GARANTATĂ sau banii înapoi!";
+  const { settings: s } = useSettings();
+  const [socialMessages, setSocialMessages] = useState<string[]>([]);
+
+  // Fetch social proof messages
+  useEffect(() => {
+    if (s.ticker_social_proof_show !== "true") return;
+    supabase.rpc("get_social_proof_messages", { limit_count: parseInt(s.ticker_social_proof_limit || "10") })
+      .then(({ data }) => {
+        if (data) setSocialMessages((data as any[]).map((r: any) => r.message));
+      });
+  }, [s.ticker_social_proof_show, s.ticker_social_proof_limit]);
+
+  if (s.ticker2_show === "false") return null;
+
+  const separator = ` ${s.ticker2_separator || "·"} `;
+  const fixedMessages = (s.ticker2_messages || s.ticker_text || "⚡ FLASH SALE  ·  🚚 TRANSPORT GRATUIT").split("|").filter(Boolean);
+
+  // Intercalate social proof if position is ticker2
+  let allMessages = [...fixedMessages];
+  if (s.ticker_social_proof_show === "true" && s.ticker_social_proof_position === "ticker2" && socialMessages.length > 0) {
+    const merged: string[] = [];
+    let si = 0;
+    for (let i = 0; i < fixedMessages.length; i++) {
+      merged.push(fixedMessages[i]);
+      if (si < socialMessages.length) {
+        merged.push("🛒 " + socialMessages[si++]);
+      }
+    }
+    while (si < socialMessages.length) merged.push("🛒 " + socialMessages[si++]);
+    allMessages = merged;
+  }
+
+  const text = allMessages.join(separator);
+  const speed = parseInt(s.ticker2_speed || "40");
+  const dir = s.ticker2_direction === "right" ? "reverse" : "normal";
 
   return (
-    <div className="h-8 bg-lumax-yellow text-foreground text-xs font-bold overflow-hidden flex items-center">
-      <div className="animate-ticker whitespace-nowrap flex">
+    <div
+      className="h-8 text-xs font-bold overflow-hidden flex items-center"
+      style={{
+        backgroundColor: s.ticker2_bg_color || "#FFB800",
+        color: s.ticker2_text_color || "#000000",
+      }}
+    >
+      <div
+        className="animate-ticker whitespace-nowrap flex"
+        style={{ animationDuration: `${speed}s`, animationDirection: dir }}
+      >
         <span className="px-12">{text}</span>
         <span className="px-12">{text}</span>
         <span className="px-12">{text}</span>

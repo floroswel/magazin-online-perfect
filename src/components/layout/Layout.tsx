@@ -6,6 +6,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import MobileBottomNav from "./MobileBottomNav";
 import AnnouncementBar from "./AnnouncementBar";
+import SiteAlert from "./SiteAlert";
 import SocialProofPopup from "@/components/SocialProofPopup";
 import QuickViewModal from "@/components/products/QuickViewModal";
 import { QuickViewProvider } from "@/components/products/ProductCard";
@@ -33,6 +34,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <QuickViewProvider.Provider value={quickViewCtx}>
       <div className="min-h-screen flex flex-col">
         <SeoHead />
+        <SiteAlert />
         <AnnouncementBar />
         <Header />
         <main className="flex-1 pb-16 md:pb-0">{children}</main>

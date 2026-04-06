@@ -193,6 +193,7 @@ const AdminStaticPages = lazy(() => import("./content/AdminCmsPages"));
 const AdminExternalWebhooks = lazy(() => import("./integrations/AdminExternalWebhooks"));
 const AdminBreadcrumbSettings = lazy(() => import("./settings/AdminBreadcrumbSettings"));
 const AdminDomainSettings = lazy(() => import("./settings/AdminDomainSettings"));
+const AdminTickerSettings = lazy(() => import("./settings/AdminTickerSettings"));
 
 export default function AdminRoutes() {
   return (
@@ -448,6 +449,7 @@ export default function AdminRoutes() {
         <Route path="settings/custom-404" element={<AdminCustom404Settings />} />
         <Route path="settings/configurator" element={<AdminConfiguratorSettings />} />
         <Route path="settings/breadcrumbs" element={<AdminBreadcrumbSettings />} />
+        <Route path="settings/ticker" element={<AdminTickerSettings />} />
         <Route path="settings/domains" element={<AdminDomainSettings />} />
 
         {/* ═══════════ UTILIZATORI ═══════════ */}

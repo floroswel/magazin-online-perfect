@@ -216,6 +216,8 @@ const menuSections: MenuSection[] = [
           { label: "Meniuri", path: "/admin/content/menus", dividerBefore: "Navigare" },
           { label: "Breadcrumbs", path: "/admin/settings/breadcrumbs" },
           { label: "Footer", path: "/admin/settings/footer" },
+          { label: "Ticker Bars", path: "/admin/settings/ticker", dividerBefore: "Bannere & Tickere" },
+          { label: "Banner Avertisment", path: "/admin/settings/ticker#alert" },
           { label: "Centru Vizibilitate", path: "/admin/control", dividerBefore: "Componente" },
           { label: "Pagină 404", path: "/admin/settings/custom-404" },
           { label: "Slider 360°", path: "/admin/settings/360-slider" },
