@@ -51,6 +51,8 @@ const SETTINGS_KEYS = [
   "announcement_bg", "announcement_text_color",
   // ━━ Custom CSS ━━
   "custom_css",
+  // ━━ Trust icons ━━
+  "trust_icons",
 ];
 
 /* ── Convert a hex color (#RRGGBB) to the HSL string Shadcn expects ("H S% L%") ── */

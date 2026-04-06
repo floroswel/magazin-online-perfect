@@ -7834,30 +7834,6 @@ export type Database = {
         }
         Relationships: []
       }
-      site_theme_settings: {
-        Row: {
-          id: string
-          setting_key: string
-          updated_at: string
-          updated_by: string | null
-          value_json: Json
-        }
-        Insert: {
-          id?: string
-          setting_key: string
-          updated_at?: string
-          updated_by?: string | null
-          value_json?: Json
-        }
-        Update: {
-          id?: string
-          setting_key?: string
-          updated_at?: string
-          updated_by?: string | null
-          value_json?: Json
-        }
-        Relationships: []
-      }
       site_visibility_settings: {
         Row: {
           category: string

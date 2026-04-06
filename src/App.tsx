@@ -4,7 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
-import { ThemeProvider } from "@/hooks/useTheme";
 
 import { EditableContentProvider } from "@/hooks/useEditableContent";
 import { SettingsProvider } from "@/hooks/useSettings";
@@ -77,7 +76,6 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <ThemeProvider>
 
           <EditableContentProvider>
           <SettingsProvider>
@@ -152,7 +150,7 @@ const App = () => (
           </SettingsProvider>
           </EditableContentProvider>
 
-          </ThemeProvider>
+
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

@@ -1,7 +1,16 @@
-import { useExtendedTheme } from "@/hooks/useTheme";
+import { useSettings } from "@/hooks/useSettings";
 
 export default function TrustIcons() {
-  const { trust_icons } = useExtendedTheme();
+  const { settings } = useSettings();
+
+  let trust_icons: Array<{ url: string; alt: string }> = [];
+  try {
+    const raw = settings.trust_icons;
+    if (raw) {
+      const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+      if (Array.isArray(parsed)) trust_icons = parsed;
+    }
+  } catch { /* ignore */ }
 
   if (!trust_icons || trust_icons.length === 0) return null;
 
