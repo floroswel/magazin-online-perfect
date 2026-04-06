@@ -7,11 +7,11 @@
 @layer base {
   :root {
     /* ── LUMAX Design Tokens ── */
-    --lumax-blue: 217 100% 50%;
-    --lumax-blue-dark: 217 100% 40%;
-    --lumax-blue-darker: 217 100% 30%;
-    --lumax-blue-light: 217 80% 95%;
-    --lumax-blue-hover: 217 100% 43%;
+    --lumax-blue: 0 100% 50%;
+    --lumax-blue-dark: 0 100% 40%;
+    --lumax-blue-darker: 0 100% 30%;
+    --lumax-blue-light: 0 80% 95%;
+    --lumax-blue-hover: 0 100% 43%;
     --lumax-red: 12 100% 50%;
     --lumax-red-dark: 12 100% 40%;
     --lumax-red-light: 12 100% 96%;
@@ -19,25 +19,25 @@
     --lumax-green: 153 100% 33%;
 
     /* Shadcn semantic mapping */
-    --background: 210 20% 98%;
-    --foreground: 220 20% 10%;
+    --background: 0 0% 97%;
+    --foreground: 0 0% 7%;
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 10%;
+    --card-foreground: 0 0% 7%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 10%;
-    --primary: 217 100% 50%;
+    --popover-foreground: 0 0% 7%;
+    --primary: 0 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 20% 10%;
-    --muted: 220 14% 96%;
+    --secondary: 240 18% 95%;
+    --secondary-foreground: 0 0% 7%;
+    --muted: 240 18% 95%;
     --muted-foreground: 220 10% 46%;
-    --accent: 220 14% 96%;
-    --accent-foreground: 220 20% 10%;
+    --accent: 240 18% 95%;
+    --accent-foreground: 0 0% 7%;
     --destructive: 12 100% 50%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 217 100% 50%;
+    --ring: 0 100% 50%;
     --radius: 0.375rem;
 
     /* Admin sidebar (keep) */
