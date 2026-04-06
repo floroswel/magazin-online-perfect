@@ -71,31 +71,6 @@ export default function Footer() {
 
   return (
     <footer>
-      {/* Newsletter strip */}
-      <div className="bg-primary py-4">
-        <div className="lumax-container flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span className="text-primary-foreground text-sm md:text-base font-bold">
-            📧 Abonează-te pentru oferte exclusive
-          </span>
-          <form onSubmit={handleSubscribe} className="flex gap-2 w-full sm:w-auto">
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email-ul tău..."
-              className="h-9 px-3 text-sm rounded-md bg-card text-foreground flex-1 sm:w-64 outline-none"
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className="h-9 px-4 bg-destructive text-destructive-foreground text-sm font-bold rounded-md hover:opacity-90 transition-opacity disabled:opacity-50"
-            >
-              Abonează-te
-            </button>
-          </form>
-        </div>
-      </div>
 
       {/* Main footer */}
       <div className="py-10 md:py-12" style={{ background: settings.footer_upper_bg || "hsl(220 50% 12%)" }}>
