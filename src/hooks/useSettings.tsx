@@ -53,6 +53,9 @@ const SETTINGS_KEYS = [
   "custom_css",
   // ━━ Trust icons ━━
   "trust_icons",
+  // ━━ Product & catalog colors ━━
+  "product_price_color", "product_stars_color", "badge_sale_color",
+  "badge_new_color", "free_shipping_color", "savings_color",
 ];
 
 /* ── Convert a hex color (#RRGGBB) to the HSL string Shadcn expects ("H S% L%") ── */
@@ -149,6 +152,14 @@ function applyCSSVariables(s: SettingsMap) {
   // ━━ Sections ━━
   if (s.trust_strip_color) root.style.setProperty("--trust-strip-color", s.trust_strip_color);
   if (s.newsletter_bg) root.style.setProperty("--newsletter-bg", s.newsletter_bg);
+
+  // ━━ Product & Catalog colors ━━
+  root.style.setProperty("--product-price-color", s.product_price_color || "#FF3300");
+  root.style.setProperty("--stars-color", s.product_stars_color || "#FFB800");
+  root.style.setProperty("--badge-sale-color", s.badge_sale_color || "#FF3300");
+  root.style.setProperty("--badge-new-color", s.badge_new_color || "#00A650");
+  root.style.setProperty("--free-shipping-color", s.free_shipping_color || "#00A650");
+  root.style.setProperty("--savings-color", s.savings_color || "#00A650");
 
   // ━━ Typography (load Google Fonts + set CSS vars) ━━
   const fontsToLoad = new Set<string>();

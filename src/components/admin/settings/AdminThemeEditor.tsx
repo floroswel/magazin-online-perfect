@@ -8,8 +8,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Palette, Type, Square, Layout, Eye, Loader2, Code, Monitor } from "lucide-react";
+import { Palette, Type, Square, Layout, Code, Monitor, Store, ShoppingBag, Upload, Trash2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const GOOGLE_FONTS = [
   "Inter", "Roboto", "Open Sans", "Montserrat", "Lato", "Poppins",
@@ -86,6 +88,8 @@ function LivePreview({ settings }: { settings: Record<string, string> }) {
     const radius = p.btn_border_radius || "6";
     const headingFont = p.heading_font || "Inter";
     const bodyFont = p.body_font || "Inter";
+    const priceColor = p.product_price_color || accent;
+    const siteName = p.site_name || "LUMAX";
 
     const fontsToLoad = new Set<string>();
     if (headingFont !== "Inter") fontsToLoad.add(headingFont);
@@ -117,7 +121,7 @@ h1,h2,h3{font-family:'${headingFont}',serif}
 .card-b{padding:6px}
 .card-b h3{font-size:11px;margin-bottom:2px}
 .card-b p{font-size:9px;color:#888}
-.card-price{color:${accent};font-weight:700;font-size:12px;margin-top:2px}
+.card-price{color:${priceColor};font-weight:700;font-size:12px;margin-top:2px}
 .trust{background:${trustBg};color:#fff;padding:6px;text-align:center;font-size:9px;display:flex;gap:12px;justify-content:center}
 .nl{background:${nlBg};padding:12px;text-align:center}
 .nl h3{font-size:12px;margin-bottom:4px;color:${text}}
@@ -127,7 +131,7 @@ h1,h2,h3{font-family:'${headingFont}',serif}
 .btns{display:flex;gap:6px;justify-content:center;padding:8px}
 </style></head><body>
 <div class="ann">🔥 Transport GRATUIT la comenzi peste 200 RON</div>
-<div class="hdr"><h3>🕯 LUMAX</h3><span style="font-size:10px;color:#888">🔍 Cont 🛒</span></div>
+<div class="hdr"><h3>🕯 ${siteName}</h3><span style="font-size:10px;color:#888">🔍 Cont 🛒</span></div>
 <div class="nav"><span>Acasă</span><span>Lumânări</span><span>Seturi</span><span>Oferte</span></div>
 <div class="hero"><h2>Lumânări Artizanale</h2><p>Descoperă colecția noastră</p><button class="btn btn-c">Cumpără Acum</button></div>
 <div class="cards">
@@ -138,8 +142,8 @@ h1,h2,h3{font-family:'${headingFont}',serif}
 <div class="btns"><button class="btn btn-p">Adaugă în Coș</button><button class="btn btn-c">Cumpără Acum</button></div>
 <div class="trust">✓ Livrare Rapidă ✓ Produse Naturale ✓ Garanție 30 Zile</div>
 <div class="nl"><h3>Newsletter</h3><p>Abonează-te pentru oferte</p></div>
-<div class="foot-u">LUMAX · Contact · Despre Noi · Termeni</div>
-<div class="foot-l">© 2026 LUMAX. Toate drepturile rezervate.</div>
+<div class="foot-u">${siteName} · Contact · Despre Noi · Termeni</div>
+<div class="foot-l">© 2026 ${siteName}. Toate drepturile rezervate.</div>
 </body></html>`);
     doc.close();
   }, [settings]);
@@ -161,6 +165,7 @@ export default function AdminThemeEditor() {
   const { settings, updateSetting } = useSettings();
   const [saveStatus, setSaveStatus] = useState("");
   const [customCssDraft, setCustomCssDraft] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   const saveSetting = useCallback(async (key: string, value: string) => {
     const saved = await updateSetting(key, value);
@@ -171,6 +176,50 @@ export default function AdminThemeEditor() {
   }, [updateSetting]);
 
   const get = (key: string, fallback: string = "") => settings[key] || fallback;
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `branding/logo-${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("product-images").upload(path, file, { upsert: true });
+    if (error) {
+      toast.error("Eroare la încărcare: " + error.message);
+      setUploading(false);
+      return;
+    }
+    const { data: urlData } = supabase.storage.from("product-images").getPublicUrl(path);
+    await saveSetting("logo_url", urlData.publicUrl);
+    setUploading(false);
+    toast.success("Logo încărcat!");
+  };
+
+  const handleFaviconUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `branding/favicon-${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("product-images").upload(path, file, { upsert: true });
+    if (error) {
+      toast.error("Eroare la încărcare: " + error.message);
+      setUploading(false);
+      return;
+    }
+    const { data: urlData } = supabase.storage.from("product-images").getPublicUrl(path);
+    await saveSetting("favicon_url", urlData.publicUrl);
+    // Also update the actual favicon in the page
+    let link = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
+    if (link) link.href = urlData.publicUrl;
+    setUploading(false);
+    toast.success("Favicon încărcat!");
+  };
+
+  const removeLogo = async () => {
+    await saveSetting("logo_url", "");
+    toast.success("Logo șters");
+  };
 
   return (
     <div className="space-y-4">
@@ -186,6 +235,105 @@ export default function AdminThemeEditor() {
 
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-6">
         <div className="space-y-5">
+
+          {/* ══════ SECTION 0: IDENTITATE BRAND ══════ */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Store className="w-4 h-4 text-primary" /> Identitate Brand
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-xs">Numele Magazinului</Label>
+                  <Input
+                    value={get("site_name", "LUMAX")}
+                    onChange={e => saveSetting("site_name", e.target.value)}
+                    className="mt-1"
+                    placeholder="Numele magazinului"
+                  />
+                  <p className="text-[10px] text-muted-foreground mt-1">Apare în header, footer, email-uri, SEO</p>
+                </div>
+                <div>
+                  <Label className="text-xs">Slogan / Tagline</Label>
+                  <Input
+                    value={get("site_tagline", "")}
+                    onChange={e => saveSetting("site_tagline", e.target.value)}
+                    className="mt-1"
+                    placeholder="Sloganul magazinului"
+                  />
+                  <p className="text-[10px] text-muted-foreground mt-1">Apare sub logo în header</p>
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Logo */}
+              <div>
+                <Label className="text-xs mb-2 block">Logo Magazin</Label>
+                <div className="flex items-center gap-4">
+                  {get("logo_url") ? (
+                    <div className="border border-border rounded-lg p-2 bg-card">
+                      <img src={get("logo_url")} alt="Logo" className="h-10 object-contain" />
+                    </div>
+                  ) : (
+                    <div className="border-2 border-dashed border-border rounded-lg w-24 h-12 flex items-center justify-center text-muted-foreground text-xs">
+                      Fără logo
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <label className="cursor-pointer">
+                      <input type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} />
+                      <Button size="sm" variant="outline" asChild disabled={uploading}>
+                        <span><Upload className="w-3 h-3 mr-1" /> {uploading ? "Se încarcă..." : "Alege Logo"}</span>
+                      </Button>
+                    </label>
+                    {get("logo_url") && (
+                      <Button size="sm" variant="outline" onClick={removeLogo}>
+                        <Trash2 className="w-3 h-3 mr-1" /> Șterge
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Logo Visible */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-xs">Afișează logo imagine</Label>
+                  <p className="text-[10px] text-muted-foreground">Dacă e dezactivat, se afișează textul numelui</p>
+                </div>
+                <Switch
+                  checked={get("logo_visible", "true") === "true"}
+                  onCheckedChange={v => saveSetting("logo_visible", v ? "true" : "false")}
+                />
+              </div>
+
+              <Separator />
+
+              {/* Favicon */}
+              <div>
+                <Label className="text-xs mb-2 block">Favicon</Label>
+                <div className="flex items-center gap-4">
+                  {get("favicon_url") ? (
+                    <img src={get("favicon_url")} alt="Favicon" className="w-8 h-8 object-contain border border-border rounded" />
+                  ) : (
+                    <div className="border-2 border-dashed border-border rounded w-8 h-8 flex items-center justify-center text-muted-foreground text-[8px]">
+                      —
+                    </div>
+                  )}
+                  <label className="cursor-pointer">
+                    <input type="file" accept="image/png,image/x-icon,image/ico" className="hidden" onChange={handleFaviconUpload} />
+                    <Button size="sm" variant="outline" asChild disabled={uploading}>
+                      <span><Upload className="w-3 h-3 mr-1" /> Alege Favicon</span>
+                    </Button>
+                  </label>
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-1">32×32px sau 64×64px, format ICO/PNG</p>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* ══════ SECTION 1: CULORI PRINCIPALE ══════ */}
           <Card>
@@ -212,7 +360,7 @@ export default function AdminThemeEditor() {
             </CardHeader>
             <CardContent>
               <ColorRow label="Fundal Header" description="Bara principală cu logo" settingKey="header_bg" value={get("header_bg", "#FFFFFF")} onSave={saveSetting} />
-              <ColorRow label="Bara Navigare" description="Mega-menu, categoriole" settingKey="nav_bar_color" value={get("nav_bar_color", "#0066FF")} onSave={saveSetting} />
+              <ColorRow label="Bara Navigare" description="Mega-menu, categorii" settingKey="nav_bar_color" value={get("nav_bar_color", "#0066FF")} onSave={saveSetting} />
               <ColorRow label="Announcement Bar - Fundal" description="Bara de sus cu promoții" settingKey="announcement_bg" value={get("announcement_bg", "#FF3300")} onSave={saveSetting} />
               <ColorRow label="Announcement Bar - Text" description="Textul din bara de sus" settingKey="announcement_text_color" value={get("announcement_text_color", "#FFFFFF")} onSave={saveSetting} />
             </CardContent>
@@ -261,7 +409,24 @@ export default function AdminThemeEditor() {
             </CardContent>
           </Card>
 
-          {/* ══════ SECTION 5: TIPOGRAFIE ══════ */}
+          {/* ══════ SECTION 5: PRODUSE & CATALOG ══════ */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <ShoppingBag className="w-4 h-4 text-primary" /> Produse & Catalog
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ColorRow label="Culoare Preț Produse" description="Prețul afișat pe card și pagina produs" settingKey="product_price_color" value={get("product_price_color", "#FF3300")} onSave={saveSetting} />
+              <ColorRow label="Culoare Stele Rating" description="Stelele de rating" settingKey="product_stars_color" value={get("product_stars_color", "#FFB800")} onSave={saveSetting} />
+              <ColorRow label="Culoare Badge Reducere" description="Badge-ul cu procentul de reducere" settingKey="badge_sale_color" value={get("badge_sale_color", "#FF3300")} onSave={saveSetting} />
+              <ColorRow label="Culoare Badge Nou" description="Badge-ul NOU pe produse" settingKey="badge_new_color" value={get("badge_new_color", "#00A650")} onSave={saveSetting} />
+              <ColorRow label="Culoare Transport Gratuit" description="Textul livrare gratuită" settingKey="free_shipping_color" value={get("free_shipping_color", "#00A650")} onSave={saveSetting} />
+              <ColorRow label="Culoare Economii" description="Textul Economisești X lei" settingKey="savings_color" value={get("savings_color", "#00A650")} onSave={saveSetting} />
+            </CardContent>
+          </Card>
+
+          {/* ══════ SECTION 6: TIPOGRAFIE ══════ */}
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
@@ -316,7 +481,7 @@ export default function AdminThemeEditor() {
             </CardContent>
           </Card>
 
-          {/* ══════ SECTION 6: CSS CUSTOM ══════ */}
+          {/* ══════ SECTION 7: CSS CUSTOM ══════ */}
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">

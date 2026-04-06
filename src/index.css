@@ -170,4 +170,24 @@
     50% { transform: scale(1.05); }
     100% { transform: scale(1); opacity: 1; }
   }
+
+  /* ── Product & Catalog Colors (driven by CSS vars from useSettings) ── */
+  .price-now, .card-price-now {
+    color: var(--product-price-color, #FF3300) !important;
+  }
+  .stars, .star-filled {
+    color: var(--stars-color, #FFB800) !important;
+  }
+  .badge-sale {
+    background: var(--badge-sale-color, #FF3300) !important;
+  }
+  .badge-new {
+    background: var(--badge-new-color, #00A650) !important;
+  }
+  .card-shipping, .free-shipping-text {
+    color: var(--free-shipping-color, #00A650) !important;
+  }
+  .price-save, .savings-text {
+    color: var(--savings-color, #00A650) !important;
+  }
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
-import { useEditableContent } from "@/hooks/useEditableContent";
+import { useSettings } from "@/hooks/useSettings";
 
 interface SeoSettings {
   site_title: string;
@@ -136,40 +136,35 @@ export function usePageSeo(data: PageSeoData) {
 export default function SeoHead() {
   const seo = useSeoSettings();
   const location = useLocation();
-  const { store_general } = useEditableContent();
-  const storeName = store_general?.store_name || "MamaLucica";
+  const { settings } = useSettings();
+  const storeName = settings.site_name || "MamaLucica";
 
   useEffect(() => {
-    // Google verification
     if (seo.google_verification) {
       setMeta("google-site-verification", seo.google_verification);
     }
-    // Bing verification
     if (seo.bing_verification) {
       setMeta("msvalidate.01", seo.bing_verification);
     }
-
-    // Default canonical (pages using usePageSeo will override)
     const base = seo.canonical_url || window.location.origin;
     setCanonical(base + location.pathname);
   }, [seo, location.pathname]);
 
-  // Organization JSON-LD (all pages)
   const base = seo.canonical_url || window.location.origin;
   const orgSchema = safeJsonLd({
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: storeName + " SRL",
+    name: storeName,
     url: base,
-    logo: base + "/og-homepage.jpg",
+    logo: settings.logo_url || (base + "/og-homepage.jpg"),
     sameAs: [
-      "https://www.tiktok.com/@mamalucica",
-      "https://www.instagram.com/mamalucica.ro",
-      "https://www.facebook.com/mamalucica.ro"
-    ],
+      settings.social_tiktok,
+      settings.social_instagram,
+      settings.social_facebook,
+    ].filter(Boolean),
     contactPoint: {
       "@type": "ContactPoint",
-      email: "contact@mamalucica.ro",
+      email: settings.contact_email || "contact@mamalucica.ro",
       contactType: "customer service",
       availableLanguage: "Romanian"
     }
