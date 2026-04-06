@@ -163,9 +163,11 @@ export default function AdminThemeEditor() {
   const [customCssDraft, setCustomCssDraft] = useState("");
 
   const saveSetting = useCallback(async (key: string, value: string) => {
-    await updateSetting(key, value);
-    setSaveStatus("✅ Salvat");
-    setTimeout(() => setSaveStatus(""), 2000);
+    const saved = await updateSetting(key, value);
+    if (saved) {
+      setSaveStatus("✅ Salvat");
+      setTimeout(() => setSaveStatus(""), 2000);
+    }
   }, [updateSetting]);
 
   const get = (key: string, fallback: string = "") => settings[key] || fallback;
