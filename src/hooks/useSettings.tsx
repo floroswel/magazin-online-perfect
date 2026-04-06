@@ -22,7 +22,7 @@ const SETTINGS_KEYS = [
   // Branding
   "logo_url", "logo_visible", "site_name", "site_tagline", "favicon_url",
   // Social
-  "social_facebook", "social_instagram", "social_tiktok", "social_youtube",
+  "social_facebook", "social_instagram", "social_tiktok", "social_youtube", "social_pinterest",
   // Footer
   "footer_col1_title", "footer_col1_links", "footer_col2_title", "footer_col2_links",
   "contact_phone", "contact_email", "contact_address", "contact_schedule",
@@ -31,7 +31,7 @@ const SETTINGS_KEYS = [
   "nav_links", "trust_badges", "trust_strip_color", "ticker_text",
   // Homepage toggles
   "show_hero", "show_flash_deals", "show_categories", "show_promo_banners",
-  "show_featured", "show_trust", "show_new_arrivals", "show_recently_viewed", "show_newsletter",
+  "show_featured", "show_trust", "show_new_arrivals", "show_recently_viewed", "show_newsletter", "show_social_proof",
   // Misc
   "low_stock_threshold", "nav_bar_color", "header_bg",
   "bestsellers_title", "new_arrivals_title",
