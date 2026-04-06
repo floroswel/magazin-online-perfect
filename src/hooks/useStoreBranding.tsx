@@ -1,3 +1,4 @@
+import { useSettings } from "@/hooks/useSettings";
 import { useEditableContent } from "@/hooks/useEditableContent";
 
 export interface StoreBranding {
@@ -10,14 +11,17 @@ export interface StoreBranding {
 }
 
 export function useStoreBranding(): StoreBranding {
-  const { store_general, header_topbar } = useEditableContent();
+  const { settings } = useSettings();
+  const { header_topbar } = useEditableContent();
+
+  const name = settings.site_name || "MamaLucica";
 
   return {
-    name: store_general.store_name || "MamaLucica",
+    name,
     emoji: "🕯️",
-    tagline: store_general.store_slogan || "Lumânări artizanale",
-    phone: header_topbar.phone || "",
-    email: store_general.store_email || "contact@mamalucica.ro",
-    copyright: `© ${new Date().getFullYear()} ${store_general.store_name || "MamaLucica"}. Toate drepturile rezervate.`,
+    tagline: settings.site_tagline || "Lumânări artizanale",
+    phone: settings.contact_phone || header_topbar.phone || "",
+    email: settings.contact_email || "contact@mamalucica.ro",
+    copyright: settings.copyright_text || `© ${new Date().getFullYear()} ${name}. Toate drepturile rezervate.`,
   };
 }

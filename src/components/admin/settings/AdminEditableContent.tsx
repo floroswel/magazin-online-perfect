@@ -1,15 +1,18 @@
 import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useSettings } from "@/hooks/useSettings";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import {
   Save, Loader2, Plus, Trash2, Megaphone, Navigation, Layers,
   Award, Sparkles, Shield as ShieldIcon, Search, Eye, Settings,
+  Phone, Globe, ToggleLeft,
 } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { EDITABLE_DEFAULTS, type EditableContent } from "@/hooks/useEditableContent";
@@ -17,7 +20,6 @@ import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const KEY_MAP: Record<keyof EditableContent, string> = {
-  store_general: "editable_store_general",
   announcement: "editable_announcement",
   header_topbar: "editable_header_topbar",
   header_nav: "editable_header_nav",
@@ -48,12 +50,26 @@ function Section({ title, icon: Icon, children, defaultOpen = false }: {
   );
 }
 
+const SECTION_TOGGLES = [
+  { key: "show_hero", label: "Hero Slider", desc: "Slideshow-ul principal din partea de sus" },
+  { key: "show_flash_deals", label: "Flash Deals", desc: "Bara cu oferte cu timp limitat" },
+  { key: "show_categories", label: "Categorii", desc: "Grid-ul de categorii pe homepage" },
+  { key: "show_promo_banners", label: "Bannere Promo", desc: "Bannerele promoționale" },
+  { key: "show_featured", label: "Bestsellers", desc: "Secțiunea produse populare" },
+  { key: "show_trust", label: "Trust Strip", desc: "Bara cu badge-uri de încredere" },
+  { key: "show_new_arrivals", label: "Noutăți", desc: "Secțiunea produse noi" },
+  { key: "show_recently_viewed", label: "Văzute Recent", desc: "Produse vizualizate recent" },
+  { key: "show_newsletter", label: "Newsletter", desc: "Secțiunea de abonare newsletter" },
+  { key: "show_social_proof", label: "Social Proof", desc: "Popup-uri de social proof" },
+];
+
 export default function AdminEditableContent() {
   const [content, setContent] = useState<EditableContent>(EDITABLE_DEFAULTS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [seeding, setSeeding] = useState(false);
   const [search, setSearch] = useState("");
+  const { settings, updateSetting } = useSettings();
 
   useEffect(() => {
     supabase
@@ -101,7 +117,7 @@ export default function AdminEditableContent() {
     await Promise.all(promises);
     setContent(EDITABLE_DEFAULTS);
     setSeeding(false);
-    toast.success("Valorile implicite au fost scrise în baza de date. Sincronizarea este activă!");
+    toast.success("Valorile implicite au fost scrise în baza de date.");
   };
 
   const set = <K extends keyof EditableContent>(key: K, val: EditableContent[K]) =>
@@ -111,11 +127,11 @@ export default function AdminEditableContent() {
   const matchesSearch = (text: string) => !search || text.toLowerCase().includes(searchLower);
 
   const tabVisibility = useMemo(() => ({
-    general: !search || ["general", "magazin", "nume", "slogan", "email", "store"].some(k => matchesSearch(k)),
     header: !search || ["telefon", "livrare", "locatie", "navigare", "link", "categorii", "mobile", "header", "topbar", "phone"].some(k => matchesSearch(k)),
     promo: !search || ["anunt", "countdown", "prag", "banner", "promo", "scent"].some(k => matchesSearch(k)),
-    sections: !search || ["why", "proces", "section", "de ce", "step"].some(k => matchesSearch(k)),
+    sections: !search || ["why", "proces", "section", "de ce", "step", "toggle", "vizibilitate", "hero", "newsletter"].some(k => matchesSearch(k)),
     trust: !search || ["trust", "social", "proof", "badge", "livrare", "retur", "plata"].some(k => matchesSearch(k)),
+    contact: !search || ["contact", "telefon", "email", "adresa", "orar", "facebook", "instagram", "tiktok", "youtube", "social", "copyright"].some(k => matchesSearch(k)),
   }), [search]);
 
   if (loading) return <div className="flex items-center justify-center py-12 text-muted-foreground"><Loader2 className="w-5 h-5 animate-spin mr-2" /> Se încarcă...</div>;
@@ -127,12 +143,12 @@ export default function AdminEditableContent() {
           <h1 className="text-xl font-bold text-foreground flex items-center gap-2">
             <Eye className="w-5 h-5 text-primary" /> Editor Conținut Site
           </h1>
-          <p className="text-sm text-muted-foreground">Editează orice text, link sau componentă de pe site – salvat în timp real</p>
+          <p className="text-sm text-muted-foreground">Texte, link-uri, vizibilitate secțiuni și informații de contact</p>
         </div>
         <div className="flex gap-2 shrink-0">
           <Button onClick={seedDefaults} disabled={seeding} size="sm" variant="outline">
             {seeding ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Plus className="w-4 h-4 mr-1" />}
-            Inițializează Valori Default
+            Inițializează Default
           </Button>
           <Button onClick={save} disabled={saving} size="sm">
             {saving ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Save className="w-4 h-4 mr-1" />}
@@ -146,25 +162,14 @@ export default function AdminEditableContent() {
         <Input placeholder="Caută setare..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
       </div>
 
-      <Tabs defaultValue="general" className="w-full">
+      <Tabs defaultValue="header" className="w-full">
         <TabsList className="w-full grid grid-cols-5">
-          {tabVisibility.general && <TabsTrigger value="general" className="text-xs sm:text-sm"><Settings className="w-3.5 h-3.5 mr-1 hidden sm:inline" /> General</TabsTrigger>}
           {tabVisibility.header && <TabsTrigger value="header" className="text-xs sm:text-sm"><Navigation className="w-3.5 h-3.5 mr-1 hidden sm:inline" /> Header</TabsTrigger>}
           {tabVisibility.promo && <TabsTrigger value="promo" className="text-xs sm:text-sm"><Megaphone className="w-3.5 h-3.5 mr-1 hidden sm:inline" /> Promoții</TabsTrigger>}
           {tabVisibility.sections && <TabsTrigger value="sections" className="text-xs sm:text-sm"><Layers className="w-3.5 h-3.5 mr-1 hidden sm:inline" /> Secțiuni</TabsTrigger>}
           {tabVisibility.trust && <TabsTrigger value="trust" className="text-xs sm:text-sm"><ShieldIcon className="w-3.5 h-3.5 mr-1 hidden sm:inline" /> Trust</TabsTrigger>}
+          {tabVisibility.contact && <TabsTrigger value="contact" className="text-xs sm:text-sm"><Phone className="w-3.5 h-3.5 mr-1 hidden sm:inline" /> Contact</TabsTrigger>}
         </TabsList>
-
-        {/* ═══ GENERAL ═══ */}
-        <TabsContent value="general" className="space-y-3 mt-4">
-          <Section title="Setări Generale Magazin" icon={Settings} defaultOpen>
-            <div className="grid sm:grid-cols-2 gap-3">
-              <div><Label>Nume Magazin</Label><Input value={content.store_general.store_name} onChange={e => set("store_general", { ...content.store_general, store_name: e.target.value })} /></div>
-              <div><Label>Slogan</Label><Input value={content.store_general.store_slogan} onChange={e => set("store_general", { ...content.store_general, store_slogan: e.target.value })} /></div>
-            </div>
-            <div className="mt-3"><Label>Email Contact</Label><Input value={content.store_general.store_email} onChange={e => set("store_general", { ...content.store_general, store_email: e.target.value })} /></div>
-          </Section>
-        </TabsContent>
 
         {/* ═══ HEADER & NAVIGATION ═══ */}
         <TabsContent value="header" className="space-y-3 mt-4">
@@ -229,22 +234,7 @@ export default function AdminEditableContent() {
               <div><Label>Text Desktop</Label><Textarea value={content.announcement.text_desktop} onChange={e => set("announcement", { ...content.announcement, text_desktop: e.target.value })} rows={2} /><p className="text-xs text-muted-foreground mt-1">Folosește {"{threshold}"} pentru pragul în lei</p></div>
               <div><Label>Text Mobil</Label><Textarea value={content.announcement.text_mobile} onChange={e => set("announcement", { ...content.announcement, text_mobile: e.target.value })} rows={2} /></div>
               <div className="max-w-[200px]"><Label>Prag Livrare Gratuită (lei)</Label><Input type="number" value={content.announcement.threshold} onChange={e => set("announcement", { ...content.announcement, threshold: Number(e.target.value) })} /></div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label className="text-xs">Culoare fundal</Label>
-                  <div className="flex items-center gap-2 mt-1">
-                    <input type="color" value={content.announcement.bg_color || "#D9773F"} onChange={e => set("announcement", { ...content.announcement, bg_color: e.target.value })} className="w-9 h-9 rounded border cursor-pointer p-0" />
-                    <Input value={content.announcement.bg_color || ""} onChange={e => set("announcement", { ...content.announcement, bg_color: e.target.value })} placeholder="#D9773F (implicit)" className="h-8 text-xs font-mono" />
-                  </div>
-                </div>
-                <div>
-                  <Label className="text-xs">Culoare text</Label>
-                  <div className="flex items-center gap-2 mt-1">
-                    <input type="color" value={content.announcement.text_color || "#ffffff"} onChange={e => set("announcement", { ...content.announcement, text_color: e.target.value })} className="w-9 h-9 rounded border cursor-pointer p-0" />
-                    <Input value={content.announcement.text_color || ""} onChange={e => set("announcement", { ...content.announcement, text_color: e.target.value })} placeholder="#ffffff (implicit)" className="h-8 text-xs font-mono" />
-                  </div>
-                </div>
-              </div>
+              <p className="text-xs text-muted-foreground italic">💡 Culorile barei de anunțuri se configurează din Editor Temă → Header & Secțiuni</p>
               <div className="flex items-center gap-4 flex-wrap">
                 <div className="flex items-center gap-2">
                   <input type="checkbox" id="marquee-toggle" checked={!!content.announcement.marquee} onChange={e => set("announcement", { ...content.announcement, marquee: e.target.checked })} className="rounded" />
@@ -281,7 +271,24 @@ export default function AdminEditableContent() {
 
         {/* ═══ SECȚIUNI HOMEPAGE ═══ */}
         <TabsContent value="sections" className="space-y-3 mt-4">
-          <Section title='Secțiunea "De Ce Noi"' icon={Sparkles} defaultOpen>
+          <Section title="Vizibilitate Secțiuni Homepage" icon={ToggleLeft} defaultOpen>
+            <div className="space-y-3">
+              {SECTION_TOGGLES.map(({ key, label, desc }) => (
+                <div key={key} className="flex items-center justify-between py-2 border-b border-border last:border-b-0">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{label}</p>
+                    <p className="text-xs text-muted-foreground">{desc}</p>
+                  </div>
+                  <Switch
+                    checked={settings[key] !== "false"}
+                    onCheckedChange={(checked) => updateSetting(key, checked ? "true" : "false")}
+                  />
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section title='Secțiunea "De Ce Noi"' icon={Sparkles}>
             <div className="space-y-3">
               <div><Label>Titlu secțiune</Label><Input value={content.why_section.title} onChange={e => set("why_section", { ...content.why_section, title: e.target.value })} /></div>
               {content.why_section.items.map((item, i) => (
@@ -349,7 +356,63 @@ export default function AdminEditableContent() {
             </div>
           </Section>
         </TabsContent>
+
+        {/* ═══ CONTACT & SOCIAL ═══ */}
+        <TabsContent value="contact" className="space-y-3 mt-4">
+          <Section title="Informații Contact" icon={Phone} defaultOpen>
+            <div className="space-y-3">
+              <ContactField label="Telefon" desc="Apare în header și footer" settingKey="contact_phone" settings={settings} updateSetting={updateSetting} />
+              <ContactField label="Email" desc="Email de contact public" settingKey="contact_email" settings={settings} updateSetting={updateSetting} />
+              <ContactField label="Adresă" desc="Adresa fizică a magazinului" settingKey="contact_address" settings={settings} updateSetting={updateSetting} />
+              <ContactField label="Orar" desc="Program de lucru (ex: Luni-Vineri 9-17)" settingKey="contact_schedule" settings={settings} updateSetting={updateSetting} />
+              <ContactField label="Copyright" desc="Textul din footer (ex: © 2024 Mama Lucica)" settingKey="copyright_text" settings={settings} updateSetting={updateSetting} />
+            </div>
+          </Section>
+
+          <Section title="Rețele Sociale" icon={Globe}>
+            <div className="space-y-3">
+              <ContactField label="Facebook" desc="URL pagina Facebook" settingKey="social_facebook" settings={settings} updateSetting={updateSetting} placeholder="https://facebook.com/..." />
+              <ContactField label="Instagram" desc="URL profil Instagram" settingKey="social_instagram" settings={settings} updateSetting={updateSetting} placeholder="https://instagram.com/..." />
+              <ContactField label="TikTok" desc="URL profil TikTok" settingKey="social_tiktok" settings={settings} updateSetting={updateSetting} placeholder="https://tiktok.com/@..." />
+              <ContactField label="YouTube" desc="URL canal YouTube" settingKey="social_youtube" settings={settings} updateSetting={updateSetting} placeholder="https://youtube.com/..." />
+              <ContactField label="Pinterest" desc="URL profil Pinterest" settingKey="social_pinterest" settings={settings} updateSetting={updateSetting} placeholder="https://pinterest.com/..." />
+            </div>
+          </Section>
+        </TabsContent>
       </Tabs>
+    </div>
+  );
+}
+
+function ContactField({ label, desc, settingKey, settings, updateSetting, placeholder }: {
+  label: string; desc: string; settingKey: string;
+  settings: Record<string, string>; updateSetting: (key: string, value: string) => Promise<boolean>;
+  placeholder?: string;
+}) {
+  const [local, setLocal] = useState(settings[settingKey] || "");
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => { setLocal(settings[settingKey] || ""); }, [settings[settingKey]]);
+
+  const handleSave = async () => {
+    const ok = await updateSetting(settingKey, local);
+    if (ok) { setSaved(true); setTimeout(() => setSaved(false), 2000); }
+  };
+
+  return (
+    <div className="flex items-center gap-3 py-2 border-b border-border last:border-b-0">
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-foreground">{label}</p>
+        <p className="text-xs text-muted-foreground">{desc}</p>
+        <Input
+          value={local}
+          onChange={e => setLocal(e.target.value)}
+          onBlur={handleSave}
+          placeholder={placeholder}
+          className="mt-1.5 h-8 text-sm"
+        />
+      </div>
+      {saved && <span className="text-xs text-green-600 shrink-0">✅</span>}
     </div>
   );
 }

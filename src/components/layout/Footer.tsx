@@ -126,7 +126,7 @@ export default function Footer() {
             </h4>
             <div className="space-y-2 text-[13px] text-primary-foreground/60">
               <p>📞 {settings.contact_phone || content.header_topbar.phone || "0800-123-456"}</p>
-              <p>✉️ {settings.contact_email || content.store_general.store_email}</p>
+              <p>✉️ {settings.contact_email || "contact@mamalucica.ro"}</p>
               <p>📍 {settings.contact_address || "București, România"}</p>
               <p>⏰ {settings.contact_schedule || "Luni - Vineri, 9:00 - 17:00"}</p>
             </div>

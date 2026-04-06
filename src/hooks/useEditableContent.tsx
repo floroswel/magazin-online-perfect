@@ -3,11 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 
 // All editable content keys and their defaults
 export interface EditableContent {
-  store_general: {
-    store_name: string;
-    store_slogan: string;
-    store_email: string;
-  };
   announcement: {
     text_desktop: string;
     text_mobile: string;
@@ -43,11 +38,6 @@ export interface EditableContent {
 }
 
 const DEFAULTS: EditableContent = {
-  store_general: {
-    store_name: "MamaLucica",
-    store_slogan: "Lumânări artizanale",
-    store_email: "contact@mamalucica.ro",
-  },
   announcement: {
     text_desktop: "🕯️ Livrare GRATUITĂ la comenzi peste {threshold} lei | Oferta expiră în ",
     text_mobile: "🕯️ Livrare GRATUITĂ — ",
@@ -110,7 +100,6 @@ const DEFAULTS: EditableContent = {
 };
 
 const CONTENT_KEYS = [
-  "editable_store_general",
   "editable_announcement",
   "editable_header_topbar",
   "editable_header_nav",
@@ -137,7 +126,6 @@ export function EditableContentProvider({ children }: { children: React.ReactNod
 
     const updated = { ...DEFAULTS };
     const keyMap: Record<string, keyof EditableContent> = {
-      editable_store_general: "store_general",
       editable_announcement: "announcement",
       editable_header_topbar: "header_topbar",
       editable_header_nav: "header_nav",
