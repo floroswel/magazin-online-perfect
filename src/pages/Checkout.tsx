@@ -115,6 +115,7 @@ export default function Checkout() {
   };
 
   // ─── Loyalty points ───
+  // Fetch total balance (sum of all point transactions)
   const { data: loyaltyBalance } = useQuery({
     queryKey: ["loyalty-balance", user?.id],
     queryFn: async () => {
@@ -124,15 +125,34 @@ export default function Checkout() {
     },
     enabled: !!user,
   });
-  const [loyaltyPercent, setLoyaltyPercent] = useState(0);
-  const maxPercent = parseInt(s("checkout_fidelity_max_percent", "30"));
-  const loyaltyDiscount = useMemo(() => {
+
+  // Conversion: 100 points = 5 RON (from use_loyalty_points DB function)
+  const POINTS_PER_RON = 20; // 100pts / 5RON
+  const maxPercentAllowed = parseInt(s("checkout_fidelity_max_percent", "30"));
+
+  // Max discount = min(points value in RON, 30% of cart total)
+  const loyaltyBalanceRON = useMemo(() => {
     if (!loyaltyBalance || loyaltyBalance <= 0) return 0;
-    const maxDiscount = totalPrice * (loyaltyPercent / 100);
-    const pointsValue = (loyaltyBalance / 100) * 5; // 100pts = 5 RON
-    return Math.min(maxDiscount, pointsValue);
-  }, [loyaltyBalance, loyaltyPercent, totalPrice]);
-  const loyaltyPointsUsed = Math.ceil((loyaltyDiscount / 5) * 100);
+    return loyaltyBalance / POINTS_PER_RON; // points → RON
+  }, [loyaltyBalance]);
+
+  const maxLoyaltyDiscount = useMemo(() => {
+    const maxByPercent = totalPrice * (maxPercentAllowed / 100);
+    return Math.min(loyaltyBalanceRON, maxByPercent);
+  }, [loyaltyBalanceRON, maxPercentAllowed, totalPrice]);
+
+  // Slider value = RON to apply (0 → maxLoyaltyDiscount)
+  const [loyaltyDiscountRON, setLoyaltyDiscountRON] = useState(0);
+
+  // Clamp if cart total changes
+  useEffect(() => {
+    if (loyaltyDiscountRON > maxLoyaltyDiscount) {
+      setLoyaltyDiscountRON(Math.floor(maxLoyaltyDiscount));
+    }
+  }, [maxLoyaltyDiscount]);
+
+  const loyaltyDiscount = loyaltyDiscountRON;
+  const loyaltyPointsUsed = Math.round(loyaltyDiscountRON * POINTS_PER_RON);
 
   // ─── Counties & localities via hook ───
   const shipping = useRomaniaGeo();
