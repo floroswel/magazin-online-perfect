@@ -139,7 +139,7 @@ export default function Checkout() {
   const { data: counties } = useQuery({
     queryKey: ["romania-judete"],
     queryFn: async () => {
-      const { data } = await supabase.from("romania_judete" as any).select("*").order("nume");
+      const { data } = await supabase.from("romania_judete" as any).select("*").order("nume") as any;
       return (data || []) as County[];
     },
   });
@@ -148,7 +148,7 @@ export default function Checkout() {
     queryKey: ["romania-localitati", form.countyId],
     queryFn: async () => {
       if (!form.countyId) return [];
-      const { data } = await supabase.from("romania_localitati" as any).select("*").eq("judet_id", parseInt(form.countyId)).order("nume");
+      const { data } = await supabase.from("romania_localitati" as any).select("*").eq("judet_id", parseInt(form.countyId)).order("nume") as any;
       return (data || []) as Locality[];
     },
     enabled: !!form.countyId,
@@ -158,7 +158,7 @@ export default function Checkout() {
     queryKey: ["romania-localitati-billing", form.billingCountyId],
     queryFn: async () => {
       if (!form.billingCountyId) return [];
-      const { data } = await supabase.from("romania_localitati" as any).select("*").eq("judet_id", parseInt(form.billingCountyId)).order("nume");
+      const { data } = await supabase.from("romania_localitati" as any).select("*").eq("judet_id", parseInt(form.billingCountyId)).order("nume") as any;
       return (data || []) as Locality[];
     },
     enabled: !!form.billingCountyId,
