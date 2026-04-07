@@ -811,10 +811,10 @@ export default function Checkout() {
                 {/* Mokka */}
                 <button onClick={() => set("paymentMethod", "mokka")} className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${form.paymentMethod === "mokka" ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"}`}>
                   <div className="flex items-center gap-3">
-                    <span className="text-lg">🟠</span>
+                    <span className="text-lg font-bold text-mokka">M</span>
                     <div>
-                      <p className="text-sm font-bold">Online în rate prin StarBT</p>
-                      <p className="text-xs text-muted-foreground">Până la 30 de rate, 0% dobândă</p>
+                      <p className="text-sm font-bold">Mokka — Rate fără dobândă</p>
+                      <p className="text-xs text-muted-foreground">Cumperi acum, plătești în 3-12 rate, 0% dobândă</p>
                     </div>
                   </div>
                 </button>
