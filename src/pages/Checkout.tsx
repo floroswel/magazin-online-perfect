@@ -243,8 +243,6 @@ export default function Checkout() {
 
   const finalTotal = Math.max(0, totalPrice - couponDiscount - loyaltyDiscount + shippingCost + rambursCost + openPackageCost);
 
-  const finalTotal = Math.max(0, totalPrice - couponDiscount - loyaltyDiscount + shippingCost + rambursCost + openPackageCost);
-
   // ─── Validation ───
   const canSubmit = form.email && form.lastName && form.firstName && form.phone
     && form.countyId && form.localityId && form.address
