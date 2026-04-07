@@ -12,6 +12,7 @@ import Ticker2Bar from "./Ticker2Bar";
 import SocialProofPopup from "@/components/SocialProofPopup";
 import QuickViewModal from "@/components/products/QuickViewModal";
 import { QuickViewProvider } from "@/components/products/ProductCard";
+import LiveChat from "@/components/LiveChat";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
