@@ -90,34 +90,76 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
     }));
   };
 
+  const isGuest = !!guestEmail && !userId;
+
   async function handleSubmit() {
     setSubmitting(true);
     try {
-      // Create return request using existing `returns` table
-      const { data: returnReq, error } = await (supabase as any).from("returns").insert({
-        order_id: order.id,
-        user_id: userId,
-        customer_id: userId,
-        type: returnType,
-        status: settings?.auto_approve ? "approved" : "pending",
-        auto_approved: settings?.auto_approve || false,
-        reason: Object.values(selectedItems).filter((i) => i.selected).map((i) => i.reasonText).join(", "),
-        details: observation,
-        refund_method: returnType === "return" ? refundMethod : "none",
-        bank_account_holder: refundMethod === "bank" ? bankHolder : null,
-        bank_iban: refundMethod === "bank" ? bankIban : null,
-        bank_name: refundMethod === "bank" ? bankName : null,
-        courier_pickup_by: courierChoice,
-        pickup_address: pickupAddress || null,
-        return_shipping_cost_calculated: returnType === "return" ? (settings?.return_shipping_cost || 0) : (settings?.exchange_shipping_cost || 0),
-      }).select().single();
+      const selectedEntries = Object.entries(selectedItems).filter(([_, v]) => v.selected);
 
-      if (error) throw error;
+      if (isGuest) {
+        // Guest: use edge function
+        const items = selectedEntries.map(([itemId, v]) => {
+          const orderItem = orderItems.find((oi: any) => (oi.id || oi.product_id) === itemId);
+          return {
+            order_item_id: itemId,
+            product_id: orderItem?.product_id || itemId,
+            product_name: orderItem?.product_name || orderItem?.name || "Produs",
+            quantity: v.quantity,
+            reason_id: v.reasonId,
+            reason_text: v.reasonText,
+            unit_price: orderItem?.unit_price || orderItem?.price || 0,
+          };
+        });
 
-      // Create return items
-      const items = Object.entries(selectedItems)
-        .filter(([_, v]) => v.selected)
-        .map(([itemId, v]) => {
+        const { data, error: fnErr } = await supabase.functions.invoke("guest-return", {
+          body: {
+            action: "submit",
+            order_id: order.id,
+            guest_email: guestEmail,
+            return_type: returnType,
+            items,
+            observation,
+            refund_method: returnType === "return" ? refundMethod : "none",
+            bank_holder: refundMethod === "bank" ? bankHolder : null,
+            bank_iban: refundMethod === "bank" ? bankIban : null,
+            bank_name: refundMethod === "bank" ? bankName : null,
+            courier_choice: courierChoice,
+            pickup_address: pickupAddress || null,
+          },
+        });
+
+        if (fnErr || data?.error) {
+          throw new Error(data?.error || "Eroare la trimiterea cererii");
+        }
+
+        toast.success(data?.auto_approved ? "Cererea de retur a fost aprobată automat!" : "Cererea de retur a fost trimisă!");
+        onSuccess();
+        onClose();
+      } else {
+        // Logged-in user: direct DB insert
+        const { data: returnReq, error } = await (supabase as any).from("returns").insert({
+          order_id: order.id,
+          user_id: userId,
+          customer_id: userId,
+          type: returnType,
+          status: settings?.auto_approve ? "approved" : "pending",
+          auto_approved: settings?.auto_approve || false,
+          reason: selectedEntries.map(([_, v]) => v.reasonText).join(", "),
+          details: observation,
+          refund_method: returnType === "return" ? refundMethod : "none",
+          bank_account_holder: refundMethod === "bank" ? bankHolder : null,
+          bank_iban: refundMethod === "bank" ? bankIban : null,
+          bank_name: refundMethod === "bank" ? bankName : null,
+          courier_pickup_by: courierChoice,
+          pickup_address: pickupAddress || null,
+          return_shipping_cost_calculated: returnType === "return" ? (settings?.return_shipping_cost || 0) : (settings?.exchange_shipping_cost || 0),
+        }).select().single();
+
+        if (error) throw error;
+
+        // Create return items
+        const items = selectedEntries.map(([itemId, v]) => {
           const orderItem = orderItems.find((oi: any) => (oi.id || oi.product_id) === itemId);
           return {
             return_request_id: returnReq.id,
@@ -132,33 +174,34 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
           };
         });
 
-      if (items.length > 0) {
-        await (supabase as any).from("return_request_items").insert(items);
-      }
+        if (items.length > 0) {
+          await (supabase as any).from("return_request_items").insert(items);
+        }
 
-      // Upload photos
-      for (const [itemId, v] of Object.entries(selectedItems)) {
-        if (!v.selected || !v.photos.length) continue;
-        for (const photo of v.photos) {
-          const path = `${returnReq.id}/${itemId}/${Date.now()}_${photo.name}`;
-          const { error: uploadErr } = await supabase.storage.from("return-request-images").upload(path, photo);
-          if (!uploadErr) {
-            const { data: urlData } = supabase.storage.from("return-request-images").getPublicUrl(path);
-            await (supabase as any).from("return_request_images").insert({
-              return_request_id: returnReq.id,
-              return_item_id: null,
-              storage_path: path,
-              public_url: urlData.publicUrl,
-              original_filename: photo.name,
-              file_size: photo.size,
-            });
+        // Upload photos
+        for (const [itemId, v] of Object.entries(selectedItems)) {
+          if (!v.selected || !v.photos.length) continue;
+          for (const photo of v.photos) {
+            const path = `${returnReq.id}/${itemId}/${Date.now()}_${photo.name}`;
+            const { error: uploadErr } = await supabase.storage.from("return-request-images").upload(path, photo);
+            if (!uploadErr) {
+              const { data: urlData } = supabase.storage.from("return-request-images").getPublicUrl(path);
+              await (supabase as any).from("return_request_images").insert({
+                return_request_id: returnReq.id,
+                return_item_id: null,
+                storage_path: path,
+                public_url: urlData.publicUrl,
+                original_filename: photo.name,
+                file_size: photo.size,
+              });
+            }
           }
         }
-      }
 
-      toast.success(settings?.auto_approve ? "Cererea de retur a fost aprobată automat!" : "Cererea de retur a fost trimisă!");
-      onSuccess();
-      onClose();
+        toast.success(settings?.auto_approve ? "Cererea de retur a fost aprobată automat!" : "Cererea de retur a fost trimisă!");
+        onSuccess();
+        onClose();
+      }
     } catch (err: any) {
       toast.error("Eroare: " + (err.message || "A apărut o eroare"));
     }
