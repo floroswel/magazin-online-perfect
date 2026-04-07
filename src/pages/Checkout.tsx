@@ -33,8 +33,6 @@ interface ShippingMethod {
   estimated_days: string | null;
 }
 
-interface County { id: number; nume: string; abreviere: string; }
-interface Locality { id: number; judet_id: number; nume: string; tip: string | null; }
 
 // ─── Defaults ───
 const DEFAULT_SHIPPING: ShippingMethod[] = [
