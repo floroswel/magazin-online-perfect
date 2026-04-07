@@ -1485,6 +1485,39 @@ export type Database = {
           },
         ]
       }
+      chatbot_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          is_resolved: boolean
+          messages: Json
+          satisfaction_rating: number | null
+          session_id: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_resolved?: boolean
+          messages?: Json
+          satisfaction_rating?: number | null
+          session_id: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_resolved?: boolean
+          messages?: Json
+          satisfaction_rating?: number | null
+          session_id?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       chatbot_faq: {
         Row: {
           active: boolean
@@ -9854,6 +9887,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      cleanup_old_chatbot_conversations: { Args: never; Returns: undefined }
       count_dynamic_category_products: {
         Args: { p_rules: Json }
         Returns: number
