@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { useCart } from "@/hooks/useCart";
@@ -8,12 +8,20 @@ import { useSettings } from "@/hooks/useSettings";
 import { usePageSeo } from "@/components/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { Check } from "lucide-react";
+import { Gift, Lock, RotateCcw, Package, ChevronDown, Search, Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
-const STEPS = ["Date personale", "Adresa", "Livrare", "Plată"];
-const COUNTIES = ["Alba","Arad","Argeș","Bacău","Bihor","Bistrița-Năsăud","Botoșani","Brașov","Brăila","București","Buzău","Caraș-Severin","Călărași","Cluj","Constanța","Covasna","Dâmbovița","Dolj","Galați","Giurgiu","Gorj","Harghita","Hunedoara","Ialomița","Iași","Ilfov","Maramureș","Mehedinți","Mureș","Neamț","Olt","Prahova","Satu Mare","Sălaj","Sibiu","Suceava","Teleorman","Timiș","Tulcea","Vaslui","Vâlcea","Vrancea"];
-
+// ─── Types ───
 interface ShippingMethod {
   id: string;
   name: string;
@@ -24,10 +32,14 @@ interface ShippingMethod {
   estimated_days: string | null;
 }
 
+interface County { id: number; nume: string; abreviere: string; }
+interface Locality { id: number; judet_id: number; nume: string; tip: string | null; }
+
+// ─── Defaults ───
 const DEFAULT_SHIPPING: ShippingMethod[] = [
-  { id: "standard", name: "Standard", description: "Livrare în 3-5 zile lucrătoare", icon: "🚚", price: 25, free_above: 200, estimated_days: "3-5 zile" },
-  { id: "express", name: "Curier Express", description: "Livrare în 1-2 zile lucrătoare", icon: "⚡", price: 35, free_above: null, estimated_days: "1-2 zile" },
-  { id: "pickup", name: "Ridicare personală", description: "Ridicare din magazin", icon: "🏪", price: 0, free_above: null, estimated_days: "Imediat" },
+  { id: "standard", name: "Curier standard", description: "Livrare în 3-5 zile lucrătoare", icon: "🚚", price: 25, free_above: 200, estimated_days: "3-5 zile" },
+  { id: "express", name: "Curier express", description: "Livrare în 1-2 zile lucrătoare", icon: "⚡", price: 35, free_above: null, estimated_days: "1-2 zile" },
+  { id: "easybox", name: "Easybox", description: "Ridicare din locker Sameday", icon: "📦", price: 15, free_above: null, estimated_days: "2-3 zile" },
 ];
 
 export default function Checkout() {
@@ -36,93 +48,258 @@ export default function Checkout() {
   const { user } = useAuth();
   const { settings } = useSettings();
   const navigate = useNavigate();
-  const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
-  const rambursCostValue = parseInt(settings.ramburs_extra_cost || "5");
-  const siteName = settings.site_name || "LUMAX";
+  const siteName = settings.site_name || "Mama Lucica";
+  usePageSeo({ title: `Finalizare Comandă | ${siteName}`, noindex: true });
 
-  const { data: shippingMethodsDB } = useQuery({
-    queryKey: ["shipping-methods"],
+  // ─── Settings ───
+  const s = (key: string, def = "") => settings[key] || def;
+  const sBool = (key: string, def = true) => (settings[key] ?? (def ? "true" : "false")) === "true";
+
+  // ─── Auth state ───
+  const [authMode, setAuthMode] = useState<"logged" | "login" | "guest">(user ? "logged" : "guest");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPass, setLoginPass] = useState("");
+  const [loginLoading, setLoginLoading] = useState(false);
+
+  useEffect(() => { if (user) setAuthMode("logged"); }, [user]);
+
+  const handleLogin = async () => {
+    setLoginLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({ email: loginEmail, password: loginPass });
+    if (error) toast.error(error.message);
+    else toast.success("Autentificare reușită!");
+    setLoginLoading(false);
+  };
+
+  // ─── Form state ───
+  const [form, setForm] = useState({
+    email: user?.email || "",
+    lastName: "", firstName: "", phone: "",
+    differentContact: false,
+    contactLastName: "", contactFirstName: "", contactPhone: "",
+    countyId: "", localityId: "", address: "", postalCode: "", bloc: "",
+    shippingMethod: "standard",
+    differentBilling: false, billingType: "fizica" as "fizica" | "juridica",
+    billingCui: "", billingCompany: "", billingRegCom: "",
+    billingCountyId: "", billingLocalityId: "", billingAddress: "",
+    openPackage: false,
+    paymentMethod: "ramburs",
+    tbiMonths: 4,
+    observations: "",
+    gdprAccepted: false, newsletter: false,
+  });
+  const set = (k: string, v: any) => setForm(p => ({ ...p, [k]: v }));
+
+  useEffect(() => { if (user?.email && !form.email) set("email", user.email); }, [user]);
+
+  // ─── Coupon ───
+  const [couponCode, setCouponCode] = useState("");
+  const [couponApplied, setCouponApplied] = useState<any>(null);
+  const [couponLoading, setCouponLoading] = useState(false);
+
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponLoading(true);
+    const { data, error } = await supabase.rpc("validate_coupon", {
+      p_coupon_code: couponCode.toUpperCase(),
+      p_cart_total: totalPrice,
+      p_user_id: user?.id || null,
+    });
+    setCouponLoading(false);
+    if (error || !data) return toast.error("Eroare la validare");
+    const result = data as any;
+    if (!result.valid) return toast.error(result.message);
+    setCouponApplied(result);
+    toast.success("Cod aplicat: " + result.message);
+  };
+
+  // ─── Loyalty points ───
+  const { data: loyaltyBalance } = useQuery({
+    queryKey: ["loyalty-balance", user?.id],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("shipping_methods")
-        .select("*")
-        .eq("is_active", true)
-        .order("sort_order");
-      return (data || []) as ShippingMethod[];
+      if (!user) return 0;
+      const { data } = await supabase.from("loyalty_points").select("points").eq("user_id", user.id);
+      return (data || []).reduce((sum: number, r: any) => sum + r.points, 0);
+    },
+    enabled: !!user,
+  });
+  const [loyaltyPercent, setLoyaltyPercent] = useState(0);
+  const maxPercent = parseInt(s("checkout_fidelity_max_percent", "30"));
+  const loyaltyDiscount = useMemo(() => {
+    if (!loyaltyBalance || loyaltyBalance <= 0) return 0;
+    const maxDiscount = totalPrice * (loyaltyPercent / 100);
+    const pointsValue = (loyaltyBalance / 100) * 5; // 100pts = 5 RON
+    return Math.min(maxDiscount, pointsValue);
+  }, [loyaltyBalance, loyaltyPercent, totalPrice]);
+  const loyaltyPointsUsed = Math.ceil((loyaltyDiscount / 5) * 100);
+
+  // ─── Counties & localities from DB ───
+  const { data: counties } = useQuery({
+    queryKey: ["romania-judete"],
+    queryFn: async () => {
+      const { data } = await supabase.from("romania_judete" as any).select("*").order("nume") as any;
+      return (data || []) as County[];
     },
   });
 
-  const shippingMethods = shippingMethodsDB && shippingMethodsDB.length > 0 ? shippingMethodsDB : DEFAULT_SHIPPING;
-
-  const [form, setForm] = useState({
-    firstName: "", lastName: "", email: user?.email || "", phone: "",
-    street: "", city: "", county: "", postalCode: "",
-    shippingMethod: "standard", paymentMethod: "ramburs",
-    gdprAccepted: false, newsletter: false,
+  const { data: localities } = useQuery({
+    queryKey: ["romania-localitati", form.countyId],
+    queryFn: async () => {
+      if (!form.countyId) return [];
+      const { data } = await supabase.from("romania_localitati" as any).select("*").eq("judet_id", parseInt(form.countyId)).order("nume") as any;
+      return (data || []) as Locality[];
+    },
+    enabled: !!form.countyId,
   });
 
-  // Set default shipping method from DB
-  useEffect(() => {
-    if (shippingMethods.length > 0 && !shippingMethods.find(m => m.id === form.shippingMethod || m.name === form.shippingMethod)) {
-      setForm(prev => ({ ...prev, shippingMethod: shippingMethods[0].id || shippingMethods[0].name }));
+  const { data: billingLocalities } = useQuery({
+    queryKey: ["romania-localitati-billing", form.billingCountyId],
+    queryFn: async () => {
+      if (!form.billingCountyId) return [];
+      const { data } = await supabase.from("romania_localitati" as any).select("*").eq("judet_id", parseInt(form.billingCountyId)).order("nume") as any;
+      return (data || []) as Locality[];
+    },
+    enabled: !!form.billingCountyId,
+  });
+
+  // Reset locality when county changes
+  useEffect(() => { set("localityId", ""); }, [form.countyId]);
+  useEffect(() => { set("billingLocalityId", ""); }, [form.billingCountyId]);
+
+  // ─── Shipping ───
+  const { data: shippingMethodsDB } = useQuery({
+    queryKey: ["shipping-methods"],
+    queryFn: async () => {
+      const { data } = await supabase.from("shipping_methods").select("*").eq("is_active", true).order("sort_order");
+      return (data || []) as ShippingMethod[];
+    },
+  });
+  const shippingMethods = shippingMethodsDB && shippingMethodsDB.length > 0 ? shippingMethodsDB : DEFAULT_SHIPPING;
+
+  // ─── CUI lookup ───
+  const [cuiLoading, setCuiLoading] = useState(false);
+  const lookupCUI = async () => {
+    const cui = form.billingCui.replace(/\D/g, "");
+    if (!cui || cui.length < 2) return toast.error("Introduceți un CUI valid");
+    setCuiLoading(true);
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      const resp = await fetch("https://webservicesp.anaf.ro/AsynchWebService/api/v8/ws/tva", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify([{ cui: parseInt(cui), data: today }]),
+      });
+      const data = await resp.json();
+      const found = data?.found?.[0];
+      if (found) {
+        set("billingCompany", found.denumire || "");
+        set("billingRegCom", found.nrRegCom || "");
+        set("billingAddress", found.adresa || "");
+        toast.success("Date firma completate!");
+      } else {
+        toast.error("CUI negăsit la ANAF");
+      }
+    } catch {
+      toast.error("Eroare conexiune ANAF");
     }
-  }, [shippingMethods]);
-
-  usePageSeo({ title: `Finalizare Comandă | ${siteName}`, noindex: true });
-
-  const selectedMethod = shippingMethods.find(m => m.id === form.shippingMethod || m.name === form.shippingMethod) || shippingMethods[0];
-  const shippingCost = selectedMethod
-    ? (selectedMethod.free_above && totalPrice >= selectedMethod.free_above ? 0 : selectedMethod.price)
-    : 0;
-  const rambursCost = form.paymentMethod === "ramburs" ? rambursCostValue : 0;
-  const finalTotal = totalPrice + shippingCost + rambursCost;
-
-  const updateForm = (key: string, val: any) => setForm(prev => ({ ...prev, [key]: val }));
-
-  const canNextStep = () => {
-    if (step === 0) return form.firstName && form.lastName && form.email && form.phone;
-    if (step === 1) return form.street && form.city && form.county;
-    if (step === 2) return true;
-    if (step === 3) return form.gdprAccepted;
-    return false;
+    setCuiLoading(false);
   };
 
+  // ─── Calculations ───
+  const selectedMethod = shippingMethods.find(m => (m.id || m.name) === form.shippingMethod) || shippingMethods[0];
+  const freeThreshold = parseInt(s("checkout_free_shipping_threshold", "200"));
+  const shippingCost = selectedMethod
+    ? (selectedMethod.free_above && totalPrice >= selectedMethod.free_above ? 0 : selectedMethod.price === 0 ? 0 : selectedMethod.price)
+    : 0;
+  const rambursCostValue = parseInt(settings.ramburs_extra_cost || "5");
+  const rambursCost = form.paymentMethod === "ramburs" ? rambursCostValue : 0;
+  const openPackagePrice = parseFloat(s("checkout_open_package_price", "24.99"));
+  const openPackageCost = form.openPackage ? openPackagePrice : 0;
+
+  const couponDiscount = useMemo(() => {
+    if (!couponApplied) return 0;
+    if (couponApplied.discount_type === "percentage") {
+      const d = totalPrice * (couponApplied.discount_value / 100);
+      return couponApplied.max_discount_amount ? Math.min(d, couponApplied.max_discount_amount) : d;
+    }
+    return couponApplied.discount_value || 0;
+  }, [couponApplied, totalPrice]);
+
+  const finalTotal = Math.max(0, totalPrice - couponDiscount - loyaltyDiscount + shippingCost + rambursCost + openPackageCost);
+
+  // ─── TBI installments ───
+  const tbiOptions = (s("checkout_installments_options", "4|6|12|18|24|36|48|60")).split("|").map(Number);
+  const tbiMonthlyRate = form.paymentMethod === "tbi" ? (finalTotal / form.tbiMonths) : 0;
+
+  // ─── Validation ───
+  const canSubmit = form.email && form.lastName && form.firstName && form.phone
+    && form.countyId && form.localityId && form.address
+    && form.gdprAccepted;
+
+  // ─── Place order ───
   const placeOrder = async () => {
-    if (!form.gdprAccepted) return;
+    if (!canSubmit) return;
     setSubmitting(true);
     try {
-      const orderData = {
+      const selectedCounty = counties?.find(c => c.id === parseInt(form.countyId));
+      const selectedLocality = localities?.find(l => l.id === parseInt(form.localityId));
+      const contactName = form.differentContact
+        ? `${form.contactFirstName} ${form.contactLastName}`
+        : `${form.firstName} ${form.lastName}`;
+      const contactPhone = form.differentContact ? form.contactPhone : form.phone;
+
+      const shippingAddress = {
+        fullName: contactName,
+        phone: contactPhone,
+        address: form.address,
+        bloc: form.bloc,
+        city: selectedLocality?.nume || "",
+        county: selectedCounty?.nume || "",
+        postalCode: form.postalCode,
+      };
+
+      let billingAddress: any = shippingAddress;
+      if (form.differentBilling) {
+        const billingCounty = counties?.find(c => c.id === parseInt(form.billingCountyId));
+        const billingLoc = billingLocalities?.find(l => l.id === parseInt(form.billingLocalityId));
+        billingAddress = {
+          fullName: form.billingType === "juridica" ? form.billingCompany : `${form.firstName} ${form.lastName}`,
+          type: form.billingType,
+          cui: form.billingCui,
+          regCom: form.billingRegCom,
+          company: form.billingCompany,
+          address: form.billingAddress || form.address,
+          city: billingLoc?.nume || selectedLocality?.nume || "",
+          county: billingCounty?.nume || selectedCounty?.nume || "",
+        };
+      }
+
+      const paymentStatus = ["card", "mokka", "paypo", "tbi"].includes(form.paymentMethod) ? "pending" : "unpaid";
+      const orderStatus = ["card", "mokka", "paypo"].includes(form.paymentMethod) ? "pending_payment" : "pending";
+
+      const orderData: any = {
         user_id: user?.id || "00000000-0000-0000-0000-000000000000",
         user_email: form.email,
-        status: form.paymentMethod === "card" ? "pending_payment" : "pending",
+        status: orderStatus,
         payment_method: form.paymentMethod,
-        payment_status: form.paymentMethod === "card" ? "pending" : "unpaid",
+        payment_status: paymentStatus,
         total: finalTotal,
         subtotal: totalPrice,
         shipping_total: shippingCost,
-        shipping_address: {
-          fullName: `${form.firstName} ${form.lastName}`,
-          phone: form.phone,
-          street: form.street,
-          city: form.city,
-          county: form.county,
-          postalCode: form.postalCode,
-        },
-        billing_address: {
-          fullName: `${form.firstName} ${form.lastName}`,
-          phone: form.phone,
-          street: form.street,
-          city: form.city,
-          county: form.county,
-        },
-        notes: "",
+        discount_amount: couponDiscount + loyaltyDiscount,
+        shipping_address: shippingAddress,
+        billing_address: billingAddress,
+        notes: form.observations || "",
+        coupon_id: couponApplied?.coupon_id || null,
+        payment_installments: form.paymentMethod === "tbi" ? { months: form.tbiMonths, monthly: tbiMonthlyRate } : null,
       };
 
-      const { data: order, error } = await supabase.from("orders").insert(orderData as any).select("id, order_number").single();
+      const { data: order, error } = await supabase.from("orders").insert(orderData).select("id, order_number").single();
       if (error) throw error;
 
+      // Order items
       const orderItems = items.map(item => ({
         order_id: order.id,
         product_id: item.product_id,
@@ -134,87 +311,92 @@ export default function Checkout() {
       }));
       await supabase.from("order_items").insert(orderItems as any);
 
-      // Send order confirmation email to customer
+      // Record coupon usage
+      if (couponApplied?.coupon_id && user?.id) {
+        await supabase.from("coupon_usage" as any).insert({ coupon_id: couponApplied.coupon_id, user_id: user.id, order_id: order.id } as any);
+      }
+
+      // Redeem loyalty points
+      if (loyaltyPointsUsed > 0 && user?.id) {
+        await supabase.rpc("use_loyalty_points", { p_user_id: user.id, p_points_to_use: loyaltyPointsUsed, p_order_id: order.id });
+      }
+
+      // Open package service fee
+      if (form.openPackage) {
+        await supabase.from("order_items").insert({
+          order_id: order.id,
+          product_id: null,
+          product_name: "Serviciu deschidere colet la livrare",
+          quantity: 1,
+          unit_price: openPackagePrice,
+          total_price: openPackagePrice,
+        } as any);
+      }
+
+      // Emails (fire-and-forget)
       supabase.functions.invoke("send-email", {
         body: {
-          type: "order_placed",
-          to: form.email,
+          type: "order_placed", to: form.email,
           data: {
-            orderId: order.id,
-            orderNumber: order.order_number,
+            orderId: order.id, orderNumber: order.order_number,
             customerName: `${form.firstName} ${form.lastName}`,
-            total: finalTotal,
-            paymentMethod: form.paymentMethod,
-            items: items.map(item => ({
-              name: item.product.name,
-              quantity: item.quantity,
-              price: item.product.price,
-              image_url: item.product.image_url,
-            })),
-            shippingAddress: {
-              fullName: `${form.firstName} ${form.lastName}`,
-              phone: form.phone,
-              address: form.street,
-              city: form.city,
-              county: form.county,
-              postalCode: form.postalCode,
-            },
+            total: finalTotal, paymentMethod: form.paymentMethod,
+            items: items.map(i => ({ name: i.product.name, quantity: i.quantity, price: i.product.price, image_url: i.product.image_url })),
+            shippingAddress,
           },
         },
       }).catch(console.error);
 
-      // Notify admin about new order
       supabase.functions.invoke("send-email", {
         body: {
-          type: "admin_new_order",
-          to: settings.contact_email || "admin@mamalucica.ro",
+          type: "admin_new_order", to: settings.contact_email || "admin@mamalucica.ro",
           data: {
-            orderId: order.id,
-            orderNumber: order.order_number,
-            customerName: `${form.firstName} ${form.lastName}`,
-            email: form.email,
-            total: finalTotal,
-            paymentMethod: form.paymentMethod,
-            items: items.map(item => ({
-              name: item.product.name,
-              quantity: item.quantity,
-              price: item.product.price,
-            })),
-            shippingAddress: {
-              fullName: `${form.firstName} ${form.lastName}`,
-              phone: form.phone,
-              address: form.street,
-              city: form.city,
-              county: form.county,
-            },
+            orderId: order.id, orderNumber: order.order_number,
+            customerName: `${form.firstName} ${form.lastName}`, email: form.email,
+            total: finalTotal, paymentMethod: form.paymentMethod,
+            items: items.map(i => ({ name: i.product.name, quantity: i.quantity, price: i.product.price })),
+            shippingAddress,
           },
         },
       }).catch(console.error);
 
       await clearCart();
 
+      // Payment redirects
       if (form.paymentMethod === "card") {
         try {
           const { data: payData } = await supabase.functions.invoke("netopia-payment", {
             body: { orderId: order.id, amount: finalTotal, email: form.email, firstName: form.firstName, lastName: form.lastName },
           });
-          if (payData?.paymentUrl) {
-            window.location.href = payData.paymentUrl;
-            return;
-          }
-        } catch (e) {
-          console.error("Netopia redirect failed:", e);
-        }
+          if (payData?.paymentUrl) { window.location.href = payData.paymentUrl; return; }
+        } catch (e) { console.error("Netopia redirect failed:", e); }
+      }
+      if (form.paymentMethod === "mokka") {
+        try {
+          const { data: payData } = await supabase.functions.invoke("mokka-payment", {
+            body: { orderId: order.id, amount: finalTotal, email: form.email },
+          });
+          if (payData?.redirectUrl) { window.location.href = payData.redirectUrl; return; }
+        } catch (e) { console.error("Mokka redirect failed:", e); }
+      }
+      if (form.paymentMethod === "paypo") {
+        try {
+          const { data: payData } = await supabase.functions.invoke("paypo-payment", {
+            body: { orderId: order.id, amount: finalTotal, email: form.email },
+          });
+          if (payData?.redirectUrl) { window.location.href = payData.redirectUrl; return; }
+        } catch (e) { console.error("PayPo redirect failed:", e); }
       }
 
       navigate(`/order-confirmation/${order.id}`);
     } catch (err: any) {
-      toast.error("Eroare la plasarea comenzii: " + (err.message || "Încearcă din nou"));
+      toast.error("Eroare: " + (err.message || "Încearcă din nou"));
     } finally {
       setSubmitting(false);
     }
   };
 
+  // ─── Empty cart ───
   if (items.length === 0) {
     return (
       <Layout>
@@ -226,171 +408,480 @@ export default function Checkout() {
     );
   }
 
-  const inputClass = "w-full h-10 px-3 border border-border rounded-md text-sm bg-background focus:ring-primary focus:border-primary";
+  const sectionClass = "bg-card rounded-xl border border-border p-5 md:p-6";
 
   return (
     <Layout>
-      <div className="lumax-container py-6 pb-12">
-        {/* Steps */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          {STEPS.map((s, i) => (
-            <div key={s} className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                i < step ? "bg-lumax-green text-white" : i === step ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
-              }`}>
-                {i < step ? <Check className="h-4 w-4" /> : i + 1}
-              </div>
-              <span className={`text-xs font-medium hidden sm:inline ${i === step ? "text-foreground" : "text-muted-foreground"}`}>{s}</span>
-              {i < STEPS.length - 1 && <div className={`w-8 h-0.5 ${i < step ? "bg-lumax-green" : "bg-border"}`} />}
-            </div>
-          ))}
-        </div>
+      <div className="lumax-container py-6 pb-16">
+        <h1 className="text-xl md:text-2xl font-extrabold mb-6">Finalizare Comandă</h1>
 
-        <div className="grid lg:grid-cols-[1fr_360px] gap-6">
-          {/* Form area */}
-          <div className="bg-card rounded-xl border border-border p-6">
-            {step === 0 && (
-              <div className="space-y-4">
-                <h2 className="text-lg font-bold">Date personale</h2>
-                {!user && (
-                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-sm">
-                    Ai cont? <Link to="/auth" className="text-primary font-semibold hover:underline">Autentifică-te</Link> pentru o comandă mai rapidă.
+        <div className="grid lg:grid-cols-[1fr_380px] gap-6 items-start">
+          {/* ─── LEFT COLUMN ─── */}
+          <div className="space-y-5">
+
+            {/* ─── BANNER FIDELITATE ─── */}
+            {sBool("checkout_fidelity_banner_show") && !user && (
+              <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl p-5">
+                <div className="flex items-start gap-3">
+                  <Gift className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-foreground mb-1">Vrei REDUCERE la toate comenzile viitoare?</p>
+                    <p className="text-xs text-muted-foreground mb-3">
+                      {s("checkout_fidelity_banner_text", "Fă-ți cont și acumulează Puncte de Fidelitate ce pot fi utilizate ca Reducere la următoarele comenzi!")}
+                    </p>
+                    <div className="flex gap-2">
+                      <Button size="sm" onClick={() => setAuthMode("login")}>Creează cont</Button>
+                      <Button size="sm" variant="outline" onClick={() => setAuthMode("guest")}>Continuă fără cont</Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ─── BLOC 1: AUTENTIFICARE ─── */}
+            {!user && (
+              <div className={sectionClass}>
+                <h2 className="text-base font-bold mb-3">Ai mai cumpărat de la noi?</h2>
+                <div className="space-y-3">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="authMode" checked={authMode === "login"} onChange={() => setAuthMode("login")} className="text-primary" />
+                    <span className="text-sm font-medium">Intră în cont</span>
+                  </label>
+                  {authMode === "login" && (
+                    <div className="pl-6 space-y-2">
+                      <Input placeholder="Email" type="email" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />
+                      <Input placeholder="Parolă" type="password" value={loginPass} onChange={e => setLoginPass(e.target.value)} />
+                      <div className="flex gap-2 items-center">
+                        <Button size="sm" onClick={handleLogin} disabled={loginLoading}>
+                          {loginLoading ? "Se conectează..." : "Autentifică-te"}
+                        </Button>
+                        <Link to="/forgot-password" className="text-xs text-primary hover:underline">Am uitat parola</Link>
+                      </div>
+                    </div>
+                  )}
+                  {sBool("checkout_guest_option_show") && (
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" name="authMode" checked={authMode === "guest"} onChange={() => setAuthMode("guest")} className="text-primary" />
+                      <span className="text-sm font-medium">Doresc comandă fără cont de client</span>
+                    </label>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* ─── BLOC 2: COD REDUCERE / PUNCTE ─── */}
+            {sBool("checkout_coupon_show") && (
+              <div className={sectionClass}>
+                <h2 className="text-base font-bold mb-3">Cod reducere / Puncte fidelitate</h2>
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm mb-1.5 block">Ai un cod de reducere?</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={couponCode}
+                        onChange={e => setCouponCode(e.target.value.toUpperCase())}
+                        placeholder="Introdu codul"
+                        className="flex-1"
+                        disabled={!!couponApplied}
+                      />
+                      {couponApplied ? (
+                        <Button variant="outline" onClick={() => { setCouponApplied(null); setCouponCode(""); }}>Șterge</Button>
+                      ) : (
+                        <Button onClick={applyCoupon} disabled={couponLoading}>{couponLoading ? "..." : "Aplică"}</Button>
+                      )}
+                    </div>
+                    {couponApplied && (
+                      <p className="text-xs text-green-600 mt-1">
+                        ✅ Cod aplicat: -{couponApplied.discount_type === "percentage" ? `${couponApplied.discount_value}%` : format(couponApplied.discount_value)}
+                      </p>
+                    )}
+                  </div>
+
+                  {user && loyaltyBalance && loyaltyBalance > 0 && (
+                    <div className="border-t border-border pt-3">
+                      <Label className="text-sm mb-1.5 block">
+                        Folosește punctele tale: <span className="font-bold text-primary">{loyaltyBalance} puncte</span> = {format((loyaltyBalance / 100) * 5)}
+                      </Label>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-muted-foreground">0%</span>
+                        <Slider
+                          value={[loyaltyPercent]}
+                          onValueChange={([v]) => setLoyaltyPercent(v)}
+                          max={maxPercent}
+                          step={1}
+                          className="flex-1"
+                        />
+                        <span className="text-xs text-muted-foreground">{maxPercent}%</span>
+                      </div>
+                      {loyaltyDiscount > 0 && (
+                        <p className="text-xs text-green-600 mt-1">
+                          Aplici {loyaltyPointsUsed} puncte = -{format(loyaltyDiscount)}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* ─── BLOC 3: DATE DE CONTACT ─── */}
+            <div className={sectionClass}>
+              <h2 className="text-base font-bold mb-3">Date de contact</h2>
+              <div className="space-y-3">
+                <div>
+                  <Label className="text-xs">Email *</Label>
+                  <Input value={form.email} onChange={e => set("email", e.target.value)} type="email" placeholder="email@exemplu.ro" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs">Nume *</Label>
+                    <Input value={form.lastName} onChange={e => set("lastName", e.target.value)} placeholder="Popescu" />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Prenume *</Label>
+                    <Input value={form.firstName} onChange={e => set("firstName", e.target.value)} placeholder="Maria" />
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs">Telefon *</Label>
+                  <Input value={form.phone} onChange={e => set("phone", e.target.value)} type="tel" placeholder="07XX XXX XXX" />
+                </div>
+
+                {sBool("checkout_different_contact_show") && (
+                  <div className="pt-1">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <Checkbox checked={form.differentContact} onCheckedChange={v => set("differentContact", !!v)} />
+                      <span className="text-sm">Date de contact diferite pentru livrare</span>
+                    </label>
+                    {form.differentContact && (
+                      <div className="grid grid-cols-2 gap-3 mt-3 pl-6">
+                        <div>
+                          <Label className="text-xs">Nume livrare</Label>
+                          <Input value={form.contactLastName} onChange={e => set("contactLastName", e.target.value)} />
+                        </div>
+                        <div>
+                          <Label className="text-xs">Prenume livrare</Label>
+                          <Input value={form.contactFirstName} onChange={e => set("contactFirstName", e.target.value)} />
+                        </div>
+                        <div className="col-span-2">
+                          <Label className="text-xs">Telefon livrare</Label>
+                          <Input value={form.contactPhone} onChange={e => set("contactPhone", e.target.value)} type="tel" />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
-                <div className="grid grid-cols-2 gap-3">
-                  <input value={form.firstName} onChange={e => updateForm("firstName", e.target.value)} placeholder="Prenume *" className={inputClass} />
-                  <input value={form.lastName} onChange={e => updateForm("lastName", e.target.value)} placeholder="Nume *" className={inputClass} />
-                </div>
-                <input value={form.email} onChange={e => updateForm("email", e.target.value)} placeholder="Email *" type="email" className={inputClass} />
-                <input value={form.phone} onChange={e => updateForm("phone", e.target.value)} placeholder="Telefon *" type="tel" className={inputClass} />
               </div>
-            )}
+            </div>
 
-            {step === 1 && (
-              <div className="space-y-4">
-                <h2 className="text-lg font-bold">Adresa de livrare</h2>
-                <input value={form.street} onChange={e => updateForm("street", e.target.value)} placeholder="Strada, nr., bloc, ap. *" className={inputClass} />
-                <div className="grid grid-cols-2 gap-3">
-                  <input value={form.city} onChange={e => updateForm("city", e.target.value)} placeholder="Oraș *" className={inputClass} />
-                  <select value={form.county} onChange={e => updateForm("county", e.target.value)} className={inputClass}>
-                    <option value="">Județ *</option>
-                    {COUNTIES.map(c => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
-                <input value={form.postalCode} onChange={e => updateForm("postalCode", e.target.value)} placeholder="Cod poștal" className={inputClass} />
-              </div>
-            )}
-
-            {step === 2 && (
+            {/* ─── BLOC 4: LIVRARE (adresă) ─── */}
+            <div className={sectionClass}>
+              <h2 className="text-base font-bold mb-3">Adresa de livrare</h2>
               <div className="space-y-3">
-                <h2 className="text-lg font-bold">Metoda de livrare</h2>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs">Județ *</Label>
+                    <Select value={form.countyId} onValueChange={v => set("countyId", v)}>
+                      <SelectTrigger><SelectValue placeholder="Alege județul" /></SelectTrigger>
+                      <SelectContent>
+                        {(counties || []).map(c => (
+                          <SelectItem key={c.id} value={String(c.id)}>{c.nume}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-xs">Localitate *</Label>
+                    <Select value={form.localityId} onValueChange={v => set("localityId", v)} disabled={!form.countyId}>
+                      <SelectTrigger><SelectValue placeholder={form.countyId ? "Alege localitatea" : "Alege mai întâi județul"} /></SelectTrigger>
+                      <SelectContent>
+                        {(localities || []).map(l => (
+                          <SelectItem key={l.id} value={String(l.id)}>
+                            {l.nume}{l.tip ? ` (${l.tip})` : ""}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs">Adresă (stradă, nr.) *</Label>
+                  <Input value={form.address} onChange={e => set("address", e.target.value)} placeholder="Str. Exemplu, Nr. 10" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs">Cod Poștal</Label>
+                    <Input value={form.postalCode} onChange={e => set("postalCode", e.target.value)} placeholder="010101" />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Bloc / Sc. / Ap.</Label>
+                    <Input value={form.bloc} onChange={e => set("bloc", e.target.value)} placeholder="Bl. A, Sc. 1, Ap. 5" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ─── BLOC 5: METODĂ LIVRARE ─── */}
+            <div className={sectionClass}>
+              <h2 className="text-base font-bold mb-3">Metodă de livrare</h2>
+              <div className="space-y-2">
                 {shippingMethods.map(method => {
-                  const methodKey = method.id || method.name;
+                  const key = method.id || method.name;
                   const isFree = method.free_above && totalPrice >= method.free_above;
-                  const displayPrice = method.price === 0 || isFree ? "GRATUIT" : `${method.price} lei`;
+                  const displayPrice = method.price === 0 || isFree ? "GRATUIT" : `${method.price} RON`;
                   return (
                     <button
-                      key={methodKey}
-                      onClick={() => updateForm("shippingMethod", methodKey)}
+                      key={key}
+                      onClick={() => set("shippingMethod", key)}
                       className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
-                        form.shippingMethod === methodKey ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
+                        form.shippingMethod === key ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <span className="text-xl">{method.icon || "🚚"}</span>
+                          <span className="text-lg">{method.icon || "🚚"}</span>
                           <div>
                             <p className="text-sm font-bold">{method.name}</p>
-                            <p className="text-xs text-muted-foreground">{method.description}{method.estimated_days ? ` · ${method.estimated_days}` : ""}</p>
+                            <p className="text-xs text-muted-foreground">{method.description}</p>
                           </div>
                         </div>
-                        <span className={`text-sm font-bold ${displayPrice === "GRATUIT" ? "text-lumax-green" : "text-foreground"}`}>{displayPrice}</span>
+                        <span className={`text-sm font-bold ${displayPrice === "GRATUIT" ? "text-green-600" : ""}`}>{displayPrice}</span>
                       </div>
+                      {method.free_above && !isFree && (
+                        <p className="text-xs text-muted-foreground mt-1 ml-9">Gratuit la comenzi peste {method.free_above} RON</p>
+                      )}
                     </button>
                   );
                 })}
               </div>
-            )}
+            </div>
 
-            {step === 3 && (
-              <div className="space-y-3">
-                <h2 className="text-lg font-bold">Metoda de plată</h2>
-                {[
-                  { v: "card", icon: "💳", title: "Plata cu cardul", desc: "Visa, Mastercard — Powered by Netopia" },
-                  { v: "ramburs", icon: "💵", title: "Ramburs la curier", desc: `Plătești la primirea coletului (+${rambursCostValue} lei)` },
-                  { v: "transfer", icon: "🏦", title: "Transfer bancar (OP)", desc: "Plătești după plasarea comenzii" },
-                ].map(o => (
-                  <button
-                    key={o.v}
-                    onClick={() => updateForm("paymentMethod", o.v)}
-                    className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
-                      form.paymentMethod === o.v ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-xl">{o.icon}</span>
+            {/* ─── BLOC 6: FACTURARE ─── */}
+            {sBool("checkout_different_billing_show") && (
+              <div className={sectionClass}>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <Checkbox checked={form.differentBilling} onCheckedChange={v => set("differentBilling", !!v)} />
+                  <span className="text-sm font-bold">Doresc date de facturare diferite</span>
+                </label>
+
+                {form.differentBilling && (
+                  <div className="mt-4 space-y-3">
+                    <div className="flex gap-3">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="billingType" checked={form.billingType === "fizica"} onChange={() => set("billingType", "fizica")} />
+                        <span className="text-sm">Persoană fizică</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="billingType" checked={form.billingType === "juridica"} onChange={() => set("billingType", "juridica")} />
+                        <span className="text-sm">Persoană juridică</span>
+                      </label>
+                    </div>
+
+                    {form.billingType === "juridica" && sBool("checkout_cui_search_show") && (
+                      <div className="space-y-3 border border-border rounded-lg p-4">
+                        <Label className="text-xs font-semibold">Caută firma după CUI (doar cifre)</Label>
+                        <div className="flex gap-2">
+                          <Input value={form.billingCui} onChange={e => set("billingCui", e.target.value.replace(/\D/g, ""))} placeholder="CUI (ex: 12345678)" />
+                          <Button variant="outline" onClick={lookupCUI} disabled={cuiLoading}>
+                            <Search className="w-4 h-4 mr-1" /> {cuiLoading ? "..." : "Caută la ANAF"}
+                          </Button>
+                        </div>
+                        {form.billingCompany && (
+                          <div className="space-y-2 text-sm">
+                            <div>
+                              <Label className="text-xs">Nume firmă</Label>
+                              <Input value={form.billingCompany} onChange={e => set("billingCompany", e.target.value)} />
+                            </div>
+                            <div>
+                              <Label className="text-xs">Nr. Reg. Com.</Label>
+                              <Input value={form.billingRegCom} onChange={e => set("billingRegCom", e.target.value)} />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <p className="text-sm font-bold">{o.title}</p>
-                        <p className="text-xs text-muted-foreground">{o.desc}</p>
+                        <Label className="text-xs">Județ facturare</Label>
+                        <Select value={form.billingCountyId} onValueChange={v => set("billingCountyId", v)}>
+                          <SelectTrigger><SelectValue placeholder="Alege județul" /></SelectTrigger>
+                          <SelectContent>
+                            {(counties || []).map(c => (
+                              <SelectItem key={c.id} value={String(c.id)}>{c.nume}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label className="text-xs">Localitate facturare</Label>
+                        <Select value={form.billingLocalityId} onValueChange={v => set("billingLocalityId", v)} disabled={!form.billingCountyId}>
+                          <SelectTrigger><SelectValue placeholder="Alege localitatea" /></SelectTrigger>
+                          <SelectContent>
+                            {(billingLocalities || []).map(l => (
+                              <SelectItem key={l.id} value={String(l.id)}>{l.nume}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
-                  </button>
-                ))}
+                    <div>
+                      <Label className="text-xs">Adresă facturare</Label>
+                      <Input value={form.billingAddress} onChange={e => set("billingAddress", e.target.value)} placeholder="Adresa completă" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
-                {/* Transfer bancar IBAN info */}
+            {/* ─── BLOC 7: SERVICII EXTRA ─── */}
+            {sBool("checkout_extra_services_show") && sBool("checkout_open_package_service_show") && (
+              <div className={sectionClass}>
+                <h2 className="text-base font-bold mb-3">Servicii extra</h2>
+                <p className="text-xs text-muted-foreground mb-2">Vrei să te asiguri că totul e în regulă?</p>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <Checkbox checked={form.openPackage} onCheckedChange={v => set("openPackage", !!v)} />
+                  <span className="text-sm">Serviciu deschidere colet la livrare ({openPackagePrice} RON)</span>
+                </label>
+              </div>
+            )}
+
+            {/* ─── BLOC 8: PLATĂ ─── */}
+            <div className={sectionClass}>
+              <h2 className="text-base font-bold mb-3">Alege metoda de plată *</h2>
+              <div className="space-y-2">
+                {/* Ramburs */}
+                <button onClick={() => set("paymentMethod", "ramburs")} className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${form.paymentMethod === "ramburs" ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"}`}>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">💵</span>
+                    <div className="flex-1">
+                      <p className="text-sm font-bold">Plată la livrare (Ramburs)</p>
+                      {sBool("checkout_ramburs_free_shipping") && (
+                        <p className="text-xs text-green-600 mt-0.5">{s("checkout_ramburs_benefit_text", "+ Transport Gratuit la comenzi > 200 RON + Plătești când ajunge coletul")}</p>
+                      )}
+                    </div>
+                  </div>
+                </button>
+
+                {/* Card */}
+                <button onClick={() => set("paymentMethod", "card")} className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${form.paymentMethod === "card" ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"}`}>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">💳</span>
+                    <div>
+                      <p className="text-sm font-bold">Online cu card (Netopia)</p>
+                      <p className="text-xs text-muted-foreground">Visa, Mastercard</p>
+                    </div>
+                  </div>
+                </button>
+
+                {/* Transfer */}
+                <button onClick={() => set("paymentMethod", "transfer")} className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${form.paymentMethod === "transfer" ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"}`}>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">🏦</span>
+                    <div>
+                      <p className="text-sm font-bold">Ordin de Plată (Transfer bancar)</p>
+                      <p className="text-xs text-muted-foreground">Plătești după plasarea comenzii</p>
+                    </div>
+                  </div>
+                </button>
+
                 {form.paymentMethod === "transfer" && (
-                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mt-2 space-y-1 text-sm">
-                    <p className="font-bold text-foreground">Detalii transfer bancar:</p>
+                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 ml-9 space-y-1 text-sm">
+                    <p className="font-bold">Detalii transfer bancar:</p>
                     <p className="text-muted-foreground">Bancă: <span className="font-semibold text-foreground">{settings.company_bank || "Banca Transilvania"}</span></p>
-                    <p className="text-muted-foreground">IBAN: <span className="font-semibold text-foreground">{settings.company_iban || "RO00XXXX0000000000000000"}</span></p>
-                    <p className="text-muted-foreground">Beneficiar: <span className="font-semibold text-foreground">{settings.company_name || "LUMAX SRL"}</span></p>
+                    <p className="text-muted-foreground">IBAN: <span className="font-semibold text-foreground">{settings.company_iban || "RO00XXXX"}</span></p>
+                    <p className="text-muted-foreground">Beneficiar: <span className="font-semibold text-foreground">{settings.company_name || "Mama Lucica SRL"}</span></p>
                   </div>
                 )}
 
-                <div className="space-y-3 mt-6">
-                  <label className="flex items-start gap-2 cursor-pointer">
-                    <input type="checkbox" checked={form.gdprAccepted} onChange={e => updateForm("gdprAccepted", e.target.checked)} className="mt-1 rounded border-border text-primary focus:ring-primary" />
-                    <span className="text-xs text-muted-foreground">
-                      Sunt de acord cu{" "}
-                      <Link to="/termeni-si-conditii" className="text-primary underline" target="_blank">Termenii și Condițiile</Link> și{" "}
-                      <Link to="/politica-de-confidentialitate" className="text-primary underline" target="_blank">Politica de Confidențialitate</Link> *
-                    </span>
-                  </label>
-                  <label className="flex items-start gap-2 cursor-pointer">
-                    <input type="checkbox" checked={form.newsletter} onChange={e => updateForm("newsletter", e.target.checked)} className="mt-1 rounded border-border text-primary focus:ring-primary" />
-                    <span className="text-xs text-muted-foreground">Vreau să primesc oferte și noutăți pe email</span>
-                  </label>
-                </div>
-              </div>
-            )}
+                {/* Mokka */}
+                <button onClick={() => set("paymentMethod", "mokka")} className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${form.paymentMethod === "mokka" ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"}`}>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">🟠</span>
+                    <div>
+                      <p className="text-sm font-bold">Online în rate prin StarBT</p>
+                      <p className="text-xs text-muted-foreground">Până la 30 de rate, 0% dobândă</p>
+                    </div>
+                  </div>
+                </button>
 
-            {/* Navigation */}
-            <div className="flex justify-between mt-6">
-              {step > 0 && (
-                <button onClick={() => setStep(step - 1)} className="h-11 px-6 border border-border rounded-lg text-sm font-semibold hover:bg-secondary">← Înapoi</button>
-              )}
-              <div className="ml-auto">
-                {step < 3 ? (
-                  <button onClick={() => setStep(step + 1)} disabled={!canNextStep()} className="h-11 px-8 bg-primary text-primary-foreground rounded-lg text-sm font-bold hover:bg-lumax-blue-dark disabled:opacity-50 disabled:cursor-not-allowed">
-                    Continuă →
-                  </button>
-                ) : (
-                  <button onClick={placeOrder} disabled={!form.gdprAccepted || submitting} className="h-14 px-8 bg-destructive text-destructive-foreground rounded-lg text-base font-extrabold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shadow-md">
-                    {submitting ? "Se procesează..." : `🔒 Plasează Comanda — ${format(finalTotal)}`}
-                  </button>
+                {/* TBI */}
+                {sBool("checkout_installments_show") && (
+                  <>
+                    <button onClick={() => set("paymentMethod", "tbi")} className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${form.paymentMethod === "tbi" ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"}`}>
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg">🏛️</span>
+                        <div>
+                          <p className="text-sm font-bold">TBI Bank — Cumpără acum, plătești mai târziu</p>
+                          <p className="text-xs text-muted-foreground">Rate fixe, aprobări instant</p>
+                        </div>
+                      </div>
+                    </button>
+
+                    {form.paymentMethod === "tbi" && (
+                      <div className="ml-9 space-y-3">
+                        <div className="flex flex-wrap gap-2">
+                          {tbiOptions.map(m => (
+                            <button key={m} onClick={() => set("tbiMonths", m)} className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition-colors ${form.tbiMonths === m ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-muted-foreground/30"}`}>
+                              {m} luni
+                            </button>
+                          ))}
+                        </div>
+                        <div className="bg-muted/50 rounded-lg p-3 text-sm space-y-1">
+                          <div className="flex justify-between"><span className="text-muted-foreground">Rată lunară:</span><span className="font-bold">{format(tbiMonthlyRate)}</span></div>
+                          <div className="flex justify-between"><span className="text-muted-foreground">Total de plată:</span><span className="font-bold">{format(finalTotal)}</span></div>
+                          <div className="flex justify-between"><span className="text-muted-foreground">Dobândă:</span><span className="font-bold text-green-600">0.00 RON</span></div>
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
+
+            {/* ─── BLOC 9: OBSERVAȚII ─── */}
+            {sBool("checkout_observations_show") && (
+              <div className={sectionClass}>
+                <h2 className="text-base font-bold mb-3">Mesajul tău (opțional)</h2>
+                <Textarea value={form.observations} onChange={e => set("observations", e.target.value)} placeholder="Instrucțiuni speciale, program livrare, etc." rows={3} />
+              </div>
+            )}
+
+            {/* ─── GDPR ─── */}
+            <div className={sectionClass}>
+              <div className="space-y-3">
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <Checkbox checked={form.gdprAccepted} onCheckedChange={v => set("gdprAccepted", !!v)} className="mt-0.5" />
+                  <span className="text-xs text-muted-foreground">
+                    Sunt de acord cu{" "}
+                    <Link to="/termeni-si-conditii" className="text-primary underline" target="_blank">Termenii și Condițiile</Link> și{" "}
+                    <Link to="/politica-de-confidentialitate" className="text-primary underline" target="_blank">Politica de Confidențialitate</Link> *
+                  </span>
+                </label>
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <Checkbox checked={form.newsletter} onCheckedChange={v => set("newsletter", !!v)} className="mt-0.5" />
+                  <span className="text-xs text-muted-foreground">Vreau să primesc oferte și noutăți pe email</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Mobile order button */}
+            <div className="lg:hidden">
+              <Button onClick={placeOrder} disabled={!canSubmit || submitting} className="w-full h-14 text-base font-extrabold" size="lg">
+                {submitting ? "Se procesează..." : `🔒 Plasează Comanda — ${format(finalTotal)}`}
+              </Button>
+            </div>
           </div>
 
-          {/* Summary */}
-          <div className="lg:sticky lg:top-[60px] self-start">
+          {/* ─── RIGHT COLUMN: SUMAR ─── */}
+          <div className="lg:sticky lg:top-[80px] self-start">
             <div className="bg-card rounded-xl border border-border p-5">
-              <h3 className="text-base font-bold mb-4">Comanda ta</h3>
+              <h3 className="text-base font-bold mb-4">Sumar comandă</h3>
+
               <div className="space-y-3 mb-4">
                 {items.map(item => (
                   <div key={item.product_id} className="flex gap-3">
-                    <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-secondary flex-shrink-0">
+                    <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-secondary flex-shrink-0">
                       <img src={item.product.image_url || "/placeholder.svg"} alt="" className="w-full h-full object-cover" />
                       <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">{item.quantity}</span>
                     </div>
@@ -398,19 +889,50 @@ export default function Checkout() {
                       <p className="text-xs font-medium text-foreground truncate">{item.product.name}</p>
                       <p className="text-xs text-muted-foreground">{format(item.product.price)} × {item.quantity}</p>
                     </div>
-                    <p className="text-xs font-bold">{format(item.product.price * item.quantity)}</p>
+                    <p className="text-xs font-bold whitespace-nowrap">{format(item.product.price * item.quantity)}</p>
                   </div>
                 ))}
               </div>
-              <hr className="border-border mb-3" />
+
+              <Separator className="mb-3" />
+
               <div className="space-y-1.5 text-sm">
                 <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span>{format(totalPrice)}</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">Transport</span><span className={shippingCost === 0 ? "text-lumax-green font-semibold" : ""}>{shippingCost === 0 ? "GRATUIT" : format(shippingCost)}</span></div>
-                {rambursCost > 0 && <div className="flex justify-between"><span className="text-muted-foreground">Ramburs</span><span>{format(rambursCost)}</span></div>}
-                <hr className="border-border" />
-                <div className="flex justify-between text-lg font-extrabold"><span>TOTAL</span><span>{format(finalTotal)}</span></div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Transport</span>
+                  <span className={shippingCost === 0 ? "text-green-600 font-semibold" : ""}>{shippingCost === 0 ? "GRATUIT" : format(shippingCost)}</span>
+                </div>
+                {openPackageCost > 0 && (
+                  <div className="flex justify-between"><span className="text-muted-foreground">Serviciu deschidere</span><span>{format(openPackageCost)}</span></div>
+                )}
+                {rambursCost > 0 && (
+                  <div className="flex justify-between"><span className="text-muted-foreground">Cost ramburs</span><span>{format(rambursCost)}</span></div>
+                )}
+                {couponDiscount > 0 && (
+                  <div className="flex justify-between text-green-600"><span>Cod reducere</span><span>-{format(couponDiscount)}</span></div>
+                )}
+                {loyaltyDiscount > 0 && (
+                  <div className="flex justify-between text-green-600"><span>Puncte folosite</span><span>-{format(loyaltyDiscount)}</span></div>
+                )}
+                <Separator />
+                <div className="flex justify-between text-lg font-extrabold pt-1">
+                  <span>TOTAL</span>
+                  <span>{format(finalTotal)}</span>
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground text-center mt-3">🔒 SSL · Visa · Mastercard · Netopia</p>
+
+              {/* Desktop order button */}
+              <div className="hidden lg:block mt-4">
+                <Button onClick={placeOrder} disabled={!canSubmit || submitting} className="w-full h-14 text-base font-extrabold" size="lg">
+                  {submitting ? "Se procesează..." : `Plasează comanda →`}
+                </Button>
+              </div>
+
+              <div className="mt-4 space-y-2 text-xs text-muted-foreground">
+                <div className="flex items-center gap-2"><Lock className="w-3.5 h-3.5" /> Plată securizată SSL</div>
+                <div className="flex items-center gap-2"><RotateCcw className="w-3.5 h-3.5" /> Retur gratuit 30 zile</div>
+                <div className="flex items-center gap-2"><Package className="w-3.5 h-3.5" /> Livrare 1-3 zile lucrătoare</div>
+              </div>
             </div>
           </div>
         </div>
