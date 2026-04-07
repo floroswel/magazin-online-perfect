@@ -7241,6 +7241,53 @@ export type Database = {
         }
         Relationships: []
       }
+      romania_judete: {
+        Row: {
+          abreviere: string
+          id: number
+          nume: string
+        }
+        Insert: {
+          abreviere: string
+          id?: number
+          nume: string
+        }
+        Update: {
+          abreviere?: string
+          id?: number
+          nume?: string
+        }
+        Relationships: []
+      }
+      romania_localitati: {
+        Row: {
+          id: number
+          judet_id: number | null
+          nume: string
+          tip: string | null
+        }
+        Insert: {
+          id?: number
+          judet_id?: number | null
+          nume: string
+          tip?: string | null
+        }
+        Update: {
+          id?: number
+          judet_id?: number | null
+          nume?: string
+          tip?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "romania_localitati_judet_id_fkey"
+            columns: ["judet_id"]
+            isOneToOne: false
+            referencedRelation: "romania_judete"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sameday_awbs: {
         Row: {
           awb_number: string | null
