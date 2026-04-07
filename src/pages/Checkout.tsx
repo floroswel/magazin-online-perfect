@@ -8,6 +8,7 @@ import { useSettings } from "@/hooks/useSettings";
 import { usePageSeo } from "@/components/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import useRomaniaGeo from "@/hooks/useRomaniaGeo";
 import { Gift, Lock, RotateCcw, Package, ChevronDown, Search, Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -32,8 +33,6 @@ interface ShippingMethod {
   estimated_days: string | null;
 }
 
-interface County { id: number; nume: string; abreviere: string; }
-interface Locality { id: number; judet_id: number; nume: string; tip: string | null; }
 
 // ─── Defaults ───
 const DEFAULT_SHIPPING: ShippingMethod[] = [
@@ -135,38 +134,33 @@ export default function Checkout() {
   }, [loyaltyBalance, loyaltyPercent, totalPrice]);
   const loyaltyPointsUsed = Math.ceil((loyaltyDiscount / 5) * 100);
 
-  // ─── Counties & localities from DB ───
-  const { data: counties } = useQuery({
-    queryKey: ["romania-judete"],
-    queryFn: async () => {
-      const { data } = await supabase.from("romania_judete" as any).select("*").order("nume") as any;
-      return (data || []) as County[];
-    },
-  });
+  // ─── Counties & localities via hook ───
+  const shipping = useRomaniaGeo();
+  const billing = useRomaniaGeo();
 
-  const { data: localities } = useQuery({
-    queryKey: ["romania-localitati", form.countyId],
-    queryFn: async () => {
-      if (!form.countyId) return [];
-      const { data } = await supabase.from("romania_localitati" as any).select("*").eq("judet_id", parseInt(form.countyId)).order("nume") as any;
-      return (data || []) as Locality[];
-    },
-    enabled: !!form.countyId,
-  });
+  const counties = shipping.judete;
 
-  const { data: billingLocalities } = useQuery({
-    queryKey: ["romania-localitati-billing", form.billingCountyId],
-    queryFn: async () => {
-      if (!form.billingCountyId) return [];
-      const { data } = await supabase.from("romania_localitati" as any).select("*").eq("judet_id", parseInt(form.billingCountyId)).order("nume") as any;
-      return (data || []) as Locality[];
-    },
-    enabled: !!form.billingCountyId,
-  });
+  // Fetch localities when county changes
+  useEffect(() => {
+    set("localityId", "");
+    if (form.countyId) {
+      shipping.fetchLocalitati(parseInt(form.countyId));
+    } else {
+      shipping.clearLocalitati();
+    }
+  }, [form.countyId]);
 
-  // Reset locality when county changes
-  useEffect(() => { set("localityId", ""); }, [form.countyId]);
-  useEffect(() => { set("billingLocalityId", ""); }, [form.billingCountyId]);
+  useEffect(() => {
+    set("billingLocalityId", "");
+    if (form.billingCountyId) {
+      billing.fetchLocalitati(parseInt(form.billingCountyId));
+    } else {
+      billing.clearLocalitati();
+    }
+  }, [form.billingCountyId]);
+
+  const localities = shipping.localitati;
+  const billingLocalities = billing.localitati;
 
   // ─── Shipping ───
   const { data: shippingMethodsDB } = useQuery({
