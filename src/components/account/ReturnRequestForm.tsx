@@ -90,7 +90,7 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
     }));
   };
 
-  const isGuest = !!guestEmail && !userId;
+  const isGuest = !!guestEmail;
 
   async function handleSubmit() {
     setSubmitting(true);
