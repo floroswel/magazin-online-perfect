@@ -239,6 +239,11 @@ function MainHeader({ categories }: { categories: Category[] }) {
             <span className="text-[10px] text-muted-foreground hidden md:block">Favorite</span>
           </Link>
 
+          <Link to="/retururi" className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-md hover:bg-secondary transition-colors">
+            <RotateCcw className="h-[22px] w-[22px] text-muted-foreground" />
+            <span className="text-[10px] text-muted-foreground hidden md:block">Retur</span>
+          </Link>
+
           <div
             ref={accountRef}
             className="relative"
