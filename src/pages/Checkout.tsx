@@ -514,18 +514,21 @@ export default function Checkout() {
                   {user && loyaltyBalance && loyaltyBalance > 0 && (
                     <div className="border-t border-border pt-3">
                       <Label className="text-sm mb-1.5 block">
-                        Folosește punctele tale: <span className="font-bold text-primary">{loyaltyBalance} puncte</span> = {format((loyaltyBalance / 100) * 5)}
+                        Folosește punctele tale: <span className="font-bold text-primary">{loyaltyBalance} puncte</span> = {format(loyaltyBalanceRON)}
                       </Label>
+                      <p className="text-xs text-muted-foreground mb-2">
+                        Poți aplica maxim {maxPercentAllowed}% din valoarea comenzii ({format(maxLoyaltyDiscount)})
+                      </p>
                       <div className="flex items-center gap-3">
-                        <span className="text-xs text-muted-foreground">0%</span>
+                        <span className="text-xs text-muted-foreground">0</span>
                         <Slider
-                          value={[loyaltyPercent]}
-                          onValueChange={([v]) => setLoyaltyPercent(v)}
-                          max={maxPercent}
+                          value={[loyaltyDiscountRON]}
+                          onValueChange={([v]) => setLoyaltyDiscountRON(v)}
+                          max={Math.floor(maxLoyaltyDiscount)}
                           step={1}
                           className="flex-1"
                         />
-                        <span className="text-xs text-muted-foreground">{maxPercent}%</span>
+                        <span className="text-xs text-muted-foreground">{format(maxLoyaltyDiscount)}</span>
                       </div>
                       {loyaltyDiscount > 0 && (
                         <p className="text-xs text-green-600 mt-1">
