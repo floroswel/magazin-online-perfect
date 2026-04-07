@@ -8,6 +8,7 @@ import { useSettings } from "@/hooks/useSettings";
 import { usePageSeo } from "@/components/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import useRomaniaGeo from "@/hooks/useRomaniaGeo";
 import { Gift, Lock, RotateCcw, Package, ChevronDown, Search, Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
