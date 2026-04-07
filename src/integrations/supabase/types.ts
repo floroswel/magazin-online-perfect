@@ -9967,7 +9967,9 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_admin: { Args: never; Returns: boolean }
       is_public_app_setting_key: { Args: { _key: string }; Returns: boolean }
+      is_valid_email: { Args: { email: string }; Returns: boolean }
       search_products: {
         Args: { result_limit?: number; search_term: string }
         Returns: {
