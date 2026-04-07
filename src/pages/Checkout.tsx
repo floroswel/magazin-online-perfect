@@ -243,9 +243,7 @@ export default function Checkout() {
 
   const finalTotal = Math.max(0, totalPrice - couponDiscount - loyaltyDiscount + shippingCost + rambursCost + openPackageCost);
 
-  // ─── TBI installments ───
-  const tbiOptions = (s("checkout_installments_options", "4|6|12|18|24|36|48|60")).split("|").map(Number);
-  const tbiMonthlyRate = form.paymentMethod === "tbi" ? (finalTotal / form.tbiMonths) : 0;
+  const finalTotal = Math.max(0, totalPrice - couponDiscount - loyaltyDiscount + shippingCost + rambursCost + openPackageCost);
 
   // ─── Validation ───
   const canSubmit = form.email && form.lastName && form.firstName && form.phone
