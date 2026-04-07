@@ -47,6 +47,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <MobileBottomNav />
         <CookieConsent />
         {!isCheckoutOrCart && <SocialProofPopup />}
+        {!isCheckoutOrCart && <LiveChat />}
         <QuickViewModal productId={quickViewId} onClose={() => setQuickViewId(null)} />
       </div>
     </QuickViewProvider.Provider>
