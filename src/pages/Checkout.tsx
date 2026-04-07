@@ -87,7 +87,7 @@ export default function Checkout() {
     paymentMethod: "ramburs",
     tbiMonths: 4,
     observations: "",
-    gdprAccepted: false, newsletter: false,
+    termsAccepted: false, privacyAccepted: false, newsletter: false,
   });
   const set = (k: string, v: any) => setForm(p => ({ ...p, [k]: v }));
 
@@ -250,7 +250,7 @@ export default function Checkout() {
   // ─── Validation ───
   const canSubmit = form.email && form.lastName && form.firstName && form.phone
     && form.countyId && form.localityId && form.address
-    && form.gdprAccepted;
+    && form.termsAccepted && form.privacyAccepted;
 
   // ─── Place order ───
   const placeOrder = async () => {
@@ -290,7 +290,7 @@ export default function Checkout() {
         };
       }
 
-      const paymentStatus = ["card", "mokka", "paypo", "tbi"].includes(form.paymentMethod) ? "pending" : "unpaid";
+      const paymentStatus = ["card", "mokka", "paypo"].includes(form.paymentMethod) ? "pending" : "unpaid";
       const orderStatus = ["card", "mokka", "paypo"].includes(form.paymentMethod) ? "pending_payment" : "pending";
 
       const orderData: any = {
@@ -307,7 +307,6 @@ export default function Checkout() {
         billing_address: billingAddress,
         notes: form.observations || "",
         coupon_id: couponApplied?.coupon_id || null,
-        payment_installments: form.paymentMethod === "tbi" ? { months: form.tbiMonths, monthly: tbiMonthlyRate } : null,
       };
 
       const { data: order, error } = await supabase.from("orders").insert(orderData).select("id, order_number").single();
@@ -803,11 +802,13 @@ export default function Checkout() {
                 </button>
 
                 {form.paymentMethod === "transfer" && (
-                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 ml-9 space-y-1 text-sm">
+                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 ml-9 space-y-2 text-sm">
                     <p className="font-bold">Detalii transfer bancar:</p>
                     <p className="text-muted-foreground">Bancă: <span className="font-semibold text-foreground">{settings.company_bank || "Banca Transilvania"}</span></p>
                     <p className="text-muted-foreground">IBAN: <span className="font-semibold text-foreground">{settings.company_iban || "RO00XXXX"}</span></p>
                     <p className="text-muted-foreground">Beneficiar: <span className="font-semibold text-foreground">{settings.company_name || "Mama Lucica SRL"}</span></p>
+                    <p className="text-muted-foreground">La plată, menționați: <span className="font-semibold text-foreground">Numărul comenzii</span></p>
+                    <p className="text-xs text-amber-700 font-semibold mt-1">⏰ Ordinul de plată este valabil 3 zile lucrătoare de la plasarea comenzii.</p>
                   </div>
                 )}
 
@@ -822,37 +823,6 @@ export default function Checkout() {
                   </div>
                 </button>
 
-                {/* TBI */}
-                {sBool("checkout_installments_show") && (
-                  <>
-                    <button onClick={() => set("paymentMethod", "tbi")} className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${form.paymentMethod === "tbi" ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"}`}>
-                      <div className="flex items-center gap-3">
-                        <span className="text-lg">🏛️</span>
-                        <div>
-                          <p className="text-sm font-bold">TBI Bank — Cumpără acum, plătești mai târziu</p>
-                          <p className="text-xs text-muted-foreground">Rate fixe, aprobări instant</p>
-                        </div>
-                      </div>
-                    </button>
-
-                    {form.paymentMethod === "tbi" && (
-                      <div className="ml-9 space-y-3">
-                        <div className="flex flex-wrap gap-2">
-                          {tbiOptions.map(m => (
-                            <button key={m} onClick={() => set("tbiMonths", m)} className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition-colors ${form.tbiMonths === m ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-muted-foreground/30"}`}>
-                              {m} luni
-                            </button>
-                          ))}
-                        </div>
-                        <div className="bg-muted/50 rounded-lg p-3 text-sm space-y-1">
-                          <div className="flex justify-between"><span className="text-muted-foreground">Rată lunară:</span><span className="font-bold">{format(tbiMonthlyRate)}</span></div>
-                          <div className="flex justify-between"><span className="text-muted-foreground">Total de plată:</span><span className="font-bold">{format(finalTotal)}</span></div>
-                          <div className="flex justify-between"><span className="text-muted-foreground">Dobândă:</span><span className="font-bold text-green-600">0.00 RON</span></div>
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )}
               </div>
             </div>
 
@@ -864,14 +834,20 @@ export default function Checkout() {
               </div>
             )}
 
-            {/* ─── GDPR ─── */}
+            {/* ─── TERMENI & CONFIDENȚIALITATE ─── */}
             <div className={sectionClass}>
               <div className="space-y-3">
                 <label className="flex items-start gap-2 cursor-pointer">
-                  <Checkbox checked={form.gdprAccepted} onCheckedChange={v => set("gdprAccepted", !!v)} className="mt-0.5" />
+                  <Checkbox checked={form.termsAccepted} onCheckedChange={v => set("termsAccepted", !!v)} className="mt-0.5" />
                   <span className="text-xs text-muted-foreground">
                     Sunt de acord cu{" "}
-                    <Link to="/termeni-si-conditii" className="text-primary underline" target="_blank">Termenii și Condițiile</Link> și{" "}
+                    <Link to="/termeni-si-conditii" className="text-primary underline" target="_blank">Termenii și Condițiile</Link> *
+                  </span>
+                </label>
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <Checkbox checked={form.privacyAccepted} onCheckedChange={v => set("privacyAccepted", !!v)} className="mt-0.5" />
+                  <span className="text-xs text-muted-foreground">
+                    Sunt de acord cu{" "}
                     <Link to="/politica-de-confidentialitate" className="text-primary underline" target="_blank">Politica de Confidențialitate</Link> *
                   </span>
                 </label>
