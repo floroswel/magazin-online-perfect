@@ -3636,6 +3636,53 @@ export type Database = {
         }
         Relationships: []
       }
+      legal_consents: {
+        Row: {
+          accepted: boolean
+          consent_type: string
+          consent_version: string | null
+          created_at: string
+          email: string
+          id: string
+          ip_hash: string | null
+          order_id: string | null
+          user_agent_hash: string | null
+          user_id: string | null
+        }
+        Insert: {
+          accepted?: boolean
+          consent_type: string
+          consent_version?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          ip_hash?: string | null
+          order_id?: string | null
+          user_agent_hash?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          accepted?: boolean
+          consent_type?: string
+          consent_version?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          ip_hash?: string | null
+          order_id?: string | null
+          user_agent_hash?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "legal_consents_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       loyalty_levels: {
         Row: {
           benefits: string[] | null

@@ -342,6 +342,23 @@ export default function Checkout() {
         } as any);
       }
 
+      // Save legal consents (T&C, Privacy, Newsletter)
+      const consents = [
+        { consent_type: "terms_and_conditions", accepted: form.termsAccepted },
+        { consent_type: "privacy_policy", accepted: form.privacyAccepted },
+        { consent_type: "newsletter_marketing", accepted: !!form.newsletter },
+      ].filter(c => c.accepted).map(c => ({
+        user_id: user?.id || null,
+        order_id: order.id,
+        email: form.email,
+        consent_type: c.consent_type,
+        accepted: c.accepted,
+        user_agent_hash: btoa(navigator.userAgent.slice(0, 100)),
+      }));
+      if (consents.length > 0) {
+        (supabase as any).from("legal_consents").insert(consents).then(() => {});
+      }
+
       // Emails (fire-and-forget)
       supabase.functions.invoke("send-email", {
         body: {
