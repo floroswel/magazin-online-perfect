@@ -328,7 +328,7 @@ function MainHeader({ categories }: { categories: Category[] }) {
             </Link>
 
             {showMiniCart && !isMobile && (
-              <div className="absolute right-0 top-full mt-1 w-80 bg-card border border-border rounded-xl shadow-lg z-50 p-4">
+              <div className="absolute right-0 top-full mt-1 w-80 bg-card border border-border rounded-xl shadow-lg z-[300] p-4">
                 {items.length === 0 ? (
                   <div className="text-center py-6">
                     <ShoppingCart className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
