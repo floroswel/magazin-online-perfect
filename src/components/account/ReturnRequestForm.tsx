@@ -37,9 +37,10 @@ interface ReturnRequestFormProps {
   onClose: () => void;
   onSuccess: () => void;
   userId: string;
+  guestEmail?: string;
 }
 
-export default function ReturnRequestForm({ order, open, onClose, onSuccess, userId }: ReturnRequestFormProps) {
+export default function ReturnRequestForm({ order, open, onClose, onSuccess, userId, guestEmail }: ReturnRequestFormProps) {
   const [settings, setSettings] = useState<ReturnSettings | null>(null);
   const [step, setStep] = useState(1);
   const [returnType, setReturnType] = useState<string>("return");
