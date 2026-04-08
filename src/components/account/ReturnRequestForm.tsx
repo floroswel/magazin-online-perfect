@@ -31,6 +31,11 @@ interface ReturnSettings {
   auto_approve: boolean;
 }
 
+interface GdprConfig {
+  require_consent: boolean;
+  consent_text: string;
+}
+
 interface ReturnRequestFormProps {
   order: any;
   open: boolean;
@@ -38,7 +43,8 @@ interface ReturnRequestFormProps {
   onSuccess: () => void;
   userId: string;
   guestEmail?: string;
-  inline?: boolean; // render without Dialog wrapper
+  inline?: boolean;
+  gdprConfig?: GdprConfig;
 }
 
 function formatAddress(addr: any): string {

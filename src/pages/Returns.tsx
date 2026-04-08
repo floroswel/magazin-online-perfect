@@ -349,6 +349,14 @@ export default function Returns() {
                   <p className="text-xs text-muted-foreground">
                     {new Date(guestOrder.created_at).toLocaleDateString("ro-RO")} · {guestOrder.order_items?.length || 0} produs(e) · {Number(guestOrder.total || 0).toFixed(2)} RON
                   </p>
+                  {guestOrder.return_deadline && (
+                    <p className="text-xs mt-1 flex items-center gap-1">
+                      <Clock className="h-3 w-3 text-amber-500" />
+                      <span className="text-muted-foreground">Termen limită retur:</span>{" "}
+                      <span className="font-semibold">{new Date(guestOrder.return_deadline).toLocaleDateString("ro-RO")}</span>
+                      <span className="text-muted-foreground">({guestOrder.return_window_days} zile de la livrare)</span>
+                    </p>
+                  )}
                 </div>
                 <ReturnRequestForm
                   order={guestOrder}
