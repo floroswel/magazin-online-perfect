@@ -92,6 +92,7 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
       setBankIban("");
       setBankName("");
       setCourierChoice("customer");
+      setGdprConsent(false);
       if (order?.shipping_address) {
         setPickupAddress(formatAddress(order.shipping_address));
       } else {
@@ -211,6 +212,7 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
             bank_name: refundMethod === "bank" ? bankName : null,
             courier_choice: courierChoice,
             pickup_address: pickupAddress || null,
+            gdpr_consent: gdprConsent,
           },
         });
 
