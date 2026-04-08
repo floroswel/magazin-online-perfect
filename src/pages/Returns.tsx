@@ -99,7 +99,7 @@ function ReturnTimeline({ ret }: { ret: any }) {
 }
 
 /* ─────────────── Guest Order Lookup ─────────────── */
-function GuestOrderLookup({ onOrderFound }: { onOrderFound: (order: any, email: string) => void }) {
+function GuestOrderLookup({ onOrderFound }: { onOrderFound: (order: any, email: string, gdpr?: any) => void }) {
   const [orderNumber, setOrderNumber] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -132,7 +132,7 @@ function GuestOrderLookup({ onOrderFound }: { onOrderFound: (order: any, email: 
       } else if (data?.error) {
         setError(data.error);
       } else if (data?.order) {
-        onOrderFound(data.order, email.trim());
+        onOrderFound(data.order, email.trim(), data.gdpr);
       }
     } catch {
       setError("Eroare de conexiune. Încearcă din nou.");
@@ -209,6 +209,7 @@ export default function Returns() {
   const [guestOrder, setGuestOrder] = useState<any>(null);
   const [guestEmail, setGuestEmail] = useState("");
   const [guestSubmitted, setGuestSubmitted] = useState(false);
+  const [gdprConfig, setGdprConfig] = useState<any>(null);
 
   // Logged-in queries
   const { data: returns, isLoading: returnsLoading, refetch } = useQuery({
@@ -332,7 +333,7 @@ export default function Returns() {
                 </Button>
               </div>
             ) : !guestOrder ? (
-              <GuestOrderLookup onOrderFound={(order, email) => { setGuestOrder(order); setGuestEmail(email); }} />
+              <GuestOrderLookup onOrderFound={(order, email, gdpr) => { setGuestOrder(order); setGuestEmail(email); setGdprConfig(gdpr); }} />
             ) : (
               <>
                 {/* Found order summary */}
