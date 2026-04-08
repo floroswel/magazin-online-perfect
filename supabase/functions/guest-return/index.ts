@@ -1,7 +1,4 @@
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { corsHeaders } from "@supabase/supabase-js/cors";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 Deno.serve(async (req) => {
@@ -18,6 +15,15 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { action } = body;
 
+    // Load return settings (used by both actions)
+    const { data: settings } = await supabaseAdmin
+      .from("return_form_settings")
+      .select("*")
+      .limit(1)
+      .single();
+
+    const returnWindowDays = settings?.extended_return_window_days || settings?.return_window_days || 14;
+
     // ACTION 1: Lookup order by order_number + email
     if (action === "lookup") {
       const { order_number, email } = body;
@@ -30,7 +36,6 @@ Deno.serve(async (req) => {
       const trimmedEmail = email.trim().toLowerCase();
       const trimmedOrder = order_number.trim();
 
-      // Find order by order_number and user_email
       const { data: order, error } = await supabaseAdmin
         .from("orders")
         .select("*, order_items(id, product_id, quantity, price)")
@@ -45,30 +50,40 @@ Deno.serve(async (req) => {
         });
       }
 
-      // Check if return already exists
-      const { data: existingReturn } = await supabaseAdmin
-        .from("returns")
-        .select("id")
-        .eq("order_id", order.id)
-        .not("status", "in", '("rejected","cancelled")')
-        .maybeSingle();
+      // Check if return already exists (unless multiple returns allowed)
+      if (!settings?.allow_multiple_returns_per_order) {
+        const { data: existingReturn } = await supabaseAdmin
+          .from("returns")
+          .select("id")
+          .eq("order_id", order.id)
+          .not("status", "in", '("rejected","cancelled")')
+          .maybeSingle();
 
-      if (existingReturn) {
-        return new Response(JSON.stringify({ error: "Această comandă are deja o cerere de retur activă." }), {
-          status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        if (existingReturn) {
+          return new Response(JSON.stringify({ error: "Această comandă are deja o cerere de retur activă." }), {
+            status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
       }
 
-      // Check 30-day window
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      if (new Date(order.created_at) < thirtyDaysAgo) {
-        return new Response(JSON.stringify({ error: "Perioada de retur de 30 de zile a expirat pentru această comandă." }), {
+      // Check return window based on delivered_at (or created_at as fallback)
+      const deliveryDate = order.delivered_at ? new Date(order.delivered_at) : new Date(order.created_at);
+      const deadline = new Date(deliveryDate);
+      deadline.setDate(deadline.getDate() + returnWindowDays);
+      const now = new Date();
+
+      if (now > deadline) {
+        const daysAgo = Math.floor((now.getTime() - deadline.getTime()) / (1000 * 60 * 60 * 24));
+        return new Response(JSON.stringify({ 
+          error: `Perioada de retur de ${returnWindowDays} zile a expirat pentru această comandă. Termenul limită a fost ${deadline.toLocaleDateString("ro-RO")} (acum ${daysAgo} zile). Dacă consideri că ai dreptul la retur, te rugăm să ne contactezi.`,
+          expired: true,
+          deadline: deadline.toISOString(),
+        }), {
           status: 410, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
 
-      // Enrich order_items with product names from products table
+      // Enrich order_items with product names
       const productIds = (order.order_items || []).map((i: any) => i.product_id).filter(Boolean);
       let productMap: Record<string, { name: string; image_url: string | null }> = {};
       if (productIds.length > 0) {
@@ -83,16 +98,18 @@ Deno.serve(async (req) => {
         }
       }
 
-      // Return sanitized order
       return new Response(JSON.stringify({
         order: {
           id: order.id,
           order_number: order.order_number,
           created_at: order.created_at,
+          delivered_at: order.delivered_at || order.created_at,
           total: order.total,
           status: order.status,
           user_id: order.user_id,
           shipping_address: order.shipping_address,
+          return_deadline: deadline.toISOString(),
+          return_window_days: returnWindowDays,
           order_items: (order.order_items || []).map((i: any) => ({
             id: i.id,
             product_id: i.product_id,
@@ -101,6 +118,10 @@ Deno.serve(async (req) => {
             unit_price: i.price,
             image_url: productMap[i.product_id]?.image_url || null,
           })),
+        },
+        gdpr: {
+          require_consent: settings?.require_gdpr_consent ?? true,
+          consent_text: settings?.gdpr_consent_text || "Sunt de acord cu prelucrarea datelor personale conform Politicii de Confidențialitate.",
         },
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -112,11 +133,18 @@ Deno.serve(async (req) => {
       const {
         order_id, guest_email, return_type, items, observation,
         refund_method, bank_holder, bank_iban, bank_name,
-        courier_choice, pickup_address,
+        courier_choice, pickup_address, gdpr_consent,
       } = body;
 
       if (!order_id || !guest_email || !items || !Array.isArray(items) || items.length === 0) {
         return new Response(JSON.stringify({ error: "Date incomplete" }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // Check GDPR consent
+      if (settings?.require_gdpr_consent && !gdpr_consent) {
+        return new Response(JSON.stringify({ error: "Trebuie să accepți prelucrarea datelor personale pentru a trimite cererea de retur." }), {
           status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
@@ -131,10 +159,10 @@ Deno.serve(async (req) => {
         }
       }
 
-      // Verify order exists and matches email
+      // Verify order
       const { data: order } = await supabaseAdmin
         .from("orders")
-        .select("id, user_id, user_email, status")
+        .select("id, user_id, user_email, status, delivered_at, created_at")
         .eq("id", order_id)
         .ilike("user_email", guest_email.trim().toLowerCase())
         .in("status", ["delivered", "completed", "livrat"])
@@ -146,26 +174,31 @@ Deno.serve(async (req) => {
         });
       }
 
-      // Check if return already exists for this order
-      const { data: existingReturn } = await supabaseAdmin
-        .from("returns")
-        .select("id")
-        .eq("order_id", order.id)
-        .not("status", "in", '("rejected","cancelled")')
-        .maybeSingle();
-
-      if (existingReturn) {
-        return new Response(JSON.stringify({ error: "Această comandă are deja o cerere de retur activă." }), {
-          status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      // Re-check return window using delivered_at
+      const deliveryDate = order.delivered_at ? new Date(order.delivered_at) : new Date(order.created_at);
+      const deadline = new Date(deliveryDate);
+      deadline.setDate(deadline.getDate() + returnWindowDays);
+      if (new Date() > deadline) {
+        return new Response(JSON.stringify({ error: `Perioada de retur de ${returnWindowDays} zile a expirat.` }), {
+          status: 410, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
 
-      // Load settings for auto_approve
-      const { data: settings } = await supabaseAdmin
-        .from("return_form_settings")
-        .select("auto_approve, return_shipping_cost, exchange_shipping_cost")
-        .limit(1)
-        .single();
+      // Check duplicate returns
+      if (!settings?.allow_multiple_returns_per_order) {
+        const { data: existingReturn } = await supabaseAdmin
+          .from("returns")
+          .select("id")
+          .eq("order_id", order.id)
+          .not("status", "in", '("rejected","cancelled")')
+          .maybeSingle();
+
+        if (existingReturn) {
+          return new Response(JSON.stringify({ error: "Această comandă are deja o cerere de retur activă." }), {
+            status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+      }
 
       const autoApprove = settings?.auto_approve || false;
       const shippingCost = return_type === "return"
@@ -192,6 +225,8 @@ Deno.serve(async (req) => {
           courier_pickup_by: courier_choice || "customer",
           pickup_address: pickup_address || null,
           return_shipping_cost_calculated: shippingCost,
+          gdpr_consent_given: gdpr_consent || false,
+          return_deadline: deadline.toISOString().slice(0, 10),
         })
         .select()
         .single();
@@ -222,14 +257,67 @@ Deno.serve(async (req) => {
       await supabaseAdmin.from("admin_notifications").insert({
         type: "return",
         title: "📦 Cerere retur nouă #" + returnReq.id.slice(0, 8),
-        message: `Comanda #${order_id.slice(0, 8)} — ${guest_email} — ${items.length} produs(e)`,
+        message: `Comanda #${order.user_email || guest_email} — ${items.length} produs(e) — ${return_type === "return" ? "Rambursare" : "Schimb"}`,
         link: "/admin/orders/returns",
       });
+
+      // Send customer confirmation email
+      try {
+        const itemsList = items.map((i: any) => `• ${i.product_name} × ${i.quantity}`).join("\n");
+        await supabaseAdmin.functions.invoke("send-email", {
+          body: {
+            to: guest_email.trim().toLowerCase(),
+            subject: `Cererea ta de retur #${returnReq.id.slice(0, 8)} a fost ${autoApprove ? "aprobată" : "înregistrată"}`,
+            html: `
+              <h2>Cerere de retur ${autoApprove ? "aprobată" : "înregistrată"}</h2>
+              <p>Salut,</p>
+              <p>Cererea ta de retur pentru comanda a fost ${autoApprove ? "aprobată automat" : "înregistrată cu succes"}.</p>
+              <p><strong>ID Retur:</strong> #${returnReq.id.slice(0, 8)}</p>
+              <p><strong>Tip:</strong> ${return_type === "return" ? "Rambursare" : "Schimb produs"}</p>
+              <p><strong>Produse:</strong></p>
+              <pre>${itemsList}</pre>
+              <p><strong>Termen limită retur:</strong> ${deadline.toLocaleDateString("ro-RO")}</p>
+              ${autoApprove ? "<p>Poți trimite coletul imediat.</p>" : "<p>Vom reveni cu un răspuns în cel mai scurt timp posibil.</p>"}
+              <hr/>
+              <p style="font-size:12px;color:#888;">Acest email a fost trimis automat. Nu răspunde la acest email.</p>
+            `,
+          },
+        });
+        // Mark customer notified
+        await supabaseAdmin.from("returns").update({ customer_notified_at: new Date().toISOString() }).eq("id", returnReq.id);
+      } catch (emailErr) {
+        console.error("Email notification error:", emailErr);
+        // Don't fail the return request if email fails
+      }
+
+      // Notify admin via email if notify_on_created is enabled
+      if (settings?.notify_on_created) {
+        try {
+          const adminEmail = Deno.env.get("RESEND_FROM_EMAIL") || "contact@mamalucica.ro";
+          await supabaseAdmin.functions.invoke("send-email", {
+            body: {
+              to: adminEmail,
+              subject: `[RETUR] Cerere nouă #${returnReq.id.slice(0, 8)} — ${guest_email}`,
+              html: `
+                <h2>📦 Cerere de retur nouă</h2>
+                <p><strong>Client:</strong> ${guest_email}</p>
+                <p><strong>Tip:</strong> ${return_type === "return" ? "Rambursare" : "Schimb"}</p>
+                <p><strong>Produse:</strong> ${items.length} articol(e)</p>
+                <p><strong>Status:</strong> ${autoApprove ? "Aprobat automat" : "În așteptare"}</p>
+                <p><a href="${Deno.env.get("SITE_URL") || ""}/admin/orders/returns">Vezi în Admin →</a></p>
+              `,
+            },
+          });
+        } catch (adminEmailErr) {
+          console.error("Admin email error:", adminEmailErr);
+        }
+      }
 
       return new Response(JSON.stringify({
         success: true,
         return_id: returnReq.id,
         auto_approved: autoApprove,
+        return_deadline: deadline.toISOString(),
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
