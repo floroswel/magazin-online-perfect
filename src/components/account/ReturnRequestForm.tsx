@@ -31,6 +31,11 @@ interface ReturnSettings {
   auto_approve: boolean;
 }
 
+interface GdprConfig {
+  require_consent: boolean;
+  consent_text: string;
+}
+
 interface ReturnRequestFormProps {
   order: any;
   open: boolean;
@@ -38,7 +43,8 @@ interface ReturnRequestFormProps {
   onSuccess: () => void;
   userId: string;
   guestEmail?: string;
-  inline?: boolean; // render without Dialog wrapper
+  inline?: boolean;
+  gdprConfig?: GdprConfig;
 }
 
 function formatAddress(addr: any): string {
@@ -49,7 +55,7 @@ function formatAddress(addr: any): string {
   return parts.join(", ");
 }
 
-export default function ReturnRequestForm({ order, open, onClose, onSuccess, userId, guestEmail, inline }: ReturnRequestFormProps) {
+export default function ReturnRequestForm({ order, open, onClose, onSuccess, userId, guestEmail, inline, gdprConfig }: ReturnRequestFormProps) {
   const [settings, setSettings] = useState<ReturnSettings | null>(null);
   const [step, setStep] = useState(1);
   const [returnType, setReturnType] = useState<string>("return");
@@ -62,6 +68,7 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
   const [courierChoice, setCourierChoice] = useState("customer");
   const [pickupAddress, setPickupAddress] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [gdprConsent, setGdprConsent] = useState(false);
 
   const orderItems = order?.order_items || (order?.items as any[] || []);
   const orderDisplay = order?.order_number || order?.id?.slice(0, 8) || "N/A";
@@ -85,6 +92,7 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
       setBankIban("");
       setBankName("");
       setCourierChoice("customer");
+      setGdprConsent(false);
       if (order?.shipping_address) {
         setPickupAddress(formatAddress(order.shipping_address));
       } else {
@@ -204,6 +212,7 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
             bank_name: refundMethod === "bank" ? bankName : null,
             courier_choice: courierChoice,
             pickup_address: pickupAddress || null,
+            gdpr_consent: gdprConsent,
           },
         });
 
@@ -230,6 +239,7 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
           courier_pickup_by: courierChoice,
           pickup_address: pickupAddress || null,
           return_shipping_cost_calculated: returnType === "return" ? (settings?.return_shipping_cost || 0) : (settings?.exchange_shipping_cost || 0),
+          gdpr_consent_given: gdprConsent,
         }).select().single();
 
         if (error) throw error;
@@ -576,6 +586,23 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
             <p>Conform Directivei UE 2011/83/EU și OUG 34/2014, ai dreptul de retragere din contract în termen de 14 zile calendaristice de la primirea produsului, fără a fi necesar să invoci un motiv.</p>
             <p>Rambursarea se va efectua în maximum 14 zile de la primirea produselor returnate, folosind aceeași metodă de plată, cu excepția cazului în care ai convenit altfel.</p>
           </div>
+          {order?.return_deadline && (
+            <div className="flex items-center gap-2 text-xs bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-md p-2.5">
+              <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0" />
+              <span>Termen limită retur: <strong>{new Date(order.return_deadline).toLocaleDateString("ro-RO")}</strong></span>
+            </div>
+          )}
+          {/* GDPR Consent */}
+          <label className="flex items-start gap-3 border rounded-md p-3 cursor-pointer hover:bg-muted/30 transition-colors">
+            <Checkbox
+              checked={gdprConsent}
+              onCheckedChange={(checked) => setGdprConsent(checked === true)}
+              className="mt-0.5"
+            />
+            <span className="text-xs text-muted-foreground leading-relaxed">
+              {gdprConfig?.consent_text || "Sunt de acord cu prelucrarea datelor personale conform Politicii de Confidențialitate și a OUG 34/2014 privind drepturile consumatorilor. Datele vor fi utilizate exclusiv pentru procesarea cererii de retur."}
+            </span>
+          </label>
         </div>
       )}
 
@@ -594,7 +621,7 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
               Continuă<ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           ) : (
-            <Button onClick={handleSubmit} disabled={submitting}>
+            <Button onClick={handleSubmit} disabled={submitting || (gdprConfig?.require_consent !== false && !gdprConsent)}>
               {submitting ? "Se trimite..." : "Trimite cererea"}
             </Button>
           )}

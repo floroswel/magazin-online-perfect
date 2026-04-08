@@ -99,7 +99,7 @@ function ReturnTimeline({ ret }: { ret: any }) {
 }
 
 /* ─────────────── Guest Order Lookup ─────────────── */
-function GuestOrderLookup({ onOrderFound }: { onOrderFound: (order: any, email: string) => void }) {
+function GuestOrderLookup({ onOrderFound }: { onOrderFound: (order: any, email: string, gdpr?: any) => void }) {
   const [orderNumber, setOrderNumber] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -132,7 +132,7 @@ function GuestOrderLookup({ onOrderFound }: { onOrderFound: (order: any, email: 
       } else if (data?.error) {
         setError(data.error);
       } else if (data?.order) {
-        onOrderFound(data.order, email.trim());
+        onOrderFound(data.order, email.trim(), data.gdpr);
       }
     } catch {
       setError("Eroare de conexiune. Încearcă din nou.");
@@ -209,6 +209,7 @@ export default function Returns() {
   const [guestOrder, setGuestOrder] = useState<any>(null);
   const [guestEmail, setGuestEmail] = useState("");
   const [guestSubmitted, setGuestSubmitted] = useState(false);
+  const [gdprConfig, setGdprConfig] = useState<any>(null);
 
   // Logged-in queries
   const { data: returns, isLoading: returnsLoading, refetch } = useQuery({
@@ -332,7 +333,7 @@ export default function Returns() {
                 </Button>
               </div>
             ) : !guestOrder ? (
-              <GuestOrderLookup onOrderFound={(order, email) => { setGuestOrder(order); setGuestEmail(email); }} />
+              <GuestOrderLookup onOrderFound={(order, email, gdpr) => { setGuestOrder(order); setGuestEmail(email); setGdprConfig(gdpr); }} />
             ) : (
               <>
                 {/* Found order summary */}
@@ -349,6 +350,14 @@ export default function Returns() {
                   <p className="text-xs text-muted-foreground">
                     {new Date(guestOrder.created_at).toLocaleDateString("ro-RO")} · {guestOrder.order_items?.length || 0} produs(e) · {Number(guestOrder.total || 0).toFixed(2)} RON
                   </p>
+                  {guestOrder.return_deadline && (
+                    <p className="text-xs mt-1 flex items-center gap-1">
+                      <Clock className="h-3 w-3 text-amber-500" />
+                      <span className="text-muted-foreground">Termen limită retur:</span>{" "}
+                      <span className="font-semibold">{new Date(guestOrder.return_deadline).toLocaleDateString("ro-RO")}</span>
+                      <span className="text-muted-foreground">({guestOrder.return_window_days} zile de la livrare)</span>
+                    </p>
+                  )}
                 </div>
                 <ReturnRequestForm
                   order={guestOrder}
@@ -357,6 +366,7 @@ export default function Returns() {
                   onSuccess={() => { setGuestSubmitted(true); }}
                   userId={guestOrder.user_id || ""}
                   guestEmail={guestEmail}
+                  gdprConfig={gdprConfig}
                   inline
                 />
               </>
