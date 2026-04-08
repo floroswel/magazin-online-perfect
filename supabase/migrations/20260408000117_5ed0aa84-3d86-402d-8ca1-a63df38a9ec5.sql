@@ -1,0 +1,1 @@
+UPDATE public.orders SET status = 'delivered' WHERE id = 'e71c6acd-62c9-44dc-b1a8-6bcf73fd2368';
