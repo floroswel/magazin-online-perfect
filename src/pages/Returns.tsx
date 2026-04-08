@@ -211,18 +211,37 @@ export default function Returns() {
     enabled: !!user?.id,
   });
 
-  const { data: orders, isLoading: ordersLoading } = useQuery({
+   const { data: orders, isLoading: ordersLoading } = useQuery({
     queryKey: ["my-orders-for-return", user?.id],
     queryFn: async () => {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       const { data } = await supabase
         .from("orders")
-        .select("*, order_items(*)")
+        .select("*, order_items(id, product_id, quantity, price)")
         .eq("user_id", user!.id)
         .in("status", ["delivered", "completed", "livrat"])
         .gte("created_at", thirtyDaysAgo.toISOString())
         .order("created_at", { ascending: false });
+      
+      // Enrich order_items with product names
+      if (data && data.length > 0) {
+        const allProductIds = data.flatMap((o: any) => (o.order_items || []).map((i: any) => i.product_id)).filter(Boolean);
+        const uniqueIds = [...new Set(allProductIds)];
+        if (uniqueIds.length > 0) {
+          const { data: products } = await supabase.from("products").select("id, name, image_url").in("id", uniqueIds);
+          const pMap: Record<string, any> = {};
+          (products || []).forEach((p: any) => { pMap[p.id] = p; });
+          for (const order of data) {
+            order.order_items = (order.order_items || []).map((item: any) => ({
+              ...item,
+              product_name: pMap[item.product_id]?.name || "Produs",
+              image_url: pMap[item.product_id]?.image_url || null,
+              unit_price: item.price,
+            }));
+          }
+        }
+      }
       return data || [];
     },
     enabled: !!user?.id,
@@ -242,7 +261,7 @@ export default function Returns() {
         <div className="flex items-center justify-between mb-5">
           <h1 className="text-xl font-extrabold flex items-center gap-2">
             <RotateCcw className="h-5 w-5 text-primary" />
-            Centru Retururi
+            Formular de Retur
           </h1>
           {!isGuest && returns && returns.length > 0 && (
             <Badge variant="secondary" className="text-xs">
@@ -288,7 +307,7 @@ export default function Returns() {
               </div>
             </div>
 
-            {guestSubmitted ? (
+             {guestSubmitted ? (
               <div className="bg-card border border-border rounded-xl p-8 text-center">
                 <CheckCircle2 className="h-12 w-12 mx-auto mb-3 text-green-600" />
                 <h2 className="text-lg font-bold mb-1">Cererea de retur a fost trimisă!</h2>
@@ -325,6 +344,7 @@ export default function Returns() {
                   onSuccess={() => { setGuestSubmitted(true); }}
                   userId={guestOrder.user_id || ""}
                   guestEmail={guestEmail}
+                  inline
                 />
               </>
             )}
@@ -428,8 +448,8 @@ export default function Returns() {
                   ) : (
                     <div className="text-center py-8">
                       <Package className="h-10 w-10 mx-auto mb-3 text-muted-foreground/30" />
-                      <p className="text-sm font-medium mb-1">Nu ai comenzi eligibile pentru retur</p>
-                      <p className="text-xs text-muted-foreground mb-3">Comenzile livrate în ultimele 14 zile sunt eligibile.</p>
+                       <p className="text-sm font-medium mb-1">Nu ai comenzi eligibile pentru retur</p>
+                      <p className="text-xs text-muted-foreground mb-3">Comenzile livrate în ultimele 30 de zile sunt eligibile.</p>
                       <Button variant="outline" size="sm" onClick={() => window.location.href = "/account"}>
                         <Package className="h-3.5 w-3.5 mr-1" /> Vezi comenzile mele
                       </Button>
