@@ -366,6 +366,7 @@ export default function Returns() {
                   onSuccess={() => { setGuestSubmitted(true); }}
                   userId={guestOrder.user_id || ""}
                   guestEmail={guestEmail}
+                  gdprConfig={gdprConfig}
                   inline
                 />
               </>
