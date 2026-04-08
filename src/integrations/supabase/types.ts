@@ -4607,6 +4607,7 @@ export type Database = {
           courier_name: string | null
           created_at: string
           currency: string | null
+          delivered_at: string | null
           discount_amount: number | null
           discount_total: number | null
           fulfillment_warehouse_id: string | null
@@ -4654,6 +4655,7 @@ export type Database = {
           courier_name?: string | null
           created_at?: string
           currency?: string | null
+          delivered_at?: string | null
           discount_amount?: number | null
           discount_total?: number | null
           fulfillment_warehouse_id?: string | null
@@ -4701,6 +4703,7 @@ export type Database = {
           courier_name?: string | null
           created_at?: string
           currency?: string | null
+          delivered_at?: string | null
           discount_amount?: number | null
           discount_total?: number | null
           fulfillment_warehouse_id?: string | null
@@ -6876,11 +6879,14 @@ export type Database = {
           email_rejected_subject: string
           enabled: boolean
           exchange_shipping_cost: number
+          extended_return_window_days: number | null
           footer_link_text: string
+          gdpr_consent_text: string | null
           id: string
           notify_on_approved: boolean
           notify_on_created: boolean
           notify_on_rejected: boolean
+          require_gdpr_consent: boolean | null
           return_reasons: Json
           return_shipping_cost: number
           return_window_days: number
@@ -6906,11 +6912,14 @@ export type Database = {
           email_rejected_subject?: string
           enabled?: boolean
           exchange_shipping_cost?: number
+          extended_return_window_days?: number | null
           footer_link_text?: string
+          gdpr_consent_text?: string | null
           id?: string
           notify_on_approved?: boolean
           notify_on_created?: boolean
           notify_on_rejected?: boolean
+          require_gdpr_consent?: boolean | null
           return_reasons?: Json
           return_shipping_cost?: number
           return_window_days?: number
@@ -6936,11 +6945,14 @@ export type Database = {
           email_rejected_subject?: string
           enabled?: boolean
           exchange_shipping_cost?: number
+          extended_return_window_days?: number | null
           footer_link_text?: string
+          gdpr_consent_text?: string | null
           id?: string
           notify_on_approved?: boolean
           notify_on_created?: boolean
           notify_on_rejected?: boolean
+          require_gdpr_consent?: boolean | null
           return_reasons?: Json
           return_shipping_cost?: number
           return_window_days?: number
@@ -7094,7 +7106,9 @@ export type Database = {
           courier_pickup_by: string | null
           created_at: string
           customer_id: string | null
+          customer_notified_at: string | null
           details: string | null
+          gdpr_consent_given: boolean | null
           id: string
           images: Json | null
           items: Json
@@ -7107,6 +7121,7 @@ export type Database = {
           refund_method: string | null
           rejection_reason: string | null
           resolution: string | null
+          return_deadline: string | null
           return_shipping_cost_calculated: number | null
           rma_number: string | null
           status: string
@@ -7124,7 +7139,9 @@ export type Database = {
           courier_pickup_by?: string | null
           created_at?: string
           customer_id?: string | null
+          customer_notified_at?: string | null
           details?: string | null
+          gdpr_consent_given?: boolean | null
           id?: string
           images?: Json | null
           items?: Json
@@ -7137,6 +7154,7 @@ export type Database = {
           refund_method?: string | null
           rejection_reason?: string | null
           resolution?: string | null
+          return_deadline?: string | null
           return_shipping_cost_calculated?: number | null
           rma_number?: string | null
           status?: string
@@ -7154,7 +7172,9 @@ export type Database = {
           courier_pickup_by?: string | null
           created_at?: string
           customer_id?: string | null
+          customer_notified_at?: string | null
           details?: string | null
+          gdpr_consent_given?: boolean | null
           id?: string
           images?: Json | null
           items?: Json
@@ -7167,6 +7187,7 @@ export type Database = {
           refund_method?: string | null
           rejection_reason?: string | null
           resolution?: string | null
+          return_deadline?: string | null
           return_shipping_cost_calculated?: number | null
           rma_number?: string | null
           status?: string
