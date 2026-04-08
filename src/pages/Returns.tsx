@@ -242,7 +242,7 @@ export default function Returns() {
         <div className="flex items-center justify-between mb-5">
           <h1 className="text-xl font-extrabold flex items-center gap-2">
             <RotateCcw className="h-5 w-5 text-primary" />
-            Centru Retururi
+            Formular de Retur
           </h1>
           {!isGuest && returns && returns.length > 0 && (
             <Badge variant="secondary" className="text-xs">
