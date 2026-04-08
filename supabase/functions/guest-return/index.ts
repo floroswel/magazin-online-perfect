@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
       // Find order by order_number and user_email
       const { data: order, error } = await supabaseAdmin
         .from("orders")
-        .select("*, order_items(*)")
+        .select("*, order_items(id, product_id, quantity, price)")
         .eq("order_number", trimmedOrder)
         .ilike("user_email", trimmedEmail)
         .in("status", ["delivered", "completed", "livrat"])
@@ -68,7 +68,22 @@ Deno.serve(async (req) => {
         });
       }
 
-      // Return sanitized order (no sensitive data)
+      // Enrich order_items with product names from products table
+      const productIds = (order.order_items || []).map((i: any) => i.product_id).filter(Boolean);
+      let productMap: Record<string, { name: string; image_url: string | null }> = {};
+      if (productIds.length > 0) {
+        const { data: products } = await supabaseAdmin
+          .from("products")
+          .select("id, name, image_url")
+          .in("id", productIds);
+        if (products) {
+          for (const p of products) {
+            productMap[p.id] = { name: p.name, image_url: p.image_url };
+          }
+        }
+      }
+
+      // Return sanitized order
       return new Response(JSON.stringify({
         order: {
           id: order.id,
@@ -76,14 +91,15 @@ Deno.serve(async (req) => {
           created_at: order.created_at,
           total: order.total,
           status: order.status,
+          user_id: order.user_id,
           shipping_address: order.shipping_address,
           order_items: (order.order_items || []).map((i: any) => ({
             id: i.id,
             product_id: i.product_id,
-            product_name: i.product_name,
+            product_name: productMap[i.product_id]?.name || "Produs",
             quantity: i.quantity,
-            unit_price: i.unit_price,
-            image_url: i.image_url || i.product_image,
+            unit_price: i.price,
+            image_url: productMap[i.product_id]?.image_url || null,
           })),
         },
       }), {
@@ -118,14 +134,29 @@ Deno.serve(async (req) => {
       // Verify order exists and matches email
       const { data: order } = await supabaseAdmin
         .from("orders")
-        .select("id, user_id, user_email")
+        .select("id, user_id, user_email, status")
         .eq("id", order_id)
         .ilike("user_email", guest_email.trim().toLowerCase())
+        .in("status", ["delivered", "completed", "livrat"])
         .maybeSingle();
 
       if (!order) {
-        return new Response(JSON.stringify({ error: "Comanda nu a fost găsită" }), {
+        return new Response(JSON.stringify({ error: "Comanda nu a fost găsită sau nu este eligibilă pentru retur." }), {
           status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // Check if return already exists for this order
+      const { data: existingReturn } = await supabaseAdmin
+        .from("returns")
+        .select("id")
+        .eq("order_id", order.id)
+        .not("status", "in", '("rejected","cancelled")')
+        .maybeSingle();
+
+      if (existingReturn) {
+        return new Response(JSON.stringify({ error: "Această comandă are deja o cerere de retur activă." }), {
+          status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
 
@@ -141,7 +172,7 @@ Deno.serve(async (req) => {
         ? (settings?.return_shipping_cost || 0)
         : (settings?.exchange_shipping_cost || 0);
 
-      // Create return - use order's user_id if exists, else use a special guest marker
+      // Create return
       const { data: returnReq, error: returnErr } = await supabaseAdmin
         .from("returns")
         .insert({
