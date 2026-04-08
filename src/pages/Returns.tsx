@@ -288,7 +288,7 @@ export default function Returns() {
               </div>
             </div>
 
-            {guestSubmitted ? (
+             {guestSubmitted ? (
               <div className="bg-card border border-border rounded-xl p-8 text-center">
                 <CheckCircle2 className="h-12 w-12 mx-auto mb-3 text-green-600" />
                 <h2 className="text-lg font-bold mb-1">Cererea de retur a fost trimisă!</h2>
@@ -325,6 +325,7 @@ export default function Returns() {
                   onSuccess={() => { setGuestSubmitted(true); }}
                   userId={guestOrder.user_id || ""}
                   guestEmail={guestEmail}
+                  inline
                 />
               </>
             )}
