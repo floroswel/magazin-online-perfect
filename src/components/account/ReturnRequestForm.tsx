@@ -621,7 +621,7 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
               Continuă<ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           ) : (
-            <Button onClick={handleSubmit} disabled={submitting}>
+            <Button onClick={handleSubmit} disabled={submitting || (gdprConfig?.require_consent !== false && !gdprConsent)}>
               {submitting ? "Se trimite..." : "Trimite cererea"}
             </Button>
           )}
