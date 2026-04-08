@@ -239,6 +239,7 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
           courier_pickup_by: courierChoice,
           pickup_address: pickupAddress || null,
           return_shipping_cost_calculated: returnType === "return" ? (settings?.return_shipping_cost || 0) : (settings?.exchange_shipping_cost || 0),
+          gdpr_consent_given: gdprConsent,
         }).select().single();
 
         if (error) throw error;
