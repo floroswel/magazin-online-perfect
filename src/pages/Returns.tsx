@@ -116,8 +116,21 @@ function GuestOrderLookup({ onOrderFound }: { onOrderFound: (order: any, email: 
         body: { action: "lookup", order_number: orderNumber.trim(), email: email.trim() },
       });
 
-      if (fnErr || data?.error) {
-        setError(data?.error || "Eroare la căutare. Încearcă din nou.");
+      // Handle edge function errors - fnErr may contain the response body with error message
+      if (fnErr) {
+        // Try to extract error message from the FunctionsHttpError context
+        let errorMsg = "Eroare la căutare. Încearcă din nou.";
+        try {
+          if (typeof fnErr === "object" && fnErr.context) {
+            const body = await fnErr.context.json();
+            if (body?.error) errorMsg = body.error;
+          } else if (fnErr.message) {
+            errorMsg = fnErr.message;
+          }
+        } catch { /* use default */ }
+        setError(errorMsg);
+      } else if (data?.error) {
+        setError(data.error);
       } else if (data?.order) {
         onOrderFound(data.order, email.trim());
       }
