@@ -68,6 +68,7 @@ export default function ReturnRequestForm({ order, open, onClose, onSuccess, use
   const [courierChoice, setCourierChoice] = useState("customer");
   const [pickupAddress, setPickupAddress] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [gdprConsent, setGdprConsent] = useState(false);
 
   const orderItems = order?.order_items || (order?.items as any[] || []);
   const orderDisplay = order?.order_number || order?.id?.slice(0, 8) || "N/A";
