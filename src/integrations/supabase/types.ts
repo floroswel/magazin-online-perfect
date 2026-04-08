@@ -6863,18 +6863,25 @@ export type Database = {
       }
       return_form_settings: {
         Row: {
+          admin_notification_email: string | null
           allow_bank_refund: boolean
           allow_different_product_exchange: boolean
+          allow_guest_returns: boolean | null
           allow_multiple_returns_per_order: boolean
           allow_order_cancellation: boolean
           allow_partial_returns: boolean
           allow_same_product_exchange: boolean
+          allow_wallet_refund: boolean | null
           auto_approve: boolean
           courier_pickup: string
           email_approved_body: string
           email_approved_subject: string
           email_created_body: string
           email_created_subject: string
+          email_received_body: string | null
+          email_received_subject: string | null
+          email_refunded_body: string | null
+          email_refunded_subject: string | null
           email_rejected_body: string
           email_rejected_subject: string
           enabled: boolean
@@ -6883,10 +6890,18 @@ export type Database = {
           footer_link_text: string
           gdpr_consent_text: string | null
           id: string
+          non_returnable_tags: string[] | null
           notify_on_approved: boolean
           notify_on_created: boolean
+          notify_on_received: boolean | null
+          notify_on_refunded: boolean | null
           notify_on_rejected: boolean
+          processing_sla_days: number | null
           require_gdpr_consent: boolean | null
+          require_order_delivered: boolean | null
+          restocking_fee_percent: number | null
+          return_address: string | null
+          return_policy_text: string | null
           return_reasons: Json
           return_shipping_cost: number
           return_window_days: number
@@ -6896,18 +6911,25 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          admin_notification_email?: string | null
           allow_bank_refund?: boolean
           allow_different_product_exchange?: boolean
+          allow_guest_returns?: boolean | null
           allow_multiple_returns_per_order?: boolean
           allow_order_cancellation?: boolean
           allow_partial_returns?: boolean
           allow_same_product_exchange?: boolean
+          allow_wallet_refund?: boolean | null
           auto_approve?: boolean
           courier_pickup?: string
           email_approved_body?: string
           email_approved_subject?: string
           email_created_body?: string
           email_created_subject?: string
+          email_received_body?: string | null
+          email_received_subject?: string | null
+          email_refunded_body?: string | null
+          email_refunded_subject?: string | null
           email_rejected_body?: string
           email_rejected_subject?: string
           enabled?: boolean
@@ -6916,10 +6938,18 @@ export type Database = {
           footer_link_text?: string
           gdpr_consent_text?: string | null
           id?: string
+          non_returnable_tags?: string[] | null
           notify_on_approved?: boolean
           notify_on_created?: boolean
+          notify_on_received?: boolean | null
+          notify_on_refunded?: boolean | null
           notify_on_rejected?: boolean
+          processing_sla_days?: number | null
           require_gdpr_consent?: boolean | null
+          require_order_delivered?: boolean | null
+          restocking_fee_percent?: number | null
+          return_address?: string | null
+          return_policy_text?: string | null
           return_reasons?: Json
           return_shipping_cost?: number
           return_window_days?: number
@@ -6929,18 +6959,25 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          admin_notification_email?: string | null
           allow_bank_refund?: boolean
           allow_different_product_exchange?: boolean
+          allow_guest_returns?: boolean | null
           allow_multiple_returns_per_order?: boolean
           allow_order_cancellation?: boolean
           allow_partial_returns?: boolean
           allow_same_product_exchange?: boolean
+          allow_wallet_refund?: boolean | null
           auto_approve?: boolean
           courier_pickup?: string
           email_approved_body?: string
           email_approved_subject?: string
           email_created_body?: string
           email_created_subject?: string
+          email_received_body?: string | null
+          email_received_subject?: string | null
+          email_refunded_body?: string | null
+          email_refunded_subject?: string | null
           email_rejected_body?: string
           email_rejected_subject?: string
           enabled?: boolean
@@ -6949,10 +6986,18 @@ export type Database = {
           footer_link_text?: string
           gdpr_consent_text?: string | null
           id?: string
+          non_returnable_tags?: string[] | null
           notify_on_approved?: boolean
           notify_on_created?: boolean
+          notify_on_received?: boolean | null
+          notify_on_refunded?: boolean | null
           notify_on_rejected?: boolean
+          processing_sla_days?: number | null
           require_gdpr_consent?: boolean | null
+          require_order_delivered?: boolean | null
+          restocking_fee_percent?: number | null
+          return_address?: string | null
+          return_policy_text?: string | null
           return_reasons?: Json
           return_shipping_cost?: number
           return_window_days?: number
