@@ -211,18 +211,37 @@ export default function Returns() {
     enabled: !!user?.id,
   });
 
-  const { data: orders, isLoading: ordersLoading } = useQuery({
+   const { data: orders, isLoading: ordersLoading } = useQuery({
     queryKey: ["my-orders-for-return", user?.id],
     queryFn: async () => {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       const { data } = await supabase
         .from("orders")
-        .select("*, order_items(*)")
+        .select("*, order_items(id, product_id, quantity, price)")
         .eq("user_id", user!.id)
         .in("status", ["delivered", "completed", "livrat"])
         .gte("created_at", thirtyDaysAgo.toISOString())
         .order("created_at", { ascending: false });
+      
+      // Enrich order_items with product names
+      if (data && data.length > 0) {
+        const allProductIds = data.flatMap((o: any) => (o.order_items || []).map((i: any) => i.product_id)).filter(Boolean);
+        const uniqueIds = [...new Set(allProductIds)];
+        if (uniqueIds.length > 0) {
+          const { data: products } = await supabase.from("products").select("id, name, image_url").in("id", uniqueIds);
+          const pMap: Record<string, any> = {};
+          (products || []).forEach((p: any) => { pMap[p.id] = p; });
+          for (const order of data) {
+            order.order_items = (order.order_items || []).map((item: any) => ({
+              ...item,
+              product_name: pMap[item.product_id]?.name || "Produs",
+              image_url: pMap[item.product_id]?.image_url || null,
+              unit_price: item.price,
+            }));
+          }
+        }
+      }
       return data || [];
     },
     enabled: !!user?.id,
