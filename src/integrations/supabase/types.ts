@@ -8656,7 +8656,6 @@ export type Database = {
           last_login_at: string | null
           last_login_ip: string | null
           two_fa_enabled: boolean | null
-          two_fa_secret: string | null
           updated_at: string | null
           user_id: string
         }
@@ -8667,7 +8666,6 @@ export type Database = {
           last_login_at?: string | null
           last_login_ip?: string | null
           two_fa_enabled?: boolean | null
-          two_fa_secret?: string | null
           updated_at?: string | null
           user_id: string
         }
@@ -8678,7 +8676,6 @@ export type Database = {
           last_login_at?: string | null
           last_login_ip?: string | null
           two_fa_enabled?: boolean | null
-          two_fa_secret?: string | null
           updated_at?: string | null
           user_id?: string
         }
