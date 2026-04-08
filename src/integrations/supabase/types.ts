@@ -10093,8 +10093,6 @@ export type Database = {
           slug: string
         }[]
       }
-      show_limit: { Args: never; Returns: number }
-      show_trgm: { Args: { "": string }; Returns: string[] }
       use_loyalty_points: {
         Args: {
           p_order_id?: string
