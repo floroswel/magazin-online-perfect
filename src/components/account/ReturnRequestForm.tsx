@@ -55,7 +55,7 @@ function formatAddress(addr: any): string {
   return parts.join(", ");
 }
 
-export default function ReturnRequestForm({ order, open, onClose, onSuccess, userId, guestEmail, inline }: ReturnRequestFormProps) {
+export default function ReturnRequestForm({ order, open, onClose, onSuccess, userId, guestEmail, inline, gdprConfig }: ReturnRequestFormProps) {
   const [settings, setSettings] = useState<ReturnSettings | null>(null);
   const [step, setStep] = useState(1);
   const [returnType, setReturnType] = useState<string>("return");
