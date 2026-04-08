@@ -1,0 +1,1 @@
+UPDATE public.return_form_settings SET enabled = true WHERE id = '473fe8d4-e19c-40b0-b29f-50d6538fa7f3';
