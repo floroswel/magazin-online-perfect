@@ -6,16 +6,17 @@
     <title>LUMAX — Lumânări Artizanale Premium</title>
     <meta name="description" content="Descoperă lumânări artizanale create din ingrediente naturale, parfumuri rare și cere de soia. Livrare în 24-48h." />
     <meta name="author" content="LUMAX" />
-    <meta name="theme-color" content="#0066FF" />
+    <meta name="theme-color" content="#FF0000" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-touch-fullscreen" content="yes" />
     <style>
       :root {
-        --lumax-blue: #0066FF;
+        --lumax-blue: #FF0000;
+        --lumax-dark: #CC0000;
         --lumax-red: #FF3300;
         --product-price-color: #FF3300;
-        --nav-bar-color: #0066FF;
+        --nav-bar-color: #FF0000;
         --announcement-bg: #FF3300;
         --header-bg: #FFFFFF;
         --footer-upper-bg: #1A2332;
@@ -25,7 +26,14 @@
         --badge-new-color: #00A650;
         --free-shipping-color: #00A650;
         --savings-color: #00A650;
+        --btn-primary-bg: #FF0000;
+        --btn-primary-text: #FFFFFF;
+        --btn-primary-hover: #CC0000;
+        --cta-bg: #FF0000;
+        --cta-text: #FFFFFF;
       }
+      /* Prevent FOUC — hide until React mounts */
+      #root:empty { visibility: hidden; }
     </style>
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Mama Lucica" />
