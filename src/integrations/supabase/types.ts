@@ -10054,6 +10054,24 @@ export type Database = {
         Returns: undefined
       }
       delete_customer_data_gdpr: { Args: { p_user_id: string }; Returns: Json }
+      get_active_scripts_for_page: {
+        Args: { p_page_types: string[] }
+        Returns: {
+          content: string
+          external_async: boolean
+          external_crossorigin: string
+          external_custom_attributes: Json
+          external_defer: boolean
+          external_type: string
+          external_url: string
+          id: string
+          inline_content: string
+          location: string
+          pages: Json
+          script_type: string
+          sort_order: number
+        }[]
+      }
       get_dynamic_category_products: {
         Args: {
           category_id: string
