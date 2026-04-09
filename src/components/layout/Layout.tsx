@@ -42,7 +42,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Ticker2Bar />
         <AnnouncementBar />
         <Header />
-        <main className="flex-1 pb-[50px] md:pb-0">{children}</main>
+        <main className="flex-1">{children}</main>
         <Footer />
         <MobileBottomNav />
         <CookieConsent />
