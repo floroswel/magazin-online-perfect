@@ -199,7 +199,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="pb-[56px] md:pb-0">
+    <footer className="pb-[60px] md:pb-0">
       {/* ━━ RÂND 1 — 4 coloane ━━ */}
       <div className="py-10 md:py-12" style={{ background: bgColor }}>
         <div className="lumax-container grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
