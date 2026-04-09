@@ -260,7 +260,7 @@ export default function LiveChat() {
       {!open && (
         <button
           onClick={handleOpen}
-          className="fixed bottom-20 md:bottom-6 right-4 z-[45] group"
+          className="fixed bottom-[60px] md:bottom-6 right-4 z-[45] group"
           aria-label="Deschide chat"
         >
           <div
