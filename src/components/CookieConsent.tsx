@@ -84,52 +84,49 @@ export default function CookieConsent() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-[100] p-4">
-      <div className="max-w-3xl mx-auto bg-card border border-border rounded-xl shadow-2xl p-5 space-y-3">
-        <div className="flex items-start gap-3">
-          <Cookie className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <h3 className="font-semibold text-foreground text-sm">🍪 Acest site folosește cookie-uri</h3>
-            <p className="text-xs text-muted-foreground mt-1">
-              Folosim cookie-uri pentru a-ți oferi cea mai bună experiență. Poți accepta toate cookie-urile sau să le personalizezi.{" "}
-              <Link to="/politica-de-cookies" className="text-primary hover:underline">Politica de cookie-uri</Link>
+    <div className="fixed bottom-[56px] md:bottom-0 inset-x-0 z-[100] px-3 pb-2">
+      <div className="max-w-xl mx-auto bg-card border border-border rounded-lg shadow-xl p-3 space-y-2">
+        <div className="flex items-start gap-2">
+          <Cookie className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-foreground text-xs leading-tight">🍪 Cookie-uri</h3>
+            <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
+              Folosim cookie-uri pentru experiența optimă.{" "}
+              <Link to="/politica-de-cookies" className="text-primary hover:underline">Detalii</Link>
             </p>
 
             {showDetails && (
-              <div className="mt-3 space-y-2 text-xs">
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" checked disabled className="accent-primary" />
+              <div className="mt-2 space-y-1 text-[11px]">
+                <label className="flex items-center gap-1.5">
+                  <input type="checkbox" checked disabled className="accent-primary w-3.5 h-3.5" />
                   <span className="text-foreground font-medium">Necesare</span>
-                  <span className="text-muted-foreground">— esențiale pentru funcționare</span>
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" checked={prefs.analytics} onChange={(e) => setPrefs(p => ({ ...p, analytics: e.target.checked }))} className="accent-primary" />
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" checked={prefs.analytics} onChange={(e) => setPrefs(p => ({ ...p, analytics: e.target.checked }))} className="accent-primary w-3.5 h-3.5" />
                   <span className="text-foreground font-medium">Analitice</span>
-                  <span className="text-muted-foreground">— ne ajută să îmbunătățim site-ul</span>
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" checked={prefs.marketing} onChange={(e) => setPrefs(p => ({ ...p, marketing: e.target.checked }))} className="accent-primary" />
+                <label className="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" checked={prefs.marketing} onChange={(e) => setPrefs(p => ({ ...p, marketing: e.target.checked }))} className="accent-primary w-3.5 h-3.5" />
                   <span className="text-foreground font-medium">Marketing</span>
-                  <span className="text-muted-foreground">— reclame personalizate</span>
                 </label>
               </div>
             )}
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 justify-end">
-          <Button variant="ghost" size="sm" className="text-xs" onClick={() => setShowDetails(!showDetails)}>
-            {showDetails ? "Ascunde" : "Personalizează"}
+        <div className="flex items-center gap-1.5 justify-end flex-wrap">
+          <Button variant="ghost" size="sm" className="text-[11px] h-7 px-2" onClick={() => setShowDetails(!showDetails)}>
+            {showDetails ? "Ascunde" : "Setări"}
           </Button>
-          <Button variant="outline" size="sm" className="text-xs" onClick={reject}>
-            Doar necesare
+          <Button variant="outline" size="sm" className="text-[11px] h-7 px-2" onClick={reject}>
+            Necesare
           </Button>
           {showDetails && (
-            <Button size="sm" className="text-xs" onClick={() => accept(false)}>
-              Salvează preferințele
+            <Button size="sm" className="text-[11px] h-7 px-2" onClick={() => accept(false)}>
+              Salvează
             </Button>
           )}
-          <Button size="sm" className="text-xs bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => accept(true)}>
+          <Button size="sm" className="text-[11px] h-7 px-2.5 bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => accept(true)}>
             Acceptă toate
           </Button>
         </div>
