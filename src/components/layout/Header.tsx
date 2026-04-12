@@ -294,6 +294,7 @@ function MainHeader({ categories }: { categories: Category[] }) {
                       </div>
                     </div>
                     <div className="border-t border-border my-1" />
+                    <LoyaltyBadge userId={user.id} />
                     <Link to="/account" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-secondary transition-colors">
                       <User className="h-4 w-4" /> Contul meu
                     </Link>
