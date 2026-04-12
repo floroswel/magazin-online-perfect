@@ -1,0 +1,1 @@
+UPDATE cms_pages SET slug = 'termeni-conditii' WHERE slug = 'termeni-si-conditii';
