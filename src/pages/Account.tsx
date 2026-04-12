@@ -16,6 +16,7 @@ type Tab = "dashboard" | "orders" | "wishlist" | "loyalty";
 export default function Account() {
   const { user, loading: authLoading, signOut } = useAuth();
   const { format } = useCurrency();
+  const { addToCart } = useCart();
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("dashboard");
 
