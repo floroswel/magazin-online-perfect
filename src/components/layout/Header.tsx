@@ -80,6 +80,28 @@ function TopInfoBar() {
 }
 
 // ═══════════════════════════════════════════
+// LOYALTY BADGE (dropdown inline)
+// ═══════════════════════════════════════════
+function LoyaltyBadge({ userId }: { userId: string }) {
+  const [points, setPoints] = useState(0);
+  useEffect(() => {
+    supabase.from("loyalty_points").select("points").eq("user_id", userId)
+      .then(({ data }) => {
+        if (data) setPoints(data.reduce((s, p) => s + (p.points || 0), 0));
+      });
+  }, [userId]);
+  if (points <= 0) return null;
+  const value = Math.floor(points / 100) * 5;
+  return (
+    <Link to="/account" className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-secondary transition-colors">
+      <Star className="h-4 w-4 text-primary" />
+      <span className="font-semibold text-primary">{points} pct</span>
+      <span className="text-muted-foreground text-xs">= {value} lei</span>
+    </Link>
+  );
+}
+
+// ═══════════════════════════════════════════
 // LAYER 2 — MAIN HEADER (Logo + Search + Icons)
 // ═══════════════════════════════════════════
 function MainHeader({ categories }: { categories: Category[] }) {
