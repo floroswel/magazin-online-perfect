@@ -310,7 +310,7 @@ export default function Footer() {
       {/* ━━ RÂND 3 — Bottom bar ━━ */}
       <div className="py-5" style={{ background: bottomBg }}>
         <div className="lumax-container flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* Left: Copyright */}
+          {/* Left: Copyright + Cookie Settings */}
           <div className="text-center sm:text-left shrink-0">
             <span className="text-xs font-medium" style={{ color: bottomTextColor }}>
               © {new Date().getFullYear()} {copyrightName}. Toate drepturile rezervate.
@@ -318,6 +318,13 @@ export default function Footer() {
             {showMadeIn && (
               <p className="text-[11px] mt-0.5" style={{ color: bottomTextColor }}>{madeText}</p>
             )}
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("open-cookie-settings"))}
+              className="text-[11px] mt-1 block underline hover:no-underline transition-colors cursor-pointer bg-transparent border-none p-0"
+              style={{ color: bottomTextColor }}
+            >
+              🍪 Setări cookie-uri
+            </button>
           </div>
 
           {/* Center: ANPC/SAL logos + Partners */}

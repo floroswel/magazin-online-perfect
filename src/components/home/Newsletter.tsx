@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useSettings } from "@/hooks/useSettings";
 import { toast } from "sonner";
@@ -7,6 +8,7 @@ export default function Newsletter() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [gdprOk, setGdprOk] = useState(false);
   const { settings } = useSettings();
 
   const title = settings.newsletter_title || "Abonează-te și primești 10% reducere";
@@ -15,6 +17,10 @@ export default function Newsletter() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
+    if (!gdprOk) {
+      toast.error("Trebuie să accepți politica de confidențialitate pentru a te abona.");
+      return;
+    }
     setLoading(true);
     const { error } = await supabase.from("subscribers" as any).insert({ email });
     setLoading(false);
@@ -49,6 +55,20 @@ export default function Newsletter() {
                 placeholder="Adresa ta de email"
                 className="w-full h-[46px] border-2 border-primary rounded-md px-4 text-sm bg-card outline-none focus:ring-2 focus:ring-primary/30"
               />
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={gdprOk}
+                  onChange={(e) => setGdprOk(e.target.checked)}
+                  className="accent-primary w-4 h-4 mt-0.5 shrink-0"
+                />
+                <span className="text-[11px] text-muted-foreground leading-snug">
+                  Sunt de acord cu primirea de comunicări comerciale și am citit{" "}
+                  <Link to="/politica-de-confidentialitate" className="text-primary hover:underline" target="_blank">
+                    Politica de Confidențialitate
+                  </Link>.
+                </span>
+              </label>
               <button
                 type="submit"
                 disabled={loading}
@@ -56,9 +76,6 @@ export default function Newsletter() {
               >
                 {loading ? "Se trimite..." : "Abonează-te Acum →"}
               </button>
-              <p className="text-[11px] text-muted-foreground/60">
-                Prin abonare ești de acord cu Politica de Confidențialitate
-              </p>
             </form>
           )}
         </div>
