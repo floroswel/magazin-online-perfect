@@ -147,31 +147,51 @@ export default function ProductDetail() {
 
   const specs = product.specs as Record<string, string> | null;
 
+  const base = window.location.origin;
   const productJsonLd = safeJsonLd({
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    image: images[0],
-    description: product.short_description || product.description?.slice(0, 200),
+    image: images,
+    description: product.short_description || product.description?.replace(/<[^>]*>/g, '').slice(0, 200),
     sku: product.sku,
+    url: `${base}/produs/${product.slug}`,
+    ...((product as any).brand?.name ? { brand: { "@type": "Brand", name: (product as any).brand.name } } : {}),
+    ...((product as any).category?.name ? { category: (product as any).category.name } : {}),
     offers: {
       "@type": "Offer",
       price: product.price,
       priceCurrency: "RON",
-      availability: isOutOfStock ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+      availability: isOutOfStock ? "https://schema.org/OutOfStock" : isLowStock ? "https://schema.org/LimitedAvailability" : "https://schema.org/InStock",
+      url: `${base}/produs/${product.slug}`,
+      seller: { "@type": "Organization", name: settings.site_name || "Mama Lucica" },
+      ...(product.old_price && product.old_price > product.price ? { priceValidUntil: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0] } : {}),
     },
     ...(product.rating && product.review_count && product.review_count > 0 ? {
       aggregateRating: {
         "@type": "AggregateRating",
         ratingValue: product.rating,
         reviewCount: product.review_count,
+        bestRating: 5,
+        worstRating: 1,
       },
     } : {}),
+  });
+
+  const breadcrumbJsonLd = safeJsonLd({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Acasă", item: base },
+      ...((product as any).category ? [{ "@type": "ListItem", position: 2, name: (product as any).category.name, item: `${base}/catalog?category=${(product as any).category.slug}` }] : []),
+      { "@type": "ListItem", position: (product as any).category ? 3 : 2, name: product.name },
+    ],
   });
 
   return (
     <Layout>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: productJsonLd }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd }} />
 
       {/* Breadcrumb */}
       <div className="lumax-container py-3">
@@ -284,6 +304,11 @@ export default function ProductDetail() {
               <p className={`text-xs font-semibold mt-1.5 ${isOutOfStock ? "text-destructive" : isLowStock ? "text-lumax-yellow" : "text-lumax-green"}`}>
                 {isOutOfStock ? "❌ Stoc epuizat" : isLowStock ? `⚠️ Doar ${product.stock} bucăți` : "✅ În stoc"}
               </p>
+              {isLowStock && (
+                <div className="mt-2 flex items-center gap-2 bg-destructive/10 border border-destructive/20 rounded-lg px-3 py-2 animate-pulse">
+                  <span className="text-destructive text-sm font-bold">🔥 Ultimele {product.stock} bucăți disponibile!</span>
+                </div>
+              )}
             </div>
 
             {/* Actions */}
@@ -348,6 +373,21 @@ export default function ProductDetail() {
               <button onClick={() => { setLiked(!liked); toast.success(liked ? "Eliminat din favorite" : "Adăugat la favorite"); }} className="w-full h-11 bg-transparent border-2 border-primary text-primary text-sm font-semibold rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors">
                 <Heart className="inline h-4 w-4 mr-1.5" fill={liked ? "currentColor" : "none"} /> {liked ? "Salvat la Favorite" : "Adaugă la Favorite"}
               </button>
+            </div>
+
+            {/* Trust verification badges */}
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              {[
+                { emoji: "✅", text: "Verificat Mama Lucica" },
+                { emoji: "🔒", text: "Plată 100% securizată" },
+                { emoji: "🚚", text: "Livrare rapidă" },
+                { emoji: "↩️", text: `Retur ${settings.return_days || "30"} zile` },
+              ].map(({ emoji, text }) => (
+                <div key={text} className="flex items-center gap-2 bg-secondary/50 rounded-lg px-3 py-2">
+                  <span className="text-base">{emoji}</span>
+                  <span className="text-[11px] font-semibold text-foreground">{text}</span>
+                </div>
+              ))}
             </div>
 
             {/* Delivery box */}
