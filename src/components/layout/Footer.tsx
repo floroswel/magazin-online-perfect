@@ -104,6 +104,10 @@ export default function Footer() {
 
   if (s.footer_show === "false") return null;
 
+  /* ── Logo ── */
+  const logoUrl = s.logo_url || "";
+  const siteName = s.site_name || "Mama Lucica";
+
   /* ── Colors ── */
   const bgColor = s.footer_bg_color || "#F1F5F9";
   const textColor = s.footer_text_color || "#475569";
@@ -203,6 +207,16 @@ export default function Footer() {
       {/* ━━ RÂND 1 — 4 coloane ━━ */}
       <div className="py-10 md:py-12" style={{ background: bgColor }}>
         <div className="lumax-container grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
+
+          {/* Logo + tagline */}
+          <div className="col-span-2 md:col-span-4 mb-4">
+            {logoUrl ? (
+              <img src={logoUrl} alt={siteName} className="h-8 object-contain mb-2" />
+            ) : (
+              <span className="text-lg font-bold" style={{ color: titleColor }}>{siteName}</span>
+            )}
+            {s.site_tagline && <p className="text-[12px] mt-1" style={{ color: textColor }}>{s.site_tagline}</p>}
+          </div>
 
           {/* Col 1 – Magazin */}
           {col1Show && col1Links.length > 0 && (
@@ -347,10 +361,15 @@ export default function Footer() {
 
           {/* Right: Payment icons */}
           {showPayment && paymentItems.length > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-2 shrink-0">
-              {paymentItems.map((p) => (
-                <div key={p.key} title={p.label}>{p.icon}</div>
-              ))}
+            <div className="flex flex-col items-center sm:items-end gap-1 shrink-0">
+              {s.footer_payment_label && (
+                <span className="text-[11px] font-medium" style={{ color: bottomTextColor }}>{s.footer_payment_label}</span>
+              )}
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                {paymentItems.map((p) => (
+                  <div key={p.key} title={p.label}>{p.icon}</div>
+                ))}
+              </div>
             </div>
           )}
         </div>
