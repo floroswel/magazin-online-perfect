@@ -168,13 +168,28 @@ export default function Account() {
                           </div>
                         </div>
                         {o.items && o.items.length > 0 && (
-                          <div className="flex gap-2 overflow-x-auto mt-2">
-                            {o.items.slice(0, 4).map((item: any) => (
-                              <div key={item.id} className="w-12 h-12 rounded-lg overflow-hidden bg-secondary flex-shrink-0">
-                                <img src={item.image_url || "/placeholder.svg"} alt="" className="w-full h-full object-cover" />
-                              </div>
-                            ))}
-                            {o.items.length > 4 && <span className="text-xs text-muted-foreground self-center">+{o.items.length - 4}</span>}
+                          <div className="flex items-center gap-2 mt-2">
+                            <div className="flex gap-2 overflow-x-auto flex-1">
+                              {o.items.slice(0, 4).map((item: any) => (
+                                <div key={item.id} className="w-12 h-12 rounded-lg overflow-hidden bg-secondary flex-shrink-0">
+                                  <img src={item.image_url || "/placeholder.svg"} alt="" className="w-full h-full object-cover" />
+                                </div>
+                              ))}
+                              {o.items.length > 4 && <span className="text-xs text-muted-foreground self-center">+{o.items.length - 4}</span>}
+                            </div>
+                            {(o.status === "delivered" || o.status === "livrat" || o.status === "confirmed") && (
+                              <button
+                                onClick={async () => {
+                                  for (const item of o.items) {
+                                    if (item.product_id) await addToCart(item.product_id, item.quantity || 1);
+                                  }
+                                  toast.success("Produsele au fost adăugate în coș!");
+                                }}
+                                className="shrink-0 text-[11px] font-bold text-primary hover:underline flex items-center gap-1"
+                              >
+                                <RotateCcw className="h-3.5 w-3.5" /> Recomandă
+                              </button>
+                            )}
                           </div>
                         )}
                       </div>
