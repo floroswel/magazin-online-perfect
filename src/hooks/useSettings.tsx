@@ -270,8 +270,31 @@ function applyCSSVariables(s: SettingsMap) {
   }
 }
 
+const CACHE_KEY = "lumax_settings_cache";
+
+function loadCachedSettings(): SettingsMap {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return {};
+}
+
+function saveCachedSettings(map: SettingsMap) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(map));
+  } catch {}
+}
+
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState<SettingsMap>({});
+  const [settings, setSettings] = useState<SettingsMap>(() => {
+    const cached = loadCachedSettings();
+    if (Object.keys(cached).length > 0) {
+      // Apply cached theme immediately to prevent FOUC
+      applyCSSVariables(cached);
+    }
+    return cached;
+  });
 
   const fetchSettings = useCallback(async () => {
     const { data } = await supabase
