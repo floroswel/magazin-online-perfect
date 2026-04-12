@@ -314,6 +314,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       }
     });
     setSettings(map);
+    saveCachedSettings(map);
     applyCSSVariables(map);
   }, []);
 
