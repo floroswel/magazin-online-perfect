@@ -15,7 +15,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
 };
 
 const DEFAULT_BADGES: TrustBadge[] = [
-  { icon: "🚚", title: "Livrare gratuită", subtitle: "Pentru comenzi peste 150 RON" },
+  { icon: "🚚", title: "Livrare gratuită", subtitle: "Pentru comenzi peste 200 RON" },
   { icon: "💳", title: "Plată flexibilă", subtitle: "Card de credit sau debit" },
   { icon: "↩️", title: "Retur în 14 zile", subtitle: "Rambursare rapidă" },
   { icon: "🎧", title: "Suport premium", subtitle: "Asistență rapidă" },
