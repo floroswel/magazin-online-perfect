@@ -9,6 +9,7 @@ import NewArrivals from "@/components/home/NewArrivals";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
 import Newsletter from "@/components/home/Newsletter";
 import OrderCounter from "@/components/home/OrderCounter";
+import Testimonials from "@/components/home/Testimonials";
 import { useSettings } from "@/hooks/useSettings";
 
 export default function Index() {
@@ -24,6 +25,7 @@ export default function Index() {
       {settings.show_trust !== "false" && <TrustStrip />}
       <OrderCounter />
       {settings.show_new_arrivals !== "false" && <NewArrivals />}
+      <Testimonials />
       {settings.show_recently_viewed !== "false" && <RecentlyViewed />}
       {settings.show_newsletter !== "false" && <Newsletter />}
     </Layout>
