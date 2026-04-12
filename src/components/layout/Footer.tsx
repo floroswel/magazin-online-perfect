@@ -208,6 +208,16 @@ export default function Footer() {
       <div className="py-10 md:py-12" style={{ background: bgColor }}>
         <div className="lumax-container grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
 
+          {/* Logo + tagline */}
+          <div className="col-span-2 md:col-span-4 mb-4">
+            {logoUrl ? (
+              <img src={logoUrl} alt={siteName} className="h-8 object-contain mb-2" />
+            ) : (
+              <span className="text-lg font-bold" style={{ color: titleColor }}>{siteName}</span>
+            )}
+            {s.site_tagline && <p className="text-[12px] mt-1" style={{ color: textColor }}>{s.site_tagline}</p>}
+          </div>
+
           {/* Col 1 – Magazin */}
           {col1Show && col1Links.length > 0 && (
             <div>
