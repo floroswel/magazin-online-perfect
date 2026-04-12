@@ -8,6 +8,7 @@ import TrustStrip from "@/components/home/TrustStrip";
 import NewArrivals from "@/components/home/NewArrivals";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
 import Newsletter from "@/components/home/Newsletter";
+import OrderCounter from "@/components/home/OrderCounter";
 import { useSettings } from "@/hooks/useSettings";
 
 export default function Index() {
@@ -21,6 +22,7 @@ export default function Index() {
       {settings.show_promo_banners !== "false" && <PromoBanners />}
       {settings.show_featured !== "false" && <BestSellers />}
       {settings.show_trust !== "false" && <TrustStrip />}
+      <OrderCounter />
       {settings.show_new_arrivals !== "false" && <NewArrivals />}
       {settings.show_recently_viewed !== "false" && <RecentlyViewed />}
       {settings.show_newsletter !== "false" && <Newsletter />}

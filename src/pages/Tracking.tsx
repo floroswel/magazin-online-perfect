@@ -46,7 +46,6 @@ export default function Tracking() {
       }
       const awb = data.shipments?.[0]?.awb_number || null;
       return { ...data, awb_number: awb, shipments: undefined };
-      return data;
     },
     enabled: !!searchTerm,
   });
