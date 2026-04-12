@@ -29,7 +29,7 @@ export default function Tracking() {
     queryKey: ["track-order", searchTerm, user?.id],
     queryFn: async () => {
       if (!searchTerm) return null;
-      let q = supabase.from("orders").select("id, order_number, status, created_at, shipping_method, awb_number, delivered_at, total, shipping_total")
+      let q = supabase.from("orders").select("id, order_number, status, created_at, awb_number, delivered_at, total, shipping_total")
         .or(`order_number.eq.${searchTerm},awb_number.eq.${searchTerm}`);
       if (user?.id) q = q.eq("user_id", user.id);
       const { data } = await q.limit(1).maybeSingle();
@@ -120,8 +120,8 @@ export default function Tracking() {
             </div>
 
             {order.delivered_at && (
-              <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-xl p-4 text-center">
-                <p className="text-sm font-bold text-green-700 dark:text-green-400">
+              <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-center">
+                <p className="text-sm font-bold text-primary">
                   ✅ Coletul a fost livrat pe {new Date(order.delivered_at).toLocaleDateString("ro-RO", { day: "numeric", month: "long", year: "numeric" })}
                 </p>
               </div>
