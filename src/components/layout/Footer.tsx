@@ -104,6 +104,10 @@ export default function Footer() {
 
   if (s.footer_show === "false") return null;
 
+  /* ── Logo ── */
+  const logoUrl = s.logo_url || "";
+  const siteName = s.site_name || "Mama Lucica";
+
   /* ── Colors ── */
   const bgColor = s.footer_bg_color || "#F1F5F9";
   const textColor = s.footer_text_color || "#475569";
