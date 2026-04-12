@@ -7,7 +7,9 @@ import { useCurrency } from "@/hooks/useCurrency";
 import { usePageSeo } from "@/components/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
 import ProductCard from "@/components/products/ProductCard";
-import { Package, Heart, MapPin, Star, Settings, LogOut } from "lucide-react";
+import { Package, Heart, MapPin, Star, Settings, LogOut, RotateCcw } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
+import { toast } from "sonner";
 
 type Tab = "dashboard" | "orders" | "wishlist" | "loyalty";
 
