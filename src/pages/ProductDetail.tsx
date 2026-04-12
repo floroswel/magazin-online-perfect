@@ -304,6 +304,11 @@ export default function ProductDetail() {
               <p className={`text-xs font-semibold mt-1.5 ${isOutOfStock ? "text-destructive" : isLowStock ? "text-lumax-yellow" : "text-lumax-green"}`}>
                 {isOutOfStock ? "❌ Stoc epuizat" : isLowStock ? `⚠️ Doar ${product.stock} bucăți` : "✅ În stoc"}
               </p>
+              {isLowStock && (
+                <div className="mt-2 flex items-center gap-2 bg-destructive/10 border border-destructive/20 rounded-lg px-3 py-2 animate-pulse">
+                  <span className="text-destructive text-sm font-bold">🔥 Ultimele {product.stock} bucăți disponibile!</span>
+                </div>
+              )}
             </div>
 
             {/* Actions */}
