@@ -80,19 +80,21 @@ export default function Contact() {
                     <Label htmlFor="c-msg">Mesajul tău *</Label>
                     <Textarea id="c-msg" required rows={5} value={form.message} onChange={e => set("message", e.target.value)} />
                   </div>
-                  <div className="flex items-start gap-2">
-                    <Checkbox id="c-gdpr" checked={gdprOk} onCheckedChange={v => setGdprOk(!!v)} />
-                    <label htmlFor="c-gdpr" className="text-xs text-muted-foreground leading-tight cursor-pointer">
-                      {(s.contact_form_gdpr_text || "").split("Politicii de Confidențialitate").map((part, i) =>
-                        i === 0 ? (
-                          <span key={i}>{part}<a href="/page/politica-confidentialitate" className="underline text-primary" target="_blank">Politicii de Confidențialitate</a></span>
-                        ) : part.split("Termenilor și condițiilor").map((sub, j) =>
-                          j === 0 ? (
-                            <span key={`${i}-${j}`}>{sub}<a href="/page/termeni-conditii" className="underline text-primary" target="_blank">Termenilor și condițiilor</a></span>
-                          ) : <span key={`${i}-${j}`}>{sub}</span>
-                        )
-                      )}
-                    </label>
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2">
+                      <Checkbox id="c-privacy" checked={privacyOk} onCheckedChange={v => setPrivacyOk(!!v)} className="mt-0.5" />
+                      <label htmlFor="c-privacy" className="text-xs text-muted-foreground leading-tight cursor-pointer">
+                        Sunt de acord cu prelucrarea datelor personale conform{" "}
+                        <a href="/politica-de-confidentialitate" className="underline text-primary" target="_blank">Politicii de Confidențialitate</a> *
+                      </label>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <Checkbox id="c-terms" checked={termsOk} onCheckedChange={v => setTermsOk(!!v)} className="mt-0.5" />
+                      <label htmlFor="c-terms" className="text-xs text-muted-foreground leading-tight cursor-pointer">
+                        Sunt de acord cu{" "}
+                        <a href="/termeni-si-conditii" className="underline text-primary" target="_blank">Termenii și Condițiile</a> *
+                      </label>
+                    </div>
                   </div>
                   <Button
                     type="submit"
