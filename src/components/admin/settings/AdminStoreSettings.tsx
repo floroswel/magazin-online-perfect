@@ -16,7 +16,7 @@ const DEFAULTS = {
   enable_reviews: true,
   enable_wishlist: true,
   enable_compare: true,
-  enable_quick_view: false,
+  
   show_sku: true,
   show_brand: true,
 };
@@ -81,7 +81,7 @@ export default function AdminStoreSettings() {
             ["enable_reviews", "Recenzii produse"],
             ["enable_wishlist", "Lista de dorințe (Wishlist)"],
             ["enable_compare", "Comparare produse"],
-            ["enable_quick_view", "Quick View (vizualizare rapidă)"],
+            
             ["show_stock_quantity", "Afișare cantitate stoc"],
             ["show_sku", "Afișare cod produs (SKU)"],
             ["show_brand", "Afișare brand pe card"],
