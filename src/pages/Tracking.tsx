@@ -29,10 +29,23 @@ export default function Tracking() {
     queryKey: ["track-order", searchTerm, user?.id],
     queryFn: async () => {
       if (!searchTerm) return null;
-      let q = supabase.from("orders").select("id, order_number, status, created_at, awb_number, delivered_at, total, shipping_total")
-        .or(`order_number.eq.${searchTerm},awb_number.eq.${searchTerm}`);
+      let q = supabase.from("orders").select("id, order_number, status, created_at, delivered_at, total, shipping_total, shipments(awb_number)")
+        .or(`order_number.eq.${searchTerm}`);
       if (user?.id) q = q.eq("user_id", user.id);
-      const { data } = await q.limit(1).maybeSingle();
+      const { data } = await q.limit(1).maybeSingle() as any;
+      if (!data) {
+        // Try searching by AWB in shipments
+        const { data: shipment } = await supabase.from("shipments").select("order_id, awb_number").eq("awb_number", searchTerm).limit(1).maybeSingle();
+        if (shipment?.order_id) {
+          let oq = supabase.from("orders").select("id, order_number, status, created_at, delivered_at, total, shipping_total, shipments(awb_number)").eq("id", shipment.order_id);
+          if (user?.id) oq = oq.eq("user_id", user.id);
+          const { data: od } = await oq.maybeSingle() as any;
+          return od ? { ...od, awb_number: shipment.awb_number } : null;
+        }
+        return null;
+      }
+      const awb = data.shipments?.[0]?.awb_number || null;
+      return { ...data, awb_number: awb, shipments: undefined };
       return data;
     },
     enabled: !!searchTerm,
