@@ -375,6 +375,21 @@ export default function ProductDetail() {
               </button>
             </div>
 
+            {/* Trust verification badges */}
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              {[
+                { emoji: "✅", text: "Verificat Mama Lucica" },
+                { emoji: "🔒", text: "Plată 100% securizată" },
+                { emoji: "🚚", text: "Livrare rapidă" },
+                { emoji: "↩️", text: `Retur ${settings.return_days || "30"} zile` },
+              ].map(({ emoji, text }) => (
+                <div key={text} className="flex items-center gap-2 bg-secondary/50 rounded-lg px-3 py-2">
+                  <span className="text-base">{emoji}</span>
+                  <span className="text-[11px] font-semibold text-foreground">{text}</span>
+                </div>
+              ))}
+            </div>
+
             {/* Delivery box */}
             <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 space-y-3">
               {[
