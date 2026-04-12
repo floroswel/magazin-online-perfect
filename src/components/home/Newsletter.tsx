@@ -8,6 +8,7 @@ export default function Newsletter() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [gdprOk, setGdprOk] = useState(false);
   const { settings } = useSettings();
 
   const title = settings.newsletter_title || "Abonează-te și primești 10% reducere";
