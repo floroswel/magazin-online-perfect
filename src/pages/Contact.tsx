@@ -13,7 +13,8 @@ import { Mail, Phone, MapPin, Building2, FileText, ExternalLink } from "lucide-r
 export default function Contact() {
   const { settings: s } = useSettings();
   const [form, setForm] = useState({ email: "", name: "", phone: "", message: "" });
-  const [gdprOk, setGdprOk] = useState(false);
+  const [privacyOk, setPrivacyOk] = useState(false);
+  const [termsOk, setTermsOk] = useState(false);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
 
