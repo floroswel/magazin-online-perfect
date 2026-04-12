@@ -22,7 +22,8 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!gdprOk) { toast.error("Trebuie să accepți politica GDPR."); return; }
+    if (!privacyOk) { toast.error("Trebuie să accepți Politica de Confidențialitate."); return; }
+    if (!termsOk) { toast.error("Trebuie să accepți Termenii și Condițiile."); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) { toast.error("Email invalid."); return; }
     if (form.phone.replace(/\D/g, "").length < 10) { toast.error("Telefon minim 10 cifre."); return; }
     if (form.message.length < 20) { toast.error("Mesajul trebuie să aibă minim 20 caractere."); return; }
