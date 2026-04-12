@@ -361,10 +361,15 @@ export default function Footer() {
 
           {/* Right: Payment icons */}
           {showPayment && paymentItems.length > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-2 shrink-0">
-              {paymentItems.map((p) => (
-                <div key={p.key} title={p.label}>{p.icon}</div>
-              ))}
+            <div className="flex flex-col items-center sm:items-end gap-1 shrink-0">
+              {s.footer_payment_label && (
+                <span className="text-[11px] font-medium" style={{ color: bottomTextColor }}>{s.footer_payment_label}</span>
+              )}
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                {paymentItems.map((p) => (
+                  <div key={p.key} title={p.label}>{p.icon}</div>
+                ))}
+              </div>
             </div>
           )}
         </div>
