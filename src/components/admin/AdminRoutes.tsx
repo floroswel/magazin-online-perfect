@@ -195,6 +195,10 @@ const AdminBreadcrumbSettings = lazy(() => import("./settings/AdminBreadcrumbSet
 const AdminDomainSettings = lazy(() => import("./settings/AdminDomainSettings"));
 const AdminTickerSettings = lazy(() => import("./settings/AdminTickerSettings"));
 const AdminContactSettings = lazy(() => import("./settings/AdminContactSettings"));
+const AdminSeoRedirects = lazy(() => import("./seo/AdminSeoRedirects"));
+const AdminFaqManager = lazy(() => import("./content/AdminFaqManager"));
+const AdminPopupsManager = lazy(() => import("./marketing/AdminPopupsManager"));
+const AdminSystemHealth = lazy(() => import("./system/AdminSystemHealth"));
 
 export default function AdminRoutes() {
   return (
@@ -470,6 +474,12 @@ export default function AdminRoutes() {
         <Route path="modules/ai-generator/usage" element={<AdminAIUsageStats />} />
         <Route path="modules/logs" element={<AdminLogs />} />
         <Route path="control" element={<AdminControlCenter />} />
+
+        {/* ═══════════ NOI MODULE ═══════════ */}
+        <Route path="seo/redirects" element={<AdminSeoRedirects />} />
+        <Route path="content/faq" element={<AdminFaqManager />} />
+        <Route path="marketing/popups" element={<AdminPopupsManager />} />
+        <Route path="system/health" element={<AdminSystemHealth />} />
       </Routes>
     </Suspense>
   );
