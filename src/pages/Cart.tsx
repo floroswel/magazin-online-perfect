@@ -23,7 +23,7 @@ export default function Cart() {
 
   const FREE_SHIPPING = parseInt(settings.free_shipping_threshold || "200");
   const SHIPPING_COST = parseInt(settings.default_shipping_cost || "25");
-  const siteName = settings.site_name || "LUMAX";
+  const siteName = settings.site_name || "Mama Lucica";
 
   usePageSeo({ title: `Coșul meu (${totalItems}) | ${siteName}`, description: "Verifică produsele din coș și finalizează comanda." });
 

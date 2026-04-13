@@ -9,7 +9,7 @@ export default function ForgotPassword() {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  usePageSeo({ title: "Ai uitat parola? | LUMAX", noindex: true });
+  usePageSeo({ title: "Ai uitat parola? | Mama Lucica", noindex: true });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +23,7 @@ export default function ForgotPassword() {
     <Layout>
       <div className="lumax-container py-12 max-w-md mx-auto">
         <div className="bg-card rounded-xl border border-border p-8 text-center">
-          <h1 className="text-2xl font-extrabold text-primary mb-1">LUMAX</h1>
+          <h1 className="text-2xl font-extrabold text-primary mb-1">Mama Lucica</h1>
           {sent ? (
             <>
               <p className="text-5xl my-4">✅</p>

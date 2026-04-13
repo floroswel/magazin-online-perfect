@@ -89,7 +89,7 @@ function LivePreview({ settings }: { settings: Record<string, string> }) {
     const headingFont = p.heading_font || "Inter";
     const bodyFont = p.body_font || "Inter";
     const priceColor = p.product_price_color || accent;
-    const siteName = p.site_name || "LUMAX";
+    const siteName = p.site_name || "Mama Lucica";
 
     const fontsToLoad = new Set<string>();
     if (headingFont !== "Inter") fontsToLoad.add(headingFont);
@@ -248,7 +248,7 @@ export default function AdminThemeEditor() {
                 <div>
                   <Label className="text-xs">Numele Magazinului</Label>
                   <Input
-                    value={get("site_name", "LUMAX")}
+                    value={get("site_name", "Mama Lucica")}
                     onChange={e => saveSetting("site_name", e.target.value)}
                     className="mt-1"
                     placeholder="Numele magazinului"

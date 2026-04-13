@@ -33,7 +33,7 @@ export default function ResetPassword() {
     <Layout>
       <div className="lumax-container py-12 max-w-md mx-auto">
         <div className="bg-card rounded-xl border border-border p-8">
-          <h1 className="text-2xl font-extrabold text-primary text-center mb-1">LUMAX</h1>
+          <h1 className="text-2xl font-extrabold text-primary text-center mb-1">Mama Lucica</h1>
           <h2 className="text-lg font-bold text-center mb-6">Setează parola nouă</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="relative">

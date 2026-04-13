@@ -57,7 +57,7 @@ export default function Auth() {
         <div className="max-w-md mx-auto">
           <div className="bg-card rounded-xl border border-border p-8">
             <div className="text-center mb-6">
-              <h1 className="text-2xl font-extrabold text-primary">LUMAX</h1>
+              <h1 className="text-2xl font-extrabold text-primary">Mama Lucica</h1>
               <h2 className="text-lg font-bold mt-2">{mode === "login" ? "Bun venit!" : "Creează cont"}</h2>
               <p className="text-sm text-muted-foreground mt-1">{mode === "login" ? "Autentifică-te în contul tău" : "Creează un cont nou"}</p>
             </div>
