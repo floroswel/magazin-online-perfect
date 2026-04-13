@@ -10,7 +10,7 @@ export default function OrderConfirmation() {
   const { orderId } = useParams<{ orderId: string }>();
   const { format } = useCurrency();
 
-  usePageSeo({ title: "Comandă confirmată | LUMAX", noindex: true });
+  usePageSeo({ title: "Comandă confirmată | Mama Lucica", noindex: true });
 
   const { data: order, isLoading } = useQuery({
     queryKey: ["order-confirmation", orderId],

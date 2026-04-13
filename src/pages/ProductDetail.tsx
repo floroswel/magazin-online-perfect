@@ -93,7 +93,7 @@ export default function ProductDetail() {
   const images = product?.images?.length ? product.images : product?.image_url ? [product.image_url] : ["/placeholder.svg"];
 
   usePageSeo({
-    title: product ? `${product.name} | LUMAX` : "Produs | LUMAX",
+    title: product ? `${product.name} | LUMAX` : "Produs | Mama Lucica",
     description: product?.meta_description || product?.short_description || "",
     ogImage: product?.image_url || undefined,
     ogType: "product",

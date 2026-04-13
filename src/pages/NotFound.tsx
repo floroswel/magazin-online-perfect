@@ -3,7 +3,7 @@ import Layout from "@/components/layout/Layout";
 import { usePageSeo } from "@/components/SeoHead";
 
 export default function NotFound() {
-  usePageSeo({ title: "404 — Pagina nu a fost găsită | LUMAX", noindex: true });
+  usePageSeo({ title: "404 — Pagina nu a fost găsită | Mama Lucica", noindex: true });
   return (
     <Layout>
       <div className="lumax-container py-20 text-center">

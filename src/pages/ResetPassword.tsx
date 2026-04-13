@@ -13,7 +13,7 @@ export default function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  usePageSeo({ title: "Resetare parolă | LUMAX", noindex: true });
+  usePageSeo({ title: "Resetare parolă | Mama Lucica", noindex: true });
 
   useEffect(() => {
     // Supabase auto-signs in with recovery token from hash
