@@ -199,7 +199,7 @@ function GuestReturnForm({ order, guestEmail, onSuccess }: { order: any; guestEm
 /* ─────────────── Main Page ─────────────── */
 export default function Returns() {
   const { user } = useAuth();
-  usePageSeo({ title: "Retururi | LUMAX", noindex: true });
+  usePageSeo({ title: "Retururi | Mama Lucica", noindex: true });
 
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [showForm, setShowForm] = useState(false);

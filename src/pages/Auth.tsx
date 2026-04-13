@@ -19,7 +19,7 @@ export default function Auth() {
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
-  usePageSeo({ title: mode === "login" ? "Autentificare | LUMAX" : "Crează cont | LUMAX", noindex: true });
+  usePageSeo({ title: mode === "login" ? "Autentificare | Mama Lucica" : "Crează cont | Mama Lucica", noindex: true });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
