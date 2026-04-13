@@ -255,7 +255,7 @@ export default function ProductDetail() {
           <div>
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-bold text-primary uppercase tracking-wider">
-                {(product as any).brand?.name || "LUMAX"}
+                {(product as any).brand?.name || "Mama Lucica"}
               </span>
             </div>
 

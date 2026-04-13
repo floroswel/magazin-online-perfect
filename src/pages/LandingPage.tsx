@@ -24,7 +24,7 @@ export default function LandingPage() {
   const [notFound, setNotFound] = useState(false);
 
   usePageSeo({
-    title: page ? `${page.meta_title || page.name} | LUMAX` : "LUMAX",
+    title: page ? `${page.meta_title || page.name} | Mama Lucica` : "Mama Lucica",
     description: page?.meta_description || "",
   });
 
