@@ -3032,6 +3032,39 @@ export type Database = {
         }
         Relationships: []
       }
+      faq_items: {
+        Row: {
+          answer: string
+          category: string
+          created_at: string
+          id: string
+          is_active: boolean
+          question: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          category?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          question: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          category?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          question?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
@@ -8051,6 +8084,72 @@ export type Database = {
           updated_at?: string
           updated_by?: string | null
           value_json?: Json
+        }
+        Relationships: []
+      }
+      site_popups: {
+        Row: {
+          body_html: string | null
+          coupon_code: string | null
+          created_at: string
+          cta_link: string | null
+          cta_text: string | null
+          display_frequency: string
+          ends_at: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          pages: string[] | null
+          popup_type: string
+          sort_order: number
+          starts_at: string | null
+          title: string | null
+          trigger_type: string
+          trigger_value: number | null
+          updated_at: string
+        }
+        Insert: {
+          body_html?: string | null
+          coupon_code?: string | null
+          created_at?: string
+          cta_link?: string | null
+          cta_text?: string | null
+          display_frequency?: string
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          pages?: string[] | null
+          popup_type?: string
+          sort_order?: number
+          starts_at?: string | null
+          title?: string | null
+          trigger_type?: string
+          trigger_value?: number | null
+          updated_at?: string
+        }
+        Update: {
+          body_html?: string | null
+          coupon_code?: string | null
+          created_at?: string
+          cta_link?: string | null
+          cta_text?: string | null
+          display_frequency?: string
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          pages?: string[] | null
+          popup_type?: string
+          sort_order?: number
+          starts_at?: string | null
+          title?: string | null
+          trigger_type?: string
+          trigger_value?: number | null
+          updated_at?: string
         }
         Relationships: []
       }
