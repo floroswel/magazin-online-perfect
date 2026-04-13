@@ -10060,6 +10060,7 @@ export type Database = {
       get_active_scripts_for_page: {
         Args: { p_page_types: string[] }
         Returns: {
+          consent_category: string
           content: string
           external_async: boolean
           external_crossorigin: string
