@@ -92,7 +92,7 @@ export default function Contact() {
                       <Checkbox id="c-terms" checked={termsOk} onCheckedChange={v => setTermsOk(!!v)} className="mt-0.5" />
                       <label htmlFor="c-terms" className="text-xs text-muted-foreground leading-tight cursor-pointer">
                         Sunt de acord cu{" "}
-                        <a href="/termeni-si-conditii" className="underline text-primary" target="_blank">Termenii și Condițiile</a> *
+                        <a href="/page/termeni-conditii" className="underline text-primary" target="_blank">Termenii și Condițiile</a> *
                       </label>
                     </div>
                   </div>

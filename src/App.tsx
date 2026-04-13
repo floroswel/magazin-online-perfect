@@ -138,7 +138,8 @@ const App = () => (
               <Route path="/post-delivery/:token" element={<ErrorBoundary><PostDelivery /></ErrorBoundary>} />
               <Route path="/contact" element={<ErrorBoundary><Contact /></ErrorBoundary>} />
               <Route path="/politica-de-confidentialitate" element={<ErrorBoundary><CmsPage overrideSlug="politica-de-confidentialitate" /></ErrorBoundary>} />
-              <Route path="/termeni-si-conditii" element={<ErrorBoundary><CmsPage overrideSlug="termeni-si-conditii" /></ErrorBoundary>} />
+              <Route path="/termeni-si-conditii" element={<ErrorBoundary><CmsPage overrideSlug="termeni-conditii" /></ErrorBoundary>} />
+              <Route path="/termeni-conditii" element={<ErrorBoundary><CmsPage overrideSlug="termeni-conditii" /></ErrorBoundary>} />
               <Route path="/politica-de-cookies" element={<ErrorBoundary><CmsPage overrideSlug="politica-cookie" /></ErrorBoundary>} />
               <Route path="/politica-de-retur" element={<ErrorBoundary><CmsPage overrideSlug="politica-retur" /></ErrorBoundary>} />
               <Route path="/lp/:slug" element={<ErrorBoundary><LandingPage /></ErrorBoundary>} />

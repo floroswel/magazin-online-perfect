@@ -30,7 +30,7 @@ interface CmsPage {
 const PRESET_PAGES = [
   { title: "Despre noi", slug: "despre-noi", placement: "footer_info" },
   { title: "Contact", slug: "contact", placement: "footer_info" },
-  { title: "Termeni și Condiții", slug: "termeni-si-conditii", placement: "footer_info" },
+  { title: "Termeni și Condiții", slug: "termeni-conditii", placement: "footer_info" },
   { title: "Politica de Confidențialitate", slug: "politica-de-confidentialitate", placement: "footer_info" },
   { title: "Politica Cookie", slug: "politica-cookie", placement: "footer_info" },
   { title: "Livrare", slug: "livrare", placement: "footer_help" },
@@ -63,7 +63,7 @@ export default function AdminCmsPages({ filterLegal }: { filterLegal?: boolean }
   const [editorTab, setEditorTab] = useState<"visual" | "html">("visual");
   const editorRef = useRef<HTMLDivElement>(null);
 
-  const LEGAL_SLUGS = ["termeni-si-conditii", "politica-de-confidentialitate", "politica-cookie", "gdpr", "livrare", "returnare", "garantie", "faq"];
+  const LEGAL_SLUGS = ["termeni-conditii", "politica-de-confidentialitate", "politica-cookie", "gdpr", "livrare", "returnare", "garantie", "faq"];
 
   useEffect(() => { loadPages(); }, []);
 
