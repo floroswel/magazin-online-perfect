@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Cookie, ChevronDown, ChevronUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { refreshConsentCache } from "@/hooks/useMarketingTracking";
 
 const CONSENT_ID_KEY = "ml_consent_id";
 const CONSENT_PREFS_KEY = "ml_consent_prefs";
@@ -86,6 +87,8 @@ export default function CookieConsent() {
     } catch {
       localStorage.setItem(CONSENT_ID_KEY, "local");
     }
+    // Refresh tracking consent cache so marketing scripts react immediately
+    refreshConsentCache();
     window.dispatchEvent(new CustomEvent("gdpr-consent", { detail: { analytics, marketing } }));
     setVisible(false);
   };

@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -17,6 +17,30 @@ interface CustomScript {
   pages: string[];
   sort_order: number;
   content?: string;
+  consent_category?: string; // necessary | analytics | marketing
+}
+
+type ConsentState = { analytics: boolean; marketing: boolean };
+
+const CONSENT_PREFS_KEY = "ml_consent_prefs";
+
+function getConsentFromStorage(): ConsentState {
+  try {
+    const raw = localStorage.getItem(CONSENT_PREFS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return { analytics: !!parsed.analytics, marketing: !!parsed.marketing };
+    }
+  } catch {}
+  return { analytics: false, marketing: false };
+}
+
+function isScriptAllowed(script: CustomScript, consent: ConsentState): boolean {
+  const cat = script.consent_category || "necessary";
+  if (cat === "necessary") return true;
+  if (cat === "analytics") return consent.analytics;
+  if (cat === "marketing") return consent.marketing;
+  return true;
 }
 
 function getPageTypes(pathname: string): string[] {
@@ -37,15 +61,27 @@ function getPageTypes(pathname: string): string[] {
 
 export default function CustomScriptInjector() {
   const [scripts, setScripts] = useState<CustomScript[]>([]);
+  const [consent, setConsent] = useState<ConsentState>(getConsentFromStorage);
   const location = useLocation();
 
+  // Listen for GDPR consent changes
+  useEffect(() => {
+    const handleConsent = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      setConsent({ analytics: !!detail?.analytics, marketing: !!detail?.marketing });
+    };
+    window.addEventListener("gdpr-consent", handleConsent);
+    return () => window.removeEventListener("gdpr-consent", handleConsent);
+  }, []);
+
+  // Fetch scripts for current page
   useEffect(() => {
     const pageTypes = getPageTypes(location.pathname);
-    // Use security definer function instead of direct table access
     (supabase.rpc("get_active_scripts_for_page" as any, { p_page_types: pageTypes }) as any)
       .then(({ data }: any) => setScripts(data || []));
   }, [location.pathname]);
 
+  // Inject/remove scripts based on consent
   useEffect(() => {
     if (scripts.length === 0) return;
 
@@ -53,6 +89,9 @@ export default function CustomScriptInjector() {
     const injected: HTMLElement[] = [];
 
     applicable.forEach(s => {
+      // GDPR: Only inject if consent is given for this category
+      if (!isScriptAllowed(s, consent)) return;
+
       const target =
         s.location === "header" ? document.head :
         document.body;
@@ -60,6 +99,7 @@ export default function CustomScriptInjector() {
       if (s.script_type === "external" && s.external_url) {
         const el = document.createElement("script");
         el.setAttribute("data-custom-script", s.id);
+        el.setAttribute("data-consent-category", s.consent_category || "necessary");
         el.src = s.external_url.trim();
         if (s.external_async) el.async = true;
         if (s.external_defer) el.defer = true;
@@ -79,6 +119,7 @@ export default function CustomScriptInjector() {
 
         const wrapper = document.createElement("div");
         wrapper.setAttribute("data-custom-script", s.id);
+        wrapper.setAttribute("data-consent-category", s.consent_category || "necessary");
         wrapper.style.display = "none";
         target.appendChild(wrapper);
         injected.push(wrapper);
@@ -99,7 +140,7 @@ export default function CustomScriptInjector() {
       });
       document.querySelectorAll("[data-custom-script]").forEach(el => el.remove());
     };
-  }, [scripts]);
+  }, [scripts, consent]);
 
   return null;
 }
