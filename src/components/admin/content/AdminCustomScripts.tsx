@@ -347,6 +347,7 @@ export default function AdminCustomScripts() {
       is_active: false,
       internal_note: s.internal_note,
       sort_order: (s.sort_order || 0) + 1,
+      consent_category: s.consent_category || "necessary",
       created_by_admin_id: user?.id || null,
     };
     const { data, error } = await (supabase.from("custom_scripts").insert(payload).select("id").single() as any);
