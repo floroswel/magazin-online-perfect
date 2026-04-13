@@ -57,9 +57,9 @@ export default function Catalog() {
 
   usePageSeo({
     title: collectionMeta
-      ? `${collectionMeta.title} | LUMAX`
-      : q ? `Rezultate pentru "${q}" | LUMAX` : "Catalog Produse | LUMAX",
-    description: collectionMeta?.description || "Descoperă toate produsele LUMAX. Livrare rapidă, prețuri competitive.",
+      ? `${collectionMeta.title} | Mama Lucica`
+      : q ? `Rezultate pentru "${q}" | Mama Lucica` : "Catalog Produse | Mama Lucica",
+    description: collectionMeta?.description || "Descoperă toate produsele Mama Lucica. Livrare rapidă, prețuri competitive.",
   });
 
   useEffect(() => {

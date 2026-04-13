@@ -20,7 +20,7 @@ export default function Account() {
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("dashboard");
 
-  usePageSeo({ title: "Contul meu | LUMAX", noindex: true });
+  usePageSeo({ title: "Contul meu | Mama Lucica", noindex: true });
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
