@@ -40,6 +40,7 @@ interface Script {
   sort_order: number;
   created_at: string;
   updated_at: string;
+  consent_category: string;   // necessary | analytics | marketing
   /* legacy compat */
   name?: string;
   content?: string;
@@ -192,6 +193,7 @@ const emptyForm = (): Partial<Script> => ({
   is_active: true,
   internal_note: "",
   sort_order: 0,
+  consent_category: "necessary",
 });
 
 /* ─── warnings helper ─── */
@@ -289,6 +291,7 @@ export default function AdminCustomScripts() {
       is_active: form.is_active ?? true,
       internal_note: form.internal_note || null,
       sort_order: form.sort_order ?? 0,
+      consent_category: form.consent_category || "necessary",
     };
 
     if (editId) {
@@ -344,6 +347,7 @@ export default function AdminCustomScripts() {
       is_active: false,
       internal_note: s.internal_note,
       sort_order: (s.sort_order || 0) + 1,
+      consent_category: s.consent_category || "necessary",
       created_by_admin_id: user?.id || null,
     };
     const { data, error } = await (supabase.from("custom_scripts").insert(payload).select("id").single() as any);
@@ -700,6 +704,20 @@ export default function AdminCustomScripts() {
               <Label>Status</Label>
               <Switch checked={form.is_active ?? true} onCheckedChange={v => setForm(f => ({ ...f, is_active: v }))} />
               <span className="text-sm text-muted-foreground">{form.is_active ? "Activ" : "Inactiv"}</span>
+            </div>
+
+            {/* GDPR Consent Category */}
+            <div>
+              <Label>Categorie GDPR consimțământ</Label>
+              <Select value={form.consent_category || "necessary"} onValueChange={v => setForm(f => ({ ...f, consent_category: v }))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="necessary">🔒 Necesare (se încarcă mereu)</SelectItem>
+                  <SelectItem value="analytics">📊 Analitice (necesită consimțământ analytics)</SelectItem>
+                  <SelectItem value="marketing">📣 Marketing (necesită consimțământ marketing)</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground mt-1">Scripturile de tip analytics/marketing se vor încărca DOAR dacă utilizatorul a acceptat categoria respectivă în bannerul de cookie-uri (GDPR).</p>
             </div>
 
             {/* Note */}

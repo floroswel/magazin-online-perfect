@@ -2212,6 +2212,7 @@ export type Database = {
       }
       custom_scripts: {
         Row: {
+          consent_category: string
           content: string
           created_at: string
           created_by_admin_id: string | null
@@ -2234,6 +2235,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          consent_category?: string
           content?: string
           created_at?: string
           created_by_admin_id?: string | null
@@ -2256,6 +2258,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          consent_category?: string
           content?: string
           created_at?: string
           created_by_admin_id?: string | null
@@ -10057,6 +10060,7 @@ export type Database = {
       get_active_scripts_for_page: {
         Args: { p_page_types: string[] }
         Returns: {
+          consent_category: string
           content: string
           external_async: boolean
           external_crossorigin: string
