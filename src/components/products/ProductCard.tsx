@@ -32,7 +32,7 @@ function ProductCardInner({ product, eager = false }: Props) {
   const FREE_SHIPPING = parseInt(settings.free_shipping_threshold || "200");
   const SHIPPING_COST = parseInt(settings.default_shipping_cost || "25");
   const lowStockThreshold = parseInt(settings.low_stock_threshold || "5");
-  const siteName = settings.site_name || "LUMAX";
+  const siteName = settings.site_name || "Mama Lucica";
 
   // Check if product is already in favorites
   useEffect(() => {
