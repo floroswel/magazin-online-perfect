@@ -27,6 +27,7 @@ interface Popup {
   trigger_value: number | null;
   display_frequency: string;
   is_active: boolean;
+  sort_order: number;
   starts_at: string | null;
   ends_at: string | null;
 }
