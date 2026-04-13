@@ -854,7 +854,7 @@ export default function Checkout() {
                   <Checkbox checked={form.termsAccepted} onCheckedChange={v => set("termsAccepted", !!v)} className="mt-0.5" />
                   <span className="text-xs text-muted-foreground">
                     Sunt de acord cu{" "}
-                    <Link to="/termeni-si-conditii" className="text-primary underline" target="_blank">Termenii și Condițiile</Link> *
+                    <Link to="/page/termeni-conditii" className="text-primary underline" target="_blank">Termenii și Condițiile</Link> *
                   </span>
                 </label>
                 <label className="flex items-start gap-2 cursor-pointer">
