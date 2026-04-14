@@ -107,3 +107,6 @@ verify_jwt = false
 
 [functions.daily-report]
 verify_jwt = false
+
+[functions.get-localities]
+verify_jwt = false
