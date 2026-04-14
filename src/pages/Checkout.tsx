@@ -93,6 +93,7 @@ export default function Checkout() {
 
   useEffect(() => { if (user?.email && !form.email) set("email", user.email); }, [user]);
 
+
   // ─── Coupon ───
   const [couponCode, setCouponCode] = useState("");
   const [couponApplied, setCouponApplied] = useState<any>(null);
@@ -191,6 +192,23 @@ export default function Checkout() {
     },
   });
   const shippingMethods = shippingMethodsDB && shippingMethodsDB.length > 0 ? shippingMethodsDB : DEFAULT_SHIPPING;
+
+  // ─── Payment Methods (only active) ───
+  const { data: paymentMethodsDB = [] } = useQuery({
+    queryKey: ["payment-methods-checkout"],
+    queryFn: async () => {
+      const { data } = await supabase.from("payment_methods").select("*").eq("is_active", true).order("display_order");
+      return data || [];
+    },
+  });
+
+  // Auto-select first active payment method
+  useEffect(() => {
+    if (paymentMethodsDB.length > 0 && !paymentMethodsDB.some((pm: any) => pm.key === form.paymentMethod)) {
+      set("paymentMethod", (paymentMethodsDB[0] as any).key);
+    }
+  }, [paymentMethodsDB]);
+
 
   // ─── CUI lookup ───
   const [cuiLoading, setCuiLoading] = useState(false);
@@ -779,63 +797,43 @@ export default function Checkout() {
             <div className={sectionClass}>
               <h2 className="text-base font-bold mb-3">Alege metoda de plată *</h2>
               <div className="space-y-2">
-                {/* Ramburs */}
-                <button onClick={() => set("paymentMethod", "ramburs")} className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${form.paymentMethod === "ramburs" ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"}`}>
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg">💵</span>
-                    <div className="flex-1">
-                      <p className="text-sm font-bold">Plată la livrare (Ramburs)</p>
-                      {sBool("checkout_ramburs_free_shipping") && (
-                        <p className="text-xs text-green-600 mt-0.5">{s("checkout_ramburs_benefit_text", "+ Transport Gratuit la comenzi > 200 RON + Plătești când ajunge coletul")}</p>
+                {paymentMethodsDB.map((pm: any) => {
+                  const key = pm.key;
+                  const icons: Record<string, string> = { ramburs: "💵", card_online: "💳", transfer_bancar: "🏦", mokka: "M", paypo: "💰" };
+                  const isSelected = form.paymentMethod === key;
+
+                  return (
+                    <div key={pm.id}>
+                      <button onClick={() => set("paymentMethod", key)} className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${isSelected ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"}`}>
+                        <div className="flex items-center gap-3">
+                          <span className="text-lg">{icons[key] || "💰"}</span>
+                          <div className="flex-1">
+                            <p className="text-sm font-bold">{pm.name}</p>
+                            {pm.description && <p className="text-xs text-muted-foreground mt-0.5">{pm.description}</p>}
+                            {key === "ramburs" && sBool("checkout_ramburs_free_shipping") && (
+                              <p className="text-xs text-green-600 mt-0.5">{s("checkout_ramburs_benefit_text", "+ Transport Gratuit la comenzi > 200 RON")}</p>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+
+                      {key === "transfer_bancar" && isSelected && (
+                        <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 ml-9 space-y-2 text-sm">
+                          <p className="font-bold">Detalii transfer bancar:</p>
+                          <p className="text-muted-foreground">Bancă: <span className="font-semibold text-foreground">{pm.bank_details?.bank_name || settings.company_bank || "Banca Transilvania"}</span></p>
+                          <p className="text-muted-foreground">IBAN: <span className="font-semibold text-foreground">{pm.bank_details?.iban || settings.company_iban || "RO00XXXX"}</span></p>
+                          <p className="text-muted-foreground">Beneficiar: <span className="font-semibold text-foreground">{pm.bank_details?.account_holder || settings.company_name || "Mama Lucica SRL"}</span></p>
+                          <p className="text-muted-foreground">La plată, menționați: <span className="font-semibold text-foreground">Numărul comenzii</span></p>
+                          <p className="text-xs text-amber-700 font-semibold mt-1">⏰ Ordinul de plată este valabil {pm.payment_deadline_days || 3} zile lucrătoare de la plasarea comenzii.</p>
+                        </div>
                       )}
                     </div>
-                  </div>
-                </button>
+                  );
+                })}
 
-                {/* Card */}
-                <button onClick={() => set("paymentMethod", "card")} className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${form.paymentMethod === "card" ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"}`}>
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg">💳</span>
-                    <div>
-                      <p className="text-sm font-bold">Online cu card (Netopia)</p>
-                      <p className="text-xs text-muted-foreground">Visa, Mastercard</p>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Transfer */}
-                <button onClick={() => set("paymentMethod", "transfer")} className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${form.paymentMethod === "transfer" ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"}`}>
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg">🏦</span>
-                    <div>
-                      <p className="text-sm font-bold">Ordin de Plată (Transfer bancar)</p>
-                      <p className="text-xs text-muted-foreground">Plătești după plasarea comenzii</p>
-                    </div>
-                  </div>
-                </button>
-
-                {form.paymentMethod === "transfer" && (
-                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 ml-9 space-y-2 text-sm">
-                    <p className="font-bold">Detalii transfer bancar:</p>
-                    <p className="text-muted-foreground">Bancă: <span className="font-semibold text-foreground">{settings.company_bank || "Banca Transilvania"}</span></p>
-                    <p className="text-muted-foreground">IBAN: <span className="font-semibold text-foreground">{settings.company_iban || "RO00XXXX"}</span></p>
-                    <p className="text-muted-foreground">Beneficiar: <span className="font-semibold text-foreground">{settings.company_name || "Mama Lucica SRL"}</span></p>
-                    <p className="text-muted-foreground">La plată, menționați: <span className="font-semibold text-foreground">Numărul comenzii</span></p>
-                    <p className="text-xs text-amber-700 font-semibold mt-1">⏰ Ordinul de plată este valabil 3 zile lucrătoare de la plasarea comenzii.</p>
-                  </div>
+                {paymentMethodsDB.length === 0 && (
+                  <p className="text-sm text-muted-foreground">Nu există metode de plată disponibile.</p>
                 )}
-
-                {/* Mokka */}
-                <button onClick={() => set("paymentMethod", "mokka")} className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${form.paymentMethod === "mokka" ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/30"}`}>
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg font-bold text-mokka">M</span>
-                    <div>
-                      <p className="text-sm font-bold">Mokka — Rate fără dobândă</p>
-                      <p className="text-xs text-muted-foreground">Cumperi acum, plătești în 3-12 rate, 0% dobândă</p>
-                    </div>
-                  </div>
-                </button>
-
               </div>
             </div>
 
