@@ -228,7 +228,8 @@ export default function Checkout() {
         set("billingCompany", data.denumire || "");
         set("billingRegCom", data.nrRegCom || "");
         set("billingAddress", data.adresa || "");
-        toast.success(`Firmă găsită: ${data.denumire}`);
+        set("billingVatPayer", data.platitorTva || false);
+        toast.success(`Firmă găsită: ${data.denumire}${data.platitorTva ? " (plătitor TVA)" : ""}`);
       }
     } catch {
       toast.error("ANAF temporar indisponibil. Completează manual datele.");
