@@ -236,6 +236,22 @@ export default function Checkout() {
     setCuiLoading(false);
   };
 
+  // ─── Extra services from DB ───
+  const [selectedExtraServices, setSelectedExtraServices] = useState<string[]>([]);
+  const { data: extraServicesDB = [] } = useQuery({
+    queryKey: ["extra-services-checkout"],
+    queryFn: async () => {
+      const { data } = await (supabase.from("extra_services" as any).select("*").eq("is_active", true).order("display_order") as any);
+      return (data || []) as any[];
+    },
+  });
+
+  const extraServicesCost = useMemo(() => {
+    return extraServicesDB
+      .filter((s: any) => selectedExtraServices.includes(s.id))
+      .reduce((sum: number, s: any) => sum + (s.price || 0), 0);
+  }, [selectedExtraServices, extraServicesDB]);
+
   // ─── Calculations ───
   const selectedMethod = shippingMethods.find(m => (m.id || m.name) === form.shippingMethod) || shippingMethods[0];
   const freeThreshold = parseInt(s("checkout_free_shipping_threshold", "200"));
@@ -244,10 +260,6 @@ export default function Checkout() {
     : 0;
   const rambursCostValue = parseInt(settings.ramburs_extra_cost || "5");
   const rambursCost = form.paymentMethod === "ramburs" ? rambursCostValue : 0;
-  const openPackagePrice = parseFloat(s("checkout_open_package_price", "24.99"));
-  const openPackageCost = form.openPackage ? openPackagePrice : 0;
-  const giftWrapPrice = parseFloat(s("gift_wrap_price", "15"));
-  const giftWrapCost = form.giftWrap ? giftWrapPrice : 0;
 
   const couponDiscount = useMemo(() => {
     if (!couponApplied) return 0;
@@ -258,7 +270,7 @@ export default function Checkout() {
     return couponApplied.discount_value || 0;
   }, [couponApplied, totalPrice]);
 
-  const finalTotal = Math.max(0, totalPrice - couponDiscount - loyaltyDiscount + shippingCost + rambursCost + openPackageCost + giftWrapCost);
+  const finalTotal = Math.max(0, totalPrice - couponDiscount - loyaltyDiscount + shippingCost + rambursCost + extraServicesCost);
 
   // ─── Validation ───
   const [returnError, setReturnError] = useState(false);
