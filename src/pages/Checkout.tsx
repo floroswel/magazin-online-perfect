@@ -358,12 +358,18 @@ export default function Checkout() {
       // Open package service fee
       if (form.openPackage) {
         await supabase.from("order_items").insert({
-          order_id: order.id,
-          product_id: null,
+          order_id: order.id, product_id: null,
           product_name: "Serviciu deschidere colet la livrare",
-          quantity: 1,
-          unit_price: openPackagePrice,
-          total_price: openPackagePrice,
+          quantity: 1, unit_price: openPackagePrice, total_price: openPackagePrice,
+        } as any);
+      }
+
+      // Gift wrap service fee
+      if (form.giftWrap) {
+        await supabase.from("order_items").insert({
+          order_id: order.id, product_id: null,
+          product_name: "Ambalaj cadou" + (form.giftMessage ? ` — Mesaj: ${form.giftMessage.slice(0, 150)}` : ""),
+          quantity: 1, unit_price: giftWrapPrice, total_price: giftWrapPrice,
         } as any);
       }
 
