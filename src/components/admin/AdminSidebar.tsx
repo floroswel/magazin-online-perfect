@@ -61,6 +61,7 @@ const menuSections: MenuSection[] = [
           { label: "Produse Relacionate", path: "/admin/products/related", dividerBefore: "Asocieri" },
           { label: "Compatibilitate", path: "/admin/products/compatibility" },
           { label: "Review-uri", path: "/admin/products/reviews", dividerBefore: "Feedback" },
+          { label: "Moderare Review-uri", path: "/admin/reports/review-moderation" },
           { label: "Întrebări", path: "/admin/products/questions" },
           { label: "Produse Promoție", path: "/admin/products/promo", dividerBefore: "Control Calitate" },
           { label: "Fără Imagine", path: "/admin/products/no-image" },
@@ -130,6 +131,7 @@ const menuSections: MenuSection[] = [
           { label: "Retargeting", path: "/admin/marketing/retargeting" },
           { label: "Teste A/B", path: "/admin/marketing/ab-tests" },
           { label: "Newsletter", path: "/admin/newsletter", dividerBefore: "Comunicare" },
+          { label: "Campanii Email", path: "/admin/marketing/email-campaigns" },
           { label: "SMS Marketing", path: "/admin/marketing/sms" },
           { label: "Back in Stock", path: "/admin/marketing/back-in-stock" },
           { label: "Alerte Preț", path: "/admin/marketing/price-alerts" },
@@ -177,6 +179,7 @@ const menuSections: MenuSection[] = [
     title: "ANALIZĂ",
     items: [
       { label: "Insights", icon: TrendingUp, path: "/admin/reports" },
+      { label: "KPI Live", icon: TrendingUp, path: "/admin/reports/live-kpi" },
       {
         label: "Rapoarte", icon: BarChart3,
         children: [
@@ -186,8 +189,12 @@ const menuSections: MenuSection[] = [
           { label: "Produse Lente", path: "/admin/reports/slow-movers" },
           { label: "Stoc & Rotație", path: "/admin/reports/inventory" },
           { label: "Clienți", path: "/admin/reports/customers", dividerBefore: "Audiență" },
+          { label: "Customer LTV", path: "/admin/reports/clv" },
           { label: "Trafic", path: "/admin/reports/traffic" },
           { label: "Conversie / Funnel", path: "/admin/reports/conversion" },
+          { label: "SLA Livrare", path: "/admin/reports/delivery-sla", dividerBefore: "Operațional" },
+          { label: "Raport Comparativ", path: "/admin/reports/comparative" },
+          { label: "Audit Timeline", path: "/admin/reports/audit-timeline" },
           { label: "Marketing ROI", path: "/admin/reports/marketing", dividerBefore: "Marketing" },
           { label: "Raport Custom", path: "/admin/reports/custom" },
           { label: "Export Rapoarte", path: "/admin/reports/export" },

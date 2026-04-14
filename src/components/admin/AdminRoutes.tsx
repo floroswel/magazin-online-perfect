@@ -203,6 +203,13 @@ const AdminOrderDetailPage = lazy(() => import("./orders/AdminOrderDetailPage"))
 const AdminMaintenanceToggle = lazy(() => import("./system/AdminMaintenanceToggle"));
 const AdminPushNotifications = lazy(() => import("./system/AdminPushNotifications"));
 const AdminCronJobs = lazy(() => import("./system/AdminCronJobs"));
+const AdminLiveKPI = lazy(() => import("./reports/AdminLiveKPI"));
+const AdminReviewModeration = lazy(() => import("./reports/AdminReviewModeration"));
+const AdminEmailCampaigns = lazy(() => import("./marketing/AdminEmailCampaigns"));
+const AdminCLV = lazy(() => import("./reports/AdminCLV"));
+const AdminAuditTimeline = lazy(() => import("./reports/AdminAuditTimeline"));
+const AdminDeliverySLA = lazy(() => import("./reports/AdminDeliverySLA"));
+const AdminComparativeReport = lazy(() => import("./reports/AdminComparativeReport"));
 
 export default function AdminRoutes() {
   return (
@@ -488,6 +495,13 @@ export default function AdminRoutes() {
         <Route path="system/maintenance" element={<AdminMaintenanceToggle />} />
         <Route path="system/push" element={<AdminPushNotifications />} />
         <Route path="system/cron" element={<AdminCronJobs />} />
+        <Route path="reports/live-kpi" element={<AdminLiveKPI />} />
+        <Route path="reports/review-moderation" element={<AdminReviewModeration />} />
+        <Route path="marketing/email-campaigns" element={<AdminEmailCampaigns />} />
+        <Route path="reports/clv" element={<AdminCLV />} />
+        <Route path="reports/audit-timeline" element={<AdminAuditTimeline />} />
+        <Route path="reports/delivery-sla" element={<AdminDeliverySLA />} />
+        <Route path="reports/comparative" element={<AdminComparativeReport />} />
       </Routes>
     </Suspense>
   );
