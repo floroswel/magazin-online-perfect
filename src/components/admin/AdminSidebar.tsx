@@ -177,7 +177,7 @@ const menuSections: MenuSection[] = [
     title: "ANALIZĂ",
     items: [
       { label: "Insights", icon: TrendingUp, path: "/admin/reports" },
-      { label: "KPI Live", icon: Activity, path: "/admin/reports/live-kpi" },
+      { label: "KPI Live", icon: TrendingUp, path: "/admin/reports/live-kpi" },
       {
         label: "Rapoarte", icon: BarChart3,
         children: [
