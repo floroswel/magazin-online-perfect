@@ -837,6 +837,14 @@ export default function Checkout() {
               </div>
             </div>
 
+            {/* ─── BLOC 9: OBSERVAȚII ─── */}
+            {sBool("checkout_observations_show") && (
+              <div className={sectionClass}>
+                <h2 className="text-base font-bold mb-3">Mesajul tău (opțional)</h2>
+                <Textarea value={form.observations} onChange={e => set("observations", e.target.value)} placeholder="Instrucțiuni speciale, program livrare, etc." rows={3} />
+              </div>
+            )}
+
             {/* ─── TERMENI & CONFIDENȚIALITATE ─── */}
             <div className={sectionClass}>
               <div className="space-y-3">
