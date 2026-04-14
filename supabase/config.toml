@@ -98,3 +98,9 @@ verify_jwt = false
 
 [functions.google-merchant-feed]
 verify_jwt = false
+
+[functions.check-login-attempts]
+verify_jwt = false
+
+[functions.daily-report]
+verify_jwt = false

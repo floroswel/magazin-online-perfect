@@ -14,6 +14,15 @@ interface CronJob {
 
 const cronJobs: CronJob[] = [
   {
+    name: "Raport Zilnic Admin",
+    description: "Trimite email zilnic cu sumar: comenzi, vânzări, stoc critic, recenzii.",
+    schedule: "0 8 * * *",
+    scheduleLabel: "Zilnic, 08:00",
+    icon: <TrendingUp className="w-5 h-5 text-emerald-500" />,
+    edgeFunction: "daily-report",
+    status: "active",
+  },
+  {
     name: "Recuperare Coșuri Abandonate",
     description: "Trimite email-uri de recuperare pentru coșurile abandonate (secvență 3 email-uri).",
     schedule: "0 */2 * * *",

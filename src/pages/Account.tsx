@@ -7,7 +7,7 @@ import { useCurrency } from "@/hooks/useCurrency";
 import { usePageSeo } from "@/components/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
 import ProductCard from "@/components/products/ProductCard";
-import { Package, Heart, MapPin, Star, Settings, LogOut, RotateCcw } from "lucide-react";
+import { Package, Heart, MapPin, Star, Settings, LogOut, RotateCcw, FileText } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { toast } from "sonner";
 
@@ -193,6 +193,34 @@ export default function Account() {
                                 <RotateCcw className="h-3.5 w-3.5" /> Recomandă
                               </button>
                             )}
+                            <button
+                              onClick={async () => {
+                                try {
+                                  toast.info("Se generează factura...");
+                                  const { data, error } = await supabase.functions.invoke("generate-invoice-pdf", {
+                                    body: { orderId: o.id },
+                                  });
+                                  if (error) throw error;
+                                  // data is arraybuffer
+                                  const blob = new Blob([data], { type: "application/pdf" });
+                                  const url = URL.createObjectURL(blob);
+                                  const a = document.createElement("a");
+                                  a.href = url;
+                                  a.download = `Factura_ML_${o.order_number || o.id.slice(0, 8)}.pdf`;
+                                  document.body.appendChild(a);
+                                  a.click();
+                                  document.body.removeChild(a);
+                                  URL.revokeObjectURL(url);
+                                  toast.success("Factura a fost descărcată!");
+                                } catch (err) {
+                                  console.error(err);
+                                  toast.error("Eroare la generarea facturii");
+                                }
+                              }}
+                              className="shrink-0 text-[11px] font-bold text-primary hover:underline flex items-center gap-1"
+                            >
+                              <FileText className="h-3.5 w-3.5" /> Factură PDF
+                            </button>
                           </div>
                         )}
                       </div>
