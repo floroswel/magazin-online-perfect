@@ -84,10 +84,12 @@ export default function Checkout() {
     billingCui: "", billingCompany: "", billingRegCom: "",
     billingCountyId: "", billingLocalityId: "", billingAddress: "",
     openPackage: false,
+    giftWrap: false, giftMessage: "",
     paymentMethod: "ramburs",
     tbiMonths: 4,
     observations: "",
     termsAccepted: false, privacyAccepted: false, newsletter: false,
+    returnPolicyAccepted: false,
   });
   const set = (k: string, v: any) => setForm(p => ({ ...p, [k]: v }));
 
