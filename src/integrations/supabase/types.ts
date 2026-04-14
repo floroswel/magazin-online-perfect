@@ -1747,6 +1747,65 @@ export type Database = {
           },
         ]
       }
+      complaints: {
+        Row: {
+          admin_notes: string | null
+          channel: string
+          complaint_date: string
+          created_at: string
+          customer_email: string | null
+          customer_name: string
+          description: string
+          id: string
+          order_id: string | null
+          order_number: string | null
+          resolution: string | null
+          response_date: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          channel?: string
+          complaint_date?: string
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string
+          description?: string
+          id?: string
+          order_id?: string | null
+          order_number?: string | null
+          resolution?: string | null
+          response_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          channel?: string
+          complaint_date?: string
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string
+          description?: string
+          id?: string
+          order_id?: string | null
+          order_number?: string | null
+          resolution?: string | null
+          response_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "complaints_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       connector_instances: {
         Row: {
           config_json: Json | null
@@ -3746,6 +3805,30 @@ export type Database = {
           },
         ]
       }
+      login_attempts: {
+        Row: {
+          attempted_at: string
+          email: string | null
+          id: string
+          ip_address: string
+          success: boolean
+        }
+        Insert: {
+          attempted_at?: string
+          email?: string | null
+          id?: string
+          ip_address: string
+          success?: boolean
+        }
+        Update: {
+          attempted_at?: string
+          email?: string | null
+          id?: string
+          ip_address?: string
+          success?: boolean
+        }
+        Relationships: []
+      }
       loyalty_levels: {
         Row: {
           benefits: string[] | null
@@ -4673,6 +4756,8 @@ export type Database = {
           delivered_at: string | null
           discount_amount: number | null
           discount_total: number | null
+          fraud_flags: Json | null
+          fraud_status: string | null
           fulfillment_warehouse_id: string | null
           gift_message: string | null
           gift_wrap: boolean | null
@@ -4723,6 +4808,8 @@ export type Database = {
           delivered_at?: string | null
           discount_amount?: number | null
           discount_total?: number | null
+          fraud_flags?: Json | null
+          fraud_status?: string | null
           fulfillment_warehouse_id?: string | null
           gift_message?: string | null
           gift_wrap?: boolean | null
@@ -4773,6 +4860,8 @@ export type Database = {
           delivered_at?: string | null
           discount_amount?: number | null
           discount_total?: number | null
+          fraud_flags?: Json | null
+          fraud_status?: string | null
           fulfillment_warehouse_id?: string | null
           gift_message?: string | null
           gift_wrap?: boolean | null
