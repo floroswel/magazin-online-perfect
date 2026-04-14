@@ -43,6 +43,7 @@ const menuSections: MenuSection[] = [
           { label: "Retururi", path: "/admin/orders/returns" },
           { label: "Probleme", path: "/admin/orders/issues" },
           { label: "Statusuri", path: "/admin/orders/statuses" },
+          { label: "Reclamații", path: "/admin/orders/complaints", dividerBefore: "Legal" },
         ],
       },
       {
@@ -302,6 +303,7 @@ const menuSections: MenuSection[] = [
           { label: "Task-uri Programate", path: "/admin/system/cron" },
           { label: "Mod Mentenanță", path: "/admin/system/maintenance" },
           { label: "Notificări Push", path: "/admin/system/push" },
+          { label: "Protecție Brute Force", path: "/admin/system/brute-force" },
           { label: "Loguri Sistem", path: "/admin/modules/logs" },
         ],
       },

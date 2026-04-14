@@ -210,6 +210,8 @@ const AdminCLV = lazy(() => import("./reports/AdminCLV"));
 const AdminAuditTimeline = lazy(() => import("./reports/AdminAuditTimeline"));
 const AdminDeliverySLA = lazy(() => import("./reports/AdminDeliverySLA"));
 const AdminComparativeReport = lazy(() => import("./reports/AdminComparativeReport"));
+const AdminComplaints = lazy(() => import("./orders/AdminComplaints"));
+const AdminBruteForce = lazy(() => import("./system/AdminBruteForce"));
 
 export default function AdminRoutes() {
   return (
@@ -502,6 +504,8 @@ export default function AdminRoutes() {
         <Route path="reports/audit-timeline" element={<AdminAuditTimeline />} />
         <Route path="reports/delivery-sla" element={<AdminDeliverySLA />} />
         <Route path="reports/comparative" element={<AdminComparativeReport />} />
+        <Route path="orders/complaints" element={<AdminComplaints />} />
+        <Route path="system/brute-force" element={<AdminBruteForce />} />
       </Routes>
     </Suspense>
   );

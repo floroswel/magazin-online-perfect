@@ -77,6 +77,20 @@ export default function CookieConsent() {
   const saveConsent = async (analytics: boolean, marketing: boolean) => {
     const sessionId = getSessionId();
     localStorage.setItem(CONSENT_PREFS_KEY, JSON.stringify({ analytics, marketing }));
+
+    // Google Consent Mode v2 update
+    const gtagFn = (window as any).gtag;
+    if (typeof gtagFn === "function") {
+      gtagFn("consent", "update", {
+        analytics_storage: analytics ? "granted" : "denied",
+      });
+      gtagFn("consent", "update", {
+        ad_storage: marketing ? "granted" : "denied",
+        ad_user_data: marketing ? "granted" : "denied",
+        ad_personalization: marketing ? "granted" : "denied",
+      });
+    }
+
     try {
       const { data } = await supabase.functions.invoke("save-gdpr-consent", {
         body: { session_id: sessionId, analytics, marketing },
