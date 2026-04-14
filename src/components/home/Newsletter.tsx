@@ -13,6 +13,7 @@ export default function Newsletter() {
 
   const title = settings.newsletter_title || "Abonează-te și primești 10% reducere";
   const subtitle = settings.newsletter_subtitle || "Fii primul care află despre oferte exclusive și produse noi";
+  const trustText = settings.newsletter_trust_text || "✅ Peste 5000 abonați · ✅ Fără spam · ✅ Dezabonare oricând";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,9 +39,7 @@ export default function Newsletter() {
         <div className="md:w-[60%]">
           <h2 className="text-xl md:text-2xl font-extrabold text-foreground mb-2">{title}</h2>
           <p className="text-[15px] text-muted-foreground mb-3">{subtitle}</p>
-          <p className="text-xs text-muted-foreground/70">
-            ✅ Peste 5000 abonați · ✅ Fără spam · ✅ Dezabonare oricând
-          </p>
+          <p className="text-xs text-muted-foreground/70">{trustText}</p>
         </div>
         <div className="md:w-[40%] w-full">
           {done ? (
