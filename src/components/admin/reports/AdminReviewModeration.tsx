@@ -29,9 +29,8 @@ export default function AdminReviewModeration() {
   useEffect(() => { load(); }, [filter]);
 
   const handleApprove = async (id: string) => {
-    await supabase.from("reviews").update({ rating: undefined } as any).eq("id", id);
-    // Use RPC or direct column if 'approved' doesn't exist in typed schema
-    await supabase.rpc("approve_review" as any, { review_id: id }).catch(() => null);
+    // reviews table may not have 'approved' column in typed schema — cast to bypass
+    await (supabase.from("reviews") as any).update({ approved: true }).eq("id", id);
     toast({ title: "Review aprobat" });
     load();
   };
