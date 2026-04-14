@@ -212,31 +212,26 @@ export default function Checkout() {
   }, [paymentMethodsDB]);
 
 
-  // ─── CUI lookup ───
+  // ─── CUI lookup via edge function (ANAF proxy) ───
   const [cuiLoading, setCuiLoading] = useState(false);
   const lookupCUI = async () => {
     const cui = form.billingCui.replace(/\D/g, "");
     if (!cui || cui.length < 2) return toast.error("Introduceți un CUI valid");
     setCuiLoading(true);
     try {
-      const today = new Date().toISOString().slice(0, 10);
-      const resp = await fetch("https://webservicesp.anaf.ro/AsynchWebService/api/v8/ws/tva", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify([{ cui: parseInt(cui), data: today }]),
+      const { data, error } = await supabase.functions.invoke("anaf-lookup", {
+        body: { cui },
       });
-      const data = await resp.json();
-      const found = data?.found?.[0];
-      if (found) {
-        set("billingCompany", found.denumire || "");
-        set("billingRegCom", found.nrRegCom || "");
-        set("billingAddress", found.adresa || "");
-        toast.success("Date firma completate!");
+      if (error || !data?.success) {
+        toast.error(data?.error || "CUI negăsit la ANAF. Completează manual.");
       } else {
-        toast.error("CUI negăsit la ANAF");
+        set("billingCompany", data.denumire || "");
+        set("billingRegCom", data.nrRegCom || "");
+        set("billingAddress", data.adresa || "");
+        toast.success(`Firmă găsită: ${data.denumire}`);
       }
     } catch {
-      toast.error("Eroare conexiune ANAF");
+      toast.error("ANAF temporar indisponibil. Completează manual datele.");
     }
     setCuiLoading(false);
   };
