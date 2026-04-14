@@ -70,7 +70,7 @@ export default function PromoBanners() {
 
   return (
     <section className="bg-secondary py-4">
-      <div className="lumax-container grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="ml-container grid grid-cols-1 md:grid-cols-2 gap-4">
         {banners.map((b: any, i: number) => (
           <Link
             key={i}

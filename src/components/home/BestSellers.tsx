@@ -66,7 +66,7 @@ export default function BestSellers() {
 
   return (
     <section className="bg-card py-6">
-      <div className="lumax-container">
+      <div className="ml-container">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
           <h2 className="section-title mb-0">{title}</h2>
           <div className="flex items-center gap-2 overflow-x-auto">

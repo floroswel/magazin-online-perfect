@@ -22,7 +22,7 @@ export default function OrderCounter() {
 
   return (
     <section className="py-8 bg-secondary/30">
-      <div className="lumax-container">
+      <div className="ml-container">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {items.map(({ icon: Icon, value, label }) => (
             <div key={label} className="text-center">

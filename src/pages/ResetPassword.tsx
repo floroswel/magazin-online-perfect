@@ -31,7 +31,7 @@ export default function ResetPassword() {
 
   return (
     <Layout>
-      <div className="lumax-container py-12 max-w-md mx-auto">
+      <div className="ml-container py-12 max-w-md mx-auto">
         <div className="bg-card rounded-xl border border-border p-8">
           <h1 className="text-2xl font-extrabold text-primary text-center mb-1">Mama Lucica</h1>
           <h2 className="text-lg font-bold text-center mb-6">Setează parola nouă</h2>
@@ -45,10 +45,10 @@ export default function ResetPassword() {
             <input value={confirm} onChange={e => setConfirm(e.target.value)} placeholder="Confirmă parola *" type="password" required className="w-full h-11 px-3 border border-border rounded-lg text-sm bg-background focus:ring-primary focus:border-primary" />
             {password.length > 0 && (
               <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-                <div className={`h-full rounded-full transition-all ${password.length >= 8 ? "bg-lumax-green w-full" : password.length >= 6 ? "bg-lumax-yellow w-2/3" : "bg-destructive w-1/3"}`} />
+                <div className={`h-full rounded-full transition-all ${password.length >= 8 ? "bg-ml-success w-full" : password.length >= 6 ? "bg-ml-warning w-2/3" : "bg-destructive w-1/3"}`} />
               </div>
             )}
-            <button type="submit" disabled={loading} className="w-full h-11 bg-primary text-primary-foreground rounded-lg font-bold text-sm hover:bg-lumax-blue-dark disabled:opacity-50">
+            <button type="submit" disabled={loading} className="w-full h-11 bg-primary text-primary-foreground rounded-lg font-bold text-sm hover:bg-ml-primary-dark disabled:opacity-50">
               {loading ? "Se salvează..." : "Salvează parola"}
             </button>
           </form>

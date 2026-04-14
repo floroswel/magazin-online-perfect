@@ -13,7 +13,7 @@ import { Heart, Share2, Minus, Plus, Truck, RotateCcw, Shield, Package, Bell } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 
-const RECENTLY_KEY = "lumax_recently_viewed";
+const RECENTLY_KEY = "ml_recently_viewed";
 function addRecentlyViewed(id: string) {
   try {
     const ids: string[] = JSON.parse(localStorage.getItem(RECENTLY_KEY) || "[]");
@@ -116,7 +116,7 @@ export default function ProductDetail() {
   if (isLoading) {
     return (
       <Layout>
-        <div className="lumax-container py-8">
+        <div className="ml-container py-8">
           <div className="grid md:grid-cols-2 gap-8">
             <div className="aspect-square skeleton rounded-xl" />
             <div className="space-y-4">
@@ -136,7 +136,7 @@ export default function ProductDetail() {
   if (!product) {
     return (
       <Layout>
-        <div className="lumax-container py-20 text-center">
+        <div className="ml-container py-20 text-center">
           <p className="text-5xl mb-4">😕</p>
           <p className="text-lg font-bold">Produsul nu a fost găsit</p>
           <Link to="/catalog" className="text-primary text-sm font-semibold hover:underline mt-2 inline-block">← Înapoi la catalog</Link>
@@ -194,7 +194,7 @@ export default function ProductDetail() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd }} />
 
       {/* Breadcrumb */}
-      <div className="lumax-container py-3">
+      <div className="ml-container py-3">
         <nav className="text-xs text-muted-foreground flex items-center gap-1.5 flex-wrap">
           <Link to="/" className="hover:text-primary">Acasă</Link>
           <span>/</span>
@@ -210,7 +210,7 @@ export default function ProductDetail() {
         </nav>
       </div>
 
-      <div className="lumax-container pb-12">
+      <div className="ml-container pb-12">
         <div className="grid md:grid-cols-[55%_45%] gap-8">
           {/* Images */}
           <div>
@@ -301,7 +301,7 @@ export default function ProductDetail() {
                   <Plus className="h-4 w-4" />
                 </button>
               </div>
-              <p className={`text-xs font-semibold mt-1.5 ${isOutOfStock ? "text-destructive" : isLowStock ? "text-lumax-yellow" : "text-lumax-green"}`}>
+              <p className={`text-xs font-semibold mt-1.5 ${isOutOfStock ? "text-destructive" : isLowStock ? "text-ml-warning" : "text-ml-success"}`}>
                 {isOutOfStock ? "❌ Stoc epuizat" : isLowStock ? `⚠️ Doar ${product.stock} bucăți` : "✅ În stoc"}
               </p>
               {isLowStock && (
@@ -321,7 +321,7 @@ export default function ProductDetail() {
                     <span className="text-sm font-bold text-foreground">Anunță-mă când revine în stoc</span>
                   </div>
                   {notifySubmitted ? (
-                    <p className="text-sm text-lumax-green font-semibold">✅ Te vom anunța pe email când produsul revine!</p>
+                    <p className="text-sm text-ml-success font-semibold">✅ Te vom anunța pe email când produsul revine!</p>
                   ) : (
                     <div className="flex gap-2">
                       <input
@@ -362,7 +362,7 @@ export default function ProductDetail() {
                 </div>
               ) : (
                 <>
-                  <button onClick={handleAdd} className="w-full h-[52px] bg-primary text-primary-foreground text-[15px] font-bold rounded-lg hover:bg-lumax-blue-dark transition-colors">
+                  <button onClick={handleAdd} className="w-full h-[52px] bg-primary text-primary-foreground text-[15px] font-bold rounded-lg hover:bg-ml-primary-dark transition-colors">
                     Adaugă în Coș
                   </button>
                   <button onClick={handleBuyNow} className="w-full h-[52px] bg-destructive text-destructive-foreground text-[15px] font-bold rounded-lg hover:opacity-90 transition-opacity">
@@ -470,7 +470,7 @@ export default function ProductDetail() {
                         <p className="text-sm font-semibold">{r.reviewer_name || "Anonim"}</p>
                         <p className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("ro-RO")}</p>
                       </div>
-                      <span className="ml-auto text-lumax-yellow text-xs">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span>
+                      <span className="ml-auto text-ml-warning text-xs">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span>
                     </div>
                     {r.title && <p className="text-sm font-semibold mb-1">{r.title}</p>}
                     <p className="text-sm text-muted-foreground">{r.comment}</p>

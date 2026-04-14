@@ -252,7 +252,7 @@ export default function Catalog() {
   return (
     <Layout>
       {/* Breadcrumb */}
-      <div className="lumax-container py-3">
+      <div className="ml-container py-3">
         <nav className="text-xs text-muted-foreground">
           <Link to="/" className="hover:text-primary">Acasă</Link>
           <span className="mx-1.5">/</span>
@@ -266,13 +266,13 @@ export default function Catalog() {
 
       {/* Collection header */}
       {collectionMeta && (
-        <div className="lumax-container pb-4">
+        <div className="ml-container pb-4">
           <h1 className="text-2xl font-bold text-foreground">{collectionMeta.title}</h1>
           <p className="text-sm text-muted-foreground">{collectionMeta.description}</p>
         </div>
       )}
 
-      <div className="lumax-container pb-12">
+      <div className="ml-container pb-12">
         <div className="flex gap-6">
           {/* Desktop sidebar */}
           <aside className="hidden lg:block w-60 flex-shrink-0 sticky top-[52px] self-start">

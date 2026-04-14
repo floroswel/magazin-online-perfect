@@ -127,7 +127,7 @@ function ProductCardInner({ product, eager = false }: Props) {
             </span>
           )}
           {isLowStock && (
-            <span className="bg-lumax-yellow text-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
+            <span className="bg-ml-warning text-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
               Stoc limitat
             </span>
           )}
@@ -168,7 +168,7 @@ function ProductCardInner({ product, eager = false }: Props) {
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className="bg-primary text-primary-foreground text-xs font-semibold py-2 rounded-sm hover:bg-lumax-blue-dark transition-colors disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed"
+            className="bg-primary text-primary-foreground text-xs font-semibold py-2 rounded-sm hover:bg-ml-primary-dark transition-colors disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed"
           >
             {addedToCart ? (
               <><Check className="inline h-3.5 w-3.5 mr-1" />Adăugat</>
@@ -225,7 +225,7 @@ function ProductCardInner({ product, eager = false }: Props) {
         <button
           onClick={handleAddToCart}
           disabled={isOutOfStock}
-          className="w-full bg-primary text-primary-foreground text-[13px] font-bold py-2 rounded-md hover:bg-lumax-blue-dark transition-colors disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed mt-auto"
+          className="w-full bg-primary text-primary-foreground text-[13px] font-bold py-2 rounded-md hover:bg-ml-primary-dark transition-colors disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed mt-auto"
         >
           {isOutOfStock ? "Stoc Epuizat" : addedToCart ? "✓ Adăugat" : "+ Adaugă în Coș"}
         </button>

@@ -47,7 +47,7 @@ export default function NewArrivals() {
 
   return (
     <section className="bg-secondary py-6">
-      <div className="lumax-container">
+      <div className="ml-container">
         <div className="flex items-center justify-between mb-4">
           <h2 className="section-title mb-0">{title}</h2>
           <Link to="/catalog?sort=newest" className="text-primary text-[13px] font-medium hover:underline">

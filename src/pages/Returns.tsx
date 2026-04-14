@@ -270,7 +270,7 @@ export default function Returns() {
 
   return (
     <Layout>
-      <div className="lumax-container py-6 pb-12 max-w-3xl mx-auto">
+      <div className="ml-container py-6 pb-12 max-w-3xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <h1 className="text-xl font-extrabold flex items-center gap-2">

@@ -444,7 +444,7 @@ export default function Checkout() {
   if (items.length === 0) {
     return (
       <Layout>
-        <div className="lumax-container py-20 text-center">
+        <div className="ml-container py-20 text-center">
           <p className="text-lg font-bold mb-2">Coșul este gol</p>
           <Link to="/catalog" className="text-primary text-sm font-semibold hover:underline">← Înapoi la catalog</Link>
         </div>
@@ -456,7 +456,7 @@ export default function Checkout() {
 
   return (
     <Layout>
-      <div className="lumax-container py-6 pb-16">
+      <div className="ml-container py-6 pb-16">
         <h1 className="text-xl md:text-2xl font-extrabold mb-6">Finalizare Comandă</h1>
 
         <div className="grid lg:grid-cols-[1fr_380px] gap-6 items-start">

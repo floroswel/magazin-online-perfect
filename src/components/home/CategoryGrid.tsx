@@ -41,7 +41,7 @@ export default function CategoryGrid() {
 
   return (
     <section className="bg-card py-6">
-      <div className="lumax-container">
+      <div className="ml-container">
         <div className="flex items-center justify-between mb-4">
           <h2 className="section-title mb-0">{settings.categories_title || "🗂 Categoriile Noastre"}</h2>
           <Link to="/catalog" className="text-primary text-[13px] font-medium hover:underline">
@@ -60,9 +60,9 @@ export default function CategoryGrid() {
                 <Link
                   key={cat.id}
                   to={`/catalog?category=${cat.slug}`}
-                  className="group flex flex-col items-center p-3 md:p-4 rounded-xl hover:bg-lumax-blue-light transition-colors"
+                  className="group flex flex-col items-center p-3 md:p-4 rounded-xl hover:bg-ml-primary-light transition-colors"
                 >
-                  <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-lumax-blue-light flex items-center justify-center text-2xl md:text-3xl mb-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-ml-primary-light flex items-center justify-center text-2xl md:text-3xl mb-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                     {cat.icon || ICONS[cat.slug] || "📦"}
                   </div>
                   <span className="text-[11px] md:text-xs font-semibold text-foreground text-center leading-tight">

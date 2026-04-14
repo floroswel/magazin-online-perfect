@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import { useEditableContent } from "@/hooks/useEditableContent";
 import { useSettings } from "@/hooks/useSettings";
 
-const STORAGE_KEY = "lumax_announcement_closed";
+const STORAGE_KEY = "ml_announcement_closed";
 
 export default function AnnouncementBar() {
   const { announcement } = useEditableContent();
@@ -31,7 +31,7 @@ export default function AnnouncementBar() {
 
   return (
     <div
-      className="relative h-9 bg-lumax-red text-white text-xs font-semibold overflow-hidden flex items-center z-50"
+      className="relative h-9 bg-ml-accent text-white text-xs font-semibold overflow-hidden flex items-center z-50"
       style={{
         backgroundColor: bgColor,
         color: textColor,

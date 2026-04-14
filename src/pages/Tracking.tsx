@@ -54,7 +54,7 @@ export default function Tracking() {
 
   return (
     <Layout>
-      <div className="lumax-container py-8 pb-16 max-w-2xl mx-auto">
+      <div className="ml-container py-8 pb-16 max-w-2xl mx-auto">
         <h1 className="text-2xl font-extrabold text-foreground mb-2 text-center">📦 Tracking Comandă</h1>
         <p className="text-sm text-muted-foreground text-center mb-8">Introdu numărul comenzii sau AWB-ul pentru a verifica statusul.</p>
 

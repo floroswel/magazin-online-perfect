@@ -7,16 +7,16 @@
 @layer base {
   :root {
     /* ── Mama Lucica Design Tokens ── */
-    --lumax-blue: 0 100% 50%;
-    --lumax-blue-dark: 0 100% 40%;
-    --lumax-blue-darker: 0 100% 30%;
-    --lumax-blue-light: 0 80% 95%;
-    --lumax-blue-hover: 0 100% 43%;
-    --lumax-red: 12 100% 50%;
-    --lumax-red-dark: 12 100% 40%;
-    --lumax-red-light: 12 100% 96%;
-    --lumax-yellow: 43 100% 50%;
-    --lumax-green: 153 100% 33%;
+    --ml-primary: 0 100% 50%;
+    --ml-primary-dark: 0 100% 40%;
+    --ml-primary-darker: 0 100% 30%;
+    --ml-primary-light: 0 80% 95%;
+    --ml-primary-hover: 0 100% 43%;
+    --ml-accent: 12 100% 50%;
+    --ml-accent-dark: 12 100% 40%;
+    --ml-accent-light: 12 100% 96%;
+    --ml-warning: 43 100% 50%;
+    --ml-success: 153 100% 33%;
 
     /* Shadcn semantic mapping */
     --background: 0 0% 97%;
@@ -111,7 +111,7 @@
 }
 
 @layer components {
-  .lumax-container {
+  .ml-container {
     max-width: var(--container-max);
     margin: 0 auto;
     padding: 0 var(--container-pad);
