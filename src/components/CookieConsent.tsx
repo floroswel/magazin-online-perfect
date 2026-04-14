@@ -79,11 +79,12 @@ export default function CookieConsent() {
     localStorage.setItem(CONSENT_PREFS_KEY, JSON.stringify({ analytics, marketing }));
 
     // Google Consent Mode v2 update
-    if (typeof window.gtag === "function") {
-      window.gtag("consent", "update", {
+    const gtagFn = (window as any).gtag;
+    if (typeof gtagFn === "function") {
+      gtagFn("consent", "update", {
         analytics_storage: analytics ? "granted" : "denied",
       });
-      window.gtag("consent", "update", {
+      gtagFn("consent", "update", {
         ad_storage: marketing ? "granted" : "denied",
         ad_user_data: marketing ? "granted" : "denied",
         ad_personalization: marketing ? "granted" : "denied",
