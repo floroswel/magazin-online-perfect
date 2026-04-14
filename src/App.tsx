@@ -36,6 +36,7 @@ import RecoverCart from "./pages/RecoverCart";
 import Unsubscribe from "./pages/Unsubscribe";
 import Personalizare from "./pages/Personalizare";
 import Contact from "./pages/Contact";
+import PaymentFailed from "./pages/PaymentFailed";
 
 import CorporateGifting from "./pages/CorporateGifting";
 import QuizParfum from "./pages/QuizParfum";
@@ -103,6 +104,7 @@ const App = () => (
               <Route path="/checkout" element={<ErrorBoundary><Checkout /></ErrorBoundary>} />
               <Route path="/checkout/recover" element={<ErrorBoundary><RecoverCart /></ErrorBoundary>} />
               <Route path="/order-confirmation/:orderId" element={<ErrorBoundary><OrderConfirmation /></ErrorBoundary>} />
+              <Route path="/payment-failed" element={<ErrorBoundary><PaymentFailed /></ErrorBoundary>} />
               <Route path="/auth" element={<ErrorBoundary><Auth /></ErrorBoundary>} />
               <Route path="/forgot-password" element={<ErrorBoundary><ForgotPassword /></ErrorBoundary>} />
               <Route path="/reset-password" element={<ErrorBoundary><ResetPassword /></ErrorBoundary>} />

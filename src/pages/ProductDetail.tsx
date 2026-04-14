@@ -11,6 +11,8 @@ import { usePageSeo } from "@/components/SeoHead";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
 import { Heart, Share2, Minus, Plus, Truck, RotateCcw, Shield, Package, Bell } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ProductFaq from "@/components/products/ProductFaq";
+import BurnTimeCalculator from "@/components/products/BurnTimeCalculator";
 import { toast } from "sonner";
 
 const RECENTLY_KEY = "ml_recently_viewed";
@@ -407,6 +409,11 @@ export default function ProductDetail() {
                 </div>
               ))}
             </div>
+
+            {/* Burn Time Calculator */}
+            {(product as any).burn_time_hours && (
+              <BurnTimeCalculator burnTimeHours={(product as any).burn_time_hours} />
+            )}
           </div>
         </div>
 
@@ -415,6 +422,7 @@ export default function ProductDetail() {
           <TabsList className="bg-secondary w-full justify-start rounded-none border-b border-border">
             <TabsTrigger value="description" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">Descriere</TabsTrigger>
             <TabsTrigger value="specs" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">Specificații</TabsTrigger>
+            <TabsTrigger value="faq" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">FAQ</TabsTrigger>
             <TabsTrigger value="shipping" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">Livrare & Retur</TabsTrigger>
             <TabsTrigger value="reviews" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">Recenzii ({product.review_count || 0})</TabsTrigger>
           </TabsList>
@@ -442,6 +450,10 @@ export default function ProductDetail() {
             ) : (
               <p className="text-sm text-muted-foreground">Specificațiile nu sunt disponibile.</p>
             )}
+          </TabsContent>
+
+          <TabsContent value="faq" className="py-6 max-w-3xl">
+            <ProductFaq product={product} />
           </TabsContent>
 
           <TabsContent value="shipping" className="py-6 max-w-3xl">

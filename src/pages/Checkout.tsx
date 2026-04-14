@@ -612,7 +612,7 @@ export default function Checkout() {
                 </div>
                 <div>
                   <Label className="text-xs">Telefon *</Label>
-                  <Input value={form.phone} onChange={e => set("phone", e.target.value)} type="tel" placeholder="07XX XXX XXX" />
+                  <Input value={form.phone} onChange={e => set("phone", e.target.value)} type="tel" inputMode="tel" placeholder="07XX XXX XXX" />
                 </div>
 
                 {sBool("checkout_different_contact_show") && (
@@ -679,7 +679,7 @@ export default function Checkout() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <Label className="text-xs">Cod Poștal</Label>
-                    <Input value={form.postalCode} onChange={e => set("postalCode", e.target.value)} placeholder="010101" />
+                    <Input value={form.postalCode} onChange={e => set("postalCode", e.target.value)} inputMode="numeric" placeholder="010101" />
                   </div>
                   <div>
                     <Label className="text-xs">Bloc / Sc. / Ap.</Label>
@@ -984,9 +984,10 @@ export default function Checkout() {
               </div>
 
               <div className="mt-4 space-y-2 text-xs text-muted-foreground">
-                <div className="flex items-center gap-2"><Lock className="w-3.5 h-3.5" /> Plată securizată SSL</div>
-                <div className="flex items-center gap-2"><RotateCcw className="w-3.5 h-3.5" /> Retur gratuit 30 zile</div>
-                <div className="flex items-center gap-2"><Package className="w-3.5 h-3.5" /> Livrare 1-3 zile lucrătoare</div>
+                <div className="flex items-center gap-2"><Lock className="w-3.5 h-3.5" /> 🔒 Plată 100% securizată prin Netopia</div>
+                <div className="flex items-center gap-2"><RotateCcw className="w-3.5 h-3.5" /> ↩️ Retur gratuit 14 zile</div>
+                <div className="flex items-center gap-2"><Package className="w-3.5 h-3.5" /> 🚚 Livrare în 2-3 zile lucrătoare</div>
+                <div className="flex items-center gap-2"><span className="w-3.5 h-3.5 flex items-center justify-center text-[10px]">🕯️</span> Lumânări 100% handmade</div>
               </div>
             </div>
           </div>
