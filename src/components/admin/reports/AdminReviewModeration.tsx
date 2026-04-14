@@ -16,11 +16,12 @@ export default function AdminReviewModeration() {
 
   const load = async () => {
     setLoading(true);
-    const query = supabase.from("reviews").select("*, products(name)").order("created_at", { ascending: false }).limit(100);
-    if (filter === "pending") query.eq("approved", false).is("rejected_at", null);
-    else if (filter === "approved") query.eq("approved", true);
-    // rejected: approved = false AND rejected_at is not null — handled below
-    const { data } = await query;
+    const { data } = await supabase.from("reviews").select("*, products(name)").order("created_at", { ascending: false }).limit(100);
+    const filtered = (data || []).filter((r: any) => {
+      if (filter === "pending") return !r.approved;
+      if (filter === "approved") return r.approved;
+      return false;
+    });
     setReviews(data || []);
     setLoading(false);
   };

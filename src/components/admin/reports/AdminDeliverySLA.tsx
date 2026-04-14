@@ -17,7 +17,7 @@ export default function AdminDeliverySLA() {
     setLoading(true);
     const { data } = await supabase
       .from("orders")
-      .select("id, order_number, status, created_at, delivered_at, shipping_method, user_email")
+      .select("id, order_number, status, created_at, delivered_at, user_email")
       .in("status", ["shipping", "delivered", "livrat"])
       .order("created_at", { ascending: false })
       .limit(200);
