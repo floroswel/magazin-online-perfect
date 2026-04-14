@@ -800,34 +800,27 @@ export default function Checkout() {
               </div>
             )}
 
-            {/* ─── BLOC 7: SERVICII EXTRA ─── */}
-            <div className={sectionClass}>
-              <h2 className="text-base font-bold mb-3">Servicii extra</h2>
-              {sBool("checkout_open_package_service_show") && (
-                <label className="flex items-center gap-2 cursor-pointer mb-3">
-                  <Checkbox checked={form.openPackage} onCheckedChange={v => set("openPackage", !!v)} />
-                  <span className="text-sm">Serviciu deschidere colet la livrare ({openPackagePrice} RON)</span>
-                </label>
-              )}
-              <label className="flex items-center gap-2 cursor-pointer">
-                <Checkbox checked={form.giftWrap} onCheckedChange={v => set("giftWrap", !!v)} />
-                <span className="text-sm">🎁 Doresc ambalaj cadou (+{giftWrapPrice} RON)</span>
-              </label>
-              {form.giftWrap && (
-                <div className="mt-3 ml-6">
-                  <Label className="text-xs font-semibold">Mesaj personalizat pe card cadou (opțional):</Label>
-                  <Textarea
-                    value={form.giftMessage}
-                    onChange={e => set("giftMessage", e.target.value.slice(0, 150))}
-                    placeholder="Scrie mesajul tău aici..."
-                    rows={2}
-                    maxLength={150}
-                    className="mt-1"
-                  />
-                  <p className="text-[11px] text-muted-foreground mt-1 text-right">{form.giftMessage.length}/150</p>
+            {/* ─── BLOC 7: SERVICII EXTRA (din DB) ─── */}
+            {extraServicesDB.length > 0 && (
+              <div className={sectionClass}>
+                <h2 className="text-base font-bold mb-3">Servicii extra</h2>
+                <div className="space-y-2">
+                  {extraServicesDB.map((svc: any) => (
+                    <label key={svc.id} className="flex items-center gap-2 cursor-pointer">
+                      <Checkbox
+                        checked={selectedExtraServices.includes(svc.id)}
+                        onCheckedChange={v => {
+                          setSelectedExtraServices(prev =>
+                            v ? [...prev, svc.id] : prev.filter((id: string) => id !== svc.id)
+                          );
+                        }}
+                      />
+                      <span className="text-sm">{svc.icon} {svc.name} (+{svc.price} RON)</span>
+                    </label>
+                  ))}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* ─── BLOC 8: PLATĂ ─── */}
             <div className={sectionClass}>
