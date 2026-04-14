@@ -950,6 +950,9 @@ export default function Checkout() {
                 {openPackageCost > 0 && (
                   <div className="flex justify-between"><span className="text-muted-foreground">Serviciu deschidere</span><span>{format(openPackageCost)}</span></div>
                 )}
+                {giftWrapCost > 0 && (
+                  <div className="flex justify-between"><span className="text-muted-foreground">🎁 Ambalaj cadou</span><span>{format(giftWrapCost)}</span></div>
+                )}
                 {rambursCost > 0 && (
                   <div className="flex justify-between"><span className="text-muted-foreground">Cost ramburs</span><span>{format(rambursCost)}</span></div>
                 )}
