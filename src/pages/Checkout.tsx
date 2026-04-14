@@ -363,21 +363,12 @@ export default function Checkout() {
         await supabase.rpc("use_loyalty_points", { p_user_id: user.id, p_points_to_use: loyaltyPointsUsed, p_order_id: order.id });
       }
 
-      // Open package service fee
-      if (form.openPackage) {
+      // Extra services from DB
+      for (const svc of extraServicesDB.filter((es: any) => selectedExtraServices.includes(es.id))) {
         await supabase.from("order_items").insert({
           order_id: order.id, product_id: null,
-          product_name: "Serviciu deschidere colet la livrare",
-          quantity: 1, unit_price: openPackagePrice, total_price: openPackagePrice,
-        } as any);
-      }
-
-      // Gift wrap service fee
-      if (form.giftWrap) {
-        await supabase.from("order_items").insert({
-          order_id: order.id, product_id: null,
-          product_name: "Ambalaj cadou" + (form.giftMessage ? ` — Mesaj: ${form.giftMessage.slice(0, 150)}` : ""),
-          quantity: 1, unit_price: giftWrapPrice, total_price: giftWrapPrice,
+          product_name: `${svc.icon} ${svc.name}`,
+          quantity: 1, unit_price: svc.price, total_price: svc.price,
         } as any);
       }
 
