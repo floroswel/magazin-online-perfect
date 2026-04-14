@@ -102,5 +102,8 @@ verify_jwt = false
 [functions.check-login-attempts]
 verify_jwt = false
 
+[functions.anaf-lookup]
+verify_jwt = false
+
 [functions.daily-report]
 verify_jwt = false
