@@ -57,6 +57,20 @@
       /* Hide body until React mounts to prevent any theme flash */
       body { visibility: hidden; }
     </style>
+
+    <!-- Google Consent Mode v2 — MUST load before any Google scripts -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'analytics_storage': 'denied',
+        'wait_for_update': 500
+      });
+    </script>
+
     <script>
       // Show body once DOM is ready (React will mount immediately after)
       document.addEventListener('DOMContentLoaded', function() {
