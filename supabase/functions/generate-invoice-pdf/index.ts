@@ -1,10 +1,24 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { PDFDocument, rgb, StandardFonts } from "https://esm.sh/pdf-lib@1.17.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+};
+
+const COMPANY = {
+  name: "SC VOMIX GENIUS SRL",
+  brand: "Mama Lucica",
+  cui: "RO43025661",
+  regCom: "J2020000459343",
+  address: "Str. Constructorilor nr. 39, Voievoda, Teleorman",
+  iban: "RO50BTRLRONCRT0566231601",
+  bank: "Banca Transilvania S.A.",
+  email: "contact@mamalucica.ro",
+  phone: "+40 743 326 405",
+  vatNote: "Neplătitor de TVA - art. 310 Cod Fiscal",
 };
 
 serve(async (req) => {
@@ -18,184 +32,261 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { invoice_id } = await req.json();
-    if (!invoice_id) throw new Error("invoice_id required");
+    const body = await req.json();
+    const invoiceId = body.invoice_id || body.invoiceId;
+    const orderId = body.order_id || body.orderId;
 
-    // Fetch invoice with items
-    const { data: invoice, error } = await supabase
-      .from("invoices")
-      .select("*, invoice_items(*)")
-      .eq("id", invoice_id)
-      .single();
+    let invoice: any;
+    let items: any[] = [];
 
-    if (error || !invoice) throw new Error("Invoice not found");
+    if (invoiceId) {
+      const { data, error } = await supabase
+        .from("invoices")
+        .select("*, invoice_items(*)")
+        .eq("id", invoiceId)
+        .single();
+      if (error || !data) throw new Error("Invoice not found");
+      invoice = data;
+      items = (data.invoice_items || []).sort(
+        (a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0)
+      );
+    } else if (orderId) {
+      // Generate invoice from order directly
+      const { data: order, error } = await supabase
+        .from("orders")
+        .select("*, items:order_items(*, products(name, sku))")
+        .eq("id", orderId)
+        .single();
+      if (error || !order) throw new Error("Order not found");
 
-    // Fetch store branding
-    let storeName = "Mama Lucica";
-    try {
-      const { data: branding } = await supabase
-        .from("app_settings")
-        .select("value_json")
-        .eq("key", "store_branding")
-        .maybeSingle();
-      if (branding?.value_json && (branding.value_json as any).name) {
-        storeName = (branding.value_json as any).name;
+      const addr = (order.shipping_address || {}) as any;
+      invoice = {
+        invoice_number: `ML-${new Date().getFullYear()}-${order.order_number || order.id.slice(0, 8)}`,
+        type: "fiscal",
+        issued_at: order.created_at,
+        seller_name: COMPANY.name,
+        seller_cui: COMPANY.cui,
+        seller_reg_com: COMPANY.regCom,
+        seller_address: COMPANY.address,
+        seller_iban: COMPANY.iban,
+        seller_bank: COMPANY.bank,
+        buyer_name: addr.fullName || addr.full_name || order.user_email || "—",
+        buyer_address: `${addr.address || ""}, ${addr.city || ""}, ${addr.county || ""}`.trim(),
+        buyer_email: order.user_email,
+        buyer_phone: addr.phone || "",
+        subtotal: order.subtotal || order.total || 0,
+        total: order.total || 0,
+        discount_amount: order.discount_amount || 0,
+        shipping_amount: order.shipping_total || 0,
+        currency: "RON",
+        payment_method: order.payment_method || "—",
+        payment_status: order.payment_status || order.status || "—",
+        notes: order.notes || "",
+      };
+      items = (order.items || []).map((it: any, i: number) => ({
+        description: it.products?.name || it.product_name || `Produs ${i + 1}`,
+        quantity: it.quantity,
+        unit_price: it.price || 0,
+        total: (it.price || 0) * (it.quantity || 1),
+      }));
+    } else {
+      throw new Error("invoice_id or order_id required");
+    }
+
+    // ─── Build PDF ───
+    const pdfDoc = await PDFDocument.create();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    const page = pdfDoc.addPage([595, 842]); // A4
+    const { width, height } = page.getSize();
+    const margin = 50;
+    let y = height - margin;
+
+    const black = rgb(0, 0, 0);
+    const gray = rgb(0.4, 0.4, 0.4);
+    const red = rgb(0.8, 0, 0);
+    const lightGray = rgb(0.95, 0.95, 0.95);
+
+    // Helper
+    const drawText = (text: string, x: number, yPos: number, opts: { font?: any; size?: number; color?: any } = {}) => {
+      page.drawText(text || "", {
+        x,
+        y: yPos,
+        size: opts.size || 10,
+        font: opts.font || font,
+        color: opts.color || black,
+      });
+    };
+
+    // ─── HEADER ───
+    const typeLabel = invoice.type === "proforma" ? "FACTURA PROFORMA"
+      : invoice.type === "storno" ? "NOTA DE CREDITARE (STORNO)"
+      : "FACTURA FISCALA";
+
+    drawText(typeLabel, margin, y, { font: fontBold, size: 18, color: red });
+    y -= 22;
+    drawText(invoice.invoice_number || "", margin, y, { font: fontBold, size: 14 });
+    y -= 16;
+    const issuedDate = invoice.issued_at
+      ? new Date(invoice.issued_at).toLocaleDateString("ro-RO")
+      : new Date().toLocaleDateString("ro-RO");
+    drawText(`Data emiterii: ${issuedDate}`, margin, y, { size: 9, color: gray });
+
+    // Brand name right side
+    drawText(COMPANY.brand, width - margin - fontBold.widthOfTextAtSize(COMPANY.brand, 16), height - margin, {
+      font: fontBold, size: 16, color: red,
+    });
+
+    y -= 10;
+    page.drawLine({ start: { x: margin, y }, end: { x: width - margin, y }, thickness: 2, color: red });
+    y -= 25;
+
+    // ─── PARTIES ───
+    const colLeft = margin;
+    const colRight = width / 2 + 20;
+
+    drawText("FURNIZOR", colLeft, y, { font: fontBold, size: 8, color: gray });
+    drawText("CUMPARATOR", colRight, y, { font: fontBold, size: 8, color: gray });
+    y -= 14;
+
+    const sellerLines = [
+      invoice.seller_name || COMPANY.name,
+      `CUI: ${invoice.seller_cui || COMPANY.cui}`,
+      `Reg. Com.: ${invoice.seller_reg_com || COMPANY.regCom}`,
+      invoice.seller_address || COMPANY.address,
+      `IBAN: ${invoice.seller_iban || COMPANY.iban}`,
+      invoice.seller_bank || COMPANY.bank,
+      COMPANY.email,
+      COMPANY.phone,
+    ];
+
+    const buyerLines = [
+      invoice.buyer_name || "—",
+      invoice.buyer_cui ? `CUI: ${invoice.buyer_cui}` : "",
+      invoice.buyer_address || "",
+      invoice.buyer_email ? `Email: ${invoice.buyer_email}` : "",
+      invoice.buyer_phone ? `Tel: ${invoice.buyer_phone}` : "",
+    ].filter(Boolean);
+
+    const maxLines = Math.max(sellerLines.length, buyerLines.length);
+    for (let i = 0; i < maxLines; i++) {
+      if (sellerLines[i]) drawText(sellerLines[i], colLeft, y, { size: 9 });
+      if (buyerLines[i]) drawText(buyerLines[i], colRight, y, { size: 9 });
+      y -= 13;
+    }
+
+    y -= 10;
+
+    // ─── TABLE HEADER ───
+    const colNr = margin;
+    const colDesc = margin + 30;
+    const colQty = 370;
+    const colPrice = 420;
+    const colTotal = 490;
+    const tableWidth = width - 2 * margin;
+
+    page.drawRectangle({ x: margin, y: y - 2, width: tableWidth, height: 18, color: rgb(0.93, 0.93, 0.93) });
+    drawText("Nr.", colNr, y + 2, { font: fontBold, size: 8 });
+    drawText("Descriere", colDesc, y + 2, { font: fontBold, size: 8 });
+    drawText("Cant.", colQty, y + 2, { font: fontBold, size: 8 });
+    drawText("Pret unit.", colPrice, y + 2, { font: fontBold, size: 8 });
+    drawText("Total", colTotal, y + 2, { font: fontBold, size: 8 });
+    y -= 20;
+
+    // ─── TABLE ROWS ───
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (y < 100) {
+        // Would need page break for very long invoices — simplified for now
+        break;
       }
-    } catch (_) {}
+      const desc = (item.description || "").substring(0, 50);
+      const qty = Number(item.quantity || 0);
+      const unitPrice = Number(item.unit_price || 0);
+      const rowTotal = Number(item.total || qty * unitPrice);
 
-    // Fetch invoice settings for footer
-    let footerText = "";
-    try {
-      const { data: invSettings } = await supabase
-        .from("app_settings")
-        .select("value_json")
-        .eq("key", "invoice_settings")
-        .maybeSingle();
-      if (invSettings?.value_json) {
-        footerText = (invSettings.value_json as any).footer_text || "";
+      if (i % 2 === 0) {
+        page.drawRectangle({ x: margin, y: y - 4, width: tableWidth, height: 16, color: rgb(0.98, 0.98, 0.98) });
       }
-    } catch (_) {}
 
-    const items = (invoice.invoice_items || []).sort(
-      (a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0)
-    );
+      drawText(`${i + 1}`, colNr, y, { size: 9 });
+      drawText(desc, colDesc, y, { size: 9 });
+      drawText(`${qty}`, colQty, y, { size: 9 });
+      drawText(`${unitPrice.toFixed(2)}`, colPrice, y, { size: 9 });
+      drawText(`${rowTotal.toFixed(2)}`, colTotal, y, { font: fontBold, size: 9 });
+      y -= 18;
+    }
 
-    const typeLabel =
-      invoice.type === "proforma"
-        ? "FACTURĂ PROFORMĂ"
-        : invoice.type === "storno"
-        ? "NOTĂ DE CREDITARE (STORNO)"
-        : "FACTURĂ FISCALĂ";
+    y -= 10;
+    page.drawLine({ start: { x: margin, y }, end: { x: width - margin, y }, thickness: 0.5, color: gray });
+    y -= 20;
 
-    const itemsHTML = items
-      .map(
-        (item: any, i: number) => `
-      <tr>
-        <td style="padding:8px;border:1px solid #ddd;text-align:center">${i + 1}</td>
-        <td style="padding:8px;border:1px solid #ddd">${item.description}</td>
-        <td style="padding:8px;border:1px solid #ddd;text-align:center">${item.quantity}</td>
-        <td style="padding:8px;border:1px solid #ddd;text-align:right">${Number(item.unit_price).toFixed(2)}</td>
-        <td style="padding:8px;border:1px solid #ddd;text-align:right;font-weight:600">${Number(item.total || item.quantity * item.unit_price).toFixed(2)}</td>
-      </tr>`
-      )
-      .join("");
+    // ─── TOTALS ───
+    const totalsX = 380;
+    const currency = invoice.currency || "RON";
 
-    const html = `<!DOCTYPE html>
-<html lang="ro">
-<head>
-  <meta charset="UTF-8">
-  <title>${typeLabel} ${invoice.invoice_number}</title>
-  <style>
-    @media print { body { margin: 0; } @page { margin: 15mm; } }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a1a; font-size: 13px; line-height: 1.5; background: #fff; }
-    .invoice { max-width: 800px; margin: 0 auto; padding: 40px; }
-    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 3px solid #cc0000; padding-bottom: 20px; }
-    .doc-type { font-size: 24px; font-weight: 800; color: #cc0000; letter-spacing: 1px; }
-    .doc-number { font-size: 16px; font-weight: 600; color: #333; margin-top: 4px; }
-    .doc-date { font-size: 12px; color: #666; margin-top: 2px; }
-    .parties { display: flex; justify-content: space-between; gap: 40px; margin-bottom: 30px; }
-    .party { flex: 1; }
-    .party-label { font-size: 10px; text-transform: uppercase; font-weight: 700; color: #999; letter-spacing: 1px; margin-bottom: 8px; }
-    .party-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-    .party-detail { font-size: 12px; color: #555; line-height: 1.6; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-    th { background: #f5f5f5; padding: 10px 8px; border: 1px solid #ddd; font-size: 11px; text-transform: uppercase; font-weight: 700; color: #555; }
-    .totals { display: flex; justify-content: flex-end; }
-    .totals-box { width: 280px; }
-    .total-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; }
-    .total-row.grand { border-top: 2px solid #333; padding-top: 10px; margin-top: 6px; font-size: 18px; font-weight: 800; }
-    .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 11px; color: #888; text-align: center; }
-    .storno-badge { background: #fee; border: 2px solid #c00; color: #c00; padding: 6px 16px; border-radius: 4px; font-weight: 800; display: inline-block; margin-bottom: 10px; }
-    .print-btn { position: fixed; top: 20px; right: 20px; background: #cc0000; color: #fff; border: none; padding: 12px 24px; border-radius: 6px; font-size: 14px; cursor: pointer; font-weight: 600; z-index: 100; }
-    .print-btn:hover { background: #aa0000; }
-    @media print { .print-btn { display: none; } }
-  </style>
-</head>
-<body>
-  <button class="print-btn" onclick="window.print()">🖨️ Printează / Salvează PDF</button>
-  <div class="invoice">
-    <div class="header">
-      <div>
-        <div class="doc-type">${typeLabel}</div>
-        <div class="doc-number">${invoice.invoice_number}</div>
-        <div class="doc-date">Data emiterii: ${invoice.issued_at ? new Date(invoice.issued_at).toLocaleDateString("ro-RO") : new Date().toLocaleDateString("ro-RO")}</div>
-        ${invoice.due_date ? `<div class="doc-date">Scadență: ${new Date(invoice.due_date).toLocaleDateString("ro-RO")}</div>` : ""}
-      </div>
-      <div style="text-align:right">
-        <div style="font-size:20px;font-weight:800;color:#cc0000">${storeName}</div>
-        ${invoice.type === "storno" ? '<div class="storno-badge">STORNO</div>' : ""}
-      </div>
-    </div>
+    drawText("Subtotal:", totalsX, y, { size: 10 });
+    drawText(`${Number(invoice.subtotal || 0).toFixed(2)} ${currency}`, colTotal, y, { size: 10 });
+    y -= 16;
 
-    <div class="parties">
-      <div class="party">
-        <div class="party-label">Furnizor</div>
-        <div class="party-name">${invoice.seller_name || storeName}</div>
-        <div class="party-detail">
-          ${invoice.seller_cui ? `CUI: ${invoice.seller_cui}<br>` : ""}
-          ${invoice.seller_reg_com ? `Reg. Com.: ${invoice.seller_reg_com}<br>` : ""}
-          ${invoice.seller_address || ""}<br>
-          ${invoice.seller_bank ? `Banca: ${invoice.seller_bank}<br>` : ""}
-          ${invoice.seller_iban ? `IBAN: ${invoice.seller_iban}` : ""}
-        </div>
-      </div>
-      <div class="party">
-        <div class="party-label">Cumpărător</div>
-        <div class="party-name">${invoice.buyer_name || "—"}</div>
-        <div class="party-detail">
-          ${invoice.buyer_cui ? `CUI: ${invoice.buyer_cui}<br>` : ""}
-          ${invoice.buyer_address || ""}<br>
-          ${invoice.buyer_email ? `Email: ${invoice.buyer_email}<br>` : ""}
-          ${invoice.buyer_phone ? `Tel: ${invoice.buyer_phone}` : ""}
-        </div>
-      </div>
-    </div>
+    if (invoice.discount_amount && Number(invoice.discount_amount) > 0) {
+      drawText("Discount:", totalsX, y, { size: 10 });
+      drawText(`-${Number(invoice.discount_amount).toFixed(2)} ${currency}`, colTotal, y, { size: 10, color: rgb(0, 0.6, 0) });
+      y -= 16;
+    }
 
-    <table>
-      <thead>
-        <tr>
-          <th style="width:40px;text-align:center">Nr.</th>
-          <th>Descriere</th>
-          <th style="width:60px;text-align:center">Cant.</th>
-          <th style="width:100px;text-align:right">Preț unit.</th>
-          <th style="width:110px;text-align:right">Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${itemsHTML}
-      </tbody>
-    </table>
+    if (invoice.shipping_amount && Number(invoice.shipping_amount) > 0) {
+      drawText("Transport:", totalsX, y, { size: 10 });
+      drawText(`${Number(invoice.shipping_amount).toFixed(2)} ${currency}`, colTotal, y, { size: 10 });
+      y -= 16;
+    }
 
-    <div class="totals">
-      <div class="totals-box">
-        <div class="total-row"><span>Subtotal:</span><span>${Number(invoice.subtotal || 0).toFixed(2)} ${invoice.currency || "RON"}</span></div>
-        ${invoice.discount_amount ? `<div class="total-row" style="color:green"><span>Discount:</span><span>-${Number(invoice.discount_amount).toFixed(2)} ${invoice.currency || "RON"}</span></div>` : ""}
-        ${invoice.shipping_amount ? `<div class="total-row"><span>Transport:</span><span>${Number(invoice.shipping_amount).toFixed(2)} ${invoice.currency || "RON"}</span></div>` : ""}
-        <div class="total-row grand"><span>TOTAL:</span><span>${Number(invoice.total || 0).toFixed(2)} ${invoice.currency || "RON"}</span></div>
-        <div style="font-size:10px;color:#888;text-align:right;margin-top:4px">Furnizor neplătitor de TVA</div>
-      </div>
-    </div>
+    page.drawLine({ start: { x: totalsX, y: y + 4 }, end: { x: width - margin, y: y + 4 }, thickness: 1.5, color: black });
+    y -= 4;
+    drawText("TOTAL:", totalsX, y, { font: fontBold, size: 14 });
+    drawText(`${Number(invoice.total || 0).toFixed(2)} ${currency}`, colTotal, y, { font: fontBold, size: 14 });
+    y -= 14;
+    drawText(COMPANY.vatNote, totalsX, y, { size: 7, color: gray });
+    y -= 20;
 
-    <div style="margin-top:30px;font-size:12px;color:#555">
-      <p><strong>Metodă plată:</strong> ${invoice.payment_method || "—"}</p>
-      <p><strong>Status plată:</strong> ${invoice.payment_status || invoice.status || "—"}</p>
-      ${invoice.storno_reference ? `<p><strong>Referință factură originală:</strong> ${invoice.storno_reference}</p>` : ""}
-    </div>
+    // Payment info
+    drawText(`Metoda plata: ${invoice.payment_method || "—"}`, margin, y, { size: 9, color: gray });
+    y -= 13;
+    drawText(`Status plata: ${invoice.payment_status || "—"}`, margin, y, { size: 9, color: gray });
 
-    ${invoice.notes ? `<div style="margin-top:20px;padding:12px;background:#f9f9f9;border-radius:6px;font-size:12px;color:#666"><strong>Observații:</strong> ${invoice.notes}</div>` : ""}
+    if (invoice.notes) {
+      y -= 20;
+      drawText(`Observatii: ${(invoice.notes || "").substring(0, 100)}`, margin, y, { size: 9, color: gray });
+    }
 
-    <div class="footer">
-      ${footerText || `Factură generată electronic de ${storeName}. Document valid fără semnătură și ștampilă conform art. 319 alin. 29 din Codul Fiscal.`}
-    </div>
-  </div>
-</body>
-</html>`;
+    // ─── FOOTER ───
+    const footerY = 40;
+    page.drawLine({ start: { x: margin, y: footerY + 10 }, end: { x: width - margin, y: footerY + 10 }, thickness: 0.5, color: lightGray });
+    const footerText = `Factura generata electronic de ${COMPANY.brand}. Document valid fara semnatura si stampila conform art. 319 alin. 29 Cod Fiscal.`;
+    drawText(footerText, margin, footerY, { size: 7, color: gray });
 
-    return new Response(html, {
+    // ─── Serialize PDF ───
+    const pdfBytes = await pdfDoc.save();
+
+    // If format=base64 requested (for email attachment)
+    if (body.format === "base64") {
+      // Convert to base64
+      const base64 = btoa(String.fromCharCode(...pdfBytes));
+      return new Response(
+        JSON.stringify({
+          pdf_base64: base64,
+          filename: `Factura_${invoice.invoice_number || "ML"}.pdf`,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Default: return PDF binary
+    return new Response(pdfBytes, {
       headers: {
         ...corsHeaders,
-        "Content-Type": "text/html; charset=utf-8",
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="Factura_${invoice.invoice_number || "ML"}.pdf"`,
       },
     });
   } catch (error: unknown) {
