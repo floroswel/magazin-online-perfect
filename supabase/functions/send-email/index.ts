@@ -336,6 +336,48 @@ function weeklyReportHTML(data: Record<string, any>) {
   return data.html || `${header("Raport Săptămânal", "📊")}<p>Raport gol</p>${footer()}`;
 }
 
+function lowStockAlertHTML(data: Record<string, any>) {
+  return `${header("Alertă Stoc Critic", "⚠️")}
+    <div style="background:#FEF2F2;padding:20px;border-radius:8px;border:2px solid #EF4444;margin-bottom:16px">
+      <p style="margin:0;font-size:18px;font-weight:bold;color:#DC2626;text-align:center">📉 Stoc Critic</p>
+    </div>
+    <p style="color:${BRAND.textColor};font-size:15px">Produsul <strong>${data.productName || "N/A"}</strong> a ajuns la stoc critic.</p>
+    ${data.sku ? `<p style="color:${BRAND.mutedColor};font-size:13px">SKU: ${data.sku}</p>` : ""}
+    <div style="background:#fff;padding:16px;border-radius:8px;border:1px solid #F5E6D3;text-align:center;margin:16px 0">
+      <p style="margin:0;font-size:14px;color:${BRAND.mutedColor}">Stoc actual</p>
+      <p style="margin:4px 0;font-size:36px;font-weight:bold;color:#DC2626">${data.currentStock ?? 0}</p>
+      <p style="margin:0;font-size:12px;color:${BRAND.mutedColor}">bucăți rămase</p>
+    </div>
+    <div style="text-align:center;margin-top:20px">
+      ${btn("Gestionează stocul →", "https://mamalucica.ro/admin/stock/manager")}
+    </div>
+  ${footer()}`;
+}
+
+function dailyReportHTML(data: Record<string, any>) {
+  const row = (emoji: string, label: string, value: string) =>
+    `<tr>
+      <td style="padding:10px 12px;border-bottom:1px solid #F5E6D3;font-size:14px">${emoji} ${label}</td>
+      <td style="padding:10px 12px;border-bottom:1px solid #F5E6D3;text-align:right;font-weight:bold;font-size:16px;color:${BRAND.color}">${value}</td>
+    </tr>`;
+
+  return `${header(`Raport Zilnic — ${data.date}`, "📊")}
+    <p style="color:${BRAND.textColor};font-size:15px">Sumar activitate pentru <strong>${data.date}</strong>:</p>
+    <table style="width:100%;border-collapse:collapse;margin:20px 0;background:#fff;border-radius:8px;overflow:hidden;border:1px solid #F5E6D3">
+      ${row("📦", "Comenzi noi ieri", String(data.newOrders || 0))}
+      ${row("💰", "Vânzări ieri", `${data.totalSales || "0.00"} RON`)}
+      ${row("⏳", "Comenzi în așteptare", String(data.pendingOrders || 0))}
+      ${row("⚠️", "Produse stoc critic", String(data.lowStock || 0))}
+      ${row("🚫", "Produse fără stoc", String(data.outOfStock || 0))}
+      ${row("⭐", "Recenzii noi", String(data.newReviews || 0))}
+      ${row("👤", "Clienți noi", String(data.newCustomers || 0))}
+    </table>
+    <div style="text-align:center;margin-top:20px">
+      ${btn("Deschide Admin Panel →", "https://mamalucica.ro/admin")}
+    </div>
+  ${footer()}`;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -423,6 +465,14 @@ serve(async (req) => {
       case "weekly_report":
         subject = `📊 Raport săptămânal Mama Lucica — ${new Date().toLocaleDateString("ro-RO")}`;
         html = weeklyReportHTML(data);
+        break;
+      case "low_stock_alert":
+        subject = `⚠️ Stoc critic: ${data.productName || "Produs"} — Mama Lucica`;
+        html = lowStockAlertHTML(data);
+        break;
+      case "daily_report":
+        subject = `📊 Raport zilnic Mama Lucica — ${data.date || new Date().toLocaleDateString("ro-RO")}`;
+        html = dailyReportHTML(data);
         break;
       default:
         throw new Error(`Unknown email type: ${type}`);
