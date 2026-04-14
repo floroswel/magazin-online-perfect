@@ -314,6 +314,7 @@ const menuSections: MenuSection[] = [
           { label: "Domenii", path: "/admin/settings/domains" },
           { label: "Abonament", path: "/admin/settings/store" },
           { label: "Checkout", path: "/admin/settings/checkout" },
+          { label: "Servicii Extra", path: "/admin/settings/checkout/extra-services" },
           { label: "Coș", path: "/admin/settings/cart" },
           { label: "Monedă", path: "/admin/settings/currency" },
           { label: "Retururi", path: "/admin/settings/returns" },

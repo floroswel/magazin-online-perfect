@@ -212,34 +212,45 @@ export default function Checkout() {
   }, [paymentMethodsDB]);
 
 
-  // ─── CUI lookup ───
+  // ─── CUI lookup via edge function (ANAF proxy) ───
   const [cuiLoading, setCuiLoading] = useState(false);
   const lookupCUI = async () => {
     const cui = form.billingCui.replace(/\D/g, "");
     if (!cui || cui.length < 2) return toast.error("Introduceți un CUI valid");
     setCuiLoading(true);
     try {
-      const today = new Date().toISOString().slice(0, 10);
-      const resp = await fetch("https://webservicesp.anaf.ro/AsynchWebService/api/v8/ws/tva", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify([{ cui: parseInt(cui), data: today }]),
+      const { data, error } = await supabase.functions.invoke("anaf-lookup", {
+        body: { cui },
       });
-      const data = await resp.json();
-      const found = data?.found?.[0];
-      if (found) {
-        set("billingCompany", found.denumire || "");
-        set("billingRegCom", found.nrRegCom || "");
-        set("billingAddress", found.adresa || "");
-        toast.success("Date firma completate!");
+      if (error || !data?.success) {
+        toast.error(data?.error || "CUI negăsit la ANAF. Completează manual.");
       } else {
-        toast.error("CUI negăsit la ANAF");
+        set("billingCompany", data.denumire || "");
+        set("billingRegCom", data.nrRegCom || "");
+        set("billingAddress", data.adresa || "");
+        toast.success(`Firmă găsită: ${data.denumire}`);
       }
     } catch {
-      toast.error("Eroare conexiune ANAF");
+      toast.error("ANAF temporar indisponibil. Completează manual datele.");
     }
     setCuiLoading(false);
   };
+
+  // ─── Extra services from DB ───
+  const [selectedExtraServices, setSelectedExtraServices] = useState<string[]>([]);
+  const { data: extraServicesDB = [] } = useQuery({
+    queryKey: ["extra-services-checkout"],
+    queryFn: async () => {
+      const { data } = await (supabase.from("extra_services" as any).select("*").eq("is_active", true).order("display_order") as any);
+      return (data || []) as any[];
+    },
+  });
+
+  const extraServicesCost = useMemo(() => {
+    return extraServicesDB
+      .filter((s: any) => selectedExtraServices.includes(s.id))
+      .reduce((sum: number, s: any) => sum + (s.price || 0), 0);
+  }, [selectedExtraServices, extraServicesDB]);
 
   // ─── Calculations ───
   const selectedMethod = shippingMethods.find(m => (m.id || m.name) === form.shippingMethod) || shippingMethods[0];
@@ -249,10 +260,6 @@ export default function Checkout() {
     : 0;
   const rambursCostValue = parseInt(settings.ramburs_extra_cost || "5");
   const rambursCost = form.paymentMethod === "ramburs" ? rambursCostValue : 0;
-  const openPackagePrice = parseFloat(s("checkout_open_package_price", "24.99"));
-  const openPackageCost = form.openPackage ? openPackagePrice : 0;
-  const giftWrapPrice = parseFloat(s("gift_wrap_price", "15"));
-  const giftWrapCost = form.giftWrap ? giftWrapPrice : 0;
 
   const couponDiscount = useMemo(() => {
     if (!couponApplied) return 0;
@@ -263,7 +270,7 @@ export default function Checkout() {
     return couponApplied.discount_value || 0;
   }, [couponApplied, totalPrice]);
 
-  const finalTotal = Math.max(0, totalPrice - couponDiscount - loyaltyDiscount + shippingCost + rambursCost + openPackageCost + giftWrapCost);
+  const finalTotal = Math.max(0, totalPrice - couponDiscount - loyaltyDiscount + shippingCost + rambursCost + extraServicesCost);
 
   // ─── Validation ───
   const [returnError, setReturnError] = useState(false);
@@ -356,21 +363,12 @@ export default function Checkout() {
         await supabase.rpc("use_loyalty_points", { p_user_id: user.id, p_points_to_use: loyaltyPointsUsed, p_order_id: order.id });
       }
 
-      // Open package service fee
-      if (form.openPackage) {
+      // Extra services from DB
+      for (const svc of extraServicesDB.filter((es: any) => selectedExtraServices.includes(es.id))) {
         await supabase.from("order_items").insert({
           order_id: order.id, product_id: null,
-          product_name: "Serviciu deschidere colet la livrare",
-          quantity: 1, unit_price: openPackagePrice, total_price: openPackagePrice,
-        } as any);
-      }
-
-      // Gift wrap service fee
-      if (form.giftWrap) {
-        await supabase.from("order_items").insert({
-          order_id: order.id, product_id: null,
-          product_name: "Ambalaj cadou" + (form.giftMessage ? ` — Mesaj: ${form.giftMessage.slice(0, 150)}` : ""),
-          quantity: 1, unit_price: giftWrapPrice, total_price: giftWrapPrice,
+          product_name: `${svc.icon} ${svc.name}`,
+          quantity: 1, unit_price: svc.price, total_price: svc.price,
         } as any);
       }
 
@@ -802,34 +800,27 @@ export default function Checkout() {
               </div>
             )}
 
-            {/* ─── BLOC 7: SERVICII EXTRA ─── */}
-            <div className={sectionClass}>
-              <h2 className="text-base font-bold mb-3">Servicii extra</h2>
-              {sBool("checkout_open_package_service_show") && (
-                <label className="flex items-center gap-2 cursor-pointer mb-3">
-                  <Checkbox checked={form.openPackage} onCheckedChange={v => set("openPackage", !!v)} />
-                  <span className="text-sm">Serviciu deschidere colet la livrare ({openPackagePrice} RON)</span>
-                </label>
-              )}
-              <label className="flex items-center gap-2 cursor-pointer">
-                <Checkbox checked={form.giftWrap} onCheckedChange={v => set("giftWrap", !!v)} />
-                <span className="text-sm">🎁 Doresc ambalaj cadou (+{giftWrapPrice} RON)</span>
-              </label>
-              {form.giftWrap && (
-                <div className="mt-3 ml-6">
-                  <Label className="text-xs font-semibold">Mesaj personalizat pe card cadou (opțional):</Label>
-                  <Textarea
-                    value={form.giftMessage}
-                    onChange={e => set("giftMessage", e.target.value.slice(0, 150))}
-                    placeholder="Scrie mesajul tău aici..."
-                    rows={2}
-                    maxLength={150}
-                    className="mt-1"
-                  />
-                  <p className="text-[11px] text-muted-foreground mt-1 text-right">{form.giftMessage.length}/150</p>
+            {/* ─── BLOC 7: SERVICII EXTRA (din DB) ─── */}
+            {extraServicesDB.length > 0 && (
+              <div className={sectionClass}>
+                <h2 className="text-base font-bold mb-3">Servicii extra</h2>
+                <div className="space-y-2">
+                  {extraServicesDB.map((svc: any) => (
+                    <label key={svc.id} className="flex items-center gap-2 cursor-pointer">
+                      <Checkbox
+                        checked={selectedExtraServices.includes(svc.id)}
+                        onCheckedChange={v => {
+                          setSelectedExtraServices(prev =>
+                            v ? [...prev, svc.id] : prev.filter((id: string) => id !== svc.id)
+                          );
+                        }}
+                      />
+                      <span className="text-sm">{svc.icon} {svc.name} (+{svc.price} RON)</span>
+                    </label>
+                  ))}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* ─── BLOC 8: PLATĂ ─── */}
             <div className={sectionClass}>
@@ -954,12 +945,9 @@ export default function Checkout() {
                   <span className="text-muted-foreground">Transport</span>
                   <span className={shippingCost === 0 ? "text-green-600 font-semibold" : ""}>{shippingCost === 0 ? "GRATUIT" : format(shippingCost)}</span>
                 </div>
-                {openPackageCost > 0 && (
-                  <div className="flex justify-between"><span className="text-muted-foreground">Serviciu deschidere</span><span>{format(openPackageCost)}</span></div>
-                )}
-                {giftWrapCost > 0 && (
-                  <div className="flex justify-between"><span className="text-muted-foreground">🎁 Ambalaj cadou</span><span>{format(giftWrapCost)}</span></div>
-                )}
+                {extraServicesDB.filter((s: any) => selectedExtraServices.includes(s.id)).map((s: any) => (
+                  <div key={s.id} className="flex justify-between"><span className="text-muted-foreground">{s.icon} {s.name}</span><span>{format(s.price)}</span></div>
+                ))}
                 {rambursCost > 0 && (
                   <div className="flex justify-between"><span className="text-muted-foreground">Cost ramburs</span><span>{format(rambursCost)}</span></div>
                 )}
