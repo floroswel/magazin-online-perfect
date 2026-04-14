@@ -93,12 +93,6 @@ export default function Checkout() {
 
   useEffect(() => { if (user?.email && !form.email) set("email", user.email); }, [user]);
 
-  // Auto-select first active payment method
-  useEffect(() => {
-    if (paymentMethodsDB.length > 0 && !paymentMethodsDB.some((pm: any) => pm.key === form.paymentMethod)) {
-      set("paymentMethod", (paymentMethodsDB[0] as any).key);
-    }
-  }, [paymentMethodsDB]);
 
   // ─── Coupon ───
   const [couponCode, setCouponCode] = useState("");
