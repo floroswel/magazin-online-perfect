@@ -795,16 +795,33 @@ export default function Checkout() {
             )}
 
             {/* ─── BLOC 7: SERVICII EXTRA ─── */}
-            {sBool("checkout_extra_services_show") && sBool("checkout_open_package_service_show") && (
-              <div className={sectionClass}>
-                <h2 className="text-base font-bold mb-3">Servicii extra</h2>
-                <p className="text-xs text-muted-foreground mb-2">Vrei să te asiguri că totul e în regulă?</p>
-                <label className="flex items-center gap-2 cursor-pointer">
+            <div className={sectionClass}>
+              <h2 className="text-base font-bold mb-3">Servicii extra</h2>
+              {sBool("checkout_open_package_service_show") && (
+                <label className="flex items-center gap-2 cursor-pointer mb-3">
                   <Checkbox checked={form.openPackage} onCheckedChange={v => set("openPackage", !!v)} />
                   <span className="text-sm">Serviciu deschidere colet la livrare ({openPackagePrice} RON)</span>
                 </label>
-              </div>
-            )}
+              )}
+              <label className="flex items-center gap-2 cursor-pointer">
+                <Checkbox checked={form.giftWrap} onCheckedChange={v => set("giftWrap", !!v)} />
+                <span className="text-sm">🎁 Doresc ambalaj cadou (+{giftWrapPrice} RON)</span>
+              </label>
+              {form.giftWrap && (
+                <div className="mt-3 ml-6">
+                  <Label className="text-xs font-semibold">Mesaj personalizat pe card cadou (opțional):</Label>
+                  <Textarea
+                    value={form.giftMessage}
+                    onChange={e => set("giftMessage", e.target.value.slice(0, 150))}
+                    placeholder="Scrie mesajul tău aici..."
+                    rows={2}
+                    maxLength={150}
+                    className="mt-1"
+                  />
+                  <p className="text-[11px] text-muted-foreground mt-1 text-right">{form.giftMessage.length}/150</p>
+                </div>
+              )}
+            </div>
 
             {/* ─── BLOC 8: PLATĂ ─── */}
             <div className={sectionClass}>
