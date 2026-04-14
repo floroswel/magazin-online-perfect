@@ -192,6 +192,15 @@ export default function Checkout() {
   });
   const shippingMethods = shippingMethodsDB && shippingMethodsDB.length > 0 ? shippingMethodsDB : DEFAULT_SHIPPING;
 
+  // ─── Payment Methods (only active) ───
+  const { data: paymentMethodsDB = [] } = useQuery({
+    queryKey: ["payment-methods-checkout"],
+    queryFn: async () => {
+      const { data } = await supabase.from("payment_methods").select("*").eq("is_active", true).order("display_order");
+      return data || [];
+    },
+  });
+
   // ─── CUI lookup ───
   const [cuiLoading, setCuiLoading] = useState(false);
   const lookupCUI = async () => {
