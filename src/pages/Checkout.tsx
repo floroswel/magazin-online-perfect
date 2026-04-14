@@ -273,6 +273,7 @@ export default function Checkout() {
 
   // ─── Place order ───
   const placeOrder = async () => {
+    if (!form.returnPolicyAccepted) { setReturnError(true); toast.error("Te rugăm să confirmi condițiile de retur"); return; }
     if (!canSubmit) return;
     setSubmitting(true);
     try {
