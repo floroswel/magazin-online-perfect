@@ -384,17 +384,26 @@ export default function AdminOrderDetail({ orderId, onBack }: Props) {
   };
 
   const downloadInvoicePdf = async (invoiceId: string) => {
-    const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-    const url = `https://${projectId}.supabase.co/functions/v1/generate-invoice-pdf`;
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ invoice_id: invoiceId }),
-    });
-    if (!res.ok) { toast.error("Eroare la generare PDF"); return; }
-    const html = await res.text();
-    const win = window.open("", "_blank");
-    if (win) { win.document.write(html); win.document.close(); }
+    try {
+      toast.info("Se generează factura PDF...");
+      const { data, error } = await supabase.functions.invoke("generate-invoice-pdf", {
+        body: { invoice_id: invoiceId },
+      });
+      if (error) throw error;
+      const blob = new Blob([data], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Factura_${invoiceId.slice(0, 8)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success("Factura descărcată!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Eroare la generare PDF");
+    }
   };
 
   if (isLoading || !order) {

@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
+import { toast } from "sonner";
 
 interface AuthContextType {
   user: User | null;
@@ -55,7 +56,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
+    // ─── Brute force check ───
+    let clientIp = "unknown";
+    try {
+      const ipRes = await fetch("https://api.ipify.org?format=json");
+      const ipData = await ipRes.json();
+      clientIp = ipData.ip || "unknown";
+    } catch (_) {}
+
+    try {
+      const checkRes = await supabase.functions.invoke("check-login-attempts", {
+        body: { email, ip: clientIp },
+      });
+
+      if (checkRes.data?.blocked) {
+        toast.error(checkRes.data.message || "Prea multe încercări. Încearcă mai târziu.");
+        return { error: new Error(checkRes.data.message || "Too many attempts") };
+      }
+    } catch (_) {
+      // If brute force check fails, allow login attempt (fail open)
+    }
+
     const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    // Log attempt result
+    try {
+      await supabase.from("login_attempts" as any).insert({
+        email,
+        ip_address: clientIp,
+        success: !error,
+        attempted_at: new Date().toISOString(),
+      });
+    } catch (_) {}
+
     return { error: error as Error | null };
   };
 
