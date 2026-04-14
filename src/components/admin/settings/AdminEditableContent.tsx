@@ -50,7 +50,7 @@ function Section({ title, icon: Icon, children, defaultOpen = false }: {
   );
 }
 
-const SECTION_TOGGLES: { key: string; label: string; desc: string; titleKey?: string; titlePlaceholder?: string; subtitleKey?: string; subtitlePlaceholder?: string }[] = [
+const SECTION_TOGGLES: { key: string; label: string; desc: string; titleKey?: string; titlePlaceholder?: string; subtitleKey?: string; subtitlePlaceholder?: string; extraFields?: { label: string; settingKey: string; placeholder: string }[] }[] = [
   { key: "show_hero", label: "Hero Slider", desc: "Slideshow-ul principal din partea de sus" },
   { key: "show_flash_deals", label: "Flash Deals", desc: "Bara cu oferte cu timp limitat", titleKey: "flash_deals_title", titlePlaceholder: "⚡ Oferte Flash" },
   { key: "show_categories", label: "Categorii", desc: "Grid-ul de categorii pe homepage", titleKey: "categories_title", titlePlaceholder: "🗂 Categoriile Noastre" },
@@ -59,7 +59,7 @@ const SECTION_TOGGLES: { key: string; label: string; desc: string; titleKey?: st
   { key: "show_trust", label: "Trust Strip", desc: "Bara cu badge-uri de încredere" },
   { key: "show_new_arrivals", label: "Noutăți", desc: "Secțiunea produse noi", titleKey: "new_arrivals_title", titlePlaceholder: "🆕 Noutăți în Magazin" },
   { key: "show_recently_viewed", label: "Văzute Recent", desc: "Produse vizualizate recent" },
-  { key: "show_newsletter", label: "Newsletter", desc: "Secțiunea de abonare newsletter", titleKey: "newsletter_title", titlePlaceholder: "Abonează-te la newsletter", subtitleKey: "newsletter_subtitle", subtitlePlaceholder: "Primești 10% reducere la prima comandă" },
+  { key: "show_newsletter", label: "Newsletter", desc: "Secțiunea de abonare newsletter", titleKey: "newsletter_title", titlePlaceholder: "Abonează-te la newsletter", subtitleKey: "newsletter_subtitle", subtitlePlaceholder: "Primești 10% reducere la prima comandă", extraFields: [{ label: "Text încredere", settingKey: "newsletter_trust_text", placeholder: "✅ Peste 5000 abonați · ✅ Fără spam · ✅ Dezabonare oricând" }] },
   { key: "show_social_proof", label: "Social Proof", desc: "Popup-uri de social proof" },
 ];
 
@@ -275,7 +275,7 @@ export default function AdminEditableContent() {
         <TabsContent value="sections" className="space-y-3 mt-4">
           <Section title="Vizibilitate & Titluri Secțiuni Homepage" icon={ToggleLeft} defaultOpen>
             <div className="space-y-1">
-              {SECTION_TOGGLES.map(({ key, label, desc, titleKey, titlePlaceholder, subtitleKey, subtitlePlaceholder }) => (
+              {SECTION_TOGGLES.map(({ key, label, desc, titleKey, titlePlaceholder, subtitleKey, subtitlePlaceholder, extraFields }) => (
                 <div key={key} className="py-3 border-b border-border last:border-b-0">
                   <div className="flex items-center justify-between">
                     <div>
