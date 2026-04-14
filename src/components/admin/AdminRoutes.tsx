@@ -224,6 +224,7 @@ export default function AdminRoutes() {
         <Route path="orders/invoices" element={<AdminInvoices />} />
         <Route path="orders/returns" element={<AdminReturns />} />
         <Route path="orders/statuses" element={<AdminOrderStatuses />} />
+        <Route path="orders/:orderId" element={<AdminOrderDetailPage />} />
 
         {/* ═══════════ PRODUSE ═══════════ */}
         <Route path="products" element={<AdminProducts />} />
@@ -484,6 +485,9 @@ export default function AdminRoutes() {
         <Route path="content/faq" element={<AdminFaqManager />} />
         <Route path="marketing/popups" element={<AdminPopupsManager />} />
         <Route path="system/health" element={<AdminSystemHealth />} />
+        <Route path="system/maintenance" element={<AdminMaintenanceToggle />} />
+        <Route path="system/push" element={<AdminPushNotifications />} />
+        <Route path="system/cron" element={<AdminCronJobs />} />
       </Routes>
     </Suspense>
   );
