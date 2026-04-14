@@ -66,14 +66,14 @@ export default function Account() {
   const initials = (profile?.full_name || user?.email || "U").slice(0, 2).toUpperCase();
 
   const statusColors: Record<string, string> = {
-    pending: "bg-lumax-yellow text-foreground",
+    pending: "bg-ml-warning text-foreground",
     confirmed: "bg-primary/10 text-primary",
     shipped: "bg-primary text-primary-foreground",
-    delivered: "bg-lumax-green text-white",
+    delivered: "bg-ml-success text-white",
     cancelled: "bg-destructive/10 text-destructive",
   };
 
-  if (authLoading) return <Layout><div className="lumax-container py-20 text-center"><div className="h-8 w-32 skeleton rounded mx-auto" /></div></Layout>;
+  if (authLoading) return <Layout><div className="ml-container py-20 text-center"><div className="h-8 w-32 skeleton rounded mx-auto" /></div></Layout>;
 
   const navItems = [
     { id: "dashboard" as Tab, icon: Package, label: "Dashboard" },
@@ -84,7 +84,7 @@ export default function Account() {
 
   return (
     <Layout>
-      <div className="lumax-container py-6 pb-12">
+      <div className="ml-container py-6 pb-12">
         <div className="grid md:grid-cols-[240px_1fr] gap-6">
           {/* Sidebar */}
           <div className="bg-card rounded-xl border border-border p-5">
@@ -232,7 +232,7 @@ export default function Account() {
                           <p className="text-sm font-medium">{lp.description}</p>
                           <p className="text-xs text-muted-foreground">{new Date(lp.created_at).toLocaleDateString("ro-RO")}</p>
                         </div>
-                        <span className={`text-sm font-bold ${lp.points > 0 ? "text-lumax-green" : "text-destructive"}`}>
+                        <span className={`text-sm font-bold ${lp.points > 0 ? "text-ml-success" : "text-destructive"}`}>
                           {lp.points > 0 ? "+" : ""}{lp.points}
                         </span>
                       </div>

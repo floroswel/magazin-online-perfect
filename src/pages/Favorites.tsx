@@ -42,7 +42,7 @@ export default function Favorites() {
 
   return (
     <Layout>
-      <div className="lumax-container py-6 pb-12">
+      <div className="ml-container py-6 pb-12">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-extrabold">Favorite</h1>
           {favorites && favorites.length > 0 && (

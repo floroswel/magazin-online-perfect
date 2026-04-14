@@ -42,7 +42,7 @@ export default function Auth() {
   if (registerSuccess) {
     return (
       <Layout>
-        <div className="lumax-container py-20 max-w-md mx-auto text-center">
+        <div className="ml-container py-20 max-w-md mx-auto text-center">
           <p className="text-5xl mb-4">✅</p>
           <h1 className="text-xl font-bold mb-2">Cont creat cu succes!</h1>
           <p className="text-sm text-muted-foreground">Verifică email-ul pentru confirmare.</p>
@@ -53,7 +53,7 @@ export default function Auth() {
 
   return (
     <Layout>
-      <div className="lumax-container py-12">
+      <div className="ml-container py-12">
         <div className="max-w-md mx-auto">
           <div className="bg-card rounded-xl border border-border p-8">
             <div className="text-center mb-6">
@@ -79,7 +79,7 @@ export default function Auth() {
                 <div className="text-right"><Link to="/forgot-password" className="text-xs text-primary font-semibold hover:underline">Ai uitat parola?</Link></div>
               )}
               {error && <p className="text-sm text-destructive bg-destructive/10 rounded-lg p-3">{error}</p>}
-              <button type="submit" disabled={loading} className="w-full h-12 bg-primary text-primary-foreground rounded-lg font-bold text-sm hover:bg-lumax-blue-dark disabled:opacity-50">
+              <button type="submit" disabled={loading} className="w-full h-12 bg-primary text-primary-foreground rounded-lg font-bold text-sm hover:bg-ml-primary-dark disabled:opacity-50">
                 {loading ? "Se procesează..." : mode === "login" ? "Autentifică-te" : "Creează cont"}
               </button>
             </form>

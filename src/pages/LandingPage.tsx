@@ -55,7 +55,7 @@ export default function LandingPage() {
   if (loading) {
     return (
       <Layout>
-        <div className="lumax-container py-12">
+        <div className="ml-container py-12">
           <div className="h-8 bg-muted rounded w-48 mb-4 animate-pulse" />
           <div className="h-4 bg-muted rounded w-full mb-2 animate-pulse" />
           <div className="h-4 bg-muted rounded w-3/4 animate-pulse" />
@@ -75,7 +75,7 @@ export default function LandingPage() {
           className="w-full max-h-[400px] object-cover"
         />
       )}
-      <div className="lumax-container py-8 max-w-4xl mx-auto">
+      <div className="ml-container py-8 max-w-4xl mx-auto">
         <div
           className="prose prose-sm max-w-none text-foreground"
           dangerouslySetInnerHTML={{ __html: page.content || "" }}

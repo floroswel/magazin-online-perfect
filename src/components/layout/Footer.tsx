@@ -206,7 +206,7 @@ export default function Footer() {
     <footer className="pb-[60px] md:pb-0">
       {/* ━━ RÂND 1 — 4 coloane ━━ */}
       <div className="py-10 md:py-12" style={{ background: bgColor }}>
-        <div className="lumax-container grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
+        <div className="ml-container grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
 
           {/* Logo + tagline */}
           <div className="col-span-2 md:col-span-4 mb-4">
@@ -289,7 +289,7 @@ export default function Footer() {
       {/* ━━ RÂND 2 — Social media centrat ━━ */}
       {showSocial && activeSocials.length > 0 && (
         <div className="py-4" style={{ background: bgColor, borderTop: `1px solid ${bottomBg}` }}>
-          <div className="lumax-container flex items-center justify-center gap-3">
+          <div className="ml-container flex items-center justify-center gap-3">
             {activeSocials.map((sc) => (
               <a
                 key={sc.key}
@@ -309,7 +309,7 @@ export default function Footer() {
 
       {/* ━━ RÂND 3 — Bottom bar ━━ */}
       <div className="py-5" style={{ background: bottomBg }}>
-        <div className="lumax-container flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="ml-container flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Left: Copyright + Cookie Settings */}
           <div className="text-center sm:text-left shrink-0">
             <span className="text-xs font-medium" style={{ color: bottomTextColor }}>

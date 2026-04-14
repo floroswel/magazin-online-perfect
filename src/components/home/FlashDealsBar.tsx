@@ -67,7 +67,7 @@ export default function FlashDealsBar() {
 
   return (
     <div className="bg-card border-t-[3px] border-destructive border-b border-border overflow-hidden">
-      <div className="lumax-container flex items-center h-[60px] gap-4">
+      <div className="ml-container flex items-center h-[60px] gap-4">
         {/* Left label */}
         <div className="flex-shrink-0 flex items-center gap-3 pr-4 border-r-2 border-destructive">
           <span className="text-destructive text-[13px] font-extrabold tracking-wide">{settings.flash_deals_title || "⚡ OFERTE FLASH"}</span>

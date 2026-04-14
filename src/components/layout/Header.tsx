@@ -170,7 +170,7 @@ function MainHeader({ categories }: { categories: Category[] }) {
 
   return (
     <div className="bg-card border-b border-border" style={{ boxShadow: "var(--shadow-sm)", background: settings.header_bg || undefined }}>
-      <div className="lumax-container flex items-center gap-4 md:gap-5 h-[60px] md:h-[70px]">
+      <div className="ml-container flex items-center gap-4 md:gap-5 h-[60px] md:h-[70px]">
         {/* Logo */}
         <Link to="/" className="flex-shrink-0 flex flex-col leading-none">
           {!settings.site_name && !settings.logo_url ? (
@@ -209,7 +209,7 @@ function MainHeader({ categories }: { categories: Category[] }) {
               />
               <button
                 onClick={submitSearch}
-                className="w-[52px] bg-primary hover:bg-lumax-blue-dark text-primary-foreground flex items-center justify-center transition-colors"
+                className="w-[52px] bg-primary hover:bg-ml-primary-dark text-primary-foreground flex items-center justify-center transition-colors"
               >
                 <Search className="h-5 w-5" />
               </button>
@@ -228,7 +228,7 @@ function MainHeader({ categories }: { categories: Category[] }) {
                         key={r.id}
                         to={`/product/${r.slug}`}
                         onClick={() => setShowResults(false)}
-                        className="flex items-center gap-3 px-4 py-2.5 hover:bg-lumax-blue-light transition-colors"
+                        className="flex items-center gap-3 px-4 py-2.5 hover:bg-ml-primary-light transition-colors"
                       >
                         <img
                           src={r.image_url || "/placeholder.svg"}
@@ -287,7 +287,7 @@ function MainHeader({ categories }: { categories: Category[] }) {
                 {!user ? (
                   <>
                     <div className="px-4 py-2 space-y-2">
-                      <Link to="/auth" className="block w-full text-center py-2 bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:bg-lumax-blue-dark transition-colors">
+                      <Link to="/auth" className="block w-full text-center py-2 bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:bg-ml-primary-dark transition-colors">
                         Autentifică-te
                       </Link>
                       <Link to="/auth" className="block w-full text-center py-2 border-2 border-primary text-primary rounded-md text-sm font-semibold hover:bg-primary hover:text-primary-foreground transition-colors">
@@ -361,7 +361,7 @@ function MainHeader({ categories }: { categories: Category[] }) {
                   <div className="text-center py-6">
                     <ShoppingCart className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
                     <p className="text-sm text-muted-foreground mb-3">Coșul tău este gol</p>
-                    <Link to="/catalog" className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:bg-lumax-blue-dark transition-colors">
+                    <Link to="/catalog" className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:bg-ml-primary-dark transition-colors">
                       Descoperă produse
                     </Link>
                   </div>
@@ -390,7 +390,7 @@ function MainHeader({ categories }: { categories: Category[] }) {
                       <Link to="/cart" className="block w-full text-center py-2 border-2 border-primary text-primary rounded-md text-sm font-semibold hover:bg-primary hover:text-primary-foreground transition-colors mb-2">
                         Mergi la coș
                       </Link>
-                      <Link to="/checkout" className="block w-full text-center py-2 bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:bg-lumax-blue-dark transition-colors">
+                      <Link to="/checkout" className="block w-full text-center py-2 bg-primary text-primary-foreground rounded-md text-sm font-semibold hover:bg-ml-primary-dark transition-colors">
                         Finalizează comanda
                       </Link>
                     </div>
@@ -448,15 +448,15 @@ function NavBar({ categories }: { categories: Category[] }) {
   })();
 
   return (
-    <div className="bg-primary sticky top-0 z-[100]" id="lumax-navbar" style={{ boxShadow: "0 2px 4px rgba(0,0,0,0.15)", background: settings.nav_bar_color || undefined }}>
-      <div className="lumax-container flex items-center h-11">
+    <div className="bg-primary sticky top-0 z-[100]" id="ml-navbar" style={{ boxShadow: "0 2px 4px rgba(0,0,0,0.15)", background: settings.nav_bar_color || undefined }}>
+      <div className="ml-container flex items-center h-11">
         <div
           ref={megaRef}
           className="relative"
           onMouseEnter={() => setMegaOpen(true)}
           onMouseLeave={() => { setMegaOpen(false); setHoveredCat(null); }}
         >
-          <button className="flex items-center gap-2 px-5 h-11 bg-lumax-blue-dark text-white text-[13px] font-semibold hover:bg-lumax-blue-darker transition-colors">
+          <button className="flex items-center gap-2 px-5 h-11 bg-ml-primary-dark text-white text-[13px] font-semibold hover:bg-ml-primary-darker transition-colors">
             <Menu className="h-4 w-4" />
             Toate Categoriile
             <ChevronDown className="h-3 w-3 opacity-70" />
@@ -471,7 +471,7 @@ function NavBar({ categories }: { categories: Category[] }) {
                     to={`/catalog?category=${cat.slug}`}
                     onMouseEnter={() => setHoveredCat(cat.id)}
                     className={`flex items-center gap-3 px-4 h-11 text-sm cursor-pointer transition-colors ${
-                      hoveredCat === cat.id ? "bg-lumax-blue-light text-primary" : "hover:bg-secondary"
+                      hoveredCat === cat.id ? "bg-ml-primary-light text-primary" : "hover:bg-secondary"
                     }`}
                   >
                     <span className="flex-1">{cat.name}</span>
@@ -489,7 +489,7 @@ function NavBar({ categories }: { categories: Category[] }) {
                     <Link
                       key={sub.id}
                       to={`/catalog?category=${sub.slug}`}
-                      className="block px-4 py-2.5 text-sm hover:bg-lumax-blue-light hover:text-primary transition-colors"
+                      className="block px-4 py-2.5 text-sm hover:bg-ml-primary-light hover:text-primary transition-colors"
                     >
                       {sub.name}
                     </Link>

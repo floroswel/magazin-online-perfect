@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { useSettings } from "@/hooks/useSettings";
 
-const STORAGE_KEY = "lumax_ticker2_closed";
+const STORAGE_KEY = "ml_ticker2_closed";
 
 export default function Ticker2Bar() {
   const { settings: s } = useSettings();

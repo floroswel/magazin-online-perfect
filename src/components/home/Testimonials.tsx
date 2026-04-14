@@ -68,7 +68,7 @@ export default function Testimonials() {
 
   return (
     <section className="py-12 md:py-16 bg-background">
-      <div className="lumax-container">
+      <div className="ml-container">
         <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-2">
           Recenzii clienți
         </h2>

@@ -32,7 +32,7 @@ export default function TrustStrip() {
 
   return (
     <section className="py-8 md:py-10 bg-background">
-      <div className="lumax-container">
+      <div className="ml-container">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {badges.map((item, i) => {
             const IconComp = ICON_MAP[item.icon];

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import ProductCard from "@/components/products/ProductCard";
 
-const STORAGE_KEY = "lumax_recently_viewed";
+const STORAGE_KEY = "ml_recently_viewed";
 
 export function addRecentlyViewed(productId: string) {
   try {
@@ -39,7 +39,7 @@ export default function RecentlyViewed() {
 
   return (
     <section className="bg-card py-6">
-      <div className="lumax-container">
+      <div className="ml-container">
         <h2 className="section-title">👁 Vizualizate Recent</h2>
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
           {products.map((p: any) => (

@@ -34,8 +34,8 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="py-12" style={{ background: settings.newsletter_bg || undefined, backgroundColor: settings.newsletter_bg ? undefined : "hsl(var(--lumax-blue-light, 217 100% 95%))" }}>
-      <div className="lumax-container flex flex-col md:flex-row items-center gap-8 md:gap-12">
+    <section className="py-12" style={{ background: settings.newsletter_bg || undefined, backgroundColor: settings.newsletter_bg ? undefined : "hsl(var(--ml-primary-light, 217 100% 95%))" }}>
+      <div className="ml-container flex flex-col md:flex-row items-center gap-8 md:gap-12">
         <div className="md:w-[60%]">
           <h2 className="text-xl md:text-2xl font-extrabold text-foreground mb-2">{title}</h2>
           <p className="text-[15px] text-muted-foreground mb-3">{subtitle}</p>
@@ -43,7 +43,7 @@ export default function Newsletter() {
         </div>
         <div className="md:w-[40%] w-full">
           {done ? (
-            <p className="text-lumax-green font-bold text-center">✅ Te-ai abonat! Verifică emailul.</p>
+            <p className="text-ml-success font-bold text-center">✅ Te-ai abonat! Verifică emailul.</p>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
               <input
@@ -71,7 +71,7 @@ export default function Newsletter() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-[46px] bg-primary text-primary-foreground text-sm font-bold rounded-md hover:bg-lumax-blue-dark transition-colors disabled:opacity-50"
+                className="w-full h-[46px] bg-primary text-primary-foreground text-sm font-bold rounded-md hover:bg-ml-primary-dark transition-colors disabled:opacity-50"
               >
                 {loading ? "Se trimite..." : "Abonează-te Acum →"}
               </button>

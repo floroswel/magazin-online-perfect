@@ -21,7 +21,7 @@ export default function ForgotPassword() {
 
   return (
     <Layout>
-      <div className="lumax-container py-12 max-w-md mx-auto">
+      <div className="ml-container py-12 max-w-md mx-auto">
         <div className="bg-card rounded-xl border border-border p-8 text-center">
           <h1 className="text-2xl font-extrabold text-primary mb-1">Mama Lucica</h1>
           {sent ? (
@@ -36,7 +36,7 @@ export default function ForgotPassword() {
               <p className="text-sm text-muted-foreground mb-6">Introdu email-ul și îți trimitem un link de resetare</p>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" type="email" required className="w-full h-11 px-3 border border-border rounded-lg text-sm bg-background focus:ring-primary focus:border-primary" />
-                <button type="submit" disabled={loading} className="w-full h-11 bg-primary text-primary-foreground rounded-lg font-bold text-sm hover:bg-lumax-blue-dark disabled:opacity-50">
+                <button type="submit" disabled={loading} className="w-full h-11 bg-primary text-primary-foreground rounded-lg font-bold text-sm hover:bg-ml-primary-dark disabled:opacity-50">
                   {loading ? "Se trimite..." : "Trimite link"}
                 </button>
               </form>

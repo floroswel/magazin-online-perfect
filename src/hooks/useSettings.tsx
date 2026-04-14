@@ -168,7 +168,7 @@ function applyCSSVariables(s: SettingsMap) {
       root.style.setProperty("--ring", hsl);
       root.style.setProperty("--primary-foreground", isLightHSL(hsl) ? "220 15% 15%" : "0 0% 100%");
     }
-    root.style.setProperty("--lumax-blue", s.primary_color);
+    root.style.setProperty("--ml-primary", s.primary_color);
   }
   if (s.secondary_color) {
     const hsl = hexToHSL(s.secondary_color);
@@ -176,7 +176,7 @@ function applyCSSVariables(s: SettingsMap) {
       root.style.setProperty("--secondary", hsl);
       root.style.setProperty("--secondary-foreground", isLightHSL(hsl) ? "220 15% 15%" : "0 0% 100%");
     }
-    root.style.setProperty("--lumax-dark", s.secondary_color);
+    root.style.setProperty("--ml-dark", s.secondary_color);
   }
   if (s.accent_color) {
     const hsl = hexToHSL(s.accent_color);
@@ -184,7 +184,7 @@ function applyCSSVariables(s: SettingsMap) {
       root.style.setProperty("--destructive", hsl);
       root.style.setProperty("--destructive-foreground", isLightHSL(hsl) ? "220 15% 15%" : "0 0% 100%");
     }
-    root.style.setProperty("--lumax-red", s.accent_color);
+    root.style.setProperty("--ml-accent", s.accent_color);
   }
   if (s.background_color) {
     const hsl = hexToHSL(s.background_color);
@@ -198,7 +198,7 @@ function applyCSSVariables(s: SettingsMap) {
       root.style.setProperty("--foreground", hsl);
       root.style.setProperty("--card-foreground", hsl);
     }
-    root.style.setProperty("--lumax-text", s.text_color);
+    root.style.setProperty("--ml-text", s.text_color);
   }
 
   // ━━ Buttons ━━
@@ -213,7 +213,7 @@ function applyCSSVariables(s: SettingsMap) {
   if (s.header_bg) root.style.setProperty("--header-bg", s.header_bg);
   if (s.nav_bar_color) {
     root.style.setProperty("--nav-bar-color", s.nav_bar_color);
-    root.style.setProperty("--lumax-blue-dark", s.nav_bar_color);
+    root.style.setProperty("--ml-primary-dark", s.nav_bar_color);
   }
   if (s.announcement_bg) root.style.setProperty("--announcement-bg", s.announcement_bg);
   if (s.announcement_text_color) root.style.setProperty("--announcement-text", s.announcement_text_color);
@@ -270,7 +270,7 @@ function applyCSSVariables(s: SettingsMap) {
   }
 }
 
-const CACHE_KEY = "lumax_settings_cache";
+const CACHE_KEY = "ml_settings_cache";
 
 function loadCachedSettings(): SettingsMap {
   try {

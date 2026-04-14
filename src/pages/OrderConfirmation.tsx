@@ -22,19 +22,19 @@ export default function OrderConfirmation() {
   });
 
   if (isLoading) {
-    return <Layout><div className="lumax-container py-20 text-center"><div className="h-16 w-16 mx-auto skeleton rounded-full mb-4" /><div className="h-6 skeleton rounded w-48 mx-auto" /></div></Layout>;
+    return <Layout><div className="ml-container py-20 text-center"><div className="h-16 w-16 mx-auto skeleton rounded-full mb-4" /><div className="h-6 skeleton rounded w-48 mx-auto" /></div></Layout>;
   }
 
   if (!order) {
-    return <Layout><div className="lumax-container py-20 text-center"><p className="text-lg font-bold">Comanda nu a fost găsită</p></div></Layout>;
+    return <Layout><div className="ml-container py-20 text-center"><p className="text-lg font-bold">Comanda nu a fost găsită</p></div></Layout>;
   }
 
   const addr = order.shipping_address as any;
 
   return (
     <Layout>
-      <div className="lumax-container py-12 max-w-xl mx-auto text-center">
-        <div className="w-16 h-16 rounded-full bg-lumax-green text-white flex items-center justify-center mx-auto mb-4">
+      <div className="ml-container py-12 max-w-xl mx-auto text-center">
+        <div className="w-16 h-16 rounded-full bg-ml-success text-white flex items-center justify-center mx-auto mb-4">
           <Check className="h-8 w-8" />
         </div>
         <h1 className="text-2xl font-extrabold text-foreground mb-2">Comandă confirmată!</h1>
@@ -53,7 +53,7 @@ export default function OrderConfirmation() {
 
         <div className="flex gap-3 justify-center">
           <Link to="/account" className="h-11 px-6 border border-border rounded-lg text-sm font-semibold flex items-center hover:bg-secondary">Comenzile mele</Link>
-          <Link to="/catalog" className="h-11 px-6 bg-primary text-primary-foreground rounded-lg text-sm font-bold flex items-center hover:bg-lumax-blue-dark">Continuă cumpărăturile</Link>
+          <Link to="/catalog" className="h-11 px-6 bg-primary text-primary-foreground rounded-lg text-sm font-bold flex items-center hover:bg-ml-primary-dark">Continuă cumpărăturile</Link>
         </div>
       </div>
     </Layout>

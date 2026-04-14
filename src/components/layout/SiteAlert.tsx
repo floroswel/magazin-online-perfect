@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { X, Info, AlertTriangle, AlertCircle, CheckCircle } from "lucide-react";
 import { useSettings } from "@/hooks/useSettings";
 
-const STORAGE_KEY = "lumax_site_alert_dismissed";
+const STORAGE_KEY = "ml_site_alert_dismissed";
 
 const typeIcons: Record<string, any> = {
   info: Info,

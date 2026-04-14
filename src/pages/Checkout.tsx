@@ -84,10 +84,12 @@ export default function Checkout() {
     billingCui: "", billingCompany: "", billingRegCom: "",
     billingCountyId: "", billingLocalityId: "", billingAddress: "",
     openPackage: false,
+    giftWrap: false, giftMessage: "",
     paymentMethod: "ramburs",
     tbiMonths: 4,
     observations: "",
     termsAccepted: false, privacyAccepted: false, newsletter: false,
+    returnPolicyAccepted: false,
   });
   const set = (k: string, v: any) => setForm(p => ({ ...p, [k]: v }));
 
@@ -249,6 +251,8 @@ export default function Checkout() {
   const rambursCost = form.paymentMethod === "ramburs" ? rambursCostValue : 0;
   const openPackagePrice = parseFloat(s("checkout_open_package_price", "24.99"));
   const openPackageCost = form.openPackage ? openPackagePrice : 0;
+  const giftWrapPrice = parseFloat(s("gift_wrap_price", "15"));
+  const giftWrapCost = form.giftWrap ? giftWrapPrice : 0;
 
   const couponDiscount = useMemo(() => {
     if (!couponApplied) return 0;
@@ -259,15 +263,17 @@ export default function Checkout() {
     return couponApplied.discount_value || 0;
   }, [couponApplied, totalPrice]);
 
-  const finalTotal = Math.max(0, totalPrice - couponDiscount - loyaltyDiscount + shippingCost + rambursCost + openPackageCost);
+  const finalTotal = Math.max(0, totalPrice - couponDiscount - loyaltyDiscount + shippingCost + rambursCost + openPackageCost + giftWrapCost);
 
   // ─── Validation ───
+  const [returnError, setReturnError] = useState(false);
   const canSubmit = form.email && form.lastName && form.firstName && form.phone
     && form.countyId && form.localityId && form.address
-    && form.termsAccepted && form.privacyAccepted;
+    && form.termsAccepted && form.privacyAccepted && form.returnPolicyAccepted;
 
   // ─── Place order ───
   const placeOrder = async () => {
+    if (!form.returnPolicyAccepted) { setReturnError(true); toast.error("Te rugăm să confirmi condițiile de retur"); return; }
     if (!canSubmit) return;
     setSubmitting(true);
     try {
@@ -321,6 +327,8 @@ export default function Checkout() {
         billing_address: billingAddress,
         notes: form.observations || "",
         coupon_id: couponApplied?.coupon_id || null,
+        gift_wrap: form.giftWrap || false,
+        gift_message: form.giftWrap ? (form.giftMessage || "").slice(0, 150) : null,
       };
 
       const { data: order, error } = await supabase.from("orders").insert(orderData).select("id, order_number").single();
@@ -351,12 +359,18 @@ export default function Checkout() {
       // Open package service fee
       if (form.openPackage) {
         await supabase.from("order_items").insert({
-          order_id: order.id,
-          product_id: null,
+          order_id: order.id, product_id: null,
           product_name: "Serviciu deschidere colet la livrare",
-          quantity: 1,
-          unit_price: openPackagePrice,
-          total_price: openPackagePrice,
+          quantity: 1, unit_price: openPackagePrice, total_price: openPackagePrice,
+        } as any);
+      }
+
+      // Gift wrap service fee
+      if (form.giftWrap) {
+        await supabase.from("order_items").insert({
+          order_id: order.id, product_id: null,
+          product_name: "Ambalaj cadou" + (form.giftMessage ? ` — Mesaj: ${form.giftMessage.slice(0, 150)}` : ""),
+          quantity: 1, unit_price: giftWrapPrice, total_price: giftWrapPrice,
         } as any);
       }
 
@@ -444,7 +458,7 @@ export default function Checkout() {
   if (items.length === 0) {
     return (
       <Layout>
-        <div className="lumax-container py-20 text-center">
+        <div className="ml-container py-20 text-center">
           <p className="text-lg font-bold mb-2">Coșul este gol</p>
           <Link to="/catalog" className="text-primary text-sm font-semibold hover:underline">← Înapoi la catalog</Link>
         </div>
@@ -456,7 +470,7 @@ export default function Checkout() {
 
   return (
     <Layout>
-      <div className="lumax-container py-6 pb-16">
+      <div className="ml-container py-6 pb-16">
         <h1 className="text-xl md:text-2xl font-extrabold mb-6">Finalizare Comandă</h1>
 
         <div className="grid lg:grid-cols-[1fr_380px] gap-6 items-start">
@@ -547,23 +561,30 @@ export default function Checkout() {
                         Folosește punctele tale: <span className="font-bold text-primary">{loyaltyBalance} puncte</span> = {format(loyaltyBalanceRON)}
                       </Label>
                       <p className="text-xs text-muted-foreground mb-2">
-                        Poți aplica maxim {maxPercentAllowed}% din valoarea comenzii ({format(maxLoyaltyDiscount)})
+                        Poți aplica maxim {maxPercentAllowed}% din valoarea comenzii ({format(maxLoyaltyDiscount)}).
+                        Minim 50 puncte (2.50 RON) pentru răscumpărare.
                       </p>
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs text-muted-foreground">0</span>
-                        <Slider
-                          value={[loyaltyDiscountRON]}
-                          onValueChange={([v]) => setLoyaltyDiscountRON(v)}
-                          max={Math.floor(maxLoyaltyDiscount)}
-                          step={1}
-                          className="flex-1"
-                        />
-                        <span className="text-xs text-muted-foreground">{format(maxLoyaltyDiscount)}</span>
-                      </div>
-                      {loyaltyDiscount > 0 && (
-                        <p className="text-xs text-green-600 mt-1">
-                          Aplici {loyaltyPointsUsed} puncte = -{format(loyaltyDiscount)}
-                        </p>
+                      {loyaltyBalance >= 50 ? (
+                        <>
+                          <div className="flex items-center gap-3">
+                            <span className="text-xs text-muted-foreground">0</span>
+                            <Slider
+                              value={[loyaltyDiscountRON]}
+                              onValueChange={([v]) => setLoyaltyDiscountRON(v)}
+                              max={Math.floor(maxLoyaltyDiscount)}
+                              step={1}
+                              className="flex-1"
+                            />
+                            <span className="text-xs text-muted-foreground">{format(maxLoyaltyDiscount)}</span>
+                          </div>
+                          {loyaltyDiscount > 0 && (
+                            <p className="text-xs text-green-600 mt-1">
+                              Aplici {loyaltyPointsUsed} puncte = -{format(loyaltyDiscount)}
+                            </p>
+                          )}
+                        </>
+                      ) : (
+                        <p className="text-xs text-amber-600">Ai nevoie de minim 50 puncte pentru a le folosi.</p>
                       )}
                     </div>
                   )}
@@ -782,16 +803,33 @@ export default function Checkout() {
             )}
 
             {/* ─── BLOC 7: SERVICII EXTRA ─── */}
-            {sBool("checkout_extra_services_show") && sBool("checkout_open_package_service_show") && (
-              <div className={sectionClass}>
-                <h2 className="text-base font-bold mb-3">Servicii extra</h2>
-                <p className="text-xs text-muted-foreground mb-2">Vrei să te asiguri că totul e în regulă?</p>
-                <label className="flex items-center gap-2 cursor-pointer">
+            <div className={sectionClass}>
+              <h2 className="text-base font-bold mb-3">Servicii extra</h2>
+              {sBool("checkout_open_package_service_show") && (
+                <label className="flex items-center gap-2 cursor-pointer mb-3">
                   <Checkbox checked={form.openPackage} onCheckedChange={v => set("openPackage", !!v)} />
                   <span className="text-sm">Serviciu deschidere colet la livrare ({openPackagePrice} RON)</span>
                 </label>
-              </div>
-            )}
+              )}
+              <label className="flex items-center gap-2 cursor-pointer">
+                <Checkbox checked={form.giftWrap} onCheckedChange={v => set("giftWrap", !!v)} />
+                <span className="text-sm">🎁 Doresc ambalaj cadou (+{giftWrapPrice} RON)</span>
+              </label>
+              {form.giftWrap && (
+                <div className="mt-3 ml-6">
+                  <Label className="text-xs font-semibold">Mesaj personalizat pe card cadou (opțional):</Label>
+                  <Textarea
+                    value={form.giftMessage}
+                    onChange={e => set("giftMessage", e.target.value.slice(0, 150))}
+                    placeholder="Scrie mesajul tău aici..."
+                    rows={2}
+                    maxLength={150}
+                    className="mt-1"
+                  />
+                  <p className="text-[11px] text-muted-foreground mt-1 text-right">{form.giftMessage.length}/150</p>
+                </div>
+              )}
+            </div>
 
             {/* ─── BLOC 8: PLATĂ ─── */}
             <div className={sectionClass}>
@@ -859,9 +897,19 @@ export default function Checkout() {
                   <Checkbox checked={form.privacyAccepted} onCheckedChange={v => set("privacyAccepted", !!v)} className="mt-0.5" />
                   <span className="text-xs text-muted-foreground">
                     Sunt de acord cu{" "}
-                    <Link to="/politica-de-confidentialitate" className="text-primary underline" target="_blank">Politica de Confidențialitate</Link> *
+                    <Link to="/page/politica-de-confidentialitate" className="text-primary underline" target="_blank">Politica de Confidențialitate</Link> *
                   </span>
                 </label>
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <Checkbox checked={form.returnPolicyAccepted} onCheckedChange={v => { set("returnPolicyAccepted", !!v); setReturnError(false); }} className="mt-0.5" />
+                  <span className="text-xs text-muted-foreground">
+                    Am înțeles că lumânările utilizate (aprinse) nu pot fi returnate conform{" "}
+                    <Link to="/page/politica-retur" className="text-primary underline" target="_blank" rel="noopener noreferrer">politicii de retur</Link> *
+                  </span>
+                </label>
+                {returnError && (
+                  <p className="text-xs text-destructive font-semibold ml-6">Te rugăm să confirmi condițiile de retur</p>
+                )}
                 <label className="flex items-start gap-2 cursor-pointer">
                   <Checkbox checked={form.newsletter} onCheckedChange={v => set("newsletter", !!v)} className="mt-0.5" />
                   <span className="text-xs text-muted-foreground">Vreau să primesc oferte și noutăți pe email</span>
@@ -908,6 +956,9 @@ export default function Checkout() {
                 </div>
                 {openPackageCost > 0 && (
                   <div className="flex justify-between"><span className="text-muted-foreground">Serviciu deschidere</span><span>{format(openPackageCost)}</span></div>
+                )}
+                {giftWrapCost > 0 && (
+                  <div className="flex justify-between"><span className="text-muted-foreground">🎁 Ambalaj cadou</span><span>{format(giftWrapCost)}</span></div>
                 )}
                 {rambursCost > 0 && (
                   <div className="flex justify-between"><span className="text-muted-foreground">Cost ramburs</span><span>{format(rambursCost)}</span></div>
