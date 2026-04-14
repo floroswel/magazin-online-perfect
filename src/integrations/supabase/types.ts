@@ -2029,6 +2029,7 @@ export type Database = {
           id: string
           includes_free_shipping: boolean
           is_active: boolean | null
+          max_discount_amount: number | null
           max_uses: number | null
           max_uses_per_customer: number | null
           min_order_value: number | null
@@ -2058,6 +2059,7 @@ export type Database = {
           id?: string
           includes_free_shipping?: boolean
           is_active?: boolean | null
+          max_discount_amount?: number | null
           max_uses?: number | null
           max_uses_per_customer?: number | null
           min_order_value?: number | null
@@ -2087,6 +2089,7 @@ export type Database = {
           id?: string
           includes_free_shipping?: boolean
           is_active?: boolean | null
+          max_discount_amount?: number | null
           max_uses?: number | null
           max_uses_per_customer?: number | null
           min_order_value?: number | null
