@@ -3351,6 +3351,33 @@ export type Database = {
           },
         ]
       }
+      instagram_feed_images: {
+        Row: {
+          caption: string | null
+          created_at: string | null
+          id: string
+          image_url: string
+          link_url: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string | null
+          id?: string
+          image_url: string
+          link_url?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string | null
+          id?: string
+          image_url?: string
+          link_url?: string | null
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
       integration_events: {
         Row: {
           created_at: string | null
@@ -4647,6 +4674,8 @@ export type Database = {
           discount_amount: number | null
           discount_total: number | null
           fulfillment_warehouse_id: string | null
+          gift_message: string | null
+          gift_wrap: boolean | null
           gift_wrapping: Json | null
           id: string
           internal_notes: string | null
@@ -4695,6 +4724,8 @@ export type Database = {
           discount_amount?: number | null
           discount_total?: number | null
           fulfillment_warehouse_id?: string | null
+          gift_message?: string | null
+          gift_wrap?: boolean | null
           gift_wrapping?: Json | null
           id?: string
           internal_notes?: string | null
@@ -4743,6 +4774,8 @@ export type Database = {
           discount_amount?: number | null
           discount_total?: number | null
           fulfillment_warehouse_id?: string | null
+          gift_message?: string | null
+          gift_wrap?: boolean | null
           gift_wrapping?: Json | null
           id?: string
           internal_notes?: string | null
