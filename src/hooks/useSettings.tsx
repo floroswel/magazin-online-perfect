@@ -366,6 +366,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             const val = newRow.value_json;
             const parsed = typeof val === "string" ? val : JSON.stringify(val);
             const updated = { ...prev, [newRow.key]: parsed };
+            saveCachedSettings(updated);
             applyCSSVariables(updated);
             return updated;
           });
