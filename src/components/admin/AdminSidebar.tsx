@@ -303,6 +303,7 @@ const menuSections: MenuSection[] = [
           { label: "Task-uri Programate", path: "/admin/system/cron" },
           { label: "Mod Mentenanță", path: "/admin/system/maintenance" },
           { label: "Notificări Push", path: "/admin/system/push" },
+          { label: "Protecție Brute Force", path: "/admin/system/brute-force" },
           { label: "Loguri Sistem", path: "/admin/modules/logs" },
         ],
       },
