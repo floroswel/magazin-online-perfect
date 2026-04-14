@@ -263,12 +263,13 @@ export default function Checkout() {
     return couponApplied.discount_value || 0;
   }, [couponApplied, totalPrice]);
 
-  const finalTotal = Math.max(0, totalPrice - couponDiscount - loyaltyDiscount + shippingCost + rambursCost + openPackageCost);
+  const finalTotal = Math.max(0, totalPrice - couponDiscount - loyaltyDiscount + shippingCost + rambursCost + openPackageCost + giftWrapCost);
 
   // ─── Validation ───
+  const [returnError, setReturnError] = useState(false);
   const canSubmit = form.email && form.lastName && form.firstName && form.phone
     && form.countyId && form.localityId && form.address
-    && form.termsAccepted && form.privacyAccepted;
+    && form.termsAccepted && form.privacyAccepted && form.returnPolicyAccepted;
 
   // ─── Place order ───
   const placeOrder = async () => {
