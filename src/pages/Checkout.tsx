@@ -81,7 +81,7 @@ export default function Checkout() {
     countyId: "", localityId: "", address: "", postalCode: "", bloc: "",
     shippingMethod: "standard",
     differentBilling: false, billingType: "fizica" as "fizica" | "juridica",
-    billingCui: "", billingCompany: "", billingRegCom: "",
+    billingCui: "", billingCompany: "", billingRegCom: "", billingVatPayer: false,
     billingCountyId: "", billingLocalityId: "", billingAddress: "",
     openPackage: false,
     giftWrap: false, giftMessage: "",
@@ -228,7 +228,8 @@ export default function Checkout() {
         set("billingCompany", data.denumire || "");
         set("billingRegCom", data.nrRegCom || "");
         set("billingAddress", data.adresa || "");
-        toast.success(`Firmă găsită: ${data.denumire}`);
+        set("billingVatPayer", data.platitorTva || false);
+        toast.success(`Firmă găsită: ${data.denumire}${data.platitorTva ? " (plătitor TVA)" : ""}`);
       }
     } catch {
       toast.error("ANAF temporar indisponibil. Completează manual datele.");
@@ -743,27 +744,29 @@ export default function Checkout() {
                       </label>
                     </div>
 
-                    {form.billingType === "juridica" && sBool("checkout_cui_search_show") && (
+                    {form.billingType === "juridica" && (
                       <div className="space-y-3 border border-border rounded-lg p-4">
-                        <Label className="text-xs font-semibold">Caută firma după CUI (doar cifre)</Label>
+                        <Label className="text-xs font-semibold">Date firmă — CUI (doar cifre)</Label>
                         <div className="flex gap-2">
                           <Input value={form.billingCui} onChange={e => set("billingCui", e.target.value.replace(/\D/g, ""))} placeholder="CUI (ex: 12345678)" />
                           <Button variant="outline" onClick={lookupCUI} disabled={cuiLoading}>
                             <Search className="w-4 h-4 mr-1" /> {cuiLoading ? "..." : "Caută la ANAF"}
                           </Button>
                         </div>
-                        {form.billingCompany && (
-                          <div className="space-y-2 text-sm">
-                            <div>
-                              <Label className="text-xs">Nume firmă</Label>
-                              <Input value={form.billingCompany} onChange={e => set("billingCompany", e.target.value)} />
-                            </div>
-                            <div>
-                              <Label className="text-xs">Nr. Reg. Com.</Label>
-                              <Input value={form.billingRegCom} onChange={e => set("billingRegCom", e.target.value)} />
-                            </div>
+                        <div className="space-y-2 text-sm">
+                          <div>
+                            <Label className="text-xs">Nume firmă *</Label>
+                            <Input value={form.billingCompany} onChange={e => set("billingCompany", e.target.value)} placeholder="SC Exemplu SRL" />
                           </div>
-                        )}
+                          <div>
+                            <Label className="text-xs">Nr. Reg. Com.</Label>
+                            <Input value={form.billingRegCom} onChange={e => set("billingRegCom", e.target.value)} placeholder="J40/1234/2020" />
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <input type="checkbox" checked={form.billingVatPayer} onChange={e => set("billingVatPayer", e.target.checked)} className="rounded" />
+                            <Label className="text-xs">Plătitor de TVA</Label>
+                          </div>
+                        </div>
                       </div>
                     )}
 
