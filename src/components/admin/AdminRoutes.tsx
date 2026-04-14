@@ -199,6 +199,10 @@ const AdminSeoRedirects = lazy(() => import("./seo/AdminSeoRedirects"));
 const AdminFaqManager = lazy(() => import("./content/AdminFaqManager"));
 const AdminPopupsManager = lazy(() => import("./marketing/AdminPopupsManager"));
 const AdminSystemHealth = lazy(() => import("./system/AdminSystemHealth"));
+const AdminOrderDetailPage = lazy(() => import("./orders/AdminOrderDetailPage"));
+const AdminMaintenanceToggle = lazy(() => import("./system/AdminMaintenanceToggle"));
+const AdminPushNotifications = lazy(() => import("./system/AdminPushNotifications"));
+const AdminCronJobs = lazy(() => import("./system/AdminCronJobs"));
 
 export default function AdminRoutes() {
   return (
