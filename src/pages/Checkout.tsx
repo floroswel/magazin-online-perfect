@@ -209,6 +209,14 @@ export default function Checkout() {
     }
   }, [paymentMethodsDB]);
 
+            {/* ─── BLOC 9: OBSERVAȚII ─── */}
+            {sBool("checkout_observations_show") && (
+              <div className={sectionClass}>
+                <h2 className="text-base font-bold mb-3">Mesajul tău (opțional)</h2>
+                <Textarea value={form.observations} onChange={e => set("observations", e.target.value)} placeholder="Instrucțiuni speciale, program livrare, etc." rows={3} />
+              </div>
+            )}
+
 
   // ─── CUI lookup ───
   const [cuiLoading, setCuiLoading] = useState(false);
