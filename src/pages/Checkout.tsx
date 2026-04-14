@@ -889,9 +889,19 @@ export default function Checkout() {
                   <Checkbox checked={form.privacyAccepted} onCheckedChange={v => set("privacyAccepted", !!v)} className="mt-0.5" />
                   <span className="text-xs text-muted-foreground">
                     Sunt de acord cu{" "}
-                    <Link to="/politica-de-confidentialitate" className="text-primary underline" target="_blank">Politica de Confidențialitate</Link> *
+                    <Link to="/page/politica-de-confidentialitate" className="text-primary underline" target="_blank">Politica de Confidențialitate</Link> *
                   </span>
                 </label>
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <Checkbox checked={form.returnPolicyAccepted} onCheckedChange={v => { set("returnPolicyAccepted", !!v); setReturnError(false); }} className="mt-0.5" />
+                  <span className="text-xs text-muted-foreground">
+                    Am înțeles că lumânările utilizate (aprinse) nu pot fi returnate conform{" "}
+                    <Link to="/page/politica-retur" className="text-primary underline" target="_blank" rel="noopener noreferrer">politicii de retur</Link> *
+                  </span>
+                </label>
+                {returnError && (
+                  <p className="text-xs text-destructive font-semibold ml-6">Te rugăm să confirmi condițiile de retur</p>
+                )}
                 <label className="flex items-start gap-2 cursor-pointer">
                   <Checkbox checked={form.newsletter} onCheckedChange={v => set("newsletter", !!v)} className="mt-0.5" />
                   <span className="text-xs text-muted-foreground">Vreau să primesc oferte și noutăți pe email</span>
