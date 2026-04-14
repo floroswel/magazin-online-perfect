@@ -43,6 +43,7 @@ const menuSections: MenuSection[] = [
           { label: "Retururi", path: "/admin/orders/returns" },
           { label: "Probleme", path: "/admin/orders/issues" },
           { label: "Statusuri", path: "/admin/orders/statuses" },
+          { label: "Reclamații", path: "/admin/orders/complaints", dividerBefore: "Legal" },
         ],
       },
       {
