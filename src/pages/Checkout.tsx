@@ -945,12 +945,9 @@ export default function Checkout() {
                   <span className="text-muted-foreground">Transport</span>
                   <span className={shippingCost === 0 ? "text-green-600 font-semibold" : ""}>{shippingCost === 0 ? "GRATUIT" : format(shippingCost)}</span>
                 </div>
-                {openPackageCost > 0 && (
-                  <div className="flex justify-between"><span className="text-muted-foreground">Serviciu deschidere</span><span>{format(openPackageCost)}</span></div>
-                )}
-                {giftWrapCost > 0 && (
-                  <div className="flex justify-between"><span className="text-muted-foreground">🎁 Ambalaj cadou</span><span>{format(giftWrapCost)}</span></div>
-                )}
+                {extraServicesDB.filter((s: any) => selectedExtraServices.includes(s.id)).map((s: any) => (
+                  <div key={s.id} className="flex justify-between"><span className="text-muted-foreground">{s.icon} {s.name}</span><span>{format(s.price)}</span></div>
+                ))}
                 {rambursCost > 0 && (
                   <div className="flex justify-between"><span className="text-muted-foreground">Cost ramburs</span><span>{format(rambursCost)}</span></div>
                 )}
