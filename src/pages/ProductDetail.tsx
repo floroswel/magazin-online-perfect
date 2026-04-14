@@ -11,6 +11,8 @@ import { usePageSeo } from "@/components/SeoHead";
 import { safeJsonLd } from "@/lib/sanitize-json-ld";
 import { Heart, Share2, Minus, Plus, Truck, RotateCcw, Shield, Package, Bell } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ProductFaq from "@/components/products/ProductFaq";
+import BurnTimeCalculator from "@/components/products/BurnTimeCalculator";
 import { toast } from "sonner";
 
 const RECENTLY_KEY = "ml_recently_viewed";

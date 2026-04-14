@@ -984,9 +984,10 @@ export default function Checkout() {
               </div>
 
               <div className="mt-4 space-y-2 text-xs text-muted-foreground">
-                <div className="flex items-center gap-2"><Lock className="w-3.5 h-3.5" /> Plată securizată SSL</div>
-                <div className="flex items-center gap-2"><RotateCcw className="w-3.5 h-3.5" /> Retur gratuit 30 zile</div>
-                <div className="flex items-center gap-2"><Package className="w-3.5 h-3.5" /> Livrare 1-3 zile lucrătoare</div>
+                <div className="flex items-center gap-2"><Lock className="w-3.5 h-3.5" /> 🔒 Plată 100% securizată prin Netopia</div>
+                <div className="flex items-center gap-2"><RotateCcw className="w-3.5 h-3.5" /> ↩️ Retur gratuit 14 zile</div>
+                <div className="flex items-center gap-2"><Package className="w-3.5 h-3.5" /> 🚚 Livrare în 2-3 zile lucrătoare</div>
+                <div className="flex items-center gap-2"><span className="w-3.5 h-3.5 flex items-center justify-center text-[10px]">🕯️</span> Lumânări 100% handmade</div>
               </div>
             </div>
           </div>
