@@ -561,23 +561,30 @@ export default function Checkout() {
                         Folosește punctele tale: <span className="font-bold text-primary">{loyaltyBalance} puncte</span> = {format(loyaltyBalanceRON)}
                       </Label>
                       <p className="text-xs text-muted-foreground mb-2">
-                        Poți aplica maxim {maxPercentAllowed}% din valoarea comenzii ({format(maxLoyaltyDiscount)})
+                        Poți aplica maxim {maxPercentAllowed}% din valoarea comenzii ({format(maxLoyaltyDiscount)}).
+                        Minim 50 puncte (2.50 RON) pentru răscumpărare.
                       </p>
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs text-muted-foreground">0</span>
-                        <Slider
-                          value={[loyaltyDiscountRON]}
-                          onValueChange={([v]) => setLoyaltyDiscountRON(v)}
-                          max={Math.floor(maxLoyaltyDiscount)}
-                          step={1}
-                          className="flex-1"
-                        />
-                        <span className="text-xs text-muted-foreground">{format(maxLoyaltyDiscount)}</span>
-                      </div>
-                      {loyaltyDiscount > 0 && (
-                        <p className="text-xs text-green-600 mt-1">
-                          Aplici {loyaltyPointsUsed} puncte = -{format(loyaltyDiscount)}
-                        </p>
+                      {loyaltyBalance >= 50 ? (
+                        <>
+                          <div className="flex items-center gap-3">
+                            <span className="text-xs text-muted-foreground">0</span>
+                            <Slider
+                              value={[loyaltyDiscountRON]}
+                              onValueChange={([v]) => setLoyaltyDiscountRON(v)}
+                              max={Math.floor(maxLoyaltyDiscount)}
+                              step={1}
+                              className="flex-1"
+                            />
+                            <span className="text-xs text-muted-foreground">{format(maxLoyaltyDiscount)}</span>
+                          </div>
+                          {loyaltyDiscount > 0 && (
+                            <p className="text-xs text-green-600 mt-1">
+                              Aplici {loyaltyPointsUsed} puncte = -{format(loyaltyDiscount)}
+                            </p>
+                          )}
+                        </>
+                      ) : (
+                        <p className="text-xs text-amber-600">Ai nevoie de minim 50 puncte pentru a le folosi.</p>
                       )}
                     </div>
                   )}
