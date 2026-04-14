@@ -326,6 +326,8 @@ export default function Checkout() {
         billing_address: billingAddress,
         notes: form.observations || "",
         coupon_id: couponApplied?.coupon_id || null,
+        gift_wrap: form.giftWrap || false,
+        gift_message: form.giftWrap ? (form.giftMessage || "").slice(0, 150) : null,
       };
 
       const { data: order, error } = await supabase.from("orders").insert(orderData).select("id, order_number").single();
