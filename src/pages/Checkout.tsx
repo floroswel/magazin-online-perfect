@@ -202,6 +202,14 @@ export default function Checkout() {
     },
   });
 
+  // Auto-select first active payment method
+  useEffect(() => {
+    if (paymentMethodsDB.length > 0 && !paymentMethodsDB.some((pm: any) => pm.key === form.paymentMethod)) {
+      set("paymentMethod", (paymentMethodsDB[0] as any).key);
+    }
+  }, [paymentMethodsDB]);
+
+
   // ─── CUI lookup ───
   const [cuiLoading, setCuiLoading] = useState(false);
   const lookupCUI = async () => {
