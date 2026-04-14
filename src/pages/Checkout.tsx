@@ -251,6 +251,8 @@ export default function Checkout() {
   const rambursCost = form.paymentMethod === "ramburs" ? rambursCostValue : 0;
   const openPackagePrice = parseFloat(s("checkout_open_package_price", "24.99"));
   const openPackageCost = form.openPackage ? openPackagePrice : 0;
+  const giftWrapPrice = parseFloat(s("gift_wrap_price", "15"));
+  const giftWrapCost = form.giftWrap ? giftWrapPrice : 0;
 
   const couponDiscount = useMemo(() => {
     if (!couponApplied) return 0;
