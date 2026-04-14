@@ -452,6 +452,10 @@ export default function ProductDetail() {
             )}
           </TabsContent>
 
+          <TabsContent value="faq" className="py-6 max-w-3xl">
+            <ProductFaq product={product} />
+          </TabsContent>
+
           <TabsContent value="shipping" className="py-6 max-w-3xl">
             <div className="prose prose-sm max-w-none text-foreground">
               <h3>Livrare</h3>
