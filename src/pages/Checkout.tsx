@@ -81,7 +81,7 @@ export default function Checkout() {
     countyId: "", localityId: "", address: "", postalCode: "", bloc: "",
     shippingMethod: "standard",
     differentBilling: false, billingType: "fizica" as "fizica" | "juridica",
-    billingCui: "", billingCompany: "", billingRegCom: "",
+    billingCui: "", billingCompany: "", billingRegCom: "", billingVatPayer: false,
     billingCountyId: "", billingLocalityId: "", billingAddress: "",
     openPackage: false,
     giftWrap: false, giftMessage: "",
