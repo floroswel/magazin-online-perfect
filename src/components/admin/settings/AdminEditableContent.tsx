@@ -308,6 +308,16 @@ export default function AdminEditableContent() {
                           updateSetting={updateSetting}
                         />
                       )}
+                      {extraFields?.map(ef => (
+                        <SectionTitleField
+                          key={ef.settingKey}
+                          label={ef.label}
+                          settingKey={ef.settingKey}
+                          placeholder={ef.placeholder}
+                          settings={settings}
+                          updateSetting={updateSetting}
+                        />
+                      ))}
                     </div>
                   )}
                 </div>
