@@ -612,7 +612,7 @@ export default function Checkout() {
                 </div>
                 <div>
                   <Label className="text-xs">Telefon *</Label>
-                  <Input value={form.phone} onChange={e => set("phone", e.target.value)} type="tel" placeholder="07XX XXX XXX" />
+                  <Input value={form.phone} onChange={e => set("phone", e.target.value)} type="tel" inputMode="tel" placeholder="07XX XXX XXX" />
                 </div>
 
                 {sBool("checkout_different_contact_show") && (
@@ -679,7 +679,7 @@ export default function Checkout() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <Label className="text-xs">Cod Poștal</Label>
-                    <Input value={form.postalCode} onChange={e => set("postalCode", e.target.value)} placeholder="010101" />
+                    <Input value={form.postalCode} onChange={e => set("postalCode", e.target.value)} inputMode="numeric" placeholder="010101" />
                   </div>
                   <div>
                     <Label className="text-xs">Bloc / Sc. / Ap.</Label>
