@@ -30,13 +30,13 @@ export default function AdminSystemHealth() {
   const { data: stats, isLoading } = useQuery({
     queryKey: ["system-health"],
     queryFn: async () => {
-      const [products, orders, customers, categories, coupons, reviews, faqs, redirects, popups, recentErrors] = await Promise.all([
+      const [products, orders, customers, categories, coupons, productReviews, faqs, redirects, popups, recentErrors] = await Promise.all([
         (supabase as any).from("products").select("id", { count: "exact", head: true }),
         (supabase as any).from("orders").select("id", { count: "exact", head: true }),
         (supabase as any).from("profiles").select("id", { count: "exact", head: true }),
         (supabase as any).from("categories").select("id", { count: "exact", head: true }),
         (supabase as any).from("coupons").select("id", { count: "exact", head: true }),
-        (supabase as any).from("reviews").select("id", { count: "exact", head: true }),
+        (supabase as any).from("product_reviews").select("id", { count: "exact", head: true }),
         (supabase as any).from("faq_items").select("id", { count: "exact", head: true }),
         (supabase as any).from("seo_redirects").select("id", { count: "exact", head: true }),
         (supabase as any).from("site_popups").select("id", { count: "exact", head: true }),
@@ -45,7 +45,7 @@ export default function AdminSystemHealth() {
 
       const todayOrders = await (supabase as any).from("orders").select("id", { count: "exact", head: true }).gte("created_at", new Date().toISOString().slice(0, 10));
       
-      const pendingReviews = await (supabase as any).from("reviews").select("id", { count: "exact", head: true }).eq("approved", false);
+      const pendingReviews = await (supabase as any).from("product_reviews").select("id", { count: "exact", head: true }).neq("status", "approved");
 
       return {
         products: products.count || 0,
@@ -54,7 +54,7 @@ export default function AdminSystemHealth() {
         customers: customers.count || 0,
         categories: categories.count || 0,
         coupons: coupons.count || 0,
-        reviews: reviews.count || 0,
+        reviews: productReviews.count || 0,
         pendingReviews: pendingReviews.count || 0,
         faqs: faqs.count || 0,
         redirects: redirects.count || 0,

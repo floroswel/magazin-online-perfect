@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -8,6 +8,8 @@ import AdminRoutes from "@/components/admin/AdminRoutes";
 import AdminGlobalSearch from "@/components/admin/AdminGlobalSearch";
 import AdminNotifications from "@/components/admin/AdminNotifications";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export default function Admin() {
   const { user, loading: authLoading } = useAuth();
@@ -15,6 +17,43 @@ export default function Admin() {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const idleTimersRef = useRef<{ warning: ReturnType<typeof setTimeout> | null; logout: ReturnType<typeof setTimeout> | null }>({ warning: null, logout: null });
+
+  // Idle session timeout (admin only)
+  useEffect(() => {
+    if (authLoading || adminLoading || !user || !isAdmin) return;
+
+    const TIMEOUT_MS = 30 * 60 * 1000;
+    const WARNING_MS = 25 * 60 * 1000;
+
+    const clearTimers = () => {
+      if (idleTimersRef.current.warning) clearTimeout(idleTimersRef.current.warning);
+      if (idleTimersRef.current.logout) clearTimeout(idleTimersRef.current.logout);
+      idleTimersRef.current.warning = null;
+      idleTimersRef.current.logout = null;
+    };
+
+    const resetTimers = () => {
+      clearTimers();
+      idleTimersRef.current.warning = setTimeout(() => {
+        toast.warning("Sesiunea expiră în 5 minute din inactivitate!", { duration: 10000 });
+      }, WARNING_MS);
+      idleTimersRef.current.logout = setTimeout(async () => {
+        await supabase.auth.signOut();
+        navigate("/auth");
+        toast.error("Sesiune expirată. Te-ai deconectat.");
+      }, TIMEOUT_MS);
+    };
+
+    const events = ["mousedown", "keydown", "scroll", "touchstart"] as const;
+    events.forEach((e) => window.addEventListener(e, resetTimers));
+    resetTimers();
+
+    return () => {
+      clearTimers();
+      events.forEach((e) => window.removeEventListener(e, resetTimers));
+    };
+  }, [authLoading, adminLoading, user, isAdmin, navigate]);
 
   // Remove dark class from root when in admin
   useEffect(() => {
