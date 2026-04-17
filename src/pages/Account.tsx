@@ -1,24 +1,59 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Layout from "@/components/layout/Layout";
 import { useAuth } from "@/hooks/useAuth";
 import { useCurrency } from "@/hooks/useCurrency";
 import { usePageSeo } from "@/components/SeoHead";
 import { supabase } from "@/integrations/supabase/client";
 import ProductCard from "@/components/products/ProductCard";
-import { Package, Heart, MapPin, Star, Settings, LogOut, RotateCcw, FileText } from "lucide-react";
+import { Package, Heart, MapPin, Star, LogOut, RotateCcw, FileText, Plus, Pencil, Trash2 } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { toast } from "sonner";
+import useRomaniaGeo from "@/hooks/useRomaniaGeo";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import type { Tables } from "@/integrations/supabase/types";
 
-type Tab = "dashboard" | "orders" | "wishlist" | "loyalty";
+type Tab = "dashboard" | "orders" | "wishlist" | "loyalty" | "addresses";
+
+type AddrForm = {
+  full_name: string;
+  phone: string;
+  address: string;
+  postal_code: string;
+  countyId: string;
+  localityName: string;
+  label: string;
+  is_default: boolean;
+};
+
+const emptyAddrForm = (): AddrForm => ({
+  full_name: "",
+  phone: "",
+  address: "",
+  postal_code: "",
+  countyId: "",
+  localityName: "",
+  label: "Acasă",
+  is_default: false,
+});
 
 export default function Account() {
   const { user, loading: authLoading, signOut } = useAuth();
   const { format } = useCurrency();
   const { addToCart } = useCart();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [tab, setTab] = useState<Tab>("dashboard");
+  const { judete, localitati, fetchLocalitati, clearLocalitati, loadingLocalitati } = useRomaniaGeo();
+  const [addrDialogOpen, setAddrDialogOpen] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
+  const [addrForm, setAddrForm] = useState<AddrForm>(emptyAddrForm);
+  const [addrSaving, setAddrSaving] = useState(false);
 
   usePageSeo({ title: "Contul meu | Mama Lucica", noindex: true });
 
@@ -62,7 +97,115 @@ export default function Account() {
     enabled: !!user?.id && tab === "loyalty",
   });
 
+  const { data: addresses = [] } = useQuery({
+    queryKey: ["my-addresses", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("addresses")
+        .select("*")
+        .eq("user_id", user!.id)
+        .order("is_default", { ascending: false })
+        .order("created_at", { ascending: false });
+      return (data || []) as Tables<"addresses">[];
+    },
+    enabled: !!user?.id && tab === "addresses",
+  });
+
   const totalPoints = loyaltyPoints?.reduce((s, p) => s + (p.points || 0), 0) || 0;
+
+  const openNewAddress = () => {
+    setEditingAddressId(null);
+    setAddrForm(emptyAddrForm());
+    clearLocalitati();
+    setAddrDialogOpen(true);
+  };
+
+  const openEditAddress = (a: Tables<"addresses">) => {
+    setEditingAddressId(a.id);
+    const j = judete.find((x) => x.nume === a.county);
+    const countyId = j ? String(j.id) : "";
+    setAddrForm({
+      full_name: a.full_name,
+      phone: a.phone,
+      address: a.address,
+      postal_code: a.postal_code || "",
+      countyId,
+      localityName: a.city,
+      label: a.label || "Acasă",
+      is_default: !!a.is_default,
+    });
+    setAddrDialogOpen(true);
+    if (j) fetchLocalitati(j.id);
+    else clearLocalitati();
+  };
+
+  const saveAddress = async () => {
+    if (!user) return;
+    const f = addrForm;
+    if (!f.full_name.trim() || !f.phone.trim() || !f.address.trim() || !f.countyId || !f.localityName.trim()) {
+      toast.error("Completează câmpurile obligatorii.");
+      return;
+    }
+    const jud = judete.find((x) => String(x.id) === f.countyId);
+    if (!jud) return;
+    setAddrSaving(true);
+    try {
+      const payload = {
+        user_id: user.id,
+        full_name: f.full_name.trim(),
+        phone: f.phone.trim(),
+        address: f.address.trim(),
+        city: f.localityName.trim(),
+        county: jud.nume,
+        postal_code: f.postal_code.trim() || null,
+        label: f.label.trim() || null,
+        is_default: f.is_default,
+      };
+      if (f.is_default) {
+        await supabase.from("addresses").update({ is_default: false }).eq("user_id", user.id);
+      }
+      if (editingAddressId) {
+        const { error } = await supabase.from("addresses").update(payload).eq("id", editingAddressId).eq("user_id", user.id);
+        if (error) throw error;
+        toast.success("Adresa a fost actualizată.");
+      } else {
+        const { error } = await supabase.from("addresses").insert(payload);
+        if (error) throw error;
+        toast.success("Adresa a fost salvată.");
+      }
+      setAddrDialogOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["my-addresses", user.id] });
+    } catch (e: any) {
+      toast.error(e?.message || "Eroare la salvare");
+    } finally {
+      setAddrSaving(false);
+    }
+  };
+
+  const deleteAddress = async (id: string) => {
+    if (!user || !confirm("Ștergi această adresă?")) return;
+    const { error } = await supabase.from("addresses").delete().eq("id", id).eq("user_id", user.id);
+    if (error) toast.error("Nu s-a putut șterge");
+    else {
+      toast.success("Adresa a fost ștearsă");
+      queryClient.invalidateQueries({ queryKey: ["my-addresses", user.id] });
+    }
+  };
+
+  const setDefaultAddress = async (id: string) => {
+    if (!user) return;
+    await supabase.from("addresses").update({ is_default: false }).eq("user_id", user.id);
+    const { error } = await supabase.from("addresses").update({ is_default: true }).eq("id", id).eq("user_id", user.id);
+    if (error) toast.error("Eroare");
+    else {
+      toast.success("Adresa implicită a fost setată");
+      queryClient.invalidateQueries({ queryKey: ["my-addresses", user.id] });
+    }
+  };
+
+  const localityOptions = useMemo(() => {
+    return localitati.map((l) => ({ value: l.nume, label: l.nume }));
+  }, [localitati]);
   const initials = (profile?.full_name || user?.email || "U").slice(0, 2).toUpperCase();
 
   const statusColors: Record<string, string> = {
@@ -80,6 +223,7 @@ export default function Account() {
     { id: "orders" as Tab, icon: Package, label: "Comenzile mele" },
     { id: "wishlist" as Tab, icon: Heart, label: "Favorite" },
     { id: "loyalty" as Tab, icon: Star, label: "Puncte fidelitate" },
+    { id: "addresses" as Tab, icon: MapPin, label: "Adresele mele" },
   ];
 
   return (
@@ -269,9 +413,130 @@ export default function Account() {
                 )}
               </div>
             )}
+
+            {tab === "addresses" && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold">Adresele mele</h2>
+                  <Button size="sm" onClick={openNewAddress} className="gap-1">
+                    <Plus className="h-4 w-4" /> Adaugă adresă nouă
+                  </Button>
+                </div>
+                {addresses.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Nu ai încă adrese salvate.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {addresses.map((a) => (
+                      <div key={a.id} className="bg-card border border-border rounded-xl p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                        <div>
+                          <p className="font-semibold text-foreground">{a.full_name} · {a.phone}</p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {a.address}, {a.city}, {a.county}
+                            {a.postal_code ? `, ${a.postal_code}` : ""}
+                          </p>
+                          {a.label && <p className="text-xs text-muted-foreground mt-1">{a.label}</p>}
+                          {a.is_default && (
+                            <span className="inline-block mt-2 text-[10px] font-bold uppercase bg-primary/15 text-primary px-2 py-0.5 rounded">Implicită</span>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {!a.is_default && (
+                            <Button variant="outline" size="sm" onClick={() => setDefaultAddress(a.id)}>
+                              Setează ca implicită
+                            </Button>
+                          )}
+                          <Button variant="outline" size="sm" onClick={() => openEditAddress(a)} className="gap-1">
+                            <Pencil className="h-3.5 w-3.5" /> Editează
+                          </Button>
+                          <Button variant="ghost" size="sm" className="text-destructive" onClick={() => deleteAddress(a.id)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      <Dialog open={addrDialogOpen} onOpenChange={setAddrDialogOpen}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editingAddressId ? "Editează adresa" : "Adresă nouă"}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <Label>Nume complet</Label>
+                <Input value={addrForm.full_name} onChange={(e) => setAddrForm((s) => ({ ...s, full_name: e.target.value }))} />
+              </div>
+              <div>
+                <Label>Telefon</Label>
+                <Input value={addrForm.phone} onChange={(e) => setAddrForm((s) => ({ ...s, phone: e.target.value }))} />
+              </div>
+            </div>
+            <div>
+              <Label>Adresă (stradă, număr, bloc)</Label>
+              <Input value={addrForm.address} onChange={(e) => setAddrForm((s) => ({ ...s, address: e.target.value }))} />
+            </div>
+            <div>
+              <Label>Cod poștal</Label>
+              <Input value={addrForm.postal_code} onChange={(e) => setAddrForm((s) => ({ ...s, postal_code: e.target.value }))} />
+            </div>
+            <div>
+              <Label>Județ</Label>
+              <select
+                className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+                value={addrForm.countyId}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setAddrForm((s) => ({ ...s, countyId: v, localityName: "" }));
+                  if (v) fetchLocalitati(parseInt(v, 10));
+                  else clearLocalitati();
+                }}
+              >
+                <option value="">Selectează județul</option>
+                {judete.map((j) => (
+                  <option key={j.id} value={String(j.id)}>{j.nume}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <Label>Localitate</Label>
+              <select
+                className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+                disabled={!addrForm.countyId || loadingLocalitati}
+                value={addrForm.localityName}
+                onChange={(e) => setAddrForm((s) => ({ ...s, localityName: e.target.value }))}
+              >
+                <option value="">{loadingLocalitati ? "Se încarcă..." : "Selectează localitatea"}</option>
+                {localityOptions.map((o) => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <Label>Etichetă (opțional)</Label>
+              <Input value={addrForm.label} onChange={(e) => setAddrForm((s) => ({ ...s, label: e.target.value }))} placeholder="Acasă, Serviciu..." />
+            </div>
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="addr-default"
+                checked={addrForm.is_default}
+                onCheckedChange={(c) => setAddrForm((s) => ({ ...s, is_default: !!c }))}
+              />
+              <Label htmlFor="addr-default" className="font-normal cursor-pointer">Adresă implicită pentru livrare</Label>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddrDialogOpen(false)}>Anulează</Button>
+            <Button onClick={saveAddress} disabled={addrSaving}>{addrSaving ? "Se salvează..." : "Salvează"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 }

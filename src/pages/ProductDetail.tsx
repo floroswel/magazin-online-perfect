@@ -14,6 +14,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductFaq from "@/components/products/ProductFaq";
 import BurnTimeCalculator from "@/components/products/BurnTimeCalculator";
 import { toast } from "sonner";
+import OptimizedImage from "@/components/ui/OptimizedImage";
+import { useFavorites } from "@/hooks/useFavorites";
 
 const RECENTLY_KEY = "ml_recently_viewed";
 function addRecentlyViewed(id: string) {
@@ -31,7 +33,7 @@ export default function ProductDetail() {
   const { format } = useCurrency();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [liked, setLiked] = useState(false);
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [notifyEmail, setNotifyEmail] = useState("");
   const [notifySubmitted, setNotifySubmitted] = useState(false);
   const [notifyLoading, setNotifyLoading] = useState(false);
@@ -217,10 +219,13 @@ export default function ProductDetail() {
           {/* Images */}
           <div>
             <div className="relative aspect-square rounded-xl border border-border overflow-hidden bg-secondary mb-3 group">
-              <img
+              <OptimizedImage
                 src={images[selectedImage]}
                 alt={product.name}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                className="absolute inset-0 w-full h-full"
+                imgClassName="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                size="detail"
+                eager
               />
               {isOutOfStock && (
                 <div className="absolute inset-0 bg-foreground/40 flex items-center justify-center">
@@ -232,8 +237,16 @@ export default function ProductDetail() {
                   -{discount}%
                 </span>
               )}
-              <button onClick={() => setLiked(!liked)} className={`absolute top-3 right-3 w-10 h-10 rounded-full shadow-md flex items-center justify-center transition-colors ${liked ? "bg-destructive text-white" : "bg-card text-muted-foreground hover:bg-destructive hover:text-white"}`}>
-                <Heart className="h-5 w-5" fill={liked ? "currentColor" : "none"} />
+              <button
+                type="button"
+                onClick={() => product && toggleFavorite(product.id)}
+                className={`absolute top-3 right-3 z-10 p-2 rounded-full border transition-all ${
+                  product && isFavorite(product.id)
+                    ? "bg-red-500 border-red-500 text-white"
+                    : "border-border bg-card/90 text-muted-foreground hover:border-red-400 hover:text-red-500"
+                }`}
+              >
+                <Heart className="h-5 w-5" fill={product && isFavorite(product.id) ? "currentColor" : "none"} />
               </button>
             </div>
             {images.length > 1 && (
@@ -246,7 +259,13 @@ export default function ProductDetail() {
                       i === selectedImage ? "border-primary" : "border-transparent hover:border-muted-foreground/30"
                     }`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <OptimizedImage
+                      src={img}
+                      alt={`${product.name} ${i + 1}`}
+                      className="w-full h-full"
+                      imgClassName="w-full h-full object-cover"
+                      size="thumbnail"
+                    />
                   </button>
                 ))}
               </div>
@@ -372,8 +391,17 @@ export default function ProductDetail() {
                   </button>
                 </>
               )}
-              <button onClick={() => { setLiked(!liked); toast.success(liked ? "Eliminat din favorite" : "Adăugat la favorite"); }} className="w-full h-11 bg-transparent border-2 border-primary text-primary text-sm font-semibold rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors">
-                <Heart className="inline h-4 w-4 mr-1.5" fill={liked ? "currentColor" : "none"} /> {liked ? "Salvat la Favorite" : "Adaugă la Favorite"}
+              <button
+                type="button"
+                onClick={() => product && toggleFavorite(product.id)}
+                className={`w-full h-11 border-2 text-sm font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5 ${
+                  product && isFavorite(product.id)
+                    ? "border-red-500 bg-red-500/10 text-red-600"
+                    : "border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                }`}
+              >
+                <Heart className="inline h-4 w-4" fill={product && isFavorite(product.id) ? "currentColor" : "none"} />
+                {product && isFavorite(product.id) ? "Salvat la Favorite" : "Adaugă la Favorite"}
               </button>
             </div>
 
