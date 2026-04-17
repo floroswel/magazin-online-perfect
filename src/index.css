@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -12,39 +12,39 @@
 
 @layer base {
   :root {
-    /* ── Mama Lucica Design Tokens ── */
-    --ml-primary: 0 100% 50%;
-    --ml-primary-dark: 0 100% 40%;
-    --ml-primary-darker: 0 100% 30%;
-    --ml-primary-light: 0 80% 95%;
-    --ml-primary-hover: 0 100% 43%;
-    --ml-accent: 12 100% 50%;
-    --ml-accent-dark: 12 100% 40%;
-    --ml-accent-light: 12 100% 96%;
-    --ml-warning: 43 100% 50%;
-    --ml-success: 153 100% 33%;
+    /* ── Mama Lucica Artisan Palette: Ivory / Amber / Bordo ── */
+    --ml-primary: 350 65% 28%;        /* Bordo profund */
+    --ml-primary-dark: 350 70% 22%;
+    --ml-primary-darker: 350 75% 16%;
+    --ml-primary-light: 350 40% 94%;
+    --ml-primary-hover: 350 65% 34%;
+    --ml-accent: 35 75% 52%;          /* Amber cald */
+    --ml-accent-dark: 32 80% 42%;
+    --ml-accent-light: 38 80% 95%;
+    --ml-warning: 38 90% 55%;
+    --ml-success: 145 45% 38%;
 
-    /* Shadcn semantic mapping */
-    --background: 0 0% 97%;
-    --foreground: 0 0% 7%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 7%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 7%;
-    --primary: 0 100% 50%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 18% 95%;
-    --secondary-foreground: 0 0% 7%;
-    --muted: 240 18% 95%;
-    --muted-foreground: 220 10% 46%;
-    --accent: 240 18% 95%;
-    --accent-foreground: 0 0% 7%;
-    --destructive: 12 100% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 0 100% 50%;
-    --radius: 0.375rem;
+    /* Shadcn semantic mapping — ivory base, bordo primary */
+    --background: 38 35% 97%;          /* Ivory cald */
+    --foreground: 25 25% 14%;          /* Maro închis */
+    --card: 38 50% 99%;
+    --card-foreground: 25 25% 14%;
+    --popover: 38 50% 99%;
+    --popover-foreground: 25 25% 14%;
+    --primary: 350 65% 28%;            /* Bordo */
+    --primary-foreground: 38 50% 98%;
+    --secondary: 35 30% 92%;
+    --secondary-foreground: 25 25% 14%;
+    --muted: 35 25% 93%;
+    --muted-foreground: 25 12% 42%;
+    --accent: 35 75% 52%;               /* Amber */
+    --accent-foreground: 25 30% 12%;
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 38 50% 98%;
+    --border: 30 20% 86%;
+    --input: 30 20% 86%;
+    --ring: 350 65% 28%;
+    --radius: 0.5rem;
 
     /* Admin sidebar (keep) */
     --sidebar-background: 220 50% 18%;
@@ -112,6 +112,11 @@
     font-size: 14px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
   img { max-width: 100%; display: block; }
 }
