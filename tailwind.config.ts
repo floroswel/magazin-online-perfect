@@ -75,6 +75,17 @@ export default {
           yellow: "hsl(var(--ml-warning))",
           green: "hsl(var(--ml-success))",
         },
+        atelier: {
+          noir: "hsl(var(--atelier-noir))",
+          or: "hsl(var(--atelier-or))",
+          cream: "hsl(var(--atelier-cream))",
+          ivory: "hsl(var(--atelier-ivory))",
+          espresso: "hsl(var(--atelier-espresso))",
+          bordeaux: "hsl(var(--atelier-bordeaux))",
+          "bordeaux-soft": "hsl(var(--atelier-bordeaux-soft))",
+          sage: "hsl(var(--atelier-sage))",
+          "sage-soft": "hsl(var(--atelier-sage-soft))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
