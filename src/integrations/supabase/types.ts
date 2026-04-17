@@ -2758,7 +2758,6 @@ export type Database = {
       erp_integrations: {
         Row: {
           api_base_url: string | null
-          api_key: string | null
           auth_type: string | null
           created_at: string
           created_by: string | null
@@ -2781,7 +2780,6 @@ export type Database = {
         }
         Insert: {
           api_base_url?: string | null
-          api_key?: string | null
           auth_type?: string | null
           created_at?: string
           created_by?: string | null
@@ -2804,7 +2802,6 @@ export type Database = {
         }
         Update: {
           api_base_url?: string | null
-          api_key?: string | null
           auth_type?: string | null
           created_at?: string
           created_by?: string | null
@@ -2948,7 +2945,6 @@ export type Database = {
           is_active: boolean | null
           last_triggered_at: string | null
           name: string
-          secret_key: string | null
           updated_at: string
         }
         Insert: {
@@ -2959,7 +2955,6 @@ export type Database = {
           is_active?: boolean | null
           last_triggered_at?: string | null
           name: string
-          secret_key?: string | null
           updated_at?: string
         }
         Update: {
@@ -2970,7 +2965,6 @@ export type Database = {
           is_active?: boolean | null
           last_triggered_at?: string | null
           name?: string
-          secret_key?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -4032,7 +4026,6 @@ export type Database = {
           max_order_value: number | null
           min_order_value: number | null
           order_value_type: string
-          secret_key: string | null
           selected_categories: string[] | null
           selected_countries: string[] | null
           selected_customer_groups: string[] | null
@@ -4063,7 +4056,6 @@ export type Database = {
           max_order_value?: number | null
           min_order_value?: number | null
           order_value_type?: string
-          secret_key?: string | null
           selected_categories?: string[] | null
           selected_countries?: string[] | null
           selected_customer_groups?: string[] | null
@@ -4094,7 +4086,6 @@ export type Database = {
           max_order_value?: number | null
           min_order_value?: number | null
           order_value_type?: string
-          secret_key?: string | null
           selected_categories?: string[] | null
           selected_countries?: string[] | null
           selected_customer_groups?: string[] | null
@@ -5194,7 +5185,6 @@ export type Database = {
           allowed_ips: string | null
           checkout_display_name: string
           client_id: string | null
-          client_secret: string | null
           condition_categories: Json | null
           condition_countries: Json | null
           condition_customer_groups: Json | null
@@ -5217,7 +5207,6 @@ export type Database = {
           allowed_ips?: string | null
           checkout_display_name?: string
           client_id?: string | null
-          client_secret?: string | null
           condition_categories?: Json | null
           condition_countries?: Json | null
           condition_customer_groups?: Json | null
@@ -5240,7 +5229,6 @@ export type Database = {
           allowed_ips?: string | null
           checkout_display_name?: string
           client_id?: string | null
-          client_secret?: string | null
           condition_categories?: Json | null
           condition_countries?: Json | null
           condition_customer_groups?: Json | null
@@ -7854,7 +7842,6 @@ export type Database = {
       }
       sameday_settings: {
         Row: {
-          auth_token: string | null
           auto_generate: boolean
           auto_generate_on_status: string
           default_awb_payment: number
@@ -7865,7 +7852,6 @@ export type Database = {
           default_weight: number
           enabled: boolean
           id: string
-          password: string
           production_api_url: string
           sandbox_mode: boolean
           send_tracking_email: boolean
@@ -7874,7 +7860,6 @@ export type Database = {
           username: string
         }
         Insert: {
-          auth_token?: string | null
           auto_generate?: boolean
           auto_generate_on_status?: string
           default_awb_payment?: number
@@ -7885,7 +7870,6 @@ export type Database = {
           default_weight?: number
           enabled?: boolean
           id?: string
-          password?: string
           production_api_url?: string
           sandbox_mode?: boolean
           send_tracking_email?: boolean
@@ -7894,7 +7878,6 @@ export type Database = {
           username?: string
         }
         Update: {
-          auth_token?: string | null
           auto_generate?: boolean
           auto_generate_on_status?: string
           default_awb_payment?: number
@@ -7905,7 +7888,6 @@ export type Database = {
           default_weight?: number
           enabled?: boolean
           id?: string
-          password?: string
           production_api_url?: string
           sandbox_mode?: boolean
           send_tracking_email?: boolean
@@ -8493,7 +8475,6 @@ export type Database = {
           shipping_product_name: string
           sync_frequency: string
           sync_stocks_enabled: boolean
-          token: string
           unknown_products_action: string
           updated_at: string
           warehouse_name: string | null
@@ -8524,7 +8505,6 @@ export type Database = {
           shipping_product_name?: string
           sync_frequency?: string
           sync_stocks_enabled?: boolean
-          token?: string
           unknown_products_action?: string
           updated_at?: string
           warehouse_name?: string | null
@@ -8555,7 +8535,6 @@ export type Database = {
           shipping_product_name?: string
           sync_frequency?: string
           sync_stocks_enabled?: boolean
-          token?: string
           unknown_products_action?: string
           updated_at?: string
           warehouse_name?: string | null
@@ -9545,10 +9524,7 @@ export type Database = {
           limit_individual_pct: number | null
           limit_legal_pct: number | null
           max_order_value: number | null
-          merchant_public_key: string | null
           min_order_value: number
-          password: string | null
-          sftl_public_key: string | null
           show_footer_icon: boolean
           show_snippet: boolean
           store_id: string | null
@@ -9571,10 +9547,7 @@ export type Database = {
           limit_individual_pct?: number | null
           limit_legal_pct?: number | null
           max_order_value?: number | null
-          merchant_public_key?: string | null
           min_order_value?: number
-          password?: string | null
-          sftl_public_key?: string | null
           show_footer_icon?: boolean
           show_snippet?: boolean
           store_id?: string | null
@@ -9597,10 +9570,7 @@ export type Database = {
           limit_individual_pct?: number | null
           limit_legal_pct?: number | null
           max_order_value?: number | null
-          merchant_public_key?: string | null
           min_order_value?: number
-          password?: string | null
-          sftl_public_key?: string | null
           show_footer_icon?: boolean
           show_snippet?: boolean
           store_id?: string | null
