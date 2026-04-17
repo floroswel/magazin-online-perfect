@@ -11,38 +11,38 @@
 
 @layer base {
   :root {
-    /* Brand core */
-    --atelier-noir: 0 0% 8%;
-    --atelier-or: 35 38% 52%;
-    --atelier-cream: 38 38% 95%;
-    --atelier-ivory: 40 45% 97%;
-    --atelier-espresso: 25 20% 12%;
+    /* Brand core — Golden Lumini inspired: alb pur, negru, gold subtil */
+    --atelier-noir: 0 0% 6%;
+    --atelier-or: 38 42% 48%;
+    --atelier-cream: 0 0% 100%;
+    --atelier-ivory: 40 20% 99%;
+    --atelier-espresso: 0 0% 10%;
     --atelier-bordeaux: 350 38% 28%;
     --atelier-bordeaux-soft: 350 28% 38%;
     --atelier-sage: 145 18% 48%;
-    --atelier-sage-soft: 145 22% 88%;
+    --atelier-sage-soft: 145 22% 92%;
 
-    /* Shadcn semantic tokens */
-    --background: 38 38% 95%;
-    --foreground: 25 20% 12%;
-    --card: 40 45% 97%;
-    --card-foreground: 25 20% 12%;
-    --popover: 40 45% 97%;
-    --popover-foreground: 25 20% 12%;
-    --primary: 0 0% 8%;
-    --primary-foreground: 38 38% 95%;
-    --secondary: 350 38% 28%;
-    --secondary-foreground: 38 38% 95%;
-    --muted: 35 18% 92%;
-    --muted-foreground: 30 12% 38%;
-    --accent: 35 38% 52%;
+    /* Shadcn semantic tokens — luminos, aerian, minimal */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 8%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 8%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 8%;
+    --primary: 0 0% 6%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 8%;
+    --muted: 0 0% 97%;
+    --muted-foreground: 0 0% 42%;
+    --accent: 38 42% 48%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 55% 42%;
     --destructive-foreground: 0 0% 100%;
-    --border: 35 20% 84%;
-    --input: 35 20% 84%;
-    --ring: 35 38% 52%;
-    --radius: 0.25rem;
+    --border: 0 0% 92%;
+    --input: 0 0% 92%;
+    --ring: 38 42% 48%;
+    --radius: 0.125rem;
 
     --ml-primary: 0 0% 8%;
     --ml-primary-dark: 0 0% 4%;
