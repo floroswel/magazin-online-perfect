@@ -22,27 +22,27 @@
     --atelier-sage: 145 18% 48%;
     --atelier-sage-soft: 145 22% 92%;
 
-    /* Shadcn semantic tokens — luminos, aerian, viu */
-    /* Background: alb-perlat cu nuanță subtilă albastru marin deschis — luminos, atrage privirea */
-    --background: 210 60% 99%;
-    --foreground: 215 35% 12%;
+    /* Shadcn semantic tokens — luminos, aerian, minimal */
+    /* Background: alb-gri foarte deschis cu nuanță subtilă albastru-rece (echivalent oklch(0.985 0.003 247)) */
+    --background: 240 10% 98.5%;
+    --foreground: 0 0% 8%;
     --card: 0 0% 100%;
-    --card-foreground: 215 35% 12%;
+    --card-foreground: 0 0% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 215 35% 12%;
-    --primary: 215 45% 16%;
-    --primary-foreground: 210 60% 99%;
-    --secondary: 210 50% 96%;
-    --secondary-foreground: 215 35% 12%;
-    --muted: 210 45% 97%;
-    --muted-foreground: 215 18% 42%;
-    --accent: 38 55% 52%;
+    --popover-foreground: 0 0% 8%;
+    --primary: 0 0% 6%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 8%;
+    --muted: 0 0% 97%;
+    --muted-foreground: 0 0% 42%;
+    --accent: 38 42% 48%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 55% 45%;
+    --destructive: 0 55% 42%;
     --destructive-foreground: 0 0% 100%;
-    --border: 210 35% 92%;
-    --input: 210 35% 92%;
-    --ring: 38 55% 52%;
+    --border: 0 0% 92%;
+    --input: 0 0% 92%;
+    --ring: 38 42% 48%;
     --radius: 0.125rem;
 
     --ml-primary: 0 0% 8%;
