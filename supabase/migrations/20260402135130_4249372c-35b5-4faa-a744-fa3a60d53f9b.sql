@@ -1,0 +1,1 @@
+UPDATE public.site_visibility_settings SET is_active = true WHERE element_key IN ('header_logo', 'header_search', 'header_cart', 'header_menu', 'mega_menu', 'free_shipping_bar', 'announcement_countdown', 'footer_columns');

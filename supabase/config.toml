@@ -1,0 +1,112 @@
+project_id = "jkmiemvihdjwpcpgfleh"
+
+[functions.send-email]
+verify_jwt = false
+
+[functions.send-newsletter]
+verify_jwt = false
+
+[functions.import-products]
+verify_jwt = false
+
+[functions.cron-import]
+verify_jwt = false
+
+[functions.integration-sdk]
+verify_jwt = false
+
+[functions.generate-description]
+verify_jwt = false
+
+[functions.webhook-receiver]
+verify_jwt = false
+
+[functions.remove-background]
+verify_jwt = false
+
+[functions.sitemap]
+verify_jwt = false
+
+[functions.recover-abandoned-carts]
+verify_jwt = false
+
+[functions.generate-product-content]
+verify_jwt = false
+
+[functions.extract-attributes]
+verify_jwt = false
+
+[functions.generate-awb]
+verify_jwt = false
+
+[functions.check-tracking]
+verify_jwt = false
+
+[functions.erp-sync]
+verify_jwt = false
+
+[functions.process-subscriptions]
+verify_jwt = false
+
+[functions.generate-invoice-pdf]
+verify_jwt = false
+
+[functions.sync-customer-groups]
+verify_jwt = false
+
+[functions.request-reviews]
+verify_jwt = false
+
+[functions.smartbill]
+verify_jwt = false
+
+[functions.winback-processor]
+verify_jwt = false
+
+[functions.send-push]
+verify_jwt = false
+
+[functions.netopia-payment]
+verify_jwt = false
+
+[functions.netopia-ipn]
+verify_jwt = false
+
+[functions.mokka-payment]
+verify_jwt = false
+
+[functions.mokka-checkout]
+verify_jwt = false
+
+[functions.paypo-payment]
+verify_jwt = false
+
+[functions.paypo-notify]
+verify_jwt = false
+
+[functions.delete-account]
+verify_jwt = false
+
+[functions.post-purchase-flow]
+verify_jwt = false
+
+[functions.weekly-report]
+verify_jwt = false
+
+[functions.generate-qr]
+verify_jwt = false
+
+[functions.google-merchant-feed]
+verify_jwt = false
+
+[functions.check-login-attempts]
+verify_jwt = false
+
+[functions.anaf-lookup]
+verify_jwt = false
+
+[functions.daily-report]
+verify_jwt = false
+
+[functions.get-localities]
+verify_jwt = false

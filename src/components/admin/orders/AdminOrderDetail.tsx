@@ -1,0 +1,987 @@
+import { useState, useMemo } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import {
+  ArrowLeft, MapPin, CreditCard, Gift, CheckCircle2, Truck, XCircle,
+  RotateCcw, Package, Ban, StickyNote, Clock, Copy, FileText, Plus, Minus,
+  Tag, Pencil, Save, Printer, Send, ExternalLink, Loader2, Download, Receipt,
+} from "lucide-react";
+import { format } from "date-fns";
+import { ro } from "date-fns/locale";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import AddProductToOrderDialog from "./AddProductToOrderDialog";
+
+const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
+  pending: { label: "În așteptare", color: "bg-yellow-500/15 text-yellow-600 border-yellow-500/30", icon: <Package className="w-3 h-3" /> },
+  processing: { label: "În procesare", color: "bg-blue-500/15 text-blue-600 border-blue-500/30", icon: <CheckCircle2 className="w-3 h-3" /> },
+  confirmed: { label: "Confirmată", color: "bg-teal-500/15 text-teal-600 border-teal-500/30", icon: <CheckCircle2 className="w-3 h-3" /> },
+  shipped: { label: "Expediată", color: "bg-purple-500/15 text-purple-600 border-purple-500/30", icon: <Truck className="w-3 h-3" /> },
+  delivered: { label: "Livrată", color: "bg-green-500/15 text-green-600 border-green-500/30", icon: <CheckCircle2 className="w-3 h-3" /> },
+  cancelled: { label: "Anulată", color: "bg-red-500/15 text-red-600 border-red-500/30", icon: <XCircle className="w-3 h-3" /> },
+  refunded: { label: "Rambursată", color: "bg-orange-500/15 text-orange-600 border-orange-500/30", icon: <RotateCcw className="w-3 h-3" /> },
+};
+
+interface Props {
+  orderId: string;
+  onBack: () => void;
+}
+
+export default function AdminOrderDetail({ orderId, onBack }: Props) {
+  const queryClient = useQueryClient();
+  const [internalNote, setInternalNote] = useState("");
+  const [editAddress, setEditAddress] = useState(false);
+  const [addressDraft, setAddressDraft] = useState<any>(null);
+  const [showStatusDialog, setShowStatusDialog] = useState(false);
+  const [newStatus, setNewStatus] = useState("");
+  const [statusNote, setStatusNote] = useState("");
+  const [sendEmailOnStatus, setSendEmailOnStatus] = useState(true);
+  const [showRefundDialog, setShowRefundDialog] = useState(false);
+  const [refundAmount, setRefundAmount] = useState("");
+  const [refundReason, setRefundReason] = useState("");
+  const [awbCourier, setAwbCourier] = useState("");
+  const [generatingAwb, setGeneratingAwb] = useState(false);
+  const [generatingInvoice, setGeneratingInvoice] = useState(false);
+  const [smartbillLoading, setSmartbillLoading] = useState(false);
+  const [manualCourier, setManualCourier] = useState("");
+  const [manualAwb, setManualAwb] = useState("");
+  const [savingAwb, setSavingAwb] = useState(false);
+  const [showAddProduct, setShowAddProduct] = useState(false);
+
+  const { data: customStatuses = [] } = useQuery({
+    queryKey: ["order-statuses"],
+    queryFn: async () => {
+      const { data } = await supabase.from("order_statuses").select("*").order("sort_order");
+      return (data as any[]) || [];
+    },
+  });
+
+  const dynamicStatusConfig = useMemo(() => {
+    if (customStatuses.length > 0) {
+      const map: Record<string, { label: string; color: string; icon: React.ReactNode; _color?: string; allowed_transitions?: string[]; email_enabled?: boolean }> = {};
+      customStatuses.forEach((s: any) => {
+        map[s.key] = { label: s.name, color: "border", icon: <span className="text-xs">{s.icon}</span>, _color: s.color, allowed_transitions: s.allowed_transitions || [], email_enabled: s.email_enabled };
+      });
+      return map;
+    }
+    return statusConfig;
+  }, [customStatuses]);
+
+  const { data: orderData, isLoading } = useQuery({
+    queryKey: ["admin-order-detail", orderId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*, order_items(*, products(id, name, image_url, slug, sku, stock, price))")
+        .eq("id", orderId)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const order = orderData;
+
+  const allowedNextStatuses = useMemo(() => {
+    if (!order) return [];
+    const current = dynamicStatusConfig[order.status];
+    if (current && (current as any).allowed_transitions?.length > 0) {
+      return (current as any).allowed_transitions as string[];
+    }
+    return Object.keys(dynamicStatusConfig).filter(k => k !== order.status);
+  }, [order, dynamicStatusConfig]);
+
+  const { data: timeline = [] } = useQuery({
+    queryKey: ["order-timeline", orderId],
+    queryFn: async () => {
+      const { data } = await supabase.from("order_timeline").select("*").eq("order_id", orderId).order("created_at", { ascending: false });
+      return (data as any[]) || [];
+    },
+  });
+
+  const { data: carriers = [] } = useQuery({
+    queryKey: ["courier-configs-active"],
+    queryFn: async () => {
+      const { data } = await supabase.from("courier_configs").select("*").eq("is_active", true).order("display_name");
+      return (data as any[]) || [];
+    },
+  });
+
+  const { data: trackingEvents = [] } = useQuery({
+    queryKey: ["tracking-events", orderId],
+    queryFn: async () => {
+      const { data } = await supabase.from("tracking_events").select("*").eq("order_id", orderId).order("event_at", { ascending: false });
+      return (data as any[]) || [];
+    },
+  });
+
+  const { data: orderInvoices = [] } = useQuery({
+    queryKey: ["order-invoices", orderId],
+    queryFn: async () => {
+      const { data } = await supabase.from("invoices").select("id, invoice_number, type, status, total, created_at").eq("order_id", orderId).order("created_at", { ascending: false });
+      return (data as any[]) || [];
+    },
+  });
+
+  const { data: orderTags = [] } = useQuery({
+    queryKey: ["order-detail-tags", orderId],
+    queryFn: async () => {
+      const { data } = await supabase.from("order_tag_assignments").select("*, order_tags(*)").eq("order_id", orderId);
+      return (data as any[]) || [];
+    },
+  });
+
+  // ─── Mutations ───
+  const changeStatus = async () => {
+    if (!newStatus || !order) return;
+    await supabase.from("orders").update({ status: newStatus, updated_at: new Date().toISOString() }).eq("id", orderId);
+    await supabase.from("order_timeline").insert({
+      order_id: orderId, action: "status_change", old_status: order.status, new_status: newStatus, note: statusNote || null,
+    });
+    if (sendEmailOnStatus && order.user_email) {
+      const emailType = newStatus === "shipped" ? "shipping_update" : "order_status";
+      const items = (order.order_items || []).map((i: any) => ({
+        name: i.product_name || i.products?.name || "Produs",
+        quantity: i.quantity,
+        price: i.unit_price || i.price,
+        image_url: i.image_url || i.products?.image_url,
+      }));
+      supabase.functions.invoke("send-email", {
+        body: {
+          type: emailType,
+          to: order.user_email,
+          data: {
+            orderId: order.id,
+            orderNumber: order.order_number,
+            status: newStatus,
+            customerName: (order.shipping_address as any)?.fullName || (order.shipping_address as any)?.full_name || "",
+            trackingNumber: (order as any).awb_number || (order as any).tracking_number || "",
+            courierName: (order as any).courier || "",
+            total: order.total,
+            items,
+            shippingAddress: order.shipping_address,
+          },
+        },
+      }).catch(console.error);
+    }
+    queryClient.invalidateQueries({ queryKey: ["admin-order-detail", orderId] });
+    queryClient.invalidateQueries({ queryKey: ["order-timeline", orderId] });
+    queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+    toast.success(`Status schimbat + ${sendEmailOnStatus ? "email trimis" : "fără email"}`);
+    setShowStatusDialog(false);
+    setStatusNote("");
+  };
+
+  const addInternalNote = async () => {
+    if (!internalNote.trim()) return;
+    await supabase.from("order_timeline").insert({
+      order_id: orderId, action: "note", note: internalNote, is_internal: true,
+    });
+    // Also save to internal_notes field
+    const current = order?.internal_notes || "";
+    const updated = current ? `${current}\n[${format(new Date(), "dd.MM.yy HH:mm")}] ${internalNote}` : `[${format(new Date(), "dd.MM.yy HH:mm")}] ${internalNote}`;
+    await supabase.from("orders").update({ internal_notes: updated }).eq("id", orderId);
+    queryClient.invalidateQueries({ queryKey: ["order-timeline", orderId] });
+    queryClient.invalidateQueries({ queryKey: ["admin-order-detail", orderId] });
+    toast.success("Notă adăugată");
+    setInternalNote("");
+  };
+
+  const saveAddress = async () => {
+    if (!addressDraft) return;
+    await supabase.from("orders").update({ shipping_address: addressDraft }).eq("id", orderId);
+    await supabase.from("order_timeline").insert({ order_id: orderId, action: "address_edit", note: "Adresă de livrare modificată" });
+    queryClient.invalidateQueries({ queryKey: ["admin-order-detail", orderId] });
+    queryClient.invalidateQueries({ queryKey: ["order-timeline", orderId] });
+    toast.success("Adresă actualizată");
+    setEditAddress(false);
+  };
+
+  const duplicateOrder = async () => {
+    if (!order) return;
+    const { data: newOrder } = await supabase.from("orders").insert({
+      user_id: order.user_id, user_email: order.user_email, total: order.total,
+      status: "pending", payment_method: order.payment_method,
+      shipping_address: order.shipping_address, billing_address: order.billing_address,
+      notes: `Duplicat din comanda #${order.order_number || order.id.slice(0, 8)}`,
+      subtotal: order.subtotal, shipping_total: order.shipping_total,
+    }).select().single();
+
+    if (newOrder && order.order_items) {
+      const items = order.order_items.map((i: any) => ({
+        order_id: newOrder.id, product_id: i.product_id, variant_id: i.variant_id,
+        quantity: i.quantity, price: i.price,
+      }));
+      await supabase.from("order_items").insert(items);
+    }
+    queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+    toast.success("Comandă duplicată cu succes!");
+  };
+
+  const processRefund = async () => {
+    if (!order) return;
+    const amount = refundAmount ? Number(refundAmount) : Number(order.total);
+    const isPartial = amount < Number(order.total);
+
+    await supabase.from("orders").update({ status: "refunded" }).eq("id", orderId);
+    await supabase.from("order_timeline").insert({
+      order_id: orderId, action: "refund",
+      note: `${isPartial ? "Rambursare parțială" : "Rambursare completă"}: ${amount.toFixed(2)} RON. Motiv: ${refundReason || "—"}`,
+    });
+    queryClient.invalidateQueries({ queryKey: ["admin-order-detail", orderId] });
+    queryClient.invalidateQueries({ queryKey: ["order-timeline", orderId] });
+    queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+    toast.success(`Rambursare de ${amount.toFixed(2)} RON procesată`);
+    setShowRefundDialog(false);
+  };
+
+  const generateAWB = async () => {
+    if (!order || !awbCourier) return;
+    setGeneratingAwb(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-awb", {
+        body: { order_ids: [orderId], courier: awbCourier },
+      });
+      if (error) throw error;
+      const result = data?.results?.[0];
+      if (result?.success) {
+        toast.success(`AWB generat: ${result.awb}`);
+        queryClient.invalidateQueries({ queryKey: ["admin-order-detail", orderId] });
+        queryClient.invalidateQueries({ queryKey: ["order-timeline", orderId] });
+        queryClient.invalidateQueries({ queryKey: ["tracking-events", orderId] });
+        queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      } else {
+        toast.error(result?.error || "Eroare la generare AWB");
+      }
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+    setGeneratingAwb(false);
+  };
+
+  const updateItemQuantity = async (itemId: string, newQty: number) => {
+    if (newQty < 1) return;
+    await supabase.from("order_items").update({ quantity: newQty }).eq("id", itemId);
+    // Recalculate total
+    const items = order?.order_items?.map((i: any) => i.id === itemId ? { ...i, quantity: newQty } : i) || [];
+    const newTotal = items.reduce((s: number, i: any) => s + Number(i.price) * i.quantity, 0);
+    await supabase.from("orders").update({ total: newTotal, subtotal: newTotal }).eq("id", orderId);
+    await supabase.from("order_timeline").insert({ order_id: orderId, action: "edit", note: `Cantitate modificată pentru articol` });
+    queryClient.invalidateQueries({ queryKey: ["admin-order-detail", orderId] });
+    queryClient.invalidateQueries({ queryKey: ["order-timeline", orderId] });
+    toast.success("Cantitate actualizată");
+  };
+
+  const removeItem = async (itemId: string) => {
+    await supabase.from("order_items").delete().eq("id", itemId);
+    const remaining = order?.order_items?.filter((i: any) => i.id !== itemId) || [];
+    const newTotal = remaining.reduce((s: number, i: any) => s + Number(i.price) * i.quantity, 0);
+    await supabase.from("orders").update({ total: newTotal, subtotal: newTotal }).eq("id", orderId);
+    await supabase.from("order_timeline").insert({ order_id: orderId, action: "edit", note: "Produs eliminat din comandă" });
+    queryClient.invalidateQueries({ queryKey: ["admin-order-detail", orderId] });
+    queryClient.invalidateQueries({ queryKey: ["order-timeline", orderId] });
+    toast.success("Produs eliminat");
+  };
+
+  const generateInvoice = async (type: string = "invoice") => {
+    if (!order) return;
+    setGeneratingInvoice(true);
+    try {
+      // Fetch invoice settings
+      const { data: invSettings } = await supabase
+        .from("app_settings")
+        .select("value_json")
+        .eq("key", "invoice_settings")
+        .maybeSingle();
+      const settings = (invSettings?.value_json || {}) as any;
+      const prefix = settings.invoice_prefix || "FACT";
+      const vatRate = settings.default_vat_rate || 19;
+
+      // Get next number
+      const { data: lastInv } = await supabase.from("invoices").select("invoice_number").eq("series", prefix).order("created_at", { ascending: false }).limit(1);
+      let nextNum = settings.invoice_start_number || 1;
+      if (lastInv?.[0]?.invoice_number) {
+        const match = lastInv[0].invoice_number.match(/(\d+)$/);
+        if (match) nextNum = parseInt(match[1]) + 1;
+      }
+      const invoiceNumber = `${prefix}-${new Date().getFullYear()}-${String(nextNum).padStart(5, "0")}`;
+
+      // Get order items
+      const { data: orderItems } = await supabase.from("order_items").select("*, products(name)").eq("order_id", orderId);
+      const items = (orderItems || []).map((oi: any, i: number) => ({
+        description: oi.products?.name || "Produs",
+        quantity: oi.quantity,
+        unit_price: oi.price,
+        vat_rate: vatRate,
+        vat_amount: oi.quantity * oi.price * (vatRate / 100),
+        total: oi.quantity * oi.price * (1 + vatRate / 100),
+        sort_order: i,
+        product_id: oi.product_id,
+      }));
+
+      const subtotal = items.reduce((s: number, i: any) => s + i.quantity * i.unit_price, 0);
+      const vatAmount = items.reduce((s: number, i: any) => s + i.vat_amount, 0);
+      const total = subtotal + vatAmount;
+      const addr = order.shipping_address as any;
+
+      const { data: inv, error } = await supabase.from("invoices").insert({
+        invoice_number: invoiceNumber,
+        series: prefix,
+        type,
+        order_id: orderId,
+        seller_name: settings.company_name || "",
+        seller_cui: settings.company_cui || "",
+        seller_reg_com: settings.company_reg_com || "",
+        seller_address: settings.company_address || "",
+        seller_bank: settings.company_bank || "",
+        seller_iban: settings.company_iban || "",
+        buyer_name: addr?.full_name || "",
+        buyer_address: addr ? `${addr.address}, ${addr.city}, ${addr.county}` : "",
+        buyer_email: order.user_email || "",
+        buyer_phone: addr?.phone || "",
+        vat_rate: vatRate,
+        subtotal,
+        vat_amount: vatAmount,
+        total,
+        status: "issued",
+        issued_at: new Date().toISOString(),
+        payment_method: order.payment_method,
+        payment_status: order.payment_status,
+        currency: "RON",
+      }).select().single();
+
+      if (error) throw error;
+
+      // Insert items
+      const invoiceItems = items.map((item: any) => ({ ...item, invoice_id: inv.id }));
+      await supabase.from("invoice_items").insert(invoiceItems);
+
+      // Timeline entry
+      await supabase.from("order_timeline").insert({
+        order_id: orderId, action: "invoice", note: `Factură ${type === "proforma" ? "proformă" : ""} generată: ${invoiceNumber}`,
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["order-invoices", orderId] });
+      queryClient.invalidateQueries({ queryKey: ["order-timeline", orderId] });
+      queryClient.invalidateQueries({ queryKey: ["admin-invoices"] });
+      toast.success(`Factură ${invoiceNumber} generată!`);
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+    setGeneratingInvoice(false);
+  };
+
+  const downloadInvoicePdf = async (invoiceId: string) => {
+    try {
+      toast.info("Se generează factura PDF...");
+      const { data, error } = await supabase.functions.invoke("generate-invoice-pdf", {
+        body: { invoice_id: invoiceId },
+      });
+      if (error) throw error;
+      const blob = new Blob([data], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Factura_${invoiceId.slice(0, 8)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success("Factura descărcată!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Eroare la generare PDF");
+    }
+  };
+
+  if (isLoading || !order) {
+    return <div className="text-center py-12 text-muted-foreground">Se încarcă...</div>;
+  }
+
+  const addr = order.shipping_address as any;
+  const billing = order.billing_address as any;
+  const subtotal = (order.order_items || []).reduce((s: number, i: any) => s + Number(i.price) * i.quantity, 0);
+  const StatusChip = ({ status }: { status: string }) => {
+    const cfg = dynamicStatusConfig[status] || statusConfig[status] || { label: status, color: "bg-muted text-muted-foreground", icon: null };
+    const customColor = (cfg as any)._color;
+    if (customColor) {
+      return <Badge variant="outline" className="gap-1 font-medium border" style={{ borderColor: customColor, color: customColor, backgroundColor: `${customColor}15` }}>{cfg.icon} {cfg.label}</Badge>;
+    }
+    return <Badge variant="outline" className={cn("gap-1 font-medium border", cfg.color)}>{cfg.icon} {cfg.label}</Badge>;
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={onBack}><ArrowLeft className="w-4 h-4" /></Button>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-lg font-bold">Comandă #{order.order_number || order.id.slice(0, 8)}</h1>
+              <StatusChip status={order.status} />
+              {orderTags.map((ta: any) => (
+                <Badge key={ta.id} variant="outline" className="text-[10px]" style={{ borderColor: ta.order_tags?.color, color: ta.order_tags?.color }}>
+                  {ta.order_tags?.name}
+                </Badge>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">{format(new Date(order.created_at), "dd MMMM yyyy, HH:mm", { locale: ro })} · {order.user_email}</p>
+          </div>
+        </div>
+        <div className="flex gap-1.5">
+          <Button variant="outline" size="sm" onClick={() => setShowStatusDialog(true)}><Pencil className="w-3.5 h-3.5 mr-1" />Status</Button>
+          <Button variant="outline" size="sm" onClick={duplicateOrder}><Copy className="w-3.5 h-3.5 mr-1" />Duplică</Button>
+          {!["cancelled", "refunded"].includes(order.status) && (
+            <Button variant="outline" size="sm" className="text-destructive" onClick={() => { setRefundAmount(String(order.total)); setShowRefundDialog(true); }}>
+              <RotateCcw className="w-3.5 h-3.5 mr-1" />Ramburs
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-4">
+        {/* ─── Left Column: Products + Totals ─── */}
+        <div className="lg:col-span-2 space-y-4">
+          <Card>
+            <CardHeader className="pb-2 flex flex-row items-center justify-between">
+              <CardTitle className="text-sm">Produse comandate</CardTitle>
+              {["pending", "processing", "confirmed"].includes(order.status) && (
+                <Button variant="outline" size="sm" onClick={() => setShowAddProduct(true)} className="h-7 text-xs gap-1">
+                  <Plus className="w-3.5 h-3.5" />Adaugă produs
+                </Button>
+              )}
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Produs</TableHead>
+                    <TableHead>SKU</TableHead>
+                    <TableHead className="text-center">Cant.</TableHead>
+                    <TableHead className="text-right">Preț</TableHead>
+                    <TableHead className="text-right">Total</TableHead>
+                    {["pending", "processing"].includes(order.status) && <TableHead className="w-16"></TableHead>}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {order.order_items?.map((item: any) => (
+                    <TableRow key={item.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          {item.products?.image_url && <img src={item.products.image_url} alt="" className="w-9 h-9 rounded object-cover border" />}
+                          <span className="text-sm">{item.products?.name || "Produs șters"}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground font-mono">{item.products?.sku || "—"}</TableCell>
+                      <TableCell className="text-center">
+                        {["pending", "processing"].includes(order.status) ? (
+                          <div className="flex items-center justify-center gap-1">
+                            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => updateItemQuantity(item.id, item.quantity - 1)} disabled={item.quantity <= 1}>
+                              <Minus className="w-3 h-3" />
+                            </Button>
+                            <span className="text-sm w-6 text-center">{item.quantity}</span>
+                            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => updateItemQuantity(item.id, item.quantity + 1)}>
+                              <Plus className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <span>{item.quantity}</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right text-sm">{Number(item.price).toFixed(2)} RON</TableCell>
+                      <TableCell className="text-right font-medium">{(Number(item.price) * item.quantity).toFixed(2)} RON</TableCell>
+                      {["pending", "processing"].includes(order.status) && (
+                        <TableCell>
+                          <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => removeItem(item.id)}>
+                            <XCircle className="w-3.5 h-3.5" />
+                          </Button>
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <div className="mt-3 border-t pt-3 space-y-1 text-sm">
+                <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span>{subtotal.toFixed(2)} RON</span></div>
+                {Number(order.shipping_total) > 0 && <div className="flex justify-between"><span className="text-muted-foreground">Transport</span><span>{Number(order.shipping_total).toFixed(2)} RON</span></div>}
+                {Number(order.discount_amount || order.discount_total) > 0 && <div className="flex justify-between text-green-500"><span>Discount</span><span>-{Number(order.discount_amount || order.discount_total).toFixed(2)} RON</span></div>}
+                <div className="flex justify-between font-bold text-base pt-1 border-t"><span>Total</span><span>{Number(order.total).toFixed(2)} RON</span></div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Timeline */}
+          <Card>
+            <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Timeline</CardTitle></CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[250px]">
+                <div className="space-y-3">
+                  {timeline.map((t: any) => (
+                    <div key={t.id} className="flex gap-3 items-start">
+                      <div className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-medium">
+                            {t.action === "status_change" ? `Status: ${statusConfig[t.old_status]?.label || t.old_status || "—"} → ${statusConfig[t.new_status]?.label || t.new_status}` :
+                             t.action === "note" ? "Notă internă" :
+                             t.action === "refund" ? "Rambursare" :
+                             t.action === "edit" ? "Editare comandă" :
+                             t.action === "address_edit" ? "Editare adresă" : t.action}
+                          </span>
+                          <span className="text-[10px] text-muted-foreground">{format(new Date(t.created_at), "dd.MM.yy HH:mm")}</span>
+                        </div>
+                        {t.note && <p className="text-xs text-muted-foreground mt-0.5">{t.note}</p>}
+                      </div>
+                    </div>
+                  ))}
+                  {/* Initial order creation */}
+                  <div className="flex gap-3 items-start">
+                    <div className="w-2 h-2 rounded-full bg-muted-foreground/30 mt-1.5 shrink-0" />
+                    <div>
+                      <span className="text-xs font-medium">Comandă creată</span>
+                      <span className="text-[10px] text-muted-foreground ml-2">{format(new Date(order.created_at), "dd.MM.yy HH:mm")}</span>
+                    </div>
+                  </div>
+                </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+
+          {/* Internal notes */}
+          <Card>
+            <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1"><StickyNote className="w-3.5 h-3.5" /> Note interne</CardTitle></CardHeader>
+            <CardContent>
+              {order.internal_notes && (
+                <pre className="text-xs text-muted-foreground whitespace-pre-wrap mb-3 bg-muted/30 p-2 rounded">{order.internal_notes}</pre>
+              )}
+              <div className="flex gap-2">
+                <Textarea value={internalNote} onChange={e => setInternalNote(e.target.value)} placeholder="Adaugă notă internă (vizibilă doar staff)..." rows={2} className="text-xs" />
+                <Button size="sm" onClick={addInternalNote} disabled={!internalNote.trim()} className="shrink-0">
+                  <Plus className="w-3.5 h-3.5 mr-1" />Adaugă
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* ─── Right Column: Info cards ─── */}
+        <div className="space-y-4">
+          {/* Customer notes */}
+          {order.notes && (
+            <Card className="border-yellow-500/30 bg-yellow-500/5">
+              <CardContent className="p-4">
+                <h4 className="text-xs font-semibold flex items-center gap-1 mb-1">💬 Notă client</h4>
+                <p className="text-sm">{order.notes}</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Delivery address */}
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-xs font-semibold flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> Adresă livrare</h4>
+                {["pending", "processing"].includes(order.status) && (
+                  <Button variant="ghost" size="sm" className="h-6 text-[10px]" onClick={() => { setAddressDraft(addr ? { ...addr } : {}); setEditAddress(true); }}>
+                    <Pencil className="w-3 h-3 mr-1" />Edit
+                  </Button>
+                )}
+              </div>
+              {addr ? (
+                <div className="text-sm text-muted-foreground space-y-0.5">
+                  <p className="font-medium text-foreground">{addr.full_name}</p>
+                  <p>{addr.address}</p>
+                  <p>{addr.city}, {addr.county} {addr.postal_code || ""}</p>
+                  <p>📞 {addr.phone}</p>
+                </div>
+              ) : <p className="text-xs text-muted-foreground">—</p>}
+            </CardContent>
+          </Card>
+
+          {/* Billing address */}
+          {billing && (
+            <Card>
+              <CardContent className="p-4">
+                <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><FileText className="w-3.5 h-3.5" /> Adresă facturare</h4>
+                <div className="text-sm text-muted-foreground space-y-0.5">
+                  <p className="font-medium text-foreground">{billing.full_name || billing.company_name}</p>
+                  <p>{billing.address}</p>
+                  <p>{billing.city}, {billing.county}</p>
+                  {billing.cui && <p>CUI: {billing.cui}</p>}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Payment */}
+          <Card>
+            <CardContent className="p-4">
+              <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><CreditCard className="w-3.5 h-3.5" /> Plată</h4>
+              <div className="text-sm text-muted-foreground">
+                <p className="capitalize font-medium text-foreground">{order.payment_method || "Ramburs"}</p>
+                <p className="text-xs">Status: {order.payment_status || "—"}</p>
+                {order.payment_installments && (
+                  <p className="text-xs mt-1">{(order.payment_installments as any).months || (order.payment_installments as any).count} rate via {(order.payment_installments as any).provider}</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Gift Details */}
+          {order.gift_wrapping && (
+            <Card className="border-amber-200 dark:border-amber-700/30">
+              <CardContent className="p-4">
+                <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><Gift className="w-3.5 h-3.5 text-amber-500" /> Detalii Cadou</h4>
+                <div className="text-sm text-muted-foreground space-y-1">
+                  <p className="text-xs">Ambalaj: <span className="font-medium text-foreground">{(order.gift_wrapping as any)?.wrapping || '—'}</span></p>
+                  {(order.gift_wrapping as any)?.price > 0 && (
+                    <p className="text-xs">Preț ambalaj: <span className="font-medium text-foreground">{(order.gift_wrapping as any)?.price} RON</span></p>
+                  )}
+                  {(order.gift_wrapping as any)?.message && (
+                    <div className="mt-2 p-2 bg-amber-50 dark:bg-amber-900/20 rounded border border-amber-200 dark:border-amber-700/30">
+                      <p className="text-[10px] font-semibold text-amber-700 mb-1">Mesaj cadou:</p>
+                      <p className="text-xs italic">„{(order.gift_wrapping as any)?.message}"</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <Card>
+            <CardContent className="p-4">
+              <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><Truck className="w-3.5 h-3.5" /> Expediere & Tracking</h4>
+              <div className="text-sm text-muted-foreground space-y-2">
+                <p>Status: {order.shipping_status || "—"}</p>
+                {order.fulfillment_warehouse_id && <p className="text-xs">Depozit: {(order.fulfillment_warehouse_id as string).slice(0, 8)}</p>}
+
+                {(order as any).tracking_number ? (
+                  <div className="space-y-2">
+                    <div className="bg-green-500/10 rounded-lg p-3 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <Badge className="bg-green-500/20 text-green-600 border-green-500/30 text-[10px]">Expediat ✓</Badge>
+                        <Badge variant="outline" className="text-[10px] font-mono">{(order as any).tracking_number}</Badge>
+                      </div>
+                      {(order as any).courier_name && (
+                        <p className="text-xs">Curier: {(order as any).courier_name}</p>
+                      )}
+                      {(order as any).shipped_at && (
+                        <p className="text-[10px] text-muted-foreground">Expediat la: {format(new Date((order as any).shipped_at), "dd.MM.yyyy HH:mm", { locale: ro })}</p>
+                      )}
+                      {(order as any).tracking_url && (
+                        <a href={(order as any).tracking_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary flex items-center gap-1 hover:underline">
+                          <ExternalLink className="w-3 h-3" /> Urmărește coletul →
+                        </a>
+                      )}
+                    </div>
+                    {trackingEvents.length > 0 && (
+                      <div className="border-t pt-2 space-y-1">
+                        <p className="text-[10px] font-semibold text-foreground">Istoric tracking</p>
+                        {trackingEvents.slice(0, 5).map((ev: any) => (
+                          <div key={ev.id} className="text-[10px] text-muted-foreground">
+                            <span className="font-medium">{ev.status}</span> — {ev.description || "—"}
+                            <span className="ml-1 opacity-60">{format(new Date(ev.event_at), "dd.MM HH:mm")}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-2 border-t pt-2">
+                    <p className="text-xs font-medium text-foreground">Expediere manuală</p>
+                    <Select value={manualCourier} onValueChange={setManualCourier}>
+                      <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Selectează curier" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Poșta Română">Poșta Română</SelectItem>
+                        <SelectItem value="Fan Courier">Fan Courier</SelectItem>
+                        <SelectItem value="Cargus">Cargus</SelectItem>
+                        <SelectItem value="Sameday">Sameday</SelectItem>
+                        <SelectItem value="DPD">DPD</SelectItem>
+                        <SelectItem value="GLS">GLS</SelectItem>
+                        <SelectItem value="DHL">DHL</SelectItem>
+                        <SelectItem value="Urgent Cargus">Urgent Cargus</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Input placeholder="Număr AWB" value={manualAwb} onChange={e => setManualAwb(e.target.value)} className="h-8 text-xs" />
+                    <Button size="sm" className="w-full" onClick={async () => {
+                      if (!manualCourier || !manualAwb.trim()) { toast.error("Selectează curierul și introdu AWB-ul."); return; }
+                      setSavingAwb(true);
+                      const trackingUrlTemplates: Record<string, string> = {
+                        "Poșta Română": `https://www.posta-romana.ro/track-trace.html?awb=${manualAwb.trim()}`,
+                        "Fan Courier": `https://www.fancourier.ro/en/tracking/?awb=${manualAwb.trim()}`,
+                        "Cargus": `https://www.cargus.ro/tracking-colet/?Awb=${manualAwb.trim()}`,
+                        "Sameday": `https://sameday.ro/tracking?awb=${manualAwb.trim()}`,
+                        "DPD": `https://tracking.dpd.de/status/ro_RO/parcel/${manualAwb.trim()}`,
+                        "GLS": `https://gls-group.eu/track/${manualAwb.trim()}`,
+                        "DHL": `https://www.dhl.com/ro-ro/home/tracking.html?tracking-id=${manualAwb.trim()}`,
+                        "Urgent Cargus": `https://www.cargus.ro/tracking-colet/?Awb=${manualAwb.trim()}`,
+                      };
+                      const trackingUrl = trackingUrlTemplates[manualCourier] || "";
+                      const now = new Date().toISOString();
+                      await supabase.from("orders").update({
+                        courier_name: manualCourier,
+                        tracking_number: manualAwb.trim(),
+                        tracking_url: trackingUrl,
+                        shipped_at: now,
+                        status: "shipped",
+                        updated_at: now,
+                      } as any).eq("id", orderId);
+                      await supabase.from("order_timeline").insert({
+                        order_id: orderId, action: "shipped", note: `Expediat via ${manualCourier} — AWB: ${manualAwb.trim()}`,
+                      });
+                      queryClient.invalidateQueries({ queryKey: ["admin-order-detail", orderId] });
+                      queryClient.invalidateQueries({ queryKey: ["order-timeline", orderId] });
+                      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+                      toast.success(`AWB salvat: ${manualAwb.trim()} (${manualCourier})`);
+                      setSavingAwb(false);
+                      setManualAwb("");
+                      setManualCourier("");
+                    }} disabled={!manualCourier || !manualAwb.trim() || savingAwb}>
+                      {savingAwb ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <Save className="w-3.5 h-3.5 mr-1" />}
+                      Salvează AWB
+                    </Button>
+
+                    <Separator className="my-2" />
+                    <p className="text-xs font-medium text-foreground">Generare AWB automat</p>
+                    <Select value={awbCourier} onValueChange={setAwbCourier}>
+                      <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Selectează curier" /></SelectTrigger>
+                      <SelectContent>
+                        {carriers.map((c: any) => <SelectItem key={c.courier} value={c.courier}>{c.display_name}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                    <Button size="sm" variant="outline" className="w-full" onClick={generateAWB} disabled={!awbCourier || generatingAwb}>
+                      {generatingAwb ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <Printer className="w-3.5 h-3.5 mr-1" />}
+                      {generatingAwb ? "Se generează..." : "Generează AWB"}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Invoices */}
+          <Card>
+            <CardContent className="p-4">
+              <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><Receipt className="w-3.5 h-3.5" /> Facturi</h4>
+              {orderInvoices.length > 0 ? (
+                <div className="space-y-2 mb-3">
+                  {orderInvoices.map((inv: any) => (
+                    <div key={inv.id} className="flex items-center justify-between text-xs bg-muted/30 rounded p-2">
+                      <div>
+                        <span className="font-mono font-medium">{inv.invoice_number}</span>
+                        <Badge variant="outline" className="ml-1 text-[9px]">{inv.type === "proforma" ? "Proformă" : inv.type === "storno" ? "Storno" : "Factură"}</Badge>
+                      </div>
+                      <Button variant="ghost" size="sm" className="h-6 text-[10px] gap-1" onClick={() => downloadInvoicePdf(inv.id)}>
+                        <Download className="w-3 h-3" /> PDF
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[10px] text-muted-foreground mb-2">Nicio factură generată.</p>
+              )}
+              <div className="flex gap-1">
+                <Button size="sm" className="flex-1 h-7 text-[10px]" onClick={() => generateInvoice("invoice")} disabled={generatingInvoice}>
+                  {generatingInvoice ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <FileText className="w-3 h-3 mr-1" />}
+                  Factură
+                </Button>
+                <Button size="sm" variant="outline" className="flex-1 h-7 text-[10px]" onClick={() => generateInvoice("proforma")} disabled={generatingInvoice}>
+                  Proformă
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* SmartBill */}
+          <Card>
+            <CardContent className="p-4">
+              <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><FileText className="w-3.5 h-3.5" /> SmartBill</h4>
+              {(order as any).smartbill_number ? (
+                <div className="space-y-2 mb-2">
+                  <div className="flex items-center justify-between text-xs bg-muted/30 rounded p-2">
+                    <div>
+                      <span className="font-mono font-medium">{(order as any).smartbill_number}</span>
+                      <Badge variant="outline" className={cn("ml-1 text-[9px]",
+                        (order as any).smartbill_status === "synced" ? "border-green-500/50 text-green-600" :
+                        (order as any).smartbill_status === "error" ? "border-destructive text-destructive" : ""
+                      )}>
+                        {(order as any).smartbill_status === "synced" ? "✅ Sincronizat" :
+                         (order as any).smartbill_status === "error" ? "⚠️ Eroare" : "⏳ În așteptare"}
+                      </Badge>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" className="w-full h-7 text-[10px]" disabled={smartbillLoading} onClick={async () => {
+                    setSmartbillLoading(true);
+                    try {
+                      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+                      const res = await fetch(`https://${projectId}.supabase.co/functions/v1/smartbill`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ action: "download_pdf", order_id: orderId }),
+                      });
+                      if (!res.ok) { const d = await res.json(); toast.error(d.error); setSmartbillLoading(false); return; }
+                      const blob = await res.blob();
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a"); a.href = url; a.download = `SmartBill-${(order as any).smartbill_number}.pdf`; a.click();
+                      URL.revokeObjectURL(url);
+                      toast.success("PDF descărcat!");
+                    } catch (err: any) { toast.error(err.message); }
+                    setSmartbillLoading(false);
+                  }}>
+                    {smartbillLoading ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Download className="w-3 h-3 mr-1" />}
+                    Descarcă din SmartBill
+                  </Button>
+                </div>
+              ) : (
+                <p className="text-[10px] text-muted-foreground mb-2">Nefacturat în SmartBill.</p>
+              )}
+              {!(order as any).smartbill_number && (
+                <div className="flex gap-1">
+                  <Button size="sm" className="flex-1 h-7 text-[10px]" disabled={smartbillLoading} onClick={async () => {
+                    setSmartbillLoading(true);
+                    try {
+                      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+                      const res = await fetch(`https://${projectId}.supabase.co/functions/v1/smartbill`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ action: "create_invoice", order_id: orderId }),
+                      });
+                      const data = await res.json();
+                      if (data.ok) {
+                        toast.success(`Factură SmartBill ${data.number} emisă!`);
+                        queryClient.invalidateQueries({ queryKey: ["admin-order-detail", orderId] });
+                      } else {
+                        toast.error(data.error);
+                      }
+                    } catch (err: any) { toast.error(err.message); }
+                    setSmartbillLoading(false);
+                  }}>
+                    {smartbillLoading ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <FileText className="w-3 h-3 mr-1" />}
+                    Emite în SmartBill
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Extra */}
+          <Card>
+            <CardContent className="p-4">
+              <h4 className="text-xs font-semibold flex items-center gap-1 mb-2"><Gift className="w-3.5 h-3.5" /> Extra</h4>
+              <div className="text-sm text-muted-foreground space-y-0.5">
+                {order.loyalty_points_earned > 0 && <p>+{order.loyalty_points_earned} puncte fidelitate</p>}
+                {order.source && <p>Sursă: {order.source}</p>}
+                <p className="text-xs">ID: {order.id}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* ─── Status change dialog ─── */}
+      <Dialog open={showStatusDialog} onOpenChange={setShowStatusDialog}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Schimbă status comandă</DialogTitle></DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label>Status nou</Label>
+              <Select value={newStatus} onValueChange={setNewStatus}>
+                <SelectTrigger><SelectValue placeholder="Selectează status" /></SelectTrigger>
+                <SelectContent>
+                  {allowedNextStatuses.map(k => {
+                    const cfg = dynamicStatusConfig[k] || statusConfig[k];
+                    return cfg ? <SelectItem key={k} value={k}>{(cfg as any)._color ? `${(cfg.icon as any)?.props?.children || ""} ` : ""}{cfg.label}</SelectItem> : null;
+                  })}
+                  {/* All statuses for super admin override */}
+                  {allowedNextStatuses.length === 0 && Object.entries(dynamicStatusConfig).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Notă (opțional)</Label>
+              <Textarea value={statusNote} onChange={e => setStatusNote(e.target.value)} placeholder="Motiv schimbare..." rows={2} />
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch checked={sendEmailOnStatus} onCheckedChange={setSendEmailOnStatus} />
+              <Label className="text-sm">Trimite email notificare clientului</Label>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowStatusDialog(false)}>Anulează</Button>
+            <Button onClick={changeStatus} disabled={!newStatus}><Send className="w-3.5 h-3.5 mr-1" />Schimbă status</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ─── Edit address dialog ─── */}
+      <Dialog open={editAddress} onOpenChange={setEditAddress}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Editare adresă livrare</DialogTitle></DialogHeader>
+          {addressDraft && (
+            <div className="space-y-3">
+              {[{ key: "full_name", label: "Nume complet" }, { key: "phone", label: "Telefon" }, { key: "address", label: "Adresă" }, { key: "city", label: "Oraș" }, { key: "county", label: "Județ" }, { key: "postal_code", label: "Cod poștal" }].map(f => (
+                <div key={f.key}>
+                  <Label className="text-xs">{f.label}</Label>
+                  <Input value={addressDraft[f.key] || ""} onChange={e => setAddressDraft({ ...addressDraft, [f.key]: e.target.value })} />
+                </div>
+              ))}
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditAddress(false)}>Anulează</Button>
+            <Button onClick={saveAddress}><Save className="w-3.5 h-3.5 mr-1" />Salvează</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ─── Refund dialog ─── */}
+      <Dialog open={showRefundDialog} onOpenChange={setShowRefundDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Rambursare comandă</DialogTitle>
+            <DialogDescription>Total comandă: {Number(order.total).toFixed(2)} RON</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label>Sumă de rambursat (RON)</Label>
+              <Input type="number" value={refundAmount} onChange={e => setRefundAmount(e.target.value)} max={Number(order.total)} step="0.01" />
+              <div className="flex gap-2 mt-1">
+                <Button variant="ghost" size="sm" className="h-6 text-[10px]" onClick={() => setRefundAmount(String(order.total))}>Ramburs complet</Button>
+                <Button variant="ghost" size="sm" className="h-6 text-[10px]" onClick={() => setRefundAmount(String((Number(order.total) / 2).toFixed(2)))}>50%</Button>
+              </div>
+            </div>
+            <div>
+              <Label>Motiv rambursare</Label>
+              <Textarea value={refundReason} onChange={e => setRefundReason(e.target.value)} placeholder="De ce se rambursează..." rows={2} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowRefundDialog(false)}>Anulează</Button>
+            <Button variant="destructive" onClick={processRefund}><RotateCcw className="w-3.5 h-3.5 mr-1" />Procesează rambursare</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add product to order */}
+      <AddProductToOrderDialog
+        open={showAddProduct}
+        onOpenChange={setShowAddProduct}
+        orderId={orderId}
+        existingProductIds={(order.order_items || []).map((i: any) => i.product_id)}
+      />
+    </div>
+  );
+}
