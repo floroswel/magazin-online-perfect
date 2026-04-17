@@ -48,7 +48,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     (async () => {
       const { data } = await (supabase as any)
         .from("cart_items")
-        .select("product_id, quantity, products:product_id(name, slug, image_url, price, burn_time_hours, weight_grams)")
+        .select("product_id, quantity, products:product_id(name, slug, image_url, price)")
         .eq("user_id", user.id);
       if (data?.length) {
         const dbItems: CartItem[] = data.map((r: any) => ({
@@ -58,8 +58,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
           image_url: r.products?.image_url,
           price: Number(r.products?.price ?? 0),
           quantity: r.quantity,
-          burn_time_hours: r.products?.burn_time_hours,
-          weight_grams: r.products?.weight_grams,
         }));
         setItems((local) => mergeCarts(local, dbItems));
       }
