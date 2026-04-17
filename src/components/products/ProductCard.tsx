@@ -1,4 +1,4 @@
-import { memo, useState, useEffect } from "react";
+import { memo, useState, useEffect, forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { Heart, ShoppingCart, Check } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
@@ -235,6 +235,6 @@ function ProductCardInner({ product, eager = false }: Props) {
 }
 
 
-const ProductCard = memo((props: Props) => <ProductCardInner {...props} />);
+const ProductCard = memo(forwardRef<HTMLAnchorElement, Props>((props, _ref) => <ProductCardInner {...props} />));
 ProductCard.displayName = "ProductCard";
 export default ProductCard;
