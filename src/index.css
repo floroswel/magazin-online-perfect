@@ -1,55 +1,53 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+/* ──────────────────────────────────────────────────────────────
+   MamaLucica — Atelier Cream & Noir
+   Design system inspirat de Diptyque, Jo Malone, Aesop
+   ────────────────────────────────────────────────────────────── */
 
 @layer base {
   :root {
-    /* ── ATELIER — Cream × Noir × Or Mat (Diptyque-inspired) ── */
-    /* Brand */
+    /* Brand core */
     --atelier-noir: 0 0% 8%;          /* #141414 */
     --atelier-or: 35 35% 54%;         /* #B8935A */
     --atelier-cream: 38 38% 95%;      /* #F8F5EF */
+    --atelier-espresso: 25 20% 12%;   /* #2C2620 */
 
-    --ml-primary: 0 0% 8%;
-    --ml-primary-dark: 0 0% 4%;
-    --ml-primary-darker: 0 0% 0%;
-    --ml-primary-light: 38 38% 95%;
-    --ml-primary-hover: 0 0% 14%;
-    --ml-accent: 35 35% 54%;
-    --ml-accent-dark: 35 35% 42%;
-    --ml-accent-light: 38 30% 88%;
-    --ml-warning: 30 80% 50%;
-    --ml-success: 145 35% 38%;
-
-    /* Shadcn semantic mapping */
-    --background: 38 38% 95%;         /* #F8F5EF cream cald */
-    --foreground: 25 20% 12%;         /* #2C2620 espresso */
-    --card: 38 30% 97%;               /* #FAF7F2 */
+    /* Shadcn semantic tokens */
+    --background: 38 38% 95%;
+    --foreground: 25 20% 12%;
+    --card: 38 30% 97%;
     --card-foreground: 25 20% 12%;
     --popover: 38 30% 97%;
     --popover-foreground: 25 20% 12%;
-    --primary: 0 0% 8%;               /* noir profund */
+    --primary: 0 0% 8%;
     --primary-foreground: 38 38% 95%;
-    --secondary: 35 20% 90%;          /* #ECE5DA */
+    --secondary: 35 20% 90%;
     --secondary-foreground: 25 20% 12%;
-    --muted: 35 18% 92%;              /* #EFE9DF */
-    --muted-foreground: 30 12% 38%;   /* #6B6258 */
-    --accent: 35 35% 54%;             /* auriu mat */
+    --muted: 35 18% 92%;
+    --muted-foreground: 30 12% 38%;
+    --accent: 35 35% 54%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 55% 42%;
     --destructive-foreground: 0 0% 100%;
-    --border: 35 20% 84%;             /* #DDD2C2 */
+    --border: 35 20% 84%;
     --input: 35 20% 84%;
     --ring: 35 35% 54%;
-    --radius: 0.25rem;                /* mai puțin rotunjit, editorial */
+    --radius: 0.25rem;
 
-    /* Admin sidebar */
+    /* Aliases pentru cod existent */
+    --ml-primary: 0 0% 8%;
+    --ml-primary-dark: 0 0% 4%;
+    --ml-primary-light: 38 38% 95%;
+    --ml-accent: 35 35% 54%;
+    --ml-warning: 30 80% 50%;
+    --ml-success: 145 35% 38%;
+
+    /* Admin sidebar (rămâne cum e în panoul de admin) */
     --sidebar-background: 270 35% 14%;
     --sidebar-foreground: 285 25% 82%;
     --sidebar-primary: 327 87% 55%;
@@ -60,23 +58,25 @@
     --sidebar-ring: 327 87% 55%;
 
     /* Layout */
-    --container-max: 1280px;
-    --container-pad: 16px;
+    --container-max: 1320px;
+    --container-pad: 1rem;
 
-    /* Gradients — subtile, editorial */
-    --gradient-brand: linear-gradient(135deg, #141414, #2C2620);
-    --gradient-hero: linear-gradient(180deg, #F8F5EF 0%, #EFE9DF 100%);
+    /* Editorial gradients & shadows */
+    --gradient-noir: linear-gradient(135deg, hsl(0 0% 8%), hsl(25 20% 12%));
+    --gradient-cream: linear-gradient(180deg, hsl(38 38% 95%) 0%, hsl(35 18% 92%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(35 35% 54%), hsl(35 30% 44%));
 
-    /* Shadows — minimaliste, fără glow neon */
-    --shadow-sm: 0 1px 2px rgba(20, 20, 20, 0.04);
-    --shadow-md: 0 2px 8px rgba(20, 20, 20, 0.06);
-    --shadow-lg: 0 8px 24px rgba(20, 20, 20, 0.08);
-    --shadow-card: 0 1px 3px rgba(20, 20, 20, 0.05);
-    --shadow-hover: 0 6px 18px rgba(20, 20, 20, 0.10);
-    --glow-magenta: 0 4px 16px rgba(20, 20, 20, 0.10);
-    --glow-violet: 0 4px 16px rgba(184, 147, 90, 0.18);
+    --shadow-soft: 0 1px 3px rgba(20,20,20,0.04), 0 1px 2px rgba(20,20,20,0.06);
+    --shadow-card: 0 2px 12px rgba(20,20,20,0.06);
+    --shadow-elevated: 0 12px 40px -10px rgba(20,20,20,0.18);
+    --shadow-gold: 0 8px 24px -8px rgba(184,147,90,0.35);
+
+    /* Transitions */
+    --ease-editorial: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-base: 220ms var(--ease-editorial);
   }
 
+  /* Admin păstrează schema veche peste tot */
   .admin-panel {
     --background: 285 25% 96%;
     --foreground: 270 23% 14%;
@@ -111,14 +111,12 @@
     --accent: 271 76% 55%;
     --accent-foreground: 0 0% 100%;
     --border: 270 28% 24%;
-    --sidebar-dim: 285 18% 60%;
-    --sidebar-hover: 285 25% 85%;
   }
 
   * { @apply border-border; }
   html { scroll-behavior: smooth; }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 15px;
     font-weight: 400;
@@ -129,8 +127,12 @@
     font-family: 'Cormorant Garamond', Georgia, serif;
     font-weight: 500;
     letter-spacing: -0.005em;
+    line-height: 1.15;
   }
+  .font-display-bold { font-weight: 600; }
   img { max-width: 100%; display: block; }
+
+  ::selection { background: hsl(var(--accent) / 0.25); color: hsl(var(--foreground)); }
 }
 
 @layer components {
@@ -140,93 +142,58 @@
     padding: 0 var(--container-pad);
   }
 
-  /* LUMEN//X gradient text */
-  .text-gradient-brand {
-    background: var(--gradient-brand);
+  .text-gradient-gold {
+    background: var(--gradient-gold);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
   }
 
-  .bg-hero-lumen {
-    background: var(--gradient-hero);
+  .bg-cream-gradient { background: var(--gradient-cream); }
+  .bg-noir-gradient { background: var(--gradient-noir); }
+  .shadow-editorial { box-shadow: var(--shadow-elevated); }
+  .shadow-gold { box-shadow: var(--shadow-gold); }
+
+  /* Editorial section spacer with gold rule */
+  .section-rule {
+    @apply flex items-center gap-4 mb-8;
+  }
+  .section-rule::before,
+  .section-rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: hsl(var(--accent) / 0.4);
   }
 
-  .glow-magenta { box-shadow: var(--glow-magenta); }
-  .glow-violet { box-shadow: var(--glow-violet); }
+  .ticker-track {
+    animation: ticker 28s linear infinite;
+  }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
 
-  /* Skeleton loader */
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
   .skeleton {
     background: linear-gradient(90deg,
       hsl(var(--muted)) 25%,
       hsl(var(--border)) 50%,
       hsl(var(--muted)) 75%);
     background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
+    animation: shimmer 1.6s infinite;
   }
 
-  /* Section titles */
-  .section-title {
-    @apply text-xl font-extrabold text-foreground mb-4 flex items-center gap-2;
-  }
-  .section-title::after {
-    content: '';
-    flex: 1;
-    height: 2px;
-    @apply bg-border ml-2;
-  }
-
-  /* Ticker animation */
-  @keyframes ticker-scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-33.33%); }
-  }
-  .animate-ticker {
-    animation: ticker-scroll 25s linear infinite;
-  }
-
-  /* Marquee animation */
-  @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .animate-marquee {
-    animation: marquee 20s linear infinite;
-  }
-
-  /* Social Proof animations */
-  @keyframes slideInLeft {
-    from { transform: translateX(-100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-  }
-  @keyframes slideOutLeft {
-    from { transform: translateX(0); opacity: 1; }
-    to { transform: translateX(-100%); opacity: 0; }
-  }
-  @keyframes bounceIn {
-    0% { transform: scale(0.8); opacity: 0; }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); opacity: 1; }
-  }
-
-  /* ── Product & Catalog Colors (driven by CSS vars from useSettings) ── */
-  .price-now, .card-price-now {
-    color: var(--product-price-color, #E0118E) !important;
-  }
-  .stars, .star-filled {
-    color: var(--stars-color, #FFB800) !important;
-  }
-  .badge-sale {
-    background: var(--badge-sale-color, #E0118E) !important;
-  }
-  .badge-new {
-    background: var(--badge-new-color, #8A2BE2) !important;
-  }
-  .card-shipping, .free-shipping-text {
-    color: var(--free-shipping-color, #8A2BE2) !important;
-  }
-  .price-save, .savings-text {
-    color: var(--savings-color, #E0118E) !important;
-  }
+  /* Catalog/product token bridges (still used by admin previews) */
+  .price-now, .card-price-now { color: var(--product-price-color, hsl(var(--primary))) !important; }
+  .stars, .star-filled { color: var(--stars-color, #FFB800) !important; }
+  .badge-sale { background: var(--badge-sale-color, hsl(var(--primary))) !important; }
+  .badge-new { background: var(--badge-new-color, hsl(var(--accent))) !important; }
 }
