@@ -13,6 +13,7 @@ import { CurrencyProvider } from "@/hooks/useCurrency";
 import { I18nProvider } from "@/hooks/useI18n";
 import CustomScriptInjector from "./components/CustomScriptInjector";
 import ErrorBoundary from "./components/ErrorBoundary";
+import ScrollToTop from "./components/ScrollToTop";
 import MaintenanceGuard from "./components/MaintenanceGuard";
 import { useAffiliateTracking } from "./hooks/useAffiliateTracking";
 import { initTracking, trackPageView } from "./hooks/useMarketingTracking";
@@ -108,6 +109,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <AuthProvider>
           <EditableContentProvider>
             <SettingsProvider>
