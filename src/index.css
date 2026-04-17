@@ -219,11 +219,36 @@
   }
   .paper-grain {
     background-image:
-      radial-gradient(hsl(var(--atelier-or) / 0.04) 1px, transparent 1px),
-      radial-gradient(hsl(var(--atelier-noir) / 0.03) 1px, transparent 1px);
+      radial-gradient(hsl(var(--atelier-or) / 0.07) 1px, transparent 1px),
+      radial-gradient(hsl(var(--atelier-noir) / 0.05) 1px, transparent 1px);
     background-size: 18px 18px, 28px 28px;
     background-position: 0 0, 9px 14px;
   }
+  .paper-grain-strong {
+    background-image:
+      radial-gradient(hsl(var(--atelier-or) / 0.10) 1px, transparent 1px),
+      radial-gradient(hsl(var(--atelier-noir) / 0.06) 1.2px, transparent 1.2px),
+      linear-gradient(180deg, hsl(var(--atelier-ivory)) 0%, hsl(var(--atelier-cream)) 100%);
+    background-size: 16px 16px, 24px 24px, 100% 100%;
+    background-position: 0 0, 8px 12px, 0 0;
+  }
+
+  /* Bordeaux + Sage badge utilities */
+  .badge-limited {
+    background: var(--gradient-bordeaux);
+    color: hsl(var(--atelier-cream));
+    box-shadow: var(--shadow-bordeaux);
+  }
+  .badge-natural {
+    background: hsl(var(--atelier-sage-soft));
+    color: hsl(145 35% 22%);
+    border: 1px solid hsl(var(--atelier-sage) / 0.3);
+  }
+
+  /* Editorial section rhythm */
+  .section-tight { @apply py-12 md:py-16; }
+  .section-base  { @apply py-16 md:py-24; }
+  .section-tall  { @apply py-20 md:py-32; }
 
   /* Gold rule divider */
   .gold-rule {
