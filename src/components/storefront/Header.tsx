@@ -1,0 +1,187 @@
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Search, ShoppingBag, Heart, User, Menu, X } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
+import { useFavorites } from "@/hooks/useFavorites";
+import { useAuth } from "@/hooks/useAuth";
+
+export default function Header() {
+  const { count: cartCount, setOpen: setCartOpen } = useCart();
+  const { count: favCount } = useFavorites();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchQ, setSearchQ] = useState("");
+
+  const onSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQ.trim()) navigate(`/cautare?q=${encodeURIComponent(searchQ.trim())}`);
+  };
+
+  return (
+    <header className="sticky top-0 z-40 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 border-b border-border">
+      <div className="ml-container flex items-center gap-4 h-16 lg:h-20">
+        {/* Mobile menu */}
+        <button
+          className="lg:hidden p-2 -ml-2"
+          onClick={() => setMobileOpen(true)}
+          aria-label="Deschide meniu"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-2 shrink-0">
+          <span className="text-2xl">🕯️</span>
+          <span className="font-display text-xl lg:text-2xl font-medium tracking-tight">
+            Mama <span className="text-accent">Lucica</span>
+          </span>
+        </Link>
+
+        {/* Search — desktop */}
+        <form onSubmit={onSearch} className="hidden lg:flex flex-1 max-w-2xl mx-6">
+          <div className="relative w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="search"
+              value={searchQ}
+              onChange={(e) => setSearchQ(e.target.value)}
+              placeholder="Caută lumânări, parfumuri, ocazii..."
+              className="w-full h-11 pl-10 pr-24 border border-border rounded-sm bg-background text-sm focus:outline-none focus:border-accent transition-colors"
+            />
+            <button
+              type="submit"
+              className="absolute right-1 top-1/2 -translate-y-1/2 px-4 h-9 bg-primary text-primary-foreground text-xs font-semibold rounded-sm tracking-wide uppercase hover:opacity-90 transition-opacity"
+            >
+              Caută
+            </button>
+          </div>
+        </form>
+
+        <div className="ml-auto flex items-center gap-1 lg:gap-2">
+          <Link
+            to={user ? "/account" : "/auth"}
+            className="hidden lg:flex flex-col items-center px-3 py-1.5 hover:bg-muted rounded-sm transition-colors text-[11px]"
+          >
+            <User className="h-5 w-5 mb-0.5" />
+            <span className="font-medium">{user ? "Cont" : "Login"}</span>
+          </Link>
+
+          <Link
+            to="/favorite"
+            className="relative p-2 hover:bg-muted rounded-sm transition-colors"
+            aria-label="Favorite"
+          >
+            <Heart className="h-5 w-5" />
+            {favCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 bg-accent text-accent-foreground text-[10px] font-bold rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
+                {favCount}
+              </span>
+            )}
+          </Link>
+
+          <button
+            onClick={() => setCartOpen(true)}
+            className="relative p-2 hover:bg-muted rounded-sm transition-colors"
+            aria-label="Coș"
+          >
+            <ShoppingBag className="h-5 w-5" />
+            {cartCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Search — mobile */}
+      <form onSubmit={onSearch} className="lg:hidden ml-container pb-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            type="search"
+            value={searchQ}
+            onChange={(e) => setSearchQ(e.target.value)}
+            placeholder="Caută..."
+            className="w-full h-10 pl-10 pr-3 border border-border rounded-sm bg-background text-sm focus:outline-none focus:border-accent"
+          />
+        </div>
+      </form>
+
+      {/* Nav bar — desktop */}
+      <nav className="hidden lg:block border-t border-border/40">
+        <div className="ml-container flex items-center gap-1 h-11">
+          {[
+            { label: "Toate produsele", to: "/catalog" },
+            { label: "Lumânări parfumate", to: "/categorie/lumanari-parfumate" },
+            { label: "După parfum", to: "/parfumuri" },
+            { label: "După ocazie", to: "/ocazii" },
+            { label: "Cadouri", to: "/cadouri" },
+            { label: "Personalizate", to: "/personalizare" },
+            { label: "Despre noi", to: "/page/despre-noi" },
+          ].map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="px-4 h-full flex items-center text-sm font-medium text-foreground/80 hover:text-foreground hover:bg-muted/60 transition-colors uppercase tracking-wider text-[11px]"
+            >
+              {item.label}
+            </Link>
+          ))}
+          <Link
+            to="/oferte"
+            className="ml-auto px-4 h-7 mt-1.5 flex items-center text-xs font-bold uppercase tracking-wider bg-accent text-accent-foreground rounded-sm hover:opacity-90 transition-opacity"
+          >
+            🔥 Oferte
+          </Link>
+        </div>
+      </nav>
+
+      {/* Mobile drawer */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
+          <div className="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-background shadow-editorial flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <span className="font-display text-xl">Meniu</span>
+              <button onClick={() => setMobileOpen(false)} className="p-2"><X className="h-5 w-5" /></button>
+            </div>
+            <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+              {[
+                { label: "Acasă", to: "/" },
+                { label: "Toate produsele", to: "/catalog" },
+                { label: "Lumânări parfumate", to: "/categorie/lumanari-parfumate" },
+                { label: "După parfum", to: "/parfumuri" },
+                { label: "După ocazie", to: "/ocazii" },
+                { label: "Cadouri", to: "/cadouri" },
+                { label: "Personalizate", to: "/personalizare" },
+                { label: "Oferte", to: "/oferte" },
+                { label: "Despre noi", to: "/page/despre-noi" },
+                { label: "Contact", to: "/contact" },
+              ].map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setMobileOpen(false)}
+                  className="block px-3 py-3 text-sm font-medium hover:bg-muted rounded-sm transition-colors"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+            <div className="p-4 border-t border-border">
+              <Link
+                to={user ? "/account" : "/auth"}
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-2 px-3 py-2.5 hover:bg-muted rounded-sm text-sm font-medium"
+              >
+                <User className="h-4 w-4" /> {user ? "Contul meu" : "Autentifică-te"}
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
