@@ -20,10 +20,10 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 border-b border-border">
-      <div className="ml-container flex items-center gap-4 h-16 lg:h-20">
+      <div className="ml-container flex items-center gap-4 h-16 xl:h-20">
         {/* Mobile menu */}
         <button
-          className="lg:hidden p-2 -ml-2"
+          className="xl:hidden p-2 -ml-2"
           onClick={() => setMobileOpen(true)}
           aria-label="Deschide meniu"
         >
@@ -39,7 +39,7 @@ export default function Header() {
         </Link>
 
         {/* Search — desktop */}
-        <form onSubmit={onSearch} className="hidden lg:flex flex-1 max-w-2xl mx-6">
+        <form onSubmit={onSearch} className="hidden xl:flex flex-1 max-w-2xl mx-6">
           <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
@@ -61,7 +61,7 @@ export default function Header() {
         <div className="ml-auto flex items-center gap-1 lg:gap-2">
           <Link
             to={user ? "/account" : "/auth"}
-            className="hidden lg:flex flex-col items-center px-3 py-1.5 hover:bg-muted rounded-sm transition-colors text-[11px]"
+            className="hidden xl:flex flex-col items-center px-3 py-1.5 hover:bg-muted rounded-sm transition-colors text-[11px]"
           >
             <User className="h-5 w-5 mb-0.5" />
             <span className="font-medium">{user ? "Cont" : "Login"}</span>
@@ -96,7 +96,7 @@ export default function Header() {
       </div>
 
       {/* Search — mobile */}
-      <form onSubmit={onSearch} className="lg:hidden ml-container pb-3">
+      <form onSubmit={onSearch} className="xl:hidden ml-container pb-3">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
@@ -110,7 +110,7 @@ export default function Header() {
       </form>
 
       {/* Nav bar — desktop */}
-      <nav className="hidden lg:block border-t border-border/40">
+      <nav className="hidden xl:block border-t border-border/40">
         <div className="ml-container flex items-center gap-1 h-11">
           {[
             { label: "Toate produsele", to: "/catalog" },
@@ -140,7 +140,7 @@ export default function Header() {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-[60] lg:hidden">
+        <div className="fixed inset-0 z-[60] xl:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
           <div className="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-background shadow-editorial flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-border">
