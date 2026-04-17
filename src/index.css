@@ -23,7 +23,8 @@
     --atelier-sage-soft: 145 22% 92%;
 
     /* Shadcn semantic tokens — luminos, aerian, minimal */
-    --background: 0 0% 100%;
+    /* Background: alb-gri foarte deschis cu nuanță subtilă albastru-rece (echivalent oklch(0.985 0.003 247)) */
+    --background: 240 10% 98.5%;
     --foreground: 0 0% 8%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 8%;
