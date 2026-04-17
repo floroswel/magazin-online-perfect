@@ -140,9 +140,9 @@ export default function Header() {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-[60] xl:hidden">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
-          <div className="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-background shadow-editorial flex flex-col">
+        <div className="fixed inset-0 z-[60] xl:hidden h-screen w-screen">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+          <div className="fixed left-0 top-0 h-screen w-80 max-w-[85vw] bg-background shadow-editorial flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-border">
               <span className="font-display text-xl">Meniu</span>
               <button onClick={() => setMobileOpen(false)} className="p-2"><X className="h-5 w-5" /></button>
