@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -10,43 +10,44 @@
 
 @layer base {
   :root {
-    /* ── LUMEN//X — Violet × Magenta ── */
+    /* ── ATELIER — Cream × Noir × Or Mat (Diptyque-inspired) ── */
     /* Brand */
-    --lumen-magenta: 327 87% 47%;     /* #E0118E */
-    --lumen-violet: 271 76% 53%;      /* #8A2BE2 */
+    --atelier-noir: 0 0% 8%;          /* #141414 */
+    --atelier-or: 35 35% 54%;         /* #B8935A */
+    --atelier-cream: 38 38% 95%;      /* #F8F5EF */
 
-    --ml-primary: 327 87% 47%;
-    --ml-primary-dark: 327 87% 38%;
-    --ml-primary-darker: 327 87% 28%;
-    --ml-primary-light: 327 87% 95%;
-    --ml-primary-hover: 327 87% 42%;
-    --ml-accent: 271 76% 53%;
-    --ml-accent-dark: 271 76% 42%;
-    --ml-accent-light: 271 76% 95%;
-    --ml-warning: 38 95% 55%;
-    --ml-success: 145 60% 42%;
+    --ml-primary: 0 0% 8%;
+    --ml-primary-dark: 0 0% 4%;
+    --ml-primary-darker: 0 0% 0%;
+    --ml-primary-light: 38 38% 95%;
+    --ml-primary-hover: 0 0% 14%;
+    --ml-accent: 35 35% 54%;
+    --ml-accent-dark: 35 35% 42%;
+    --ml-accent-light: 38 30% 88%;
+    --ml-warning: 30 80% 50%;
+    --ml-success: 145 35% 38%;
 
     /* Shadcn semantic mapping */
-    --background: 300 33% 98%;        /* #FAF8FB */
-    --foreground: 270 23% 13%;        /* #1F1828 */
-    --card: 0 0% 100%;
-    --card-foreground: 270 23% 13%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 270 23% 13%;
-    --primary: 327 87% 47%;           /* magenta */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 285 18% 94%;         /* #F0ECF2 */
-    --secondary-foreground: 270 23% 13%;
-    --muted: 285 18% 94%;
-    --muted-foreground: 273 13% 42%;  /* #6B5E78 */
-    --accent: 271 76% 53%;            /* violet */
+    --background: 38 38% 95%;         /* #F8F5EF cream cald */
+    --foreground: 25 20% 12%;         /* #2C2620 espresso */
+    --card: 38 30% 97%;               /* #FAF7F2 */
+    --card-foreground: 25 20% 12%;
+    --popover: 38 30% 97%;
+    --popover-foreground: 25 20% 12%;
+    --primary: 0 0% 8%;               /* noir profund */
+    --primary-foreground: 38 38% 95%;
+    --secondary: 35 20% 90%;          /* #ECE5DA */
+    --secondary-foreground: 25 20% 12%;
+    --muted: 35 18% 92%;              /* #EFE9DF */
+    --muted-foreground: 30 12% 38%;   /* #6B6258 */
+    --accent: 35 35% 54%;             /* auriu mat */
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 75% 50%;
+    --destructive: 0 55% 42%;
     --destructive-foreground: 0 0% 100%;
-    --border: 282 22% 86%;            /* #DDD3E2 */
-    --input: 282 22% 86%;
-    --ring: 327 87% 47%;
-    --radius: 0.625rem;
+    --border: 35 20% 84%;             /* #DDD2C2 */
+    --input: 35 20% 84%;
+    --ring: 35 35% 54%;
+    --radius: 0.25rem;                /* mai puțin rotunjit, editorial */
 
     /* Admin sidebar */
     --sidebar-background: 270 35% 14%;
@@ -62,21 +63,18 @@
     --container-max: 1280px;
     --container-pad: 16px;
 
-    /* Gradients */
-    --gradient-brand: linear-gradient(135deg, #8A2BE2, #E0118E);
-    --gradient-hero:
-      radial-gradient(ellipse at 25% 15%, rgba(255, 180, 220, 0.5), transparent 55%),
-      radial-gradient(ellipse at 78% 80%, rgba(190, 150, 240, 0.5), transparent 55%),
-      linear-gradient(180deg, #FAF8FB, #F2EBF5);
+    /* Gradients — subtile, editorial */
+    --gradient-brand: linear-gradient(135deg, #141414, #2C2620);
+    --gradient-hero: linear-gradient(180deg, #F8F5EF 0%, #EFE9DF 100%);
 
-    /* Shadows / Glow */
-    --shadow-sm: 0 1px 3px rgba(31, 24, 40, 0.06);
-    --shadow-md: 0 4px 12px rgba(31, 24, 40, 0.08);
-    --shadow-lg: 0 10px 30px rgba(31, 24, 40, 0.10);
-    --shadow-card: 0 2px 10px rgba(138, 43, 226, 0.06);
-    --shadow-hover: 0 12px 30px rgba(224, 17, 142, 0.18);
-    --glow-magenta: 0 10px 40px rgba(224, 17, 142, 0.35), 0 0 80px rgba(224, 17, 142, 0.2);
-    --glow-violet: 0 10px 40px rgba(138, 43, 226, 0.35), 0 0 80px rgba(138, 43, 226, 0.2);
+    /* Shadows — minimaliste, fără glow neon */
+    --shadow-sm: 0 1px 2px rgba(20, 20, 20, 0.04);
+    --shadow-md: 0 2px 8px rgba(20, 20, 20, 0.06);
+    --shadow-lg: 0 8px 24px rgba(20, 20, 20, 0.08);
+    --shadow-card: 0 1px 3px rgba(20, 20, 20, 0.05);
+    --shadow-hover: 0 6px 18px rgba(20, 20, 20, 0.10);
+    --glow-magenta: 0 4px 16px rgba(20, 20, 20, 0.10);
+    --glow-violet: 0 4px 16px rgba(184, 147, 90, 0.18);
   }
 
   .admin-panel {
@@ -121,16 +119,16 @@
   html { scroll-behavior: smooth; }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 15px;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
   h1, h2, h3, h4, .font-display {
-    font-family: 'Sora', -apple-system, sans-serif;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -0.005em;
   }
   img { max-width: 100%; display: block; }
 }
