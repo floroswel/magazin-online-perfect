@@ -39,7 +39,7 @@ interface ChatSettings {
 const DEFAULT_SETTINGS: ChatSettings = {
   enabled: true,
   name: "Lucia",
-  accent_color: "#0066FF",
+  accent_color: "#141414",
   welcome_message: "Bună! Sunt Lucia, asistenta ta de la Mama Lucica 🕯️ Cu ce te pot ajuta azi?",
   offline_message: "În acest moment nu sunt disponibilă, dar îți răspund în cel mult 1 zi lucrătoare!",
   quick_replies: "Unde este comanda mea?|Cum returnez un produs?|Ce lumânare recomandați cadou?|Care sunt metodele de plată?|Cât durează livrarea?",
