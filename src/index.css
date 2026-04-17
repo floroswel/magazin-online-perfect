@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -10,109 +10,125 @@
 
 @layer base {
   :root {
-    /* ── Neutral reset: white / black / gray only ── */
-    --ml-primary: 0 0% 7%;
-    --ml-primary-dark: 0 0% 0%;
-    --ml-primary-darker: 0 0% 0%;
-    --ml-primary-light: 0 0% 96%;
-    --ml-primary-hover: 0 0% 0%;
-    --ml-accent: 0 0% 7%;
-    --ml-accent-dark: 0 0% 0%;
-    --ml-accent-light: 0 0% 96%;
-    --ml-warning: 0 0% 60%;
-    --ml-success: 0 0% 33%;
+    /* ── LUMEN//X — Violet × Magenta ── */
+    /* Brand */
+    --lumen-magenta: 327 87% 47%;     /* #E0118E */
+    --lumen-violet: 271 76% 53%;      /* #8A2BE2 */
 
-    /* Shadcn semantic mapping — neutral */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 7%;
+    --ml-primary: 327 87% 47%;
+    --ml-primary-dark: 327 87% 38%;
+    --ml-primary-darker: 327 87% 28%;
+    --ml-primary-light: 327 87% 95%;
+    --ml-primary-hover: 327 87% 42%;
+    --ml-accent: 271 76% 53%;
+    --ml-accent-dark: 271 76% 42%;
+    --ml-accent-light: 271 76% 95%;
+    --ml-warning: 38 95% 55%;
+    --ml-success: 145 60% 42%;
+
+    /* Shadcn semantic mapping */
+    --background: 300 33% 98%;        /* #FAF8FB */
+    --foreground: 270 23% 13%;        /* #1F1828 */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 7%;
+    --card-foreground: 270 23% 13%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 7%;
-    --primary: 0 0% 7%;
+    --popover-foreground: 270 23% 13%;
+    --primary: 327 87% 47%;           /* magenta */
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 7%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 40%;
-    --accent: 0 0% 7%;
+    --secondary: 285 18% 94%;         /* #F0ECF2 */
+    --secondary-foreground: 270 23% 13%;
+    --muted: 285 18% 94%;
+    --muted-foreground: 273 13% 42%;  /* #6B5E78 */
+    --accent: 271 76% 53%;            /* violet */
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 0% 7%;
+    --destructive: 0 75% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 0% 7%;
-    --radius: 0.5rem;
+    --border: 282 22% 86%;            /* #DDD3E2 */
+    --input: 282 22% 86%;
+    --ring: 327 87% 47%;
+    --radius: 0.625rem;
 
-    /* Admin sidebar (keep) */
-    --sidebar-background: 220 50% 18%;
-    --sidebar-foreground: 220 20% 80%;
-    --sidebar-primary: 220 88% 50%;
+    /* Admin sidebar */
+    --sidebar-background: 270 35% 14%;
+    --sidebar-foreground: 285 25% 82%;
+    --sidebar-primary: 327 87% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 50% 26%;
+    --sidebar-accent: 270 35% 22%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 220 40% 24%;
-    --sidebar-ring: 220 88% 50%;
+    --sidebar-border: 270 30% 24%;
+    --sidebar-ring: 327 87% 55%;
 
     /* Layout */
     --container-max: 1280px;
     --container-pad: 16px;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-    --shadow-lg: 0 10px 30px rgba(0,0,0,0.10);
-    --shadow-card: 0 2px 10px rgba(0,0,0,0.05);
-    --shadow-hover: 0 12px 30px rgba(0,0,0,0.12);
+
+    /* Gradients */
+    --gradient-brand: linear-gradient(135deg, #8A2BE2, #E0118E);
+    --gradient-hero:
+      radial-gradient(ellipse at 25% 15%, rgba(255, 180, 220, 0.5), transparent 55%),
+      radial-gradient(ellipse at 78% 80%, rgba(190, 150, 240, 0.5), transparent 55%),
+      linear-gradient(180deg, #FAF8FB, #F2EBF5);
+
+    /* Shadows / Glow */
+    --shadow-sm: 0 1px 3px rgba(31, 24, 40, 0.06);
+    --shadow-md: 0 4px 12px rgba(31, 24, 40, 0.08);
+    --shadow-lg: 0 10px 30px rgba(31, 24, 40, 0.10);
+    --shadow-card: 0 2px 10px rgba(138, 43, 226, 0.06);
+    --shadow-hover: 0 12px 30px rgba(224, 17, 142, 0.18);
+    --glow-magenta: 0 10px 40px rgba(224, 17, 142, 0.35), 0 0 80px rgba(224, 17, 142, 0.2);
+    --glow-violet: 0 10px 40px rgba(138, 43, 226, 0.35), 0 0 80px rgba(138, 43, 226, 0.2);
   }
 
   .admin-panel {
-    --background: 210 20% 96%;
-    --foreground: 220 20% 14%;
+    --background: 285 25% 96%;
+    --foreground: 270 23% 14%;
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 14%;
+    --card-foreground: 270 23% 14%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 14%;
-    --primary: 220 70% 50%;
+    --popover-foreground: 270 23% 14%;
+    --primary: 327 87% 47%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 92%;
-    --secondary-foreground: 220 20% 14%;
-    --muted: 220 14% 94%;
-    --muted-foreground: 220 10% 46%;
-    --accent: 220 14% 90%;
-    --accent-foreground: 220 20% 14%;
+    --secondary: 285 18% 92%;
+    --secondary-foreground: 270 23% 14%;
+    --muted: 285 18% 94%;
+    --muted-foreground: 273 13% 42%;
+    --accent: 271 76% 53%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 88%;
-    --input: 220 13% 88%;
-    --ring: 220 70% 50%;
+    --border: 282 22% 86%;
+    --input: 282 22% 86%;
+    --ring: 327 87% 47%;
   }
 
   .admin-sidebar {
-    --background: 222 47% 16%;
-    --foreground: 210 15% 70%;
-    --card: 222 47% 16%;
-    --card-foreground: 210 15% 70%;
-    --primary: 210 100% 65%;
-    --primary-foreground: 210 100% 75%;
-    --muted: 222 35% 22%;
-    --muted-foreground: 210 15% 60%;
-    --accent: 222 35% 22%;
+    --background: 270 35% 14%;
+    --foreground: 285 25% 75%;
+    --card: 270 35% 14%;
+    --card-foreground: 285 25% 75%;
+    --primary: 327 87% 60%;
+    --primary-foreground: 0 0% 100%;
+    --muted: 270 28% 22%;
+    --muted-foreground: 285 18% 65%;
+    --accent: 271 76% 55%;
     --accent-foreground: 0 0% 100%;
-    --border: 222 30% 24%;
-    --sidebar-dim: 210 15% 55%;
-    --sidebar-hover: 210 15% 80%;
+    --border: 270 28% 24%;
+    --sidebar-dim: 285 18% 60%;
+    --sidebar-hover: 285 25% 85%;
   }
 
   * { @apply border-border; }
   html { scroll-behavior: smooth; }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 15px;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
   h1, h2, h3, h4, .font-display {
-    font-family: 'Inter', -apple-system, sans-serif;
+    font-family: 'Sora', -apple-system, sans-serif;
     font-weight: 700;
     letter-spacing: -0.02em;
   }
@@ -125,6 +141,22 @@
     margin: 0 auto;
     padding: 0 var(--container-pad);
   }
+
+  /* LUMEN//X gradient text */
+  .text-gradient-brand {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .bg-hero-lumen {
+    background: var(--gradient-hero);
+  }
+
+  .glow-magenta { box-shadow: var(--glow-magenta); }
+  .glow-violet { box-shadow: var(--glow-violet); }
 
   /* Skeleton loader */
   .skeleton {
@@ -182,21 +214,21 @@
 
   /* ── Product & Catalog Colors (driven by CSS vars from useSettings) ── */
   .price-now, .card-price-now {
-    color: var(--product-price-color, #FF3300) !important;
+    color: var(--product-price-color, #E0118E) !important;
   }
   .stars, .star-filled {
     color: var(--stars-color, #FFB800) !important;
   }
   .badge-sale {
-    background: var(--badge-sale-color, #FF3300) !important;
+    background: var(--badge-sale-color, #E0118E) !important;
   }
   .badge-new {
-    background: var(--badge-new-color, #00A650) !important;
+    background: var(--badge-new-color, #8A2BE2) !important;
   }
   .card-shipping, .free-shipping-text {
-    color: var(--free-shipping-color, #00A650) !important;
+    color: var(--free-shipping-color, #8A2BE2) !important;
   }
   .price-save, .savings-text {
-    color: var(--savings-color, #00A650) !important;
+    color: var(--savings-color, #E0118E) !important;
   }
 }
