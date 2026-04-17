@@ -1,4 +1,4 @@
-import { memo, useState, useEffect } from "react";
+import { memo, useState, useEffect, forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { Heart, ShoppingCart, Check } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
