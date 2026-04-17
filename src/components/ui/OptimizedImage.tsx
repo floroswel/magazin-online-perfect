@@ -9,6 +9,8 @@ interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> 
   size?: "thumbnail" | "card" | "detail" | "hero";
   eager?: boolean;
   blurPlaceholder?: boolean;
+  /** Applied to the inner <img> (e.g. object-cover) */
+  imgClassName?: string;
 }
 
 const SIZE_MAP: Record<string, number> = {
@@ -34,6 +36,7 @@ function OptimizedImageInner({
   eager = false,
   blurPlaceholder = true,
   className,
+  imgClassName,
   ...rest
 }: OptimizedImageProps) {
   const [loaded, setLoaded] = useState(false);
@@ -74,7 +77,8 @@ function OptimizedImageInner({
         className={cn(
           "transition-opacity duration-300",
           loaded ? "opacity-100" : "opacity-0",
-          !width && !height && "w-full h-full object-contain"
+          !width && !height && !imgClassName && "w-full h-full object-contain",
+          imgClassName
         )}
         {...rest}
       />
