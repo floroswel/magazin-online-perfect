@@ -156,9 +156,36 @@ function isLightHSL(hsl: string): boolean {
   return parseFloat(parts[2]) >= 55;
 }
 
+function parseHSL(hsl: string): { h: number; s: number; l: number } | null {
+  const parts = hsl.replace(/%/g, "").trim().split(/\s+/);
+  if (parts.length < 3) return null;
+  const h = parseFloat(parts[0]);
+  const s = parseFloat(parts[1]);
+  const l = parseFloat(parts[2]);
+  if ([h, s, l].some(Number.isNaN)) return null;
+  return { h, s, l };
+}
+
+function formatHSL({ h, s, l }: { h: number; s: number; l: number }) {
+  return `${Math.round(h)} ${Math.round(s)}% ${Math.round(l)}%`;
+}
+
+function withLightness(hsl: string, lightness: number) {
+  const parsed = parseHSL(hsl);
+  if (!parsed) return hsl;
+  return formatHSL({ ...parsed, l: Math.max(0, Math.min(100, lightness)) });
+}
+
+function shiftLightness(hsl: string, delta: number) {
+  const parsed = parseHSL(hsl);
+  if (!parsed) return hsl;
+  return formatHSL({ ...parsed, l: Math.max(0, Math.min(100, parsed.l + delta)) });
+}
+
 /* ── Apply settings as CSS custom properties so the whole storefront reacts ── */
 function applyCSSVariables(s: SettingsMap) {
   const root = document.documentElement;
+  const body = document.body;
 
   // ━━ Brand Colors → HSL for Shadcn ━━
   if (s.primary_color) {
@@ -167,29 +194,38 @@ function applyCSSVariables(s: SettingsMap) {
       root.style.setProperty("--primary", hsl);
       root.style.setProperty("--ring", hsl);
       root.style.setProperty("--primary-foreground", isLightHSL(hsl) ? "220 15% 15%" : "0 0% 100%");
+      root.style.setProperty("--ml-primary", hsl);
+      root.style.setProperty("--ml-primary-hover", shiftLightness(hsl, 6));
+      root.style.setProperty("--ml-primary-dark", shiftLightness(hsl, -8));
+      root.style.setProperty("--ml-primary-darker", shiftLightness(hsl, -16));
+      root.style.setProperty("--ml-primary-light", withLightness(hsl, 95));
     }
-    root.style.setProperty("--ml-primary", s.primary_color);
   }
   if (s.secondary_color) {
     const hsl = hexToHSL(s.secondary_color);
     if (hsl) {
       root.style.setProperty("--secondary", hsl);
       root.style.setProperty("--secondary-foreground", isLightHSL(hsl) ? "220 15% 15%" : "0 0% 100%");
+      root.style.setProperty("--ml-dark", hsl);
     }
-    root.style.setProperty("--ml-dark", s.secondary_color);
   }
   if (s.accent_color) {
     const hsl = hexToHSL(s.accent_color);
     if (hsl) {
-      root.style.setProperty("--destructive", hsl);
-      root.style.setProperty("--destructive-foreground", isLightHSL(hsl) ? "220 15% 15%" : "0 0% 100%");
+      root.style.setProperty("--accent", hsl);
+      root.style.setProperty("--accent-foreground", isLightHSL(hsl) ? "220 15% 15%" : "0 0% 100%");
+      root.style.setProperty("--ml-accent", hsl);
     }
-    root.style.setProperty("--ml-accent", s.accent_color);
   }
   if (s.background_color) {
     const hsl = hexToHSL(s.background_color);
     if (hsl) {
       root.style.setProperty("--background", hsl);
+      root.style.setProperty("--card", withLightness(hsl, 97));
+      root.style.setProperty("--popover", withLightness(hsl, 97));
+      root.style.setProperty("--muted", withLightness(hsl, 92));
+      root.style.backgroundColor = s.background_color;
+      body?.style.setProperty("background-color", s.background_color);
     }
   }
   if (s.text_color) {
@@ -197,8 +233,14 @@ function applyCSSVariables(s: SettingsMap) {
     if (hsl) {
       root.style.setProperty("--foreground", hsl);
       root.style.setProperty("--card-foreground", hsl);
+      root.style.setProperty("--popover-foreground", hsl);
+      root.style.setProperty("--secondary-foreground", hsl);
+      root.style.setProperty("--muted-foreground", withLightness(hsl, 38));
+      root.style.setProperty("--border", withLightness(hsl, 84));
+      root.style.setProperty("--input", withLightness(hsl, 84));
     }
-    root.style.setProperty("--ml-text", s.text_color);
+    root.style.setProperty("--ml-text", hsl || s.text_color);
+    body?.style.setProperty("color", s.text_color);
   }
 
   // ━━ Buttons ━━
