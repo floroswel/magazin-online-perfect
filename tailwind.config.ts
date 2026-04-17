@@ -15,7 +15,9 @@ export default {
     extend: {
       fontFamily: {
         sans: ["'Inter'", "system-ui", "sans-serif"],
-        display: ["'Cormorant Garamond'", "Georgia", "serif"],
+        display: ["'Fraunces'", "'Cormorant Garamond'", "Georgia", "serif"],
+        serif: ["'Cormorant Garamond'", "Georgia", "serif"],
+        eyebrow: ["'Instrument Sans'", "'Inter'", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -72,6 +74,17 @@ export default {
           "red-light": "hsl(var(--ml-accent-light))",
           yellow: "hsl(var(--ml-warning))",
           green: "hsl(var(--ml-success))",
+        },
+        atelier: {
+          noir: "hsl(var(--atelier-noir))",
+          or: "hsl(var(--atelier-or))",
+          cream: "hsl(var(--atelier-cream))",
+          ivory: "hsl(var(--atelier-ivory))",
+          espresso: "hsl(var(--atelier-espresso))",
+          bordeaux: "hsl(var(--atelier-bordeaux))",
+          "bordeaux-soft": "hsl(var(--atelier-bordeaux-soft))",
+          sage: "hsl(var(--atelier-sage))",
+          "sage-soft": "hsl(var(--atelier-sage-soft))",
         },
       },
       borderRadius: {
