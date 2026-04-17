@@ -1,6 +1,6 @@
-// Prevent flash of unstyled content (ivory base)
-document.documentElement.style.backgroundColor = '#FBF8F2';
-document.body && (document.body.style.backgroundColor = '#FBF8F2');
+// Prevent flash of unstyled content (white base)
+document.documentElement.style.backgroundColor = '#FFFFFF';
+document.body && (document.body.style.backgroundColor = '#FFFFFF');
 
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";

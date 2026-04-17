@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -12,39 +12,39 @@
 
 @layer base {
   :root {
-    /* ── Mama Lucica Artisan Palette: Ivory / Amber / Bordo ── */
-    --ml-primary: 350 65% 28%;        /* Bordo profund */
-    --ml-primary-dark: 350 70% 22%;
-    --ml-primary-darker: 350 75% 16%;
-    --ml-primary-light: 350 40% 94%;
-    --ml-primary-hover: 350 65% 34%;
-    --ml-accent: 35 75% 52%;          /* Amber cald */
-    --ml-accent-dark: 32 80% 42%;
-    --ml-accent-light: 38 80% 95%;
+    /* ── Ceara-Soia inspired: Green brand + Bordo CTA + clean white ── */
+    --ml-primary: 134 54% 39%;         /* Verde natural #2D9B3F */
+    --ml-primary-dark: 134 60% 30%;
+    --ml-primary-darker: 134 65% 22%;
+    --ml-primary-light: 134 35% 94%;
+    --ml-primary-hover: 134 54% 33%;
+    --ml-accent: 348 65% 40%;          /* Bordo CTA #A6253D */
+    --ml-accent-dark: 348 70% 32%;
+    --ml-accent-light: 348 50% 96%;
     --ml-warning: 38 90% 55%;
-    --ml-success: 145 45% 38%;
+    --ml-success: 134 54% 39%;
 
-    /* Shadcn semantic mapping — ivory base, bordo primary */
-    --background: 38 35% 97%;          /* Ivory cald */
-    --foreground: 25 25% 14%;          /* Maro închis */
-    --card: 38 50% 99%;
-    --card-foreground: 25 25% 14%;
-    --popover: 38 50% 99%;
-    --popover-foreground: 25 25% 14%;
-    --primary: 350 65% 28%;            /* Bordo */
-    --primary-foreground: 38 50% 98%;
-    --secondary: 35 30% 92%;
-    --secondary-foreground: 25 25% 14%;
-    --muted: 35 25% 93%;
-    --muted-foreground: 25 12% 42%;
-    --accent: 35 75% 52%;               /* Amber */
-    --accent-foreground: 25 30% 12%;
-    --destructive: 0 70% 45%;
-    --destructive-foreground: 38 50% 98%;
-    --border: 30 20% 86%;
-    --input: 30 20% 86%;
-    --ring: 350 65% 28%;
-    --radius: 0.5rem;
+    /* Shadcn semantic mapping — white base, green primary, bordo CTA */
+    --background: 0 0% 100%;             /* Alb pur */
+    --foreground: 0 0% 6%;               /* Negru aproape */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 6%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 6%;
+    --primary: 134 54% 39%;              /* Verde brand */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 35 30% 96%;             /* Beige soft */
+    --secondary-foreground: 0 0% 10%;
+    --muted: 30 15% 96%;
+    --muted-foreground: 0 0% 38%;
+    --accent: 348 65% 40%;               /* Bordo CTA */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 348 65% 40%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 30 10% 90%;
+    --input: 30 10% 90%;
+    --ring: 134 54% 39%;
+    --radius: 0.625rem;
 
     /* Admin sidebar (keep) */
     --sidebar-background: 220 50% 18%;
@@ -59,11 +59,11 @@
     /* Layout */
     --container-max: 1280px;
     --container-pad: 16px;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
-    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
-    --shadow-card: 0 2px 8px rgba(0,0,0,0.06);
-    --shadow-hover: 0 8px 24px rgba(255,0,0,0.15);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.10);
+    --shadow-card: 0 2px 10px rgba(0,0,0,0.05);
+    --shadow-hover: 0 12px 30px rgba(45,155,63,0.18);
   }
 
   .admin-panel {
@@ -108,15 +108,15 @@
   html { scroll-behavior: smooth; }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 14px;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
   h1, h2, h3, h4, .font-display {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    font-family: 'Poppins', -apple-system, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
   img { max-width: 100%; display: block; }
 }
