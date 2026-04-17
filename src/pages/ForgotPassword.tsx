@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Layout from "@/components/layout/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/components/SeoHead";
 
@@ -20,31 +19,31 @@ export default function ForgotPassword() {
   };
 
   return (
-    <Layout>
-      <div className="ml-container py-12 max-w-md mx-auto">
-        <div className="bg-card rounded-xl border border-border p-8 text-center">
-          <h1 className="text-2xl font-extrabold text-primary mb-1">Mama Lucica</h1>
-          {sent ? (
-            <>
-              <p className="text-5xl my-4">✅</p>
-              <h2 className="text-lg font-bold mb-2">Email trimis!</h2>
-              <p className="text-sm text-muted-foreground">Verifică inbox-ul (și spam-ul)</p>
-            </>
-          ) : (
-            <>
-              <h2 className="text-lg font-bold mt-2 mb-1">Ai uitat parola?</h2>
-              <p className="text-sm text-muted-foreground mb-6">Introdu email-ul și îți trimitem un link de resetare</p>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" type="email" required className="w-full h-11 px-3 border border-border rounded-lg text-sm bg-background focus:ring-primary focus:border-primary" />
-                <button type="submit" disabled={loading} className="w-full h-11 bg-primary text-primary-foreground rounded-lg font-bold text-sm hover:bg-ml-primary-dark disabled:opacity-50">
-                  {loading ? "Se trimite..." : "Trimite link"}
-                </button>
-              </form>
-            </>
-          )}
-          <Link to="/auth" className="text-xs text-primary font-semibold hover:underline mt-4 inline-block">← Înapoi la autentificare</Link>
-        </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-12">
+      <Link to="/" className="mb-6 text-3xl font-display font-medium text-foreground tracking-tight">
+        Mama Lucica <span className="text-accent">🕯️</span>
+      </Link>
+      <div className="w-full max-w-md bg-card border border-border rounded-sm shadow-md p-8 text-center">
+        {sent ? (
+          <>
+            <p className="text-5xl mb-4">✅</p>
+            <h2 className="text-2xl font-display mb-2">Email trimis</h2>
+            <p className="text-sm text-muted-foreground">Verifică inbox-ul (și spam-ul)</p>
+          </>
+        ) : (
+          <>
+            <h2 className="text-2xl font-display text-foreground mb-1">Resetare parolă</h2>
+            <p className="text-sm text-muted-foreground mb-6">Introdu email-ul și îți trimitem un link</p>
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" type="email" required className="w-full h-11 px-3 border border-border rounded-sm text-sm bg-background focus:outline-none focus:border-accent" />
+              <button type="submit" disabled={loading} className="w-full h-12 bg-primary text-primary-foreground rounded-sm font-semibold text-sm tracking-wide hover:opacity-90 disabled:opacity-50 transition-opacity">
+                {loading ? "Se trimite..." : "Trimite link"}
+              </button>
+            </form>
+          </>
+        )}
+        <Link to="/auth" className="text-xs text-accent font-semibold hover:underline mt-6 inline-block">← Înapoi la autentificare</Link>
       </div>
-    </Layout>
+    </div>
   );
 }

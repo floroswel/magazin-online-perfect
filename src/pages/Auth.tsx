@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import Layout from "@/components/layout/Layout";
 import { useAuth } from "@/hooks/useAuth";
 import { usePageSeo } from "@/components/SeoHead";
 import { toast } from "sonner";
@@ -33,63 +32,72 @@ export default function Auth() {
         if (error) { setError(error.message); } else { setRegisterSuccess(true); }
       } else {
         const { error } = await signIn(email, password);
-        if (error) { setError("Email sau parolă incorectă"); } else { toast.success("Bun venit!"); navigate("/account"); }
+        if (error) { setError("Email sau parolă incorectă"); } else { toast.success("Bun venit!"); navigate("/admin"); }
       }
     } catch { setError("A apărut o eroare"); }
     finally { setLoading(false); }
   };
 
-  if (registerSuccess) {
-    return (
-      <Layout>
-        <div className="ml-container py-20 max-w-md mx-auto text-center">
-          <p className="text-5xl mb-4">✅</p>
-          <h1 className="text-xl font-bold mb-2">Cont creat cu succes!</h1>
-          <p className="text-sm text-muted-foreground">Verifică email-ul pentru confirmare.</p>
-        </div>
-      </Layout>
-    );
-  }
-
   return (
-    <Layout>
-      <div className="ml-container py-12">
-        <div className="max-w-md mx-auto">
-          <div className="bg-card rounded-xl border border-border p-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-12">
+      <Link to="/" className="mb-6 text-3xl font-display font-medium text-foreground tracking-tight">
+        Mama Lucica <span className="text-accent">🕯️</span>
+      </Link>
+
+      <div className="w-full max-w-md bg-card border border-border rounded-sm shadow-md p-8">
+        {registerSuccess ? (
+          <div className="text-center">
+            <p className="text-5xl mb-4">✅</p>
+            <h1 className="text-2xl font-display mb-2">Cont creat cu succes!</h1>
+            <p className="text-sm text-muted-foreground mb-6">Verifică email-ul pentru confirmare.</p>
+            <Link to="/auth" className="inline-block px-6 py-2.5 bg-primary text-primary-foreground rounded-sm font-semibold text-sm">
+              Înapoi la autentificare
+            </Link>
+          </div>
+        ) : (
+          <>
             <div className="text-center mb-6">
-              <h1 className="text-2xl font-extrabold text-primary">Mama Lucica</h1>
-              <h2 className="text-lg font-bold mt-2">{mode === "login" ? "Bun venit!" : "Creează cont"}</h2>
-              <p className="text-sm text-muted-foreground mt-1">{mode === "login" ? "Autentifică-te în contul tău" : "Creează un cont nou"}</p>
+              <h2 className="text-2xl font-display text-foreground">{mode === "login" ? "Bun venit" : "Cont nou"}</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                {mode === "login" ? "Autentifică-te pentru a continua" : "Creează un cont MamaLucica"}
+              </p>
             </div>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
               {mode === "register" && (
-                <input value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Nume complet *" required className="w-full h-11 px-3 border border-border rounded-lg text-sm bg-background focus:ring-primary focus:border-primary" />
+                <input value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Nume complet *" required className="w-full h-11 px-3 border border-border rounded-sm text-sm bg-background focus:outline-none focus:border-accent" />
               )}
-              <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email *" type="email" required className="w-full h-11 px-3 border border-border rounded-lg text-sm bg-background focus:ring-primary focus:border-primary" />
+              <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email *" type="email" required className="w-full h-11 px-3 border border-border rounded-sm text-sm bg-background focus:outline-none focus:border-accent" />
               <div className="relative">
-                <input value={password} onChange={e => setPassword(e.target.value)} placeholder="Parolă *" type={showPassword ? "text" : "password"} required className="w-full h-11 px-3 pr-10 border border-border rounded-lg text-sm bg-background focus:ring-primary focus:border-primary" />
+                <input value={password} onChange={e => setPassword(e.target.value)} placeholder="Parolă *" type={showPassword ? "text" : "password"} required className="w-full h-11 px-3 pr-10 border border-border rounded-sm text-sm bg-background focus:outline-none focus:border-accent" />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
               {mode === "register" && (
-                <input value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirmă parola *" type="password" required className="w-full h-11 px-3 border border-border rounded-lg text-sm bg-background focus:ring-primary focus:border-primary" />
+                <input value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Confirmă parola *" type="password" required className="w-full h-11 px-3 border border-border rounded-sm text-sm bg-background focus:outline-none focus:border-accent" />
               )}
               {mode === "login" && (
-                <div className="text-right"><Link to="/forgot-password" className="text-xs text-primary font-semibold hover:underline">Ai uitat parola?</Link></div>
+                <div className="text-right"><Link to="/forgot-password" className="text-xs text-accent font-semibold hover:underline">Ai uitat parola?</Link></div>
               )}
-              {error && <p className="text-sm text-destructive bg-destructive/10 rounded-lg p-3">{error}</p>}
-              <button type="submit" disabled={loading} className="w-full h-12 bg-primary text-primary-foreground rounded-lg font-bold text-sm hover:bg-ml-primary-dark disabled:opacity-50">
+              {error && <p className="text-sm text-destructive bg-destructive/10 rounded-sm p-3">{error}</p>}
+              <button type="submit" disabled={loading} className="w-full h-12 bg-primary text-primary-foreground rounded-sm font-semibold text-sm tracking-wide hover:opacity-90 disabled:opacity-50 transition-opacity">
                 {loading ? "Se procesează..." : mode === "login" ? "Autentifică-te" : "Creează cont"}
               </button>
             </form>
-            <div className="relative my-6"><hr className="border-border" /><span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-xs text-muted-foreground">sau</span></div>
-            <button onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); }} className="w-full h-11 border-2 border-primary text-primary rounded-lg font-semibold text-sm hover:bg-primary hover:text-primary-foreground transition-colors">
+            <div className="relative my-6">
+              <hr className="border-border" />
+              <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-xs text-muted-foreground uppercase tracking-wider">sau</span>
+            </div>
+            <button onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); }} className="w-full h-11 border border-border text-foreground rounded-sm font-semibold text-sm hover:bg-muted transition-colors">
               {mode === "login" ? "Creează un cont nou" : "Am deja cont — Autentifică-te"}
             </button>
-          </div>
-        </div>
+          </>
+        )}
       </div>
-    </Layout>
+
+      <Link to="/" className="mt-6 text-xs text-muted-foreground hover:text-foreground transition-colors">
+        ← Înapoi la magazin
+      </Link>
+    </div>
   );
 }

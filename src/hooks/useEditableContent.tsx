@@ -1,30 +1,20 @@
-// Stub minim — păstrează tipurile și valorile implicite pentru panoul de admin.
-// Conținutul editabil al storefront-ului va fi gestionat prin app_settings standard.
+// Stub minim — formă permisivă pentru panoul de admin.
+// Logica de storefront a fost ștearsă; aceste valori sunt doar pentru tipuri.
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-export interface EditableContent {
-  announcement: { text: string; bg_color: string; text_color: string; visible: boolean };
-  header_topbar: { phone: string; email: string; schedule: string; visible: boolean };
-  header_nav: { links: Array<{ label: string; url: string }>; visible: boolean };
-  mobile_categories: { items: Array<{ label: string; icon: string; url: string }>; visible: boolean };
-  why_section: { title: string; subtitle: string; items: Array<{ title: string; text: string; icon: string }>; visible: boolean };
-  process_section: { title: string; steps: Array<{ title: string; text: string }>; visible: boolean };
-  scent_promos: { title: string; items: Array<{ name: string; image: string; url: string }>; visible: boolean };
-  trust_strip: { items: Array<{ title: string; text: string; icon: string }>; visible: boolean };
-  social_proof_static: { messages: string[]; visible: boolean };
-}
+export type EditableContent = Record<string, any>;
 
 export const EDITABLE_DEFAULTS: EditableContent = {
-  announcement: { text: "Livrare gratuită peste 200 lei", bg_color: "#141414", text_color: "#F8F5EF", visible: true },
-  header_topbar: { phone: "+40 743 326 405", email: "contact@mamalucica.ro", schedule: "L-V 9-17", visible: true },
-  header_nav: { links: [], visible: true },
-  mobile_categories: { items: [], visible: true },
+  announcement: { text: "Livrare gratuită peste 200 lei", bg_color: "#141414", text_color: "#F8F5EF", enabled: true, visible: true },
+  header_topbar: { phone: "+40 743 326 405", email: "contact@mamalucica.ro", schedule: "L-V 9-17", shipping_text: "", location: "", visible: true },
+  header_nav: [],
+  mobile_categories: [],
   why_section: { title: "De ce Mama Lucica", subtitle: "", items: [], visible: true },
   process_section: { title: "Procesul nostru", steps: [], visible: true },
   scent_promos: { title: "Parfumuri", items: [], visible: true },
-  trust_strip: { items: [], visible: true },
-  social_proof_static: { messages: [], visible: true },
+  trust_strip: [],
+  social_proof_static: [],
 };
 
 export function useEditableContent(): EditableContent & { loading: boolean } {

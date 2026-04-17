@@ -1,6 +1,7 @@
-// Stub minim — componenta de vizualizare 360° este folosită în panoul de admin.
-// Va fi reconstruită complet când se ajunge la pagina de produs (etapa 3).
+// Stub minim — folosit doar de panoul de admin.
+// Va fi reconstruit complet în etapa pagina-produs (etapa 3).
 interface Product360ViewerProps {
+  productId?: string;
   images?: string[];
   autoRotate?: boolean;
   className?: string;
