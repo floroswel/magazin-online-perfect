@@ -109,14 +109,14 @@ export default function Footer() {
   const siteName = s.site_name || "Mama Lucica";
 
   /* ── Colors ── */
-  const bgColor = s.footer_bg_color || "#F1F5F9";
-  const textColor = s.footer_text_color || "#475569";
-  const titleColor = s.footer_title_color || "#0F172A";
-  const linkColor = s.footer_link_color || "#475569";
-  const linkHoverColor = s.footer_link_hover_color || "#0066FF";
-  const bottomBg = s.footer_bottom_bg_color || "#E2E8F0";
-  const bottomTextColor = s.footer_bottom_text_color || "#64748B";
-  const contactBtnColor = s.footer_contact_btn_color || "#0066FF";
+  const bgColor = s.footer_bg_color || s.footer_upper_bg || "#F8F5EF";
+  const textColor = s.footer_text_color || "#6B6258";
+  const titleColor = s.footer_title_color || "#2C2620";
+  const linkColor = s.footer_link_color || "#6B6258";
+  const linkHoverColor = s.footer_link_hover_color || s.accent_color || "#B8935A";
+  const bottomBg = s.footer_bottom_bg_color || s.footer_lower_bg || "#EFE9DF";
+  const bottomTextColor = s.footer_bottom_text_color || "#6B6258";
+  const contactBtnColor = s.footer_contact_btn_color || s.btn_primary_bg || s.primary_color || "#141414";
 
   /* ── Col 1 ── */
   const col1Show = s.footer_col1_show !== "false";

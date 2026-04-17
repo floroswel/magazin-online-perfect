@@ -87,15 +87,15 @@ const routeFallback = (
       alignItems: "center",
       justifyContent: "center",
       height: "100vh",
-      background: "#0A0A0F",
+      background: "#F8F5EF",
     }}
   >
     <div
       style={{
         width: 40,
         height: 40,
-        border: "3px solid rgba(139,26,26,0.3)",
-        borderTopColor: "#8B1A1A",
+        border: "3px solid rgba(184,147,90,0.2)",
+        borderTopColor: "#B8935A",
         borderRadius: "50%",
         animation: "spin 0.8s linear infinite",
       }}
