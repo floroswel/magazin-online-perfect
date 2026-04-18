@@ -1186,16 +1186,16 @@ export default function AdminProducts() {
                   <Select value={form.availability} onValueChange={(v: any) => setForm({ ...form, availability: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="in_stock">✅ În stoc</SelectItem>
-                      <SelectItem value="low_stock">⚡ Stoc limitat</SelectItem>
-                      <SelectItem value="out_of_stock">❌ Lipsă stoc</SelectItem>
-                      <SelectItem value="preorder">📅 Precomandă</SelectItem>
-                      <SelectItem value="available_2_3">📦 Livrare 2-3 zile</SelectItem>
-                      <SelectItem value="available_5_7">📦 Livrare 5-7 zile</SelectItem>
-                      <SelectItem value="available_7_10">📦 Livrare 7-10 zile</SelectItem>
-                      <SelectItem value="available_10_20">📦 Livrare 10-20 zile</SelectItem>
-                      <SelectItem value="discontinued">🛑 Discontinuat</SelectItem>
-                      <SelectItem value="notify_me">🔔 Anunță-mă când revine</SelectItem>
+                      <SelectItem value="in_stock"><span className="inline-flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-500" /> În stoc</span></SelectItem>
+                      <SelectItem value="low_stock"><span className="inline-flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-500" /> Stoc limitat</span></SelectItem>
+                      <SelectItem value="out_of_stock"><span className="inline-flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-red-500" /> Indisponibil</span></SelectItem>
+                      <SelectItem value="preorder"><span className="inline-flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-500" /> Precomandă</span></SelectItem>
+                      <SelectItem value="available_2_3"><span className="inline-flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-400" /> Disponibil în 2-3 zile</span></SelectItem>
+                      <SelectItem value="available_5_7"><span className="inline-flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-lime-500" /> Disponibil în 5-7 zile</span></SelectItem>
+                      <SelectItem value="available_7_10"><span className="inline-flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-amber-400" /> Disponibil în 7-10 zile</span></SelectItem>
+                      <SelectItem value="available_10_20"><span className="inline-flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-orange-500" /> Disponibil în 10-20 zile</span></SelectItem>
+                      <SelectItem value="discontinued"><span className="inline-flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-zinc-500" /> Retras din producție</span></SelectItem>
+                      <SelectItem value="notify_me"><span className="inline-flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-violet-500" /> Anunță-mă când e disponibil</span></SelectItem>
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-muted-foreground">Etichetă afișată pe pagina produsului, peste statusul calculat din stoc.</p>
