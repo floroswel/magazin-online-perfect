@@ -17,6 +17,9 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Admin = lazy(() => import("./pages/Admin"));
+const AccountHome = lazy(() => import("./pages/account/AccountHome"));
+const AccountWallet = lazy(() => import("./pages/account/Wallet"));
+const AccountPlaceholder = lazy(() => import("./pages/account/Placeholder"));
 
 const queryClient = new QueryClient();
 
@@ -45,6 +48,11 @@ const App = () => (
                       <Route path="/forgot-password" element={<ErrorBoundary><ForgotPassword /></ErrorBoundary>} />
                       <Route path="/reset-password" element={<ErrorBoundary><ResetPassword /></ErrorBoundary>} />
                       <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
+                      <Route path="/account" element={<ErrorBoundary><AccountHome /></ErrorBoundary>} />
+                      <Route path="/account/wallet" element={<ErrorBoundary><AccountWallet /></ErrorBoundary>} />
+                      <Route path="/account/addresses" element={<ErrorBoundary><AccountPlaceholder title="Adrese" /></ErrorBoundary>} />
+                      <Route path="/account/favorites" element={<ErrorBoundary><AccountPlaceholder title="Favorite" /></ErrorBoundary>} />
+                      <Route path="/account/settings" element={<ErrorBoundary><AccountPlaceholder title="Setări" /></ErrorBoundary>} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
