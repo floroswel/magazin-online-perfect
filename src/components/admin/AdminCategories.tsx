@@ -150,6 +150,35 @@ export default function AdminCategories() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-categories"] }),
   });
 
+  const reorderMutation = useMutation({
+    mutationFn: async (updates: { id: string; display_order: number }[]) => {
+      await Promise.all(
+        updates.map((u) =>
+          supabase.from("categories").update({ display_order: u.display_order }).eq("id", u.id)
+        )
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-categories"] });
+      toast.success("Ordine actualizată");
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const [dragId, setDragId] = useState<string | null>(null);
+  const handleDrop = (targetId: string, parentId: string | null) => {
+    if (!dragId || dragId === targetId) return;
+    const siblings = categories.filter((c) => c.parent_id === parentId).sort((a, b) => a.display_order - b.display_order);
+    const fromIdx = siblings.findIndex((s) => s.id === dragId);
+    const toIdx = siblings.findIndex((s) => s.id === targetId);
+    if (fromIdx === -1 || toIdx === -1) return;
+    const reordered = [...siblings];
+    const [moved] = reordered.splice(fromIdx, 1);
+    reordered.splice(toIdx, 0, moved);
+    reorderMutation.mutate(reordered.map((c, i) => ({ id: c.id, display_order: i })));
+    setDragId(null);
+  };
+
   const closeDialog = () => {
     setDialogOpen(false);
     setEditingId(null);
@@ -223,7 +252,15 @@ export default function AdminCategories() {
 
     return (
       <div key={cat.id}>
-        <div className="flex items-center gap-2 py-2 px-3 hover:bg-muted/50 rounded-md group" style={{ paddingLeft: `${depth * 24 + 12}px` }}>
+        <div
+          draggable
+          onDragStart={() => setDragId(cat.id)}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={() => handleDrop(cat.id, cat.parent_id)}
+          className="flex items-center gap-2 py-2 px-3 hover:bg-muted/50 rounded-md group cursor-move"
+          style={{ paddingLeft: `${depth * 24 + 12}px` }}
+        >
+          <GripVertical className="w-4 h-4 text-muted-foreground opacity-40 group-hover:opacity-100" />
           {hasChildren ? (
             <button onClick={() => toggleExpand(cat.id)} className="p-0.5 rounded hover:bg-muted">
               {expanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}

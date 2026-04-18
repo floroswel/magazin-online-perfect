@@ -69,6 +69,7 @@ const AdminEmailSettings = lazy(() => import("./settings/AdminEmailSettings"));
 const AdminTaxSettings = lazy(() => import("./settings/AdminTaxSettings"));
 const AdminThemeEditor = lazy(() => import("./settings/AdminThemeEditor"));
 const AdminEditableContent = lazy(() => import("./settings/AdminEditableContent"));
+const AdminCmsExtras = lazy(() => import("./content/AdminCmsExtras"));
 const Admin2FA = lazy(() => import("./settings/Admin2FA"));
 const AdminPageBuilder = lazy(() => import("./content/AdminPageBuilder"));
 const AdminTranslations = lazy(() => import("./content/AdminTranslations"));
@@ -437,6 +438,7 @@ export default function AdminRoutes() {
         <Route path="settings/theme" element={<AdminThemeEditor />} />
         <Route path="tema" element={<AdminThemeEditor />} />
         <Route path="settings/content-editor" element={<AdminEditableContent />} />
+        <Route path="content/cms-extras" element={<AdminCmsExtras />} />
         {/* footer-badges removed — use settings/footer */}
         <Route path="settings/footer" element={<AdminFooterSettings />} />
         <Route path="settings/taxes" element={<AdminTaxSettings />} />
