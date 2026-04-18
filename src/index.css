@@ -78,6 +78,14 @@
 
     --ease-editorial: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --transition-base: 220ms var(--ease-editorial);
+
+    /* ── Friendly aliases (overridden live by ControlTheme via useSettings) ── */
+    --color-primary: #0F0F0F;
+    --color-accent: #B8935A;
+    --color-bg: #FAFAFB;
+    --color-text: #141414;
+    --font-heading: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
   .dark, .candlelight {
