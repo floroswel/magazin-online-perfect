@@ -8,10 +8,12 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { SettingsProvider } from "@/hooks/useSettings";
 import { CartProvider } from "@/hooks/useCart";
 import { FavoritesProvider } from "@/hooks/useFavorites";
+import { CompareProvider } from "@/hooks/useCompare";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ScrollToTop from "./components/ScrollToTop";
 
 const Index = lazy(() => import("./pages/Index"));
+const Compare = lazy(() => import("./pages/Compare"));
 const Auth = lazy(() => import("./pages/Auth"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
@@ -40,10 +42,12 @@ const App = () => (
           <SettingsProvider>
             <CartProvider>
               <FavoritesProvider>
+                <CompareProvider>
                 <ErrorBoundary>
                   <Suspense fallback={routeFallback}>
                     <Routes>
                       <Route path="/" element={<ErrorBoundary><Index /></ErrorBoundary>} />
+                      <Route path="/compara" element={<ErrorBoundary><Compare /></ErrorBoundary>} />
                       <Route path="/auth" element={<ErrorBoundary><Auth /></ErrorBoundary>} />
                       <Route path="/forgot-password" element={<ErrorBoundary><ForgotPassword /></ErrorBoundary>} />
                       <Route path="/reset-password" element={<ErrorBoundary><ResetPassword /></ErrorBoundary>} />
@@ -57,6 +61,7 @@ const App = () => (
                     </Routes>
                   </Suspense>
                 </ErrorBoundary>
+                </CompareProvider>
               </FavoritesProvider>
             </CartProvider>
           </SettingsProvider>
