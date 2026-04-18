@@ -199,6 +199,7 @@ function applyCSSVariables(s: SettingsMap) {
       root.style.setProperty("--ml-primary-dark", shiftLightness(hsl, -8));
       root.style.setProperty("--ml-primary-darker", shiftLightness(hsl, -16));
       root.style.setProperty("--ml-primary-light", withLightness(hsl, 95));
+      root.style.setProperty("--color-primary", s.primary_color);
     }
   }
   if (s.secondary_color) {
@@ -215,6 +216,7 @@ function applyCSSVariables(s: SettingsMap) {
       root.style.setProperty("--accent", hsl);
       root.style.setProperty("--accent-foreground", isLightHSL(hsl) ? "220 15% 15%" : "0 0% 100%");
       root.style.setProperty("--ml-accent", hsl);
+      root.style.setProperty("--color-accent", s.accent_color);
     }
   }
   if (s.background_color) {
@@ -224,6 +226,7 @@ function applyCSSVariables(s: SettingsMap) {
       root.style.setProperty("--card", withLightness(hsl, 97));
       root.style.setProperty("--popover", withLightness(hsl, 97));
       root.style.setProperty("--muted", withLightness(hsl, 92));
+      root.style.setProperty("--color-bg", s.background_color);
       root.style.backgroundColor = s.background_color;
       body?.style.setProperty("background-color", s.background_color);
     }
@@ -240,6 +243,7 @@ function applyCSSVariables(s: SettingsMap) {
       root.style.setProperty("--input", withLightness(hsl, 84));
     }
     root.style.setProperty("--ml-text", hsl || s.text_color);
+    root.style.setProperty("--color-text", s.text_color);
     body?.style.setProperty("color", s.text_color);
   }
 
