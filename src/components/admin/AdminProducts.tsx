@@ -76,6 +76,10 @@ interface ProductForm {
   bundle_pricing_mode: string;
   bundle_discount_percent: number;
   bundle_components: BundleComponent[];
+  visibility: "visible" | "hidden_catalog" | "hidden_total";
+  availability: "in_stock" | "low_stock" | "out_of_stock" | "preorder" | "available_2_3" | "available_5_7" | "available_7_10" | "available_10_20" | "discontinued" | "notify_me";
+  warranty_text: string;
+  compare_at_price: number | null;
 }
 
 interface VariantAttr {
@@ -120,6 +124,7 @@ const emptyForm: ProductForm = {
   category_id: null, additional_category_ids: [], tags: [],
   specs: {}, meta_title: "", meta_description: "", related_product_ids: [],
   product_type: "simple", bundle_pricing_mode: "fixed", bundle_discount_percent: 0, bundle_components: [],
+  visibility: "visible", availability: "in_stock", warranty_text: "", compare_at_price: null,
 };
 
 export default function AdminProducts() {
@@ -381,6 +386,10 @@ export default function AdminProducts() {
         product_type: product.product_type,
         bundle_pricing_mode: product.bundle_pricing_mode,
         bundle_discount_percent: product.bundle_discount_percent,
+        visibility: product.visibility,
+        availability: product.availability,
+        warranty_text: product.warranty_text || "",
+        compare_at_price: product.compare_at_price,
       };
 
       if (!payload.meta_title && product.name) {
@@ -589,6 +598,10 @@ export default function AdminProducts() {
       bundle_pricing_mode: product.bundle_pricing_mode || "fixed",
       bundle_discount_percent: product.bundle_discount_percent || 0,
       bundle_components: bundleComponents,
+      visibility: (product as any).visibility || "visible",
+      availability: (product as any).availability || "in_stock",
+      warranty_text: (product as any).warranty_text || "",
+      compare_at_price: (product as any).compare_at_price ?? null,
     });
     setVariantAttrs(loadedAttrs);
     setVariantCombos(loadedCombos);
