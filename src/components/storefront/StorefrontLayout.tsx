@@ -7,6 +7,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import MobileBottomNav from "./MobileBottomNav";
 import CookieConsent from "./CookieConsent";
+import CompareBar from "./CompareBar";
 
 interface Props {
   children: ReactNode;
@@ -25,6 +26,7 @@ export default function StorefrontLayout({ children, hideFooter }: Props) {
       <Header />
       <main className="flex-1 pb-20 lg:pb-0">{children}</main>
       {!hideFooter && <Footer />}
+      <CompareBar />
       <MobileBottomNav />
       {!isCheckout && <CookieConsent />}
     </div>
