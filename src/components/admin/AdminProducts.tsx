@@ -76,6 +76,10 @@ interface ProductForm {
   bundle_pricing_mode: string;
   bundle_discount_percent: number;
   bundle_components: BundleComponent[];
+  visibility: "visible" | "hidden_catalog" | "hidden_total";
+  availability: "in_stock" | "low_stock" | "out_of_stock" | "preorder" | "available_2_3" | "available_5_7" | "available_7_10" | "available_10_20" | "discontinued" | "notify_me";
+  warranty_text: string;
+  compare_at_price: number | null;
 }
 
 interface VariantAttr {
@@ -120,6 +124,7 @@ const emptyForm: ProductForm = {
   category_id: null, additional_category_ids: [], tags: [],
   specs: {}, meta_title: "", meta_description: "", related_product_ids: [],
   product_type: "simple", bundle_pricing_mode: "fixed", bundle_discount_percent: 0, bundle_components: [],
+  visibility: "visible", availability: "in_stock", warranty_text: "", compare_at_price: null,
 };
 
 export default function AdminProducts() {
@@ -381,6 +386,10 @@ export default function AdminProducts() {
         product_type: product.product_type,
         bundle_pricing_mode: product.bundle_pricing_mode,
         bundle_discount_percent: product.bundle_discount_percent,
+        visibility: product.visibility,
+        availability: product.availability,
+        warranty_text: product.warranty_text || "",
+        compare_at_price: product.compare_at_price,
       };
 
       if (!payload.meta_title && product.name) {
@@ -589,6 +598,10 @@ export default function AdminProducts() {
       bundle_pricing_mode: product.bundle_pricing_mode || "fixed",
       bundle_discount_percent: product.bundle_discount_percent || 0,
       bundle_components: bundleComponents,
+      visibility: (product as any).visibility || "visible",
+      availability: (product as any).availability || "in_stock",
+      warranty_text: (product as any).warranty_text || "",
+      compare_at_price: (product as any).compare_at_price ?? null,
     });
     setVariantAttrs(loadedAttrs);
     setVariantCombos(loadedCombos);
@@ -1144,8 +1157,78 @@ export default function AdminProducts() {
               )}
             </div>
 
+            {/* ━━ Vizibilitate & Disponibilitate ━━ */}
+            <div className="pt-4 border-t border-border space-y-4">
+              <Label className="text-base font-semibold flex items-center gap-2">
+                <Eye className="w-4 h-4" /> Vizibilitate & Disponibilitate
+              </Label>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-sm">Vizibilitate în catalog</Label>
+                  <Select value={form.visibility} onValueChange={(v: any) => setForm({ ...form, visibility: v })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="visible">👁️ Vizibil — apare peste tot</SelectItem>
+                      <SelectItem value="hidden_catalog">🙈 Ascuns din catalog — accesibil doar prin link direct</SelectItem>
+                      <SelectItem value="hidden_total">🚫 Ascuns total — invizibil 100%</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    {form.visibility === "visible" && "Produs disponibil în listări, căutare și acces direct."}
+                    {form.visibility === "hidden_catalog" && "Nu apare în liste/căutare, dar poate fi accesat prin URL (util pentru promoții private)."}
+                    {form.visibility === "hidden_total" && "Complet ascuns — nici prin link direct nu poate fi accesat."}
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm">Stare disponibilitate</Label>
+                  <Select value={form.availability} onValueChange={(v: any) => setForm({ ...form, availability: v })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="in_stock">✅ În stoc</SelectItem>
+                      <SelectItem value="low_stock">⚡ Stoc limitat</SelectItem>
+                      <SelectItem value="out_of_stock">❌ Lipsă stoc</SelectItem>
+                      <SelectItem value="preorder">📅 Precomandă</SelectItem>
+                      <SelectItem value="available_2_3">📦 Livrare 2-3 zile</SelectItem>
+                      <SelectItem value="available_5_7">📦 Livrare 5-7 zile</SelectItem>
+                      <SelectItem value="available_7_10">📦 Livrare 7-10 zile</SelectItem>
+                      <SelectItem value="available_10_20">📦 Livrare 10-20 zile</SelectItem>
+                      <SelectItem value="discontinued">🛑 Discontinuat</SelectItem>
+                      <SelectItem value="notify_me">🔔 Anunță-mă când revine</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">Etichetă afișată pe pagina produsului, peste statusul calculat din stoc.</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-sm">Preț de referință (compare-at)</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={form.compare_at_price ?? ""}
+                    onChange={(e) => setForm({ ...form, compare_at_price: e.target.value ? Number(e.target.value) : null })}
+                    placeholder="ex: 199.00"
+                  />
+                  <p className="text-xs text-muted-foreground">Folosit pentru afișarea „de la” sau preț recomandat producător (RRP).</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm">Text garanție</Label>
+                  <Input
+                    value={form.warranty_text}
+                    onChange={(e) => setForm({ ...form, warranty_text: e.target.value })}
+                    placeholder="ex: Garanție 24 luni"
+                  />
+                  <p className="text-xs text-muted-foreground">Afișat pe pagina produs sub buton de cumpărare.</p>
+                </div>
+              </div>
+            </div>
+
             <div className="pt-2 border-t border-border space-y-3">
-              <Label className="text-base font-semibold flex items-center gap-2"><Weight className="w-4 h-4" /> Greutate & Dimensiuni (pt. calcul transport)</Label>
               <div className="grid grid-cols-4 gap-3">
                 <div className="space-y-1">
                   <Label className="text-xs">Greutate (kg)</Label>
