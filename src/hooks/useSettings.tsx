@@ -199,6 +199,7 @@ function applyCSSVariables(s: SettingsMap) {
       root.style.setProperty("--ml-primary-dark", shiftLightness(hsl, -8));
       root.style.setProperty("--ml-primary-darker", shiftLightness(hsl, -16));
       root.style.setProperty("--ml-primary-light", withLightness(hsl, 95));
+      root.style.setProperty("--color-primary", s.primary_color);
     }
   }
   if (s.secondary_color) {
