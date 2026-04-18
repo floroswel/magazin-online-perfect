@@ -5848,6 +5848,38 @@ export type Database = {
           },
         ]
       }
+      product_comparisons: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_comparisons_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_line_items: {
         Row: {
           created_at: string
@@ -6184,6 +6216,7 @@ export type Database = {
       }
       products: {
         Row: {
+          availability: Database["public"]["Enums"]["availability_state"] | null
           badge_bestseller: boolean
           badge_custom_color: string | null
           badge_custom_text: string | null
@@ -6200,6 +6233,7 @@ export type Database = {
           canonical_url: string | null
           category_id: string | null
           collections: string[] | null
+          compare_at_price: number | null
           cost_price: number | null
           created_at: string
           description: string | null
@@ -6238,12 +6272,17 @@ export type Database = {
           tags: string[] | null
           total_sold: number | null
           videos: string[] | null
+          visibility: Database["public"]["Enums"]["visibility_state"] | null
           visible: boolean | null
           warranty_months: number | null
+          warranty_text: string | null
           weight_kg: number | null
           width_cm: number | null
         }
         Insert: {
+          availability?:
+            | Database["public"]["Enums"]["availability_state"]
+            | null
           badge_bestseller?: boolean
           badge_custom_color?: string | null
           badge_custom_text?: string | null
@@ -6260,6 +6299,7 @@ export type Database = {
           canonical_url?: string | null
           category_id?: string | null
           collections?: string[] | null
+          compare_at_price?: number | null
           cost_price?: number | null
           created_at?: string
           description?: string | null
@@ -6298,12 +6338,17 @@ export type Database = {
           tags?: string[] | null
           total_sold?: number | null
           videos?: string[] | null
+          visibility?: Database["public"]["Enums"]["visibility_state"] | null
           visible?: boolean | null
           warranty_months?: number | null
+          warranty_text?: string | null
           weight_kg?: number | null
           width_cm?: number | null
         }
         Update: {
+          availability?:
+            | Database["public"]["Enums"]["availability_state"]
+            | null
           badge_bestseller?: boolean
           badge_custom_color?: string | null
           badge_custom_text?: string | null
@@ -6320,6 +6365,7 @@ export type Database = {
           canonical_url?: string | null
           category_id?: string | null
           collections?: string[] | null
+          compare_at_price?: number | null
           cost_price?: number | null
           created_at?: string
           description?: string | null
@@ -6358,8 +6404,10 @@ export type Database = {
           tags?: string[] | null
           total_sold?: number | null
           videos?: string[] | null
+          visibility?: Database["public"]["Enums"]["visibility_state"] | null
           visible?: boolean | null
           warranty_months?: number | null
+          warranty_text?: string | null
           weight_kg?: number | null
           width_cm?: number | null
         }
@@ -10376,6 +10424,18 @@ export type Database = {
         | "support"
         | "finance"
         | "viewer"
+      availability_state:
+        | "in_stock"
+        | "low_stock"
+        | "out_of_stock"
+        | "preorder"
+        | "available_2_3"
+        | "available_5_7"
+        | "available_7_10"
+        | "available_10_20"
+        | "discontinued"
+        | "notify_me"
+      visibility_state: "visible" | "hidden_catalog" | "hidden_total"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -10514,6 +10574,19 @@ export const Constants = {
         "finance",
         "viewer",
       ],
+      availability_state: [
+        "in_stock",
+        "low_stock",
+        "out_of_stock",
+        "preorder",
+        "available_2_3",
+        "available_5_7",
+        "available_7_10",
+        "available_10_20",
+        "discontinued",
+        "notify_me",
+      ],
+      visibility_state: ["visible", "hidden_catalog", "hidden_total"],
     },
   },
 } as const
