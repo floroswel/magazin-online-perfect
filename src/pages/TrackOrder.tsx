@@ -16,16 +16,17 @@ interface OrderResult {
   payment_status: string | null;
   total: number;
   created_at: string;
-  awb_number: string | null;
+  tracking_number: string | null;
   courier: string | null;
   delivered_at: string | null;
+  user_email?: string | null;
 }
 
 const statusIcon = (status: string) => {
-  if (["delivered", "livrat"].includes(status)) return <CheckCircle2 className="h-5 w-5 text-green-600" />;
-  if (["shipping", "expediata", "in_transit"].includes(status)) return <Truck className="h-5 w-5 text-blue-600" />;
+  if (["delivered", "livrat"].includes(status)) return <CheckCircle2 className="h-5 w-5 text-success" />;
+  if (["shipping", "expediata", "in_transit"].includes(status)) return <Truck className="h-5 w-5 text-primary" />;
   if (["cancelled", "anulata"].includes(status)) return <XCircle className="h-5 w-5 text-destructive" />;
-  return <Clock className="h-5 w-5 text-amber-600" />;
+  return <Clock className="h-5 w-5 text-muted-foreground" />;
 };
 
 export default function TrackOrder() {
@@ -43,16 +44,19 @@ export default function TrackOrder() {
     try {
       const { data, error: dbErr } = await supabase
         .from("orders")
-        .select("order_number, status, payment_status, total, created_at, awb_number, courier, delivered_at, user_email")
+        .select("order_number, status, payment_status, total, created_at, tracking_number, courier, delivered_at, user_email")
         .eq("order_number", orderNumber.trim())
         .maybeSingle();
 
       if (dbErr || !data) {
         setError("Comanda nu a fost găsită. Verifică numărul și emailul folosit la comandă.");
-      } else if (data.user_email && email && data.user_email.toLowerCase() !== email.trim().toLowerCase()) {
-        setError("Emailul nu corespunde cu cel folosit la comandă.");
       } else {
-        setResult(data as OrderResult);
+        const order = data as unknown as OrderResult;
+        if (order.user_email && email && order.user_email.toLowerCase() !== email.trim().toLowerCase()) {
+          setError("Emailul nu corespunde cu cel folosit la comandă.");
+        } else {
+          setResult(order);
+        }
       }
     } catch {
       setError("A apărut o eroare. Încearcă din nou.");
@@ -149,10 +153,10 @@ export default function TrackOrder() {
                   )}
                 </div>
 
-                {result.awb_number && (
+                {result.tracking_number && (
                   <div className="p-3 bg-muted rounded">
                     <p className="text-xs text-muted-foreground mb-1">AWB {result.courier || "Curier"}</p>
-                    <p className="font-mono text-sm font-semibold">{result.awb_number}</p>
+                    <p className="font-mono text-sm font-semibold">{result.tracking_number}</p>
                   </div>
                 )}
               </div>
