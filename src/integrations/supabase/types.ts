@@ -181,10 +181,12 @@ export type Database = {
           city: string
           county: string
           created_at: string
+          first_name: string | null
           full_name: string
           id: string
           is_default: boolean | null
           label: string | null
+          last_name: string | null
           phone: string
           postal_code: string | null
           user_id: string
@@ -194,10 +196,12 @@ export type Database = {
           city: string
           county: string
           created_at?: string
+          first_name?: string | null
           full_name: string
           id?: string
           is_default?: boolean | null
           label?: string | null
+          last_name?: string | null
           phone: string
           postal_code?: string | null
           user_id: string
@@ -207,10 +211,12 @@ export type Database = {
           city?: string
           county?: string
           created_at?: string
+          first_name?: string | null
           full_name?: string
           id?: string
           is_default?: boolean | null
           label?: string | null
+          last_name?: string | null
           phone?: string
           postal_code?: string | null
           user_id?: string
@@ -5287,12 +5293,18 @@ export type Database = {
           affiliate_id: string | null
           awb_generated_at: string | null
           billing_address: Json | null
+          billing_different: boolean
           care_guide_sent_at: string | null
+          company_address: string | null
+          company_cui: string | null
+          company_name: string | null
+          company_reg_com: string | null
           coupon_id: string | null
           courier: string | null
           courier_name: string | null
           created_at: string
           currency: string | null
+          customer_type: string
           delivered_at: string | null
           discount_amount: number | null
           discount_total: number | null
@@ -5339,12 +5351,18 @@ export type Database = {
           affiliate_id?: string | null
           awb_generated_at?: string | null
           billing_address?: Json | null
+          billing_different?: boolean
           care_guide_sent_at?: string | null
+          company_address?: string | null
+          company_cui?: string | null
+          company_name?: string | null
+          company_reg_com?: string | null
           coupon_id?: string | null
           courier?: string | null
           courier_name?: string | null
           created_at?: string
           currency?: string | null
+          customer_type?: string
           delivered_at?: string | null
           discount_amount?: number | null
           discount_total?: number | null
@@ -5391,12 +5409,18 @@ export type Database = {
           affiliate_id?: string | null
           awb_generated_at?: string | null
           billing_address?: Json | null
+          billing_different?: boolean
           care_guide_sent_at?: string | null
+          company_address?: string | null
+          company_cui?: string | null
+          company_name?: string | null
+          company_reg_com?: string | null
           coupon_id?: string | null
           courier?: string | null
           courier_name?: string | null
           created_at?: string
           currency?: string | null
+          customer_type?: string
           delivered_at?: string | null
           discount_amount?: number | null
           discount_total?: number | null
