@@ -202,6 +202,7 @@ const AdminSeoRedirects = lazy(() => import("./seo/AdminSeoRedirects"));
 const AdminFaqManager = lazy(() => import("./content/AdminFaqManager"));
 const AdminPopupsManager = lazy(() => import("./marketing/AdminPopupsManager"));
 const AdminSystemHealth = lazy(() => import("./system/AdminSystemHealth"));
+const AdminObservability = lazy(() => import("./system/AdminObservability"));
 const AdminOrderDetailPage = lazy(() => import("./orders/AdminOrderDetailPage"));
 const AdminMaintenanceToggle = lazy(() => import("./system/AdminMaintenanceToggle"));
 const AdminPushNotifications = lazy(() => import("./system/AdminPushNotifications"));
@@ -500,6 +501,7 @@ export default function AdminRoutes() {
         <Route path="content/faq" element={<AdminFaqManager />} />
         <Route path="marketing/popups" element={<AdminPopupsManager />} />
         <Route path="system/health" element={<AdminSystemHealth />} />
+        <Route path="system/observability" element={<AdminObservability />} />
         <Route path="system/maintenance" element={<AdminMaintenanceToggle />} />
         <Route path="system/push" element={<AdminPushNotifications />} />
         <Route path="system/cron" element={<AdminCronJobs />} />
