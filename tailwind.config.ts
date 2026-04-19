@@ -75,6 +75,39 @@ export default {
           yellow: "hsl(var(--ml-warning))",
           green: "hsl(var(--ml-success))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+          soft: "hsl(var(--success-soft))",
+          "soft-foreground": "hsl(var(--success-soft-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+          soft: "hsl(var(--warning-soft))",
+          "soft-foreground": "hsl(var(--warning-soft-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
+          soft: "hsl(var(--info-soft))",
+          "soft-foreground": "hsl(var(--info-soft-foreground))",
+        },
+        danger: {
+          DEFAULT: "hsl(var(--danger))",
+          foreground: "hsl(var(--danger-foreground))",
+          soft: "hsl(var(--danger-soft))",
+          "soft-foreground": "hsl(var(--danger-soft-foreground))",
+        },
+        highlight: {
+          DEFAULT: "hsl(var(--highlight))",
+          soft: "hsl(var(--highlight-soft))",
+        },
+        scrim: {
+          DEFAULT: "hsl(var(--scrim))",
+          strong: "hsl(var(--scrim-strong))",
+        },
+        "on-dark": "hsl(var(--on-dark))",
         atelier: {
           noir: "hsl(var(--atelier-noir))",
           or: "hsl(var(--atelier-or))",
