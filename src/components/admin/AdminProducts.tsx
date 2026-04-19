@@ -47,6 +47,8 @@ interface ProductForm {
   sku: string;
   ean: string;
   weight_kg: number | null;
+  weight_g: number | null;
+  container_type: string;
   length_cm: number | null;
   width_cm: number | null;
   height_cm: number | null;
@@ -115,7 +117,7 @@ const emptyForm: ProductForm = {
   name: "", slug: "", short_description: "", description: "",
   price: 0, old_price: null, cost_price: null,
   stock: 0, low_stock_threshold: 5, sku: "", ean: "",
-  weight_kg: null, length_cm: null, width_cm: null, height_cm: null,
+  weight_kg: null, weight_g: null, container_type: "", length_cm: null, width_cm: null, height_cm: null,
   brand_id: null, image_url: "", images: [], image_alts: {},
   featured: false, visible: true, status: "active",
   badge_new: false, badge_bestseller: false, badge_promo: false,
@@ -377,6 +379,8 @@ export default function AdminProducts() {
         sku: product.sku || null,
         ean: product.ean || null,
         weight_kg: product.weight_kg,
+        weight_g: product.weight_g,
+        container_type: product.container_type || null,
         length_cm: product.length_cm,
         width_cm: product.width_cm,
         height_cm: product.height_cm,
@@ -569,6 +573,8 @@ export default function AdminProducts() {
       sku: product.sku || "",
       ean: product.ean || "",
       weight_kg: product.weight_kg || null,
+      weight_g: product.weight_g || null,
+      container_type: product.container_type || "",
       length_cm: product.length_cm || null,
       width_cm: product.width_cm || null,
       height_cm: product.height_cm || null,
@@ -1250,6 +1256,29 @@ export default function AdminProducts() {
               {form.length_cm && form.width_cm && form.height_cm && (
                 <p className="text-xs text-muted-foreground">Volum: {((form.length_cm * form.width_cm * form.height_cm) / 1000000).toFixed(4)} m³</p>
               )}
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">Gramaj produs (g) — pentru filtrare catalog</Label>
+                  <Input type="number" min="0" value={form.weight_g ?? ""} onChange={(e) => setForm({ ...form, weight_g: e.target.value ? Number(e.target.value) : null })} placeholder="200" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Tip recipient — pentru filtrare catalog</Label>
+                  <select
+                    value={form.container_type || ""}
+                    onChange={(e) => setForm({ ...form, container_type: e.target.value })}
+                    className="w-full h-9 px-3 border border-border rounded-md bg-background text-sm focus:outline-none focus:border-primary"
+                  >
+                    <option value="">— Selectează —</option>
+                    <option value="sticla">Sticlă</option>
+                    <option value="metal">Metal</option>
+                    <option value="ceramica">Ceramică</option>
+                    <option value="lemn">Lemn</option>
+                    <option value="beton">Beton</option>
+                    <option value="ipsos">Ipsos</option>
+                    <option value="alt">Alt material</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
         );
