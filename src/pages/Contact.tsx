@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import SeoHead from "@/components/SeoHead";
 import LegalConsents, { EMPTY_CONSENTS, allConsentsAccepted, type LegalConsentsState } from "@/components/storefront/LegalConsents";
+import StorefrontLayout from "@/components/storefront/StorefrontLayout";
 
 const unq = (s?: string) => (s || "").replace(/^"|"$/g, "");
 const truthy = (v?: string) => v !== "false" && v !== '"false"' && v !== undefined;
@@ -92,7 +93,7 @@ export default function Contact() {
   };
 
   return (
-    <>
+    <StorefrontLayout>
       <SeoHead title="Contact" description="Contactează-ne — Mama Lucica" />
       <div className="bg-white text-foreground ml-container py-10 lg:py-16">
         <header className="mb-10 text-center max-w-2xl mx-auto">
@@ -230,6 +231,6 @@ export default function Contact() {
           </Card>
         )}
       </div>
-    </>
+    </StorefrontLayout>
   );
 }
