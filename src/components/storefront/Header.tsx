@@ -5,6 +5,8 @@ import { useCart } from "@/hooks/useCart";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useAuth } from "@/hooks/useAuth";
 import { useSettings } from "@/hooks/useSettings";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const unq = (str?: string) => (str || "").replace(/^"|"$/g, "");
 
@@ -16,6 +18,24 @@ export default function Header() {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQ, setSearchQ] = useState("");
+
+  // Live nav categories from DB (synced with admin /admin/categories)
+  const { data: navCategories = [] } = useQuery({
+    queryKey: ["nav-categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("id, name, slug, parent_id, display_order, visible, show_in_nav")
+        .eq("visible", true)
+        .eq("show_in_nav", true)
+        .is("parent_id", null)
+        .order("display_order")
+        .order("name");
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60_000,
+  });
 
   const logoUrl = unq(s.header_logo_url) || unq(s.logo_url);
   const logoVisible = s.logo_visible !== "false";
@@ -126,28 +146,39 @@ export default function Header() {
         </div>
       </form>
 
-      {/* Nav bar — desktop */}
+      {/* Nav bar — desktop (categorii dinamice din DB) */}
       <nav className="hidden xl:block border-t border-border/40">
-        <div className="ml-container flex items-center gap-1 h-11">
-          {[
-            { label: "Toate produsele", to: "/#produse" },
-            { label: "Despre noi", to: "/page/despre-noi" },
-            { label: "Garanție", to: "/page/garantie" },
-            { label: "Livrare", to: "/page/livrare" },
-            { label: "FAQ", to: "/page/faq" },
-            { label: "Contact", to: "/contact" },
-          ].map((item) => (
+        <div className="ml-container flex items-center gap-1 h-11 overflow-x-auto">
+          <Link
+            to="/#produse"
+            className="px-4 h-full flex items-center text-sm font-medium text-foreground/80 hover:text-foreground hover:bg-muted/60 transition-colors uppercase tracking-wider text-[11px] whitespace-nowrap"
+          >
+            Toate produsele
+          </Link>
+          {navCategories.map((cat) => (
             <Link
-              key={item.to}
-              to={item.to}
-              className="px-4 h-full flex items-center text-sm font-medium text-foreground/80 hover:text-foreground hover:bg-muted/60 transition-colors uppercase tracking-wider text-[11px]"
+              key={cat.id}
+              to={`/categorie/${cat.slug}`}
+              className="px-4 h-full flex items-center text-sm font-medium text-foreground/80 hover:text-foreground hover:bg-muted/60 transition-colors uppercase tracking-wider text-[11px] whitespace-nowrap"
             >
-              {item.label}
+              {cat.name}
             </Link>
           ))}
           <Link
+            to="/page/despre-noi"
+            className="px-4 h-full flex items-center text-sm font-medium text-foreground/80 hover:text-foreground hover:bg-muted/60 transition-colors uppercase tracking-wider text-[11px] whitespace-nowrap"
+          >
+            Despre noi
+          </Link>
+          <Link
+            to="/contact"
+            className="px-4 h-full flex items-center text-sm font-medium text-foreground/80 hover:text-foreground hover:bg-muted/60 transition-colors uppercase tracking-wider text-[11px] whitespace-nowrap"
+          >
+            Contact
+          </Link>
+          <Link
             to="/#oferte"
-            className="ml-auto px-4 h-7 mt-1.5 flex items-center text-xs font-bold uppercase tracking-wider bg-accent text-accent-foreground rounded-sm hover:opacity-90 transition-opacity"
+            className="ml-auto px-4 h-7 mt-1.5 flex items-center text-xs font-bold uppercase tracking-wider bg-accent text-accent-foreground rounded-sm hover:opacity-90 transition-opacity whitespace-nowrap"
           >
             🔥 Oferte
           </Link>
@@ -167,13 +198,7 @@ export default function Header() {
               {[
                 { label: "Acasă", to: "/" },
                 { label: "Toate produsele", to: "/#produse" },
-                { label: "Lumânări", to: "/categorie/lumanari" },
-                { label: "Lumânări parfumate", to: "/categorie/lumanari-parfumate" },
-                { label: "După parfum", to: "/categorie/dupa-parfum" },
-                { label: "După ocazie", to: "/categorie/dupa-ocazie" },
-                { label: "Cadouri", to: "/categorie/cadouri" },
-                { label: "Personalizate", to: "/categorie/personalizate" },
-                { label: "Odorizante Dulap", to: "/categorie/odorizante-dulap" },
+                ...navCategories.map((c) => ({ label: c.name, to: `/categorie/${c.slug}` })),
                 { label: "Oferte", to: "/#oferte" },
                 { label: "Despre noi", to: "/page/despre-noi" },
                 { label: "Contact", to: "/contact" },
