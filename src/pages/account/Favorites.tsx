@@ -7,19 +7,20 @@ import ProductCard from "@/components/storefront/ProductCard";
 import SeoHead from "@/components/SeoHead";
 
 export default function Favorites() {
-  const { ids = [] } = useFavorites() as any;
+  const { ids } = useFavorites();
+  const idArr = Array.from(ids);
 
   const { data: products = [] } = useQuery({
-    queryKey: ["fav-products", ids],
+    queryKey: ["fav-products", idArr.join(",")],
     queryFn: async () => {
-      if (!ids?.length) return [];
+      if (!idArr.length) return [];
       const { data } = await supabase
         .from("products")
         .select("id, name, slug, price, old_price, image_url, stock, rating, review_count, badge_promo, badge_new, badge_bestseller")
-        .in("id", ids);
+        .in("id", idArr);
       return data || [];
     },
-    enabled: ids.length > 0,
+    enabled: idArr.length > 0,
   });
 
   return (

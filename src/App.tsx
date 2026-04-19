@@ -14,6 +14,11 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import ScrollToTop from "./components/ScrollToTop";
 
 const Index = lazy(() => import("./pages/Index"));
+const Catalog = lazy(() => import("./pages/Catalog"));
+const Product = lazy(() => import("./pages/Product"));
+const Cart = lazy(() => import("./pages/Cart"));
+const Checkout = lazy(() => import("./pages/Checkout"));
+const Search = lazy(() => import("./pages/Search"));
 const Compare = lazy(() => import("./pages/Compare"));
 const Auth = lazy(() => import("./pages/Auth"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
@@ -22,7 +27,10 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const Admin = lazy(() => import("./pages/Admin"));
 const AccountHome = lazy(() => import("./pages/account/AccountHome"));
 const AccountWallet = lazy(() => import("./pages/account/Wallet"));
-const AccountPlaceholder = lazy(() => import("./pages/account/Placeholder"));
+const AccountOrders = lazy(() => import("./pages/account/Orders"));
+const AccountFavorites = lazy(() => import("./pages/account/Favorites"));
+const AccountAddresses = lazy(() => import("./pages/account/Addresses"));
+const AccountSettings = lazy(() => import("./pages/account/Settings"));
 const Contact = lazy(() => import("./pages/Contact"));
 const CmsPage = lazy(() => import("./pages/CmsPage"));
 const TrackOrder = lazy(() => import("./pages/TrackOrder"));
@@ -52,16 +60,23 @@ const App = () => (
                   <Suspense fallback={routeFallback}>
                     <Routes>
                       <Route path="/" element={<ErrorBoundary><Index /></ErrorBoundary>} />
+                      <Route path="/catalog" element={<ErrorBoundary><Catalog /></ErrorBoundary>} />
+                      <Route path="/categorie/:slug" element={<ErrorBoundary><Catalog /></ErrorBoundary>} />
+                      <Route path="/produs/:slug" element={<ErrorBoundary><Product /></ErrorBoundary>} />
+                      <Route path="/cos" element={<ErrorBoundary><Cart /></ErrorBoundary>} />
+                      <Route path="/checkout" element={<ErrorBoundary><Checkout /></ErrorBoundary>} />
+                      <Route path="/cautare" element={<ErrorBoundary><Search /></ErrorBoundary>} />
                       <Route path="/compara" element={<ErrorBoundary><Compare /></ErrorBoundary>} />
                       <Route path="/auth" element={<ErrorBoundary><Auth /></ErrorBoundary>} />
                       <Route path="/forgot-password" element={<ErrorBoundary><ForgotPassword /></ErrorBoundary>} />
                       <Route path="/reset-password" element={<ErrorBoundary><ResetPassword /></ErrorBoundary>} />
                       <Route path="/admin/*" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
                       <Route path="/account" element={<ErrorBoundary><AccountHome /></ErrorBoundary>} />
+                      <Route path="/account/orders" element={<ErrorBoundary><AccountOrders /></ErrorBoundary>} />
                       <Route path="/account/wallet" element={<ErrorBoundary><AccountWallet /></ErrorBoundary>} />
-                      <Route path="/account/addresses" element={<ErrorBoundary><AccountPlaceholder title="Adrese" /></ErrorBoundary>} />
-                      <Route path="/account/favorites" element={<ErrorBoundary><AccountPlaceholder title="Favorite" /></ErrorBoundary>} />
-                      <Route path="/account/settings" element={<ErrorBoundary><AccountPlaceholder title="Setări" /></ErrorBoundary>} />
+                      <Route path="/account/addresses" element={<ErrorBoundary><AccountAddresses /></ErrorBoundary>} />
+                      <Route path="/account/favorites" element={<ErrorBoundary><AccountFavorites /></ErrorBoundary>} />
+                      <Route path="/account/settings" element={<ErrorBoundary><AccountSettings /></ErrorBoundary>} />
                       <Route path="/contact" element={<ErrorBoundary><Contact /></ErrorBoundary>} />
                       <Route path="/page/:slug" element={<ErrorBoundary><CmsPage /></ErrorBoundary>} />
                       <Route path="/track" element={<ErrorBoundary><TrackOrder /></ErrorBoundary>} />
