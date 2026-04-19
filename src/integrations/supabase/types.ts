@@ -3317,6 +3317,57 @@ export type Database = {
         }
         Relationships: []
       }
+      error_log: {
+        Row: {
+          context_json: Json | null
+          created_at: string
+          fingerprint: string | null
+          id: string
+          level: string
+          message: string
+          release_version: string | null
+          resolved: boolean
+          resolved_at: string | null
+          resolved_by: string | null
+          stack: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          context_json?: Json | null
+          created_at?: string
+          fingerprint?: string | null
+          id?: string
+          level?: string
+          message: string
+          release_version?: string | null
+          resolved?: boolean
+          resolved_at?: string | null
+          resolved_by?: string | null
+          stack?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          context_json?: Json | null
+          created_at?: string
+          fingerprint?: string | null
+          id?: string
+          level?: string
+          message?: string
+          release_version?: string | null
+          resolved?: boolean
+          resolved_at?: string | null
+          resolved_by?: string | null
+          stack?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           created_at: string | null
@@ -3761,6 +3812,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      health_check_results: {
+        Row: {
+          check_name: string
+          created_at: string
+          details_json: Json | null
+          duration_ms: number | null
+          id: string
+          status: string
+        }
+        Insert: {
+          check_name: string
+          created_at?: string
+          details_json?: Json | null
+          duration_ms?: number | null
+          id?: string
+          status: string
+        }
+        Update: {
+          check_name?: string
+          created_at?: string
+          details_json?: Json | null
+          duration_ms?: number | null
+          id?: string
+          status?: string
+        }
+        Relationships: []
       }
       health_logs: {
         Row: {
@@ -10653,6 +10731,36 @@ export type Database = {
         }
         Relationships: []
       }
+      uptime_log: {
+        Row: {
+          created_at: string
+          endpoint: string
+          error_message: string | null
+          id: string
+          is_healthy: boolean
+          response_time_ms: number | null
+          status_code: number | null
+        }
+        Insert: {
+          created_at?: string
+          endpoint: string
+          error_message?: string | null
+          id?: string
+          is_healthy?: boolean
+          response_time_ms?: number | null
+          status_code?: number | null
+        }
+        Update: {
+          created_at?: string
+          endpoint?: string
+          error_message?: string | null
+          id?: string
+          is_healthy?: boolean
+          response_time_ms?: number | null
+          status_code?: number | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -11327,6 +11435,7 @@ export type Database = {
         Returns: boolean
       }
       cleanup_old_chatbot_conversations: { Args: never; Returns: undefined }
+      cleanup_old_observability_logs: { Args: never; Returns: undefined }
       count_dynamic_category_products: {
         Args: { p_rules: Json }
         Returns: number
