@@ -103,7 +103,6 @@ export default function Product() {
       <SeoHead
         title={product.meta_title || `${product.name} — Mama Lucica`}
         description={product.meta_description || product.short_description || `Cumpără ${product.name} de la Mama Lucica.`}
-        image={product.image_url || undefined}
       />
       <section className="ml-container py-6 lg:py-10">
         <nav className="text-xs text-muted-foreground mb-4">
