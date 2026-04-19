@@ -441,7 +441,7 @@
   .cat-icon-pill svg { color: hsl(var(--cat-pill-fg)); }
 
   .wm-card {
-    @apply group relative bg-card rounded-2xl overflow-hidden border border-border/50
+    @apply relative bg-card rounded-2xl overflow-hidden border border-border/50
            hover:border-border hover:shadow-lg transition-all duration-300;
   }
   .wm-card-img { @apply aspect-square bg-secondary/40 flex items-center justify-center p-4 sm:p-8; }
