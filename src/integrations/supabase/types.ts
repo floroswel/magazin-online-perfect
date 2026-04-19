@@ -6237,6 +6237,7 @@ export type Database = {
           category_id: string | null
           collections: string[] | null
           compare_at_price: number | null
+          container_type: string | null
           cost_price: number | null
           created_at: string
           description: string | null
@@ -6279,6 +6280,7 @@ export type Database = {
           visible: boolean | null
           warranty_months: number | null
           warranty_text: string | null
+          weight_g: number | null
           weight_kg: number | null
           width_cm: number | null
         }
@@ -6303,6 +6305,7 @@ export type Database = {
           category_id?: string | null
           collections?: string[] | null
           compare_at_price?: number | null
+          container_type?: string | null
           cost_price?: number | null
           created_at?: string
           description?: string | null
@@ -6345,6 +6348,7 @@ export type Database = {
           visible?: boolean | null
           warranty_months?: number | null
           warranty_text?: string | null
+          weight_g?: number | null
           weight_kg?: number | null
           width_cm?: number | null
         }
@@ -6369,6 +6373,7 @@ export type Database = {
           category_id?: string | null
           collections?: string[] | null
           compare_at_price?: number | null
+          container_type?: string | null
           cost_price?: number | null
           created_at?: string
           description?: string | null
@@ -6411,6 +6416,7 @@ export type Database = {
           visible?: boolean | null
           warranty_months?: number | null
           warranty_text?: string | null
+          weight_g?: number | null
           weight_kg?: number | null
           width_cm?: number | null
         }
