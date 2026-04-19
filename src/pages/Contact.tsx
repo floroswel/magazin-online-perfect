@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import SeoHead from "@/components/SeoHead";
 import LegalConsents, { EMPTY_CONSENTS, allConsentsAccepted, type LegalConsentsState } from "@/components/storefront/LegalConsents";
+import StorefrontLayout from "@/components/storefront/StorefrontLayout";
 
 const unq = (s?: string) => (s || "").replace(/^"|"$/g, "");
 const truthy = (v?: string) => v !== "false" && v !== '"false"' && v !== undefined;
