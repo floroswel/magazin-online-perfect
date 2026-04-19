@@ -121,6 +121,43 @@ export default function AdminFooterSettings() {
         <p className="text-sm text-muted-foreground">Controlează complet conținutul și aspectul footer-ului magazinului.</p>
       </div>
 
+      {/* ═══ 0. Identitate brand (descriere sub logo) ═══ */}
+      <Card>
+        <CardHeader><CardTitle className="text-base">0. Identitate brand</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <Label className="text-xs font-medium">Descriere scurtă (afișată sub logo în footer)</Label>
+            <Textarea
+              defaultValue={s.footer_brand_description || ""}
+              rows={3}
+              placeholder="Lumânări 100% handmade din ceară de soia, turnate manual cu suflet în România."
+              onBlur={e => save("footer_brand_description", e.target.value)}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* ═══ 0.5 Trust Strip (4 iconuri sus) ═══ */}
+      <Card>
+        <CardHeader><CardTitle className="text-base">Bara de încredere (4 iconuri sus)</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          <SettingToggle label="Afișează bara de încredere" settingKey="footer_trust_show" s={s} save={save} />
+          <p className="text-xs text-muted-foreground">
+            Iconuri valide: <code>truck</code>, <code>shield</code>, <code>credit</code>, <code>mail</code>, <code>phone</code>, <code>clock</code>
+          </p>
+          {[1, 2, 3, 4].map(n => (
+            <div key={n} className="space-y-2 p-3 rounded-lg border">
+              <SettingToggle label={`Element ${n} — afișează`} settingKey={`footer_trust_${n}_show`} s={s} save={save} />
+              <div className="grid grid-cols-3 gap-2">
+                <SettingInput label="Icon" settingKey={`footer_trust_${n}_icon`} s={s} save={save} />
+                <SettingInput label="Titlu" settingKey={`footer_trust_${n}_title`} s={s} save={save} />
+                <SettingInput label="Subtitlu" settingKey={`footer_trust_${n}_subtitle`} s={s} save={save} />
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
       {/* ═══ 1. Coloana Magazin ═══ */}
       <Card>
         <CardHeader><CardTitle className="text-base">1. Coloana Magazin</CardTitle></CardHeader>
