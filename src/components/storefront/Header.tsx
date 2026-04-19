@@ -19,8 +19,8 @@ const CATEGORY_ICONS: Record<string, string> = {
 export default function Header() {
   const { count: cartCount, setOpen: setCartOpen } = useCart();
   const { count: favCount } = useFavorites();
-  const { items: compareItems } = useCompare();
-  const compareCount = compareItems?.length || 0;
+  const { ids: compareIds } = useCompare();
+  const compareCount = compareIds?.length || 0;
   const { user } = useAuth();
   const { settings: s } = useSettings();
   const navigate = useNavigate();
