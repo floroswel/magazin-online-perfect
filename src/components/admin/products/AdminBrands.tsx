@@ -124,7 +124,7 @@ export default function AdminBrands() {
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
                         {b.name}
-                        {b.is_demo && <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">DEMO</span>}
+                        {b.is_demo && <span className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-border bg-muted text-muted-foreground">DEMO</span>}
                       </div>
                     </TableCell>
                     <TableCell className="font-mono text-sm text-muted-foreground">{b.slug}</TableCell>
