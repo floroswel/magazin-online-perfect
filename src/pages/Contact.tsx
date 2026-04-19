@@ -91,7 +91,7 @@ export default function Contact() {
   return (
     <>
       <SeoHead title="Contact" description="Contactează-ne — Mama Lucica" />
-      <div className="ml-container py-10 lg:py-16">
+      <div className="bg-white text-foreground ml-container py-10 lg:py-16">
         <header className="mb-10 text-center max-w-2xl mx-auto">
           <h1 className="font-display text-4xl lg:text-5xl mb-3">Contactează-ne</h1>
           <p className="text-muted-foreground">{formSubtitle}</p>
