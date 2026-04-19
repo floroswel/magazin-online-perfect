@@ -370,6 +370,9 @@ export default function AdminDashboard() {
       </div>
       <ManualOrderDialog open={manualOrderOpen} onOpenChange={setManualOrderOpen} />
 
+      <DemoDataPanel />
+
+
       {/* KPI Cards Row 1 */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
         <Card className="border-l-4 border-l-emerald-500 shadow-sm hover:shadow-md transition-shadow">
