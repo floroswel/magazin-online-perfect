@@ -16,8 +16,8 @@ export default function Checkout() {
     full_name: "", email: user?.email || "", phone: "",
     address: "", city: "", county: "", postal_code: "",
     notes: "", payment_method: "cod",
-    accept_terms: false, accept_privacy: false,
   });
+  const [consents, setConsents] = useState<LegalConsentsState>(EMPTY_CONSENTS);
 
   const FREE_SHIP = 200;
   const shipping = subtotal >= FREE_SHIP ? 0 : 35;
@@ -38,8 +38,8 @@ export default function Checkout() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.accept_terms || !form.accept_privacy) {
-      toast.error("Trebuie să accepți Termenii și Politica de Confidențialitate.");
+    if (!allConsentsAccepted(consents)) {
+      toast.error("Trebuie să bifezi toate documentele legale.");
       return;
     }
     if (!form.full_name || !form.email || !form.phone || !form.address || !form.city || !form.county) {
@@ -135,15 +135,9 @@ export default function Checkout() {
               <textarea value={form.notes} onChange={(e) => set("notes", e.target.value)} placeholder="Mențiuni pentru curier..." rows={3} className="w-full p-3 border border-border rounded-sm bg-background text-sm" />
             </div>
 
-            <div className="bg-card border border-border rounded-md p-5 space-y-2">
-              <label className="flex items-start gap-2 text-sm cursor-pointer">
-                <input type="checkbox" checked={form.accept_terms} onChange={(e) => set("accept_terms", e.target.checked)} className="mt-0.5" />
-                <span>Sunt de acord cu <Link to="/page/termeni-conditii" className="text-accent underline">Termenii și Condițiile</Link>.</span>
-              </label>
-              <label className="flex items-start gap-2 text-sm cursor-pointer">
-                <input type="checkbox" checked={form.accept_privacy} onChange={(e) => set("accept_privacy", e.target.checked)} className="mt-0.5" />
-                <span>Am citit <Link to="/page/politica-de-confidentialitate" className="text-accent underline">Politica de Confidențialitate</Link>.</span>
-              </label>
+            <div className="bg-card border border-border rounded-md p-5">
+              <h3 className="font-semibold text-sm mb-3">Acord legal</h3>
+              <LegalConsents value={consents} onChange={setConsents} idPrefix="checkout" compact />
             </div>
           </div>
 
