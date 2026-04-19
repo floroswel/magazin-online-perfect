@@ -68,19 +68,37 @@ export default function Footer() {
   const brandDescription = unq(s.footer_brand_description)
     || "Lumânări 100% handmade din ceară de soia, turnate manual cu suflet în România.";
 
-  const trustItems = [
-    { Icon: Truck, title: "Livrare 24-48h", subtitle: "În toată România" },
-    { Icon: ShieldCheck, title: "Plată 100% sigură", subtitle: "Netopia · Mokka · Ramburs" },
-    { Icon: RotateCcw, title: "Retur 30 zile", subtitle: "Fără întrebări" },
-    { Icon: Headphones, title: "Suport rapid", subtitle: "L-V 9-17" },
+  const trustShow = truthy(s.footer_trust_show);
+  const iconMap: Record<string, any> = { truck: Truck, shield: ShieldCheck, credit: ShieldCheck, mail: Mail, phone: Phone, clock: Clock, headphones: Headphones, rotate: RotateCcw };
+  const trustDefaults = [
+    { icon: "truck", title: "Livrare 24-48h", subtitle: "În toată România" },
+    { icon: "shield", title: "Plată 100% sigură", subtitle: "Netopia · Mokka · Ramburs" },
+    { icon: "rotate", title: "Retur 30 zile", subtitle: "Fără întrebări" },
+    { icon: "headphones", title: "Suport rapid", subtitle: "L-V 9-17" },
   ];
+  const trustItems = [1, 2, 3, 4]
+    .filter(n => truthy(s[`footer_trust_${n}_show`]))
+    .map(n => {
+      const d = trustDefaults[n - 1];
+      const iconKey = (unq(s[`footer_trust_${n}_icon`]) || d.icon).toLowerCase();
+      return {
+        Icon: iconMap[iconKey] || Truck,
+        title: unq(s[`footer_trust_${n}_title`]) || d.title,
+        subtitle: unq(s[`footer_trust_${n}_subtitle`]) || d.subtitle,
+      };
+    });
 
   const whatsappNum = phone.replace(/\D/g, "");
+  const madeInShow = truthy(s.footer_made_in_romania_show);
+  const madeInText = unq(s.footer_made_in_romania_text) || "Made with ♥ în România";
+  const showLegalData = truthy(s.footer_show_legal_data);
+  const showPaymentIcons = truthy(s.footer_show_payment_icons);
 
   return (
     <>
     <footer className="footer-dark mt-20">
       {/* Trust strip */}
+      {trustShow && trustItems.length > 0 && (
       <div className="border-b border-white/5">
         <div className="ml-container py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
           {trustItems.map((f, i) => (
@@ -96,6 +114,7 @@ export default function Footer() {
           ))}
         </div>
       </div>
+      )}
 
       {/* Main: 5 col desktop, accordion mobil */}
       <div className="ml-container py-10 lg:py-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-8 gap-y-2 md:gap-y-8">
@@ -171,11 +190,13 @@ export default function Footer() {
                 <li><Link to="/page/politica-cookie" className="footer-link">Politica cookies</Link></li>
                 <li><Link to="/page/gdpr" className="footer-link">GDPR</Link></li>
               </ul>
-              <div className="mt-4 pt-3 border-t border-white/10 text-xs text-white/70 leading-relaxed">
-                <p className="font-semibold text-white/90">{company}</p>
-                <p>CUI: {cui}</p>
-                <p>{regCom}</p>
-              </div>
+              {showLegalData && (
+                <div className="mt-4 pt-3 border-t border-white/10 text-xs text-white/70 leading-relaxed">
+                  <p className="font-semibold text-white/90">{company}</p>
+                  <p>CUI: {cui}</p>
+                  <p>{regCom}</p>
+                </div>
+              )}
             </FooterColumn>
           </div>
         )}
@@ -207,10 +228,12 @@ export default function Footer() {
       {/* Payment + ANPC */}
       <div className="border-t border-white/10 bg-black/30">
         <div className="ml-container py-5 flex flex-col lg:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-white/60 uppercase tracking-wider">Plătește sigur cu</span>
-            <FooterPaymentIcons />
-          </div>
+          {showPaymentIcons ? (
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-white/60 uppercase tracking-wider">Plătește sigur cu</span>
+              <FooterPaymentIcons />
+            </div>
+          ) : <div />}
           <div className="flex items-center gap-3">
             {anpcShow && (
               <a href={anpcUrl} target="_blank" rel="noopener noreferrer" className="block bg-white rounded-md px-2 py-1 hover:opacity-90 transition-opacity">
@@ -230,7 +253,9 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="ml-container py-4 flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-white/50">
           <p>© {year} {copyrightName}. Toate drepturile rezervate.</p>
-          <p>Made with <span style={{ color: "hsl(var(--footer-accent))" }}>♥</span> în România</p>
+          {madeInShow && (
+            <p dangerouslySetInnerHTML={{ __html: madeInText.replace(/♥|❤️|❤/g, `<span style="color: hsl(var(--footer-accent))">♥</span>`) }} />
+          )}
         </div>
       </div>
     </footer>
