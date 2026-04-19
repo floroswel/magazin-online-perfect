@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { usePageSeo } from "@/components/SeoHead";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
+import LegalConsents, { EMPTY_CONSENTS, allConsentsAccepted, type LegalConsentsState } from "@/components/storefront/LegalConsents";
 
 export default function Auth() {
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -15,6 +16,7 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [registerSuccess, setRegisterSuccess] = useState(false);
+  const [consents, setConsents] = useState<LegalConsentsState>(EMPTY_CONSENTS);
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
@@ -26,6 +28,7 @@ export default function Auth() {
     setLoading(true);
     try {
       if (mode === "register") {
+        if (!allConsentsAccepted(consents)) { setError("Trebuie să bifezi toate documentele legale"); setLoading(false); return; }
         if (password !== confirmPassword) { setError("Parolele nu se potrivesc"); setLoading(false); return; }
         if (password.length < 6) { setError("Parola trebuie să aibă minim 6 caractere"); setLoading(false); return; }
         const { error } = await signUp(email, password, fullName);
@@ -79,8 +82,11 @@ export default function Auth() {
               {mode === "login" && (
                 <div className="text-right"><Link to="/forgot-password" className="text-xs text-accent font-semibold hover:underline">Ai uitat parola?</Link></div>
               )}
+              {mode === "register" && (
+                <LegalConsents value={consents} onChange={setConsents} idPrefix="signup" compact />
+              )}
               {error && <p className="text-sm text-destructive bg-destructive/10 rounded-sm p-3">{error}</p>}
-              <button type="submit" disabled={loading} className="w-full h-12 bg-primary text-primary-foreground rounded-sm font-semibold text-sm tracking-wide hover:opacity-90 disabled:opacity-50 transition-opacity">
+              <button type="submit" disabled={loading || (mode === "register" && !allConsentsAccepted(consents))} className="w-full h-12 bg-primary text-primary-foreground rounded-sm font-semibold text-sm tracking-wide hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity">
                 {loading ? "Se procesează..." : mode === "login" ? "Autentifică-te" : "Creează cont"}
               </button>
             </form>

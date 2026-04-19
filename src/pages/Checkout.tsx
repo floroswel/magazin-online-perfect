@@ -159,7 +159,7 @@ export default function Checkout() {
             <div className="flex justify-between text-lg font-bold mb-4">
               <span>Total</span><span style={{ color: "#FF3300" }}>{total.toFixed(2)} lei</span>
             </div>
-            <button type="submit" disabled={loading} className="w-full h-12 bg-accent text-accent-foreground font-bold rounded-sm hover:opacity-90 disabled:opacity-40">
+            <button type="submit" disabled={loading || !allConsentsAccepted(consents)} className="w-full h-12 bg-accent text-accent-foreground font-bold rounded-sm hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed">
               {loading ? "Se procesează..." : "Plasează comanda"}
             </button>
           </aside>
