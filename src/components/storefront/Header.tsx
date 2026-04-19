@@ -4,14 +4,25 @@ import { Search, ShoppingBag, Heart, User, Menu, X } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useAuth } from "@/hooks/useAuth";
+import { useSettings } from "@/hooks/useSettings";
+
+const unq = (str?: string) => (str || "").replace(/^"|"$/g, "");
 
 export default function Header() {
   const { count: cartCount, setOpen: setCartOpen } = useCart();
   const { count: favCount } = useFavorites();
   const { user } = useAuth();
+  const { settings: s } = useSettings();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQ, setSearchQ] = useState("");
+
+  const logoUrl = unq(s.header_logo_url) || unq(s.logo_url);
+  const logoVisible = s.logo_visible !== "false";
+  const siteName = unq(s.header_store_name) || unq(s.site_name) || "Mama Lucica";
+  const [siteNameFirst, ...siteNameRest] = siteName.split(" ");
+  const siteNameLast = siteNameRest.join(" ");
+  const searchPlaceholder = unq(s.header_search_placeholder) || "Caută lumânări, parfumuri, ocazii...";
 
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,10 +43,16 @@ export default function Header() {
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <span className="text-2xl">🕯️</span>
-          <span className="font-display text-xl lg:text-2xl font-medium tracking-tight">
-            Mama <span className="text-accent">Lucica</span>
-          </span>
+          {logoVisible && logoUrl ? (
+            <img src={logoUrl} alt={siteName} className="h-8 lg:h-10 w-auto object-contain" />
+          ) : (
+            <>
+              <span className="text-2xl">🕯️</span>
+              <span className="font-display text-xl lg:text-2xl font-medium tracking-tight">
+                {siteNameFirst} {siteNameLast && <span className="text-accent">{siteNameLast}</span>}
+              </span>
+            </>
+          )}
         </Link>
 
         {/* Search — desktop */}
@@ -46,7 +63,7 @@ export default function Header() {
               type="search"
               value={searchQ}
               onChange={(e) => setSearchQ(e.target.value)}
-              placeholder="Caută lumânări, parfumuri, ocazii..."
+              placeholder={searchPlaceholder}
               className="w-full h-11 pl-10 pr-24 border border-border rounded-sm bg-background text-sm focus:outline-none focus:border-accent transition-colors"
             />
             <button
