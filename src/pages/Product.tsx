@@ -107,7 +107,7 @@ export default function Product() {
     image: images.length ? images : undefined,
     description: product.short_description || product.meta_description || product.name,
     sku: product.sku || product.id,
-    brand: product.brand ? { "@type": "Brand", name: product.brand } : undefined,
+    brand: (product as any).brand ? { "@type": "Brand", name: (product as any).brand } : undefined,
     aggregateRating:
       (product.rating ?? 0) > 0 && (product.review_count ?? 0) > 0
         ? {
