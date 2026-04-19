@@ -119,6 +119,26 @@ export default {
           sage: "hsl(var(--atelier-sage))",
           "sage-soft": "hsl(var(--atelier-sage-soft))",
         },
+        fb: {
+          DEFAULT: "hsl(var(--fb-blue))",
+          hover: "hsl(var(--fb-blue-hover))",
+          dark: "hsl(var(--fb-blue-dark))",
+          soft: "hsl(var(--fb-blue-soft))",
+          text: "hsl(var(--fb-text))",
+          "text-secondary": "hsl(var(--fb-text-secondary))",
+          bg: "hsl(var(--fb-bg))",
+          "bg-soft": "hsl(var(--fb-bg-soft))",
+        },
+        footer: {
+          DEFAULT: "hsl(var(--footer-bg))",
+          fg: "hsl(var(--footer-fg))",
+          muted: "hsl(var(--footer-muted))",
+          accent: "hsl(var(--footer-accent))",
+        },
+        topbar: {
+          DEFAULT: "hsl(var(--topbar-bg))",
+          fg: "hsl(var(--topbar-fg))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
