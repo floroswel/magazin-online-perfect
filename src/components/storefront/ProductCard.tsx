@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ShoppingBag, Heart } from "lucide-react";
+import { ShoppingBag, Heart, Star } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useFavorites } from "@/hooks/useFavorites";
 
@@ -16,6 +16,7 @@ export interface ProductCardData {
   badge_promo?: boolean | null;
   badge_new?: boolean | null;
   badge_bestseller?: boolean | null;
+  category_name?: string | null;
 }
 
 export default function ProductCard({ p }: { p: ProductCardData }) {
@@ -28,56 +29,71 @@ export default function ProductCard({ p }: { p: ProductCardData }) {
   const outOfStock = (p.stock ?? 1) <= 0;
 
   return (
-    <div className="group bg-card border border-border rounded-md overflow-hidden hover:shadow-editorial transition-all flex flex-col">
-      <Link to={`/produs/${p.slug}`} className="relative block aspect-square overflow-hidden bg-muted">
+    <article className="wm-card flex flex-col">
+      <Link to={`/produs/${p.slug}`} className="relative wm-card-img overflow-hidden">
         {p.image_url ? (
-          <img src={p.image_url} alt={p.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          <img
+            src={p.image_url}
+            alt={p.name}
+            loading="lazy"
+            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+          />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br from-muted to-accent/10">🕯️</div>
+          <div className="text-6xl opacity-50">🕯️</div>
         )}
-        <div className="absolute top-2 left-2 flex flex-col gap-1">
-          {discount > 0 && <span className="px-2 py-0.5 bg-accent text-accent-foreground text-[10px] font-bold rounded-sm">-{discount}%</span>}
-          {p.badge_new && <span className="px-2 py-0.5 bg-primary text-primary-foreground text-[10px] font-bold rounded-sm">NOU</span>}
-          {p.badge_bestseller && <span className="px-2 py-0.5 bg-highlight text-on-dark text-[10px] font-bold rounded-sm">TOP</span>}
+
+        {/* Badges */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+          {p.badge_new && <span className="wm-badge wm-badge-new">NEW</span>}
+          {discount > 0 && <span className="wm-badge wm-badge-sale">-{discount}%</span>}
+          {p.badge_bestseller && <span className="wm-badge wm-badge-hot">HOT</span>}
         </div>
+
+        {/* Wishlist circle */}
         <button
           onClick={(e) => { e.preventDefault(); toggle?.(p.id); }}
           aria-label={fav ? "Elimină din favorite" : "Adaugă la favorite"}
           aria-pressed={fav}
-          className="absolute top-2 right-2 p-1.5 bg-card/90 rounded-full hover:bg-card transition-colors min-w-11 min-h-11 sm:min-w-0 sm:min-h-0 flex items-center justify-center"
+          className={`absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-card/90 backdrop-blur flex items-center justify-center shadow-sm border border-border/50 transition-all ${
+            fav ? "opacity-100 bg-primary text-primary-foreground" : "opacity-0 group-hover:opacity-100 hover:bg-primary hover:text-primary-foreground"
+          }`}
         >
-          <Heart className={`h-4 w-4 ${fav ? "fill-accent text-accent" : ""}`} />
+          <Heart className={`h-4 w-4 ${fav ? "fill-current" : ""}`} />
         </button>
       </Link>
-      <div className="p-3 flex-1 flex flex-col gap-2">
-        <Link to={`/produs/${p.slug}`} className="text-sm font-medium line-clamp-2 hover:text-accent transition-colors min-h-[2.5rem]">
+
+      <div className="wm-card-body flex-1 flex flex-col">
+        {p.category_name && <div className="wm-card-cat">{p.category_name}</div>}
+        <Link to={`/produs/${p.slug}`} className="wm-card-title hover:text-primary transition-colors min-h-[2.5rem]">
           {p.name}
         </Link>
+
         {(p.rating ?? 0) > 0 && (
-          <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
-            <span className="text-highlight" aria-hidden="true">★</span>
-            <span className="sr-only">Rating:</span>
-            {Number(p.rating).toFixed(1)} ({p.review_count ?? 0})
+          <div className="flex items-center gap-1 mb-2 text-xs text-muted-foreground">
+            <Star className="h-3.5 w-3.5 fill-current" style={{ color: "hsl(var(--star-color))" }} />
+            <span className="font-semibold text-foreground">{Number(p.rating).toFixed(1)}</span>
+            <span>({p.review_count ?? 0})</span>
           </div>
         )}
-        <div className="mt-auto flex items-end justify-between gap-2">
+
+        <div className="mt-auto flex items-end justify-between gap-2 pt-2">
           <div>
             {p.old_price && p.old_price > p.price && (
-              <div className="text-[11px] text-muted-foreground line-through">{Number(p.old_price).toFixed(2)} lei</div>
+              <div className="text-xs text-muted-foreground line-through">{Number(p.old_price).toFixed(2)} lei</div>
             )}
-            <div className="text-base font-bold text-accent">{Number(p.price).toFixed(2)} lei</div>
+            <div className="wm-card-price">{Number(p.price).toFixed(2)} lei</div>
           </div>
           <button
             disabled={outOfStock}
             onClick={() => addItem({ product_id: p.id, name: p.name, slug: p.slug, image_url: p.image_url, price: Number(p.price) })}
-            className="p-2 bg-primary text-primary-foreground rounded-sm hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity min-w-11 min-h-11 sm:min-w-0 sm:min-h-0 flex items-center justify-center"
+            className="w-10 h-10 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center justify-center shadow-sm hover:shadow-md hover:scale-105"
             aria-label={outOfStock ? "Stoc epuizat" : `Adaugă ${p.name} în coș`}
           >
-            <ShoppingBag className="h-4 w-4" aria-hidden="true" />
+            <ShoppingBag className="h-4 w-4" />
           </button>
         </div>
-        {outOfStock && <div className="text-[10px] text-destructive font-semibold uppercase">Stoc epuizat</div>}
+        {outOfStock && <div className="mt-2 text-[10px] text-destructive font-bold uppercase">Stoc epuizat</div>}
       </div>
-    </div>
+    </article>
   );
 }

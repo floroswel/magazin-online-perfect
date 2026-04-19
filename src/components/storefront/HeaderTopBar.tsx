@@ -1,54 +1,65 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Phone, Mail, Clock } from "lucide-react";
+import { Phone, Mail, Facebook, Instagram, Youtube } from "lucide-react";
+
+const unq = (v: any) => (typeof v === "string" ? v.replace(/^"|"$/g, "") : v);
 
 export default function HeaderTopBar() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [schedule, setSchedule] = useState("");
+  const [fb, setFb] = useState("");
+  const [ig, setIg] = useState("");
+  const [yt, setYt] = useState("");
 
   useEffect(() => {
     (async () => {
       const { data } = await (supabase as any)
         .from("app_settings")
         .select("key, value_json")
-        .in("key", ["contact_phone", "contact_email", "contact_schedule"]);
+        .in("key", [
+          "contact_phone", "contact_email",
+          "footer_facebook_url", "footer_instagram_url", "footer_youtube_url",
+        ]);
       data?.forEach((r: any) => {
-        const v = typeof r.value_json === "string" ? r.value_json.replace(/^"|"$/g, "") : r.value_json;
+        const v = unq(r.value_json);
         if (r.key === "contact_phone") setPhone(v);
         if (r.key === "contact_email") setEmail(v);
-        if (r.key === "contact_schedule") setSchedule(v);
+        if (r.key === "footer_facebook_url") setFb(v);
+        if (r.key === "footer_instagram_url") setIg(v);
+        if (r.key === "footer_youtube_url") setYt(v);
       });
     })();
   }, []);
 
   return (
-    <div className="hidden md:block border-b border-border/40 bg-card">
-      <div className="ml-container flex items-center justify-between h-9 text-xs text-muted-foreground">
-        <div className="flex items-center gap-5">
+    <div className="hidden md:block journal-topbar">
+      <div className="ml-container flex items-center justify-between h-9">
+        <div className="flex items-center gap-5 text-[12px]">
           {phone && (
-            <a href={`tel:${phone.replace(/\s/g, "")}`} className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+            <a href={`tel:${phone.replace(/\s/g, "")}`} className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
               <Phone className="h-3 w-3" /> {phone}
             </a>
           )}
           {email && (
-            <a href={`mailto:${email}`} className="hidden lg:flex items-center gap-1.5 hover:text-foreground transition-colors">
+            <a href={`mailto:${email}`} className="hidden lg:flex items-center gap-1.5 hover:opacity-80 transition-opacity">
               <Mail className="h-3 w-3" /> {email}
             </a>
           )}
-          {schedule && (
-            <span className="hidden lg:flex items-center gap-1.5">
-              <Clock className="h-3 w-3" /> {schedule}
-            </span>
+          <Link to="/contact" className="hidden lg:inline hover:opacity-80 transition-opacity">Contact</Link>
+          <Link to="/track" className="hidden lg:inline hover:opacity-80 transition-opacity">Urmărire comandă</Link>
+        </div>
+
+        <div className="flex items-center gap-4 text-[12px]">
+          <Link to="/page/livrare" className="hover:opacity-80 transition-opacity">Livrare gratuită &gt; 200 lei</Link>
+          {(fb || ig || yt) && (
+            <div className="flex items-center gap-2 pl-4 border-l border-white/20">
+              {fb && <a href={fb} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:opacity-80"><Facebook className="h-3.5 w-3.5" /></a>}
+              {ig && <a href={ig} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:opacity-80"><Instagram className="h-3.5 w-3.5" /></a>}
+              {yt && <a href={yt} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:opacity-80"><Youtube className="h-3.5 w-3.5" /></a>}
+            </div>
           )}
         </div>
-        <nav className="flex items-center gap-5">
-          <Link to="/track" className="hover:text-foreground transition-colors">Urmărire comandă</Link>
-          <Link to="/page/livrare" className="hover:text-foreground transition-colors">Livrare</Link>
-          <Link to="/page/politica-retur" className="hover:text-foreground transition-colors">Retur</Link>
-          <Link to="/contact" className="hover:text-foreground transition-colors">Contact</Link>
-        </nav>
       </div>
     </div>
   );
