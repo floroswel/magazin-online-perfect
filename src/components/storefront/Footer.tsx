@@ -86,25 +86,45 @@ export default function Footer() {
     color: unq(s.footer_bottom_text_color) || undefined,
   };
 
+  // Trust strip dynamic items (icon by name)
+  const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+    truck: Truck, shield: Shield, credit: CreditCard, mail: Mail, phone: Phone, clock: Clock,
+  };
+  const trustItems = [1, 2, 3, 4]
+    .filter(n => truthy(s[`footer_trust_${n}_show`]))
+    .map(n => ({
+      Icon: iconMap[unq(s[`footer_trust_${n}_icon`]) || "truck"] || Truck,
+      title: unq(s[`footer_trust_${n}_title`]),
+      subtitle: unq(s[`footer_trust_${n}_subtitle`]),
+    }));
+  const trustShow = s.footer_trust_show !== "false";
+  const defaultTrust = [
+    { Icon: Truck, title: "Livrare 24-48h", subtitle: "În toată România" },
+    { Icon: Shield, title: "Plată sigură", subtitle: "Netopia · Mokka · Ramburs" },
+    { Icon: CreditCard, title: "Retur 30 zile", subtitle: "Fără întrebări" },
+    { Icon: Mail, title: "Suport rapid", subtitle: "L-V 9-17" },
+  ];
+  const finalTrust = trustItems.length > 0 ? trustItems : defaultTrust;
+
+  const brandDescription = unq(s.footer_brand_description) ||
+    "Lumânări 100% handmade din ceară de soia, turnate manual cu suflet în România.";
+
   return (
     <footer className="mt-20 bg-noir-gradient text-primary-foreground/90" style={footerStyle}>
       {/* Trust strip */}
-      <div className="border-b border-white/10">
-        <div className="ml-container py-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          {[
-            { icon: Truck, t: "Livrare 24-48h", s: "În toată România" },
-            { icon: Shield, t: "Plată sigură", s: "Netopia · Mokka · Ramburs" },
-            { icon: CreditCard, t: "Retur 30 zile", s: "Fără întrebări" },
-            { icon: Mail, t: "Suport rapid", s: "L-V 9-17" },
-          ].map((f) => (
-            <div key={f.t} className="flex flex-col items-center gap-1.5">
-              <f.icon className="h-6 w-6 text-accent" />
-              <p className="text-sm font-medium">{f.t}</p>
-              <p className="text-[11px] opacity-60">{f.s}</p>
-            </div>
-          ))}
+      {trustShow && (
+        <div className="border-b border-white/10">
+          <div className="ml-container py-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            {finalTrust.map((f, i) => (
+              <div key={i} className="flex flex-col items-center gap-1.5">
+                <f.Icon className="h-6 w-6 text-accent" />
+                <p className="text-sm font-medium">{f.title}</p>
+                <p className="text-[11px] opacity-60">{f.subtitle}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Main columns */}
       <div className="ml-container py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -115,7 +135,7 @@ export default function Footer() {
             <span className="font-display text-xl font-medium" style={titleStyle}>{copyrightName}</span>
           </div>
           <p className="text-sm opacity-70 leading-relaxed mb-4">
-            Lumânări 100% handmade din ceară de soia, turnate manual cu suflet în România.
+            {brandDescription}
           </p>
           {socialShow && (
             <div className="flex items-center gap-3">
