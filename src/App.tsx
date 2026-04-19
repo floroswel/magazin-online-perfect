@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { SettingsProvider } from "@/hooks/useSettings";
+import { ThemeTextProvider } from "@/hooks/useThemeText";
 import { CartProvider } from "@/hooks/useCart";
 import { FavoritesProvider } from "@/hooks/useFavorites";
 import { CompareProvider } from "@/hooks/useCompare";
@@ -43,6 +44,7 @@ const App = () => (
         <ScrollToTop />
         <AuthProvider>
           <SettingsProvider>
+            <ThemeTextProvider>
             <CartProvider>
               <FavoritesProvider>
                 <CompareProvider>
@@ -70,6 +72,7 @@ const App = () => (
                 </CompareProvider>
               </FavoritesProvider>
             </CartProvider>
+            </ThemeTextProvider>
           </SettingsProvider>
         </AuthProvider>
       </BrowserRouter>

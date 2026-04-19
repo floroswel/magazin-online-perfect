@@ -3,12 +3,16 @@ import { Flame, Leaf, Award, Sparkles, ArrowRight, Star } from "lucide-react";
 import StorefrontLayout from "@/components/storefront/StorefrontLayout";
 import CartDrawer from "@/components/storefront/CartDrawer";
 import { usePageSeo } from "@/components/SeoHead";
+import { useThemeText } from "@/hooks/useThemeText";
 
 export default function Index() {
+  const { t } = useThemeText();
   usePageSeo({
-    title: "Mama Lucica · Lumânări handmade din ceară de soia | Made in Romania",
-    description:
-      "Lumânări parfumate 100% handmade, turnate manual din ceară de soia. Calculator durată ardere, certificat de autenticitate, livrare 24-48h.",
+    title: t("seo_home_title", "Mama Lucica · Lumânări handmade din ceară de soia | Made in Romania"),
+    description: t(
+      "seo_home_description",
+      "Lumânări parfumate 100% handmade, turnate manual din ceară de soia. Calculator durată ardere, certificat de autenticitate, livrare 24-48h."
+    ),
   });
 
   return (
