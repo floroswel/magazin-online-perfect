@@ -3,12 +3,16 @@ import { Flame, Leaf, Award, Sparkles, ArrowRight, Star } from "lucide-react";
 import StorefrontLayout from "@/components/storefront/StorefrontLayout";
 import CartDrawer from "@/components/storefront/CartDrawer";
 import { usePageSeo } from "@/components/SeoHead";
+import { useThemeText } from "@/hooks/useThemeText";
 
 export default function Index() {
+  const { t } = useThemeText();
   usePageSeo({
-    title: "Mama Lucica · Lumânări handmade din ceară de soia | Made in Romania",
-    description:
-      "Lumânări parfumate 100% handmade, turnate manual din ceară de soia. Calculator durată ardere, certificat de autenticitate, livrare 24-48h.",
+    title: t("seo_home_title", "Mama Lucica · Lumânări handmade din ceară de soia | Made in Romania"),
+    description: t(
+      "seo_home_description",
+      "Lumânări parfumate 100% handmade, turnate manual din ceară de soia. Calculator durată ardere, certificat de autenticitate, livrare 24-48h."
+    ),
   });
 
   return (
@@ -26,24 +30,23 @@ export default function Index() {
             <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 bg-foreground/5 border border-accent/30 rounded-full">
               <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
               <p className="text-[10px] uppercase tracking-[0.3em] text-foreground/70 font-semibold">
-                Atelierul Mama Lucica · est. 2020
+                {t("hero_eyebrow", "Atelierul Mama Lucica · est. 2020")}
               </p>
             </div>
 
             <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-medium leading-[1.02] text-foreground mb-6">
-              Lumânări turnate{" "}
+              {t("hero_title_pre", "Lumânări turnate")}{" "}
               <em className="not-italic relative inline-block">
-                <span className="text-gradient-gold">cu suflet</span>
+                <span className="text-gradient-gold">{t("hero_title_accent", "cu suflet")}</span>
                 <svg className="absolute -bottom-2 left-0 w-full" height="10" viewBox="0 0 200 10" fill="none">
                   <path d="M2 7 Q 50 1, 100 5 T 198 4" stroke="hsl(var(--accent))" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.7" />
                 </svg>
               </em>
-              ,<br />niciodată în serie.
+              ,<br />{t("hero_title_post", "niciodată în serie.")}
             </h1>
 
             <p className="text-base lg:text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg">
-              Ceară de soia 100% naturală. Parfumuri compuse manual.
-              Fiecare lumânare poartă numele unui artizan și data turnării.
+              {t("hero_subtitle", "Ceară de soia 100% naturală. Parfumuri compuse manual. Fiecare lumânare poartă numele unui artizan și data turnării.")}
             </p>
 
             <div className="flex flex-wrap gap-3 mb-10">
@@ -51,32 +54,32 @@ export default function Index() {
                 to="/catalog"
                 className="btn-shine inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-sm text-xs font-bold uppercase tracking-[0.2em] hover:bg-primary/90 transition-all duration-300 shadow-gold hover:shadow-elevated hover:-translate-y-0.5"
               >
-                Descoperă colecția
+                {t("hero_cta_primary", "Descoperă colecția")}
                 <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
                 to="/page/despre-noi"
                 className="inline-flex items-center px-8 py-4 border border-foreground/80 text-foreground rounded-sm text-xs font-bold uppercase tracking-[0.2em] hover:bg-foreground hover:text-background transition-all duration-300"
               >
-                Povestea noastră
+                {t("hero_cta_secondary", "Povestea noastră")}
               </Link>
             </div>
 
-            {/* trust row */}
+            {/* trust row — toate editabile */}
             <div className="grid grid-cols-3 gap-4 pt-8 border-t border-accent/20 stagger">
               <div>
-                <p className="font-display text-3xl lg:text-4xl text-gradient-gold leading-none">12k+</p>
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-2">Clienți fericiți</p>
+                <p className="font-display text-3xl lg:text-4xl text-gradient-gold leading-none">{t("hero_stat1_value", "12k+")}</p>
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-2">{t("hero_stat1_label", "Clienți fericiți")}</p>
               </div>
               <div className="border-l border-accent/20 pl-4">
                 <p className="font-display text-3xl lg:text-4xl text-gradient-gold leading-none flex items-baseline gap-1">
-                  4.9<Star className="w-4 h-4 fill-accent text-accent" />
+                  {t("hero_stat2_value", "4.9")}<Star className="w-4 h-4 fill-accent text-accent" />
                 </p>
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-2">Recenzii verificate</p>
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-2">{t("hero_stat2_label", "Recenzii verificate")}</p>
               </div>
               <div className="border-l border-accent/20 pl-4">
-                <p className="font-display text-3xl lg:text-4xl text-gradient-gold leading-none">100%</p>
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-2">Handmade RO</p>
+                <p className="font-display text-3xl lg:text-4xl text-gradient-gold leading-none">{t("hero_stat3_value", "100%")}</p>
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-2">{t("hero_stat3_label", "Handmade RO")}</p>
               </div>
             </div>
           </div>
@@ -84,41 +87,36 @@ export default function Index() {
           {/* coloana dreapta — obiectul vizual */}
           <div className="relative animate-scale-in">
             <div className="relative aspect-[4/5] bg-noir-gradient rounded-sm overflow-hidden shadow-editorial">
-              {/* halo lumină */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="candle-glow w-72 h-72 absolute" />
                 <div className="text-[180px] relative z-10 animate-flicker leading-none select-none">🕯️</div>
-                {/* fum */}
                 <div className="smoke" style={{ top: "18%", left: "49%", animationDelay: "0s" }} />
                 <div className="smoke" style={{ top: "20%", left: "51%", animationDelay: "1.5s" }} />
                 <div className="smoke" style={{ top: "16%", left: "48%", animationDelay: "2.8s" }} />
               </div>
 
-              {/* tag aurit colț */}
               <div className="absolute top-6 right-6 bg-accent/95 text-accent-foreground px-3 py-1.5 rounded-sm">
-                <p className="text-[9px] uppercase tracking-[0.2em] font-bold">Editorial · 2025</p>
+                <p className="text-[9px] uppercase tracking-[0.2em] font-bold">{t("hero_badge_corner", "Editorial · 2025")}</p>
               </div>
 
-              {/* card "lumânarea lunii" */}
               <div className="absolute bottom-6 left-6 right-6 bg-card/95 backdrop-blur-md p-5 rounded-sm border border-accent/30 shadow-card">
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles className="w-3 h-3 text-accent" />
-                  <p className="text-[10px] uppercase tracking-[0.25em] text-accent font-bold">Lumânarea lunii</p>
+                  <p className="text-[10px] uppercase tracking-[0.25em] text-accent font-bold">{t("hero_card_eyebrow", "Lumânarea lunii")}</p>
                 </div>
-                <p className="font-display text-2xl text-foreground mb-1">Tămâie & Mosc Auriu</p>
+                <p className="font-display text-2xl text-foreground mb-1">{t("hero_card_title", "Tămâie & Mosc Auriu")}</p>
                 <div className="flex items-center justify-between mt-2">
-                  <p className="text-xs text-muted-foreground">45h ardere · Limited</p>
-                  <p className="font-display text-lg text-gradient-gold">189 lei</p>
+                  <p className="text-xs text-muted-foreground">{t("hero_card_meta", "45h ardere · Limited")}</p>
+                  <p className="font-display text-lg text-gradient-gold">{t("hero_card_price", "189 lei")}</p>
                 </div>
               </div>
             </div>
 
-            {/* badge plutitor */}
             <div className="hidden lg:flex absolute -left-8 top-1/3 bg-card border border-accent/40 px-4 py-3 rounded-sm shadow-card animate-float items-center gap-3">
               <Award className="w-5 h-5 text-accent" />
               <div>
-                <p className="text-[9px] uppercase tracking-wider text-muted-foreground">Premiu</p>
-                <p className="text-xs font-bold text-foreground">Best Artisan 2024</p>
+                <p className="text-[9px] uppercase tracking-wider text-muted-foreground">{t("hero_award_label", "Premiu")}</p>
+                <p className="text-xs font-bold text-foreground">{t("hero_award_title", "Best Artisan 2024")}</p>
               </div>
             </div>
           </div>
@@ -129,10 +127,10 @@ export default function Index() {
       <section className="bg-foreground text-background py-8 border-y border-accent/20">
         <div className="ml-container grid grid-cols-2 lg:grid-cols-4 gap-6 stagger">
           {[
-            { icon: Leaf, title: "Ceară de soia", sub: "100% naturală, vegan" },
-            { icon: Flame, title: "Ardere curată", sub: "Până la 60h, fără fum" },
-            { icon: Award, title: "Certificat handmade", sub: "Lot & artizan" },
-            { icon: Sparkles, title: "Parfumuri compuse", sub: "Note premium IFRA" },
+            { icon: Leaf, title: t("values_1_title", "Ceară de soia"), sub: t("values_1_sub", "100% naturală, vegan") },
+            { icon: Flame, title: t("values_2_title", "Ardere curată"), sub: t("values_2_sub", "Până la 60h, fără fum") },
+            { icon: Award, title: t("values_3_title", "Certificat handmade"), sub: t("values_3_sub", "Lot & artizan") },
+            { icon: Sparkles, title: t("values_4_title", "Parfumuri compuse"), sub: t("values_4_sub", "Note premium IFRA") },
           ].map(({ icon: Icon, title, sub }) => (
             <div key={title} className="flex items-center gap-4 group">
               <div className="w-12 h-12 rounded-full border border-accent/40 flex items-center justify-center shrink-0 group-hover:bg-accent group-hover:border-accent transition-colors duration-300">

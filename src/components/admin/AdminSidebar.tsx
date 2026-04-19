@@ -164,6 +164,7 @@ const menuSections: MenuSection[] = [
           { label: "FAQ Manager", path: "/admin/content/faq" },
           { label: "Hero Slider", path: "/admin/content/hero-slides", dividerBefore: "Homepage" },
           { label: "Layout Homepage", path: "/admin/content/homepage" },
+          { label: "✏️ Texte Temă (toate textele site)", path: "/admin/content/theme-texts" },
           { label: "Conținut Extra (Promo, Why us, Brands, Livrare, Tracking)", path: "/admin/content/cms-extras" },
           { label: "Personalizare Conținut", path: "/admin/content/personalization" },
           { label: "Meniuri", path: "/admin/content/menus", dividerBefore: "Navigare & Media" },
