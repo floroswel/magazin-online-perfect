@@ -46,7 +46,7 @@ export default function HeaderTopBar() {
         <nav className="flex items-center gap-5">
           <Link to="/track" className="hover:text-foreground transition-colors">Urmărire comandă</Link>
           <Link to="/page/livrare" className="hover:text-foreground transition-colors">Livrare</Link>
-          <Link to="/page/retur" className="hover:text-foreground transition-colors">Retur</Link>
+          <Link to="/page/politica-retur" className="hover:text-foreground transition-colors">Retur</Link>
           <Link to="/contact" className="hover:text-foreground transition-colors">Contact</Link>
         </nav>
       </div>
