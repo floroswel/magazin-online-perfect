@@ -1,56 +1,91 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Instrument+Sans:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ──────────────────────────────────────────────────────────────
-   MamaLucica — Atelier Cream & Noir
-   Design system inspirat de Diptyque, Jo Malone, Aesop
+   MamaLucica — Journal × Woodmart Hybrid (Facebook Blue)
+   Primary #1877F2 · BG #FFFFFF / #F0F2F5 · Text #050505 / #65676B
+   Footer dark #0d0d0d cu accent albastru
    ────────────────────────────────────────────────────────────── */
 
 @layer base {
   :root {
-    /* Brand core — Golden Lumini inspired: alb pur, negru, gold subtil */
-    --atelier-noir: 0 0% 6%;
-    --atelier-or: 38 42% 48%;
+    /* === BRAND CORE — Facebook-style Blue === */
+    --fb-blue: 214 89% 52%;          /* #1877F2 */
+    --fb-blue-hover: 214 89% 46%;    /* hover state */
+    --fb-blue-dark: 214 89% 38%;
+    --fb-blue-soft: 214 100% 96%;    /* badge bg, hover row */
+    --fb-text: 0 0% 2%;              /* #050505 */
+    --fb-text-secondary: 215 4% 41%; /* #65676B */
+    --fb-bg: 0 0% 100%;              /* card white */
+    --fb-bg-soft: 210 14% 95%;       /* #F0F2F5 page bg */
+    --fb-border: 210 14% 89%;        /* divider */
+    --fb-border-strong: 210 14% 80%;
+
+    /* Footer dark + Woodmart accent badges */
+    --footer-bg: 0 0% 5%;            /* #0d0d0d */
+    --footer-fg: 0 0% 88%;
+    --footer-muted: 0 0% 60%;
+    --footer-accent: 214 89% 58%;    /* link hover albastru luminos */
+
+    --badge-new-bg: 145 55% 38%;     /* verde NEW */
+    --badge-sale-bg: 22 90% 55%;     /* portocaliu -10% */
+    --badge-hot-bg: 0 75% 50%;
+    --star-color: 38 92% 50%;        /* gold rating */
+
+    /* Top info bar (Journal green→albastru) */
+    --topbar-bg: 214 89% 28%;
+    --topbar-fg: 0 0% 100%;
+
+    /* Category icon pill bg */
+    --cat-pill-bg: 210 14% 96%;
+    --cat-pill-fg: 214 89% 52%;
+
+    /* === Backward-compat: atelier-* mapate pe noua paletă === */
+    --atelier-noir: 0 0% 5%;
+    --atelier-or: 214 89% 52%;       /* fost gold, acum albastru brand */
     --atelier-cream: 0 0% 100%;
-    --atelier-ivory: 40 20% 99%;
+    --atelier-ivory: 210 14% 98%;
     --atelier-espresso: 0 0% 10%;
-    --atelier-bordeaux: 350 38% 28%;
-    --atelier-bordeaux-soft: 350 28% 38%;
-    --atelier-sage: 145 18% 48%;
-    --atelier-sage-soft: 145 22% 92%;
+    --atelier-bordeaux: 0 75% 42%;
+    --atelier-bordeaux-soft: 0 65% 52%;
+    --atelier-sage: 145 45% 38%;
+    --atelier-sage-soft: 145 50% 94%;
 
-    /* Shadcn semantic tokens — luminos, aerian, minimal */
-    /* Background: alb-gri foarte deschis cu nuanță subtilă albastru-rece (echivalent oklch(0.985 0.003 247)) */
-    --background: 240 10% 98.5%;
-    --foreground: 0 0% 8%;
+    /* === Shadcn semantic tokens (storefront) === */
+    --background: 210 14% 95%;       /* page bg light gri */
+    --foreground: 0 0% 2%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 8%;
+    --card-foreground: 0 0% 2%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 8%;
-    --primary: 0 0% 6%;
+    --popover-foreground: 0 0% 2%;
+    --primary: 214 89% 52%;          /* FB BLUE — CTA principale */
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 8%;
-    --muted: 0 0% 97%;
-    --muted-foreground: 0 0% 42%;
-    --accent: 38 42% 48%;
+    --secondary: 210 14% 96%;
+    --secondary-foreground: 0 0% 2%;
+    --muted: 210 14% 96%;
+    --muted-foreground: 215 4% 41%;
+    --accent: 214 89% 52%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 55% 42%;
+    --destructive: 0 75% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 92%;
-    --input: 0 0% 92%;
-    --ring: 38 42% 48%;
-    --radius: 0.125rem;
+    --border: 210 14% 89%;
+    --input: 210 14% 89%;
+    --ring: 214 89% 52%;
+    --radius: 0.5rem;                 /* rounded modern Journal/Woodmart */
 
-    --ml-primary: 0 0% 8%;
-    --ml-primary-dark: 0 0% 4%;
-    --ml-primary-light: 38 38% 95%;
-    --ml-accent: 35 38% 52%;
-    --ml-warning: 30 80% 50%;
-    --ml-success: 145 18% 48%;
+    --ml-primary: 214 89% 52%;
+    --ml-primary-dark: 214 89% 38%;
+    --ml-primary-darker: 214 89% 28%;
+    --ml-primary-light: 214 100% 96%;
+    --ml-primary-hover: 214 89% 46%;
+    --ml-accent: 22 90% 55%;
+    --ml-accent-dark: 22 90% 45%;
+    --ml-accent-light: 22 90% 95%;
+    --ml-warning: 38 92% 50%;
+    --ml-success: 145 55% 38%;
 
     /* ── Status semantic tokens (WCAG AA on light + dark) ── */
     --success: 145 55% 32%;
@@ -113,34 +148,34 @@
     --transition-base: 220ms var(--ease-editorial);
 
     /* ── Friendly aliases (overridden live by ControlTheme via useSettings) ── */
-    --color-primary: #0F0F0F;
-    --color-accent: #B8935A;
-    --color-bg: #FAFAFB;
-    --color-text: #141414;
-    --font-heading: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
+    --color-primary: #1877F2;
+    --color-accent: #1877F2;
+    --color-bg: #F0F2F5;
+    --color-text: #050505;
+    --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
   .dark, .candlelight {
-    --background: 25 22% 9%;
-    --foreground: 38 38% 92%;
-    --card: 25 18% 13%;
-    --card-foreground: 38 38% 92%;
-    --popover: 25 18% 13%;
-    --popover-foreground: 38 38% 92%;
-    --primary: 35 50% 62%;
-    --primary-foreground: 25 25% 8%;
-    --secondary: 350 32% 32%;
-    --secondary-foreground: 38 38% 95%;
-    --muted: 25 14% 18%;
-    --muted-foreground: 35 18% 68%;
-    --accent: 35 55% 65%;
-    --accent-foreground: 25 25% 8%;
-    --destructive: 0 55% 50%;
+    --background: 0 0% 8%;
+    --foreground: 0 0% 96%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 214 89% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 0 0% 96%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 214 89% 58%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 75% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 25 14% 22%;
-    --input: 25 14% 22%;
-    --ring: 35 55% 65%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 214 89% 58%;
   }
 
   .admin-panel {
@@ -184,27 +219,27 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
   h1, h2, h3, h4, .font-display {
-    font-family: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    line-height: 1.15;
-    font-variation-settings: "opsz" 144, "SOFT" 100;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
   }
-  h1.font-display, h2.font-display { letter-spacing: 0.02em; }
-  .font-display-bold { font-weight: 500; }
+  h1 { font-size: clamp(2rem, 4vw, 3rem); }
+  h2 { font-size: clamp(1.5rem, 2.5vw, 2rem); }
+  .font-display-bold { font-weight: 800; }
   .font-serif-classic { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; }
   .eyebrow {
-    font-family: 'Instrument Sans', 'Inter', sans-serif;
+    font-family: 'Inter', sans-serif;
     text-transform: uppercase;
-    letter-spacing: 0.32em;
+    letter-spacing: 0.12em;
     font-size: 0.7rem;
-    font-weight: 400;
+    font-weight: 600;
     color: hsl(var(--muted-foreground));
   }
   img { max-width: 100%; display: block; }
