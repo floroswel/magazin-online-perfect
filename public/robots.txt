@@ -1,8 +1,16 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
-Disallow: /checkout/
-Disallow: /auth/
+Disallow: /admin
+Disallow: /checkout
+Disallow: /auth
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /account
 Disallow: /account/
+Disallow: /cos
+Disallow: /cautare
+Disallow: /compara
 
-Sitemap: https://www.mamalucica.ro/sitemap.xml
+# Server-rendered XML sitemap (edge function)
+Sitemap: https://www.mamalucica.ro/functions/v1/sitemap

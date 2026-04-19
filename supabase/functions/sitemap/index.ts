@@ -97,10 +97,10 @@ Deno.serve(async (req) => {
     }
   }
 
-  // Products
+  // Products (canonical: /produs/:slug)
   for (const p of products) {
     const lastmod = p.updated_at ? `<lastmod>${p.updated_at.slice(0, 10)}</lastmod>` : "";
-    xml += `\n  <url><loc>${siteUrl}/product/${p.slug}</loc>${lastmod}<changefreq>weekly</changefreq><priority>0.9</priority></url>`;
+    xml += `\n  <url><loc>${siteUrl}/produs/${p.slug}</loc>${lastmod}<changefreq>weekly</changefreq><priority>0.9</priority></url>`;
   }
 
   // CMS pages
