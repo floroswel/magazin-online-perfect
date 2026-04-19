@@ -18,11 +18,11 @@ export default function MobileBottomNav() {
         <Home className="h-5 w-5" />
         <span className="font-medium">Acasă</span>
       </Link>
-      <Link to="/catalog" className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] ${isActive("/catalog") ? "text-accent" : "text-muted-foreground"}`}>
+      <Link to="/#produse" className={`flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] ${isActive("/catalog") ? "text-accent" : "text-muted-foreground"}`}>
         <Search className="h-5 w-5" />
         <span className="font-medium">Catalog</span>
       </Link>
-      <Link to="/favorite" className={`relative flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] ${isActive("/favorite") ? "text-accent" : "text-muted-foreground"}`}>
+      <Link to="/account/favorites" className={`relative flex-1 flex flex-col items-center justify-center gap-0.5 text-[10px] ${isActive("/account/favorites") ? "text-accent" : "text-muted-foreground"}`}>
         <Heart className="h-5 w-5" />
         {favCount > 0 && <span className="absolute top-2 right-1/4 bg-accent text-accent-foreground text-[9px] font-bold rounded-full h-3.5 min-w-3.5 px-1 flex items-center justify-center">{favCount}</span>}
         <span className="font-medium">Favorite</span>

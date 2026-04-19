@@ -85,7 +85,7 @@ export default function Header() {
           </Link>
 
           <Link
-            to="/favorite"
+            to="/account/favorites"
             className="relative p-2 hover:bg-muted rounded-sm transition-colors"
             aria-label="Favorite"
           >
@@ -130,13 +130,12 @@ export default function Header() {
       <nav className="hidden xl:block border-t border-border/40">
         <div className="ml-container flex items-center gap-1 h-11">
           {[
-            { label: "Toate produsele", to: "/catalog" },
-            { label: "Lumânări parfumate", to: "/categorie/lumanari-parfumate" },
-            { label: "După parfum", to: "/parfumuri" },
-            { label: "După ocazie", to: "/ocazii" },
-            { label: "Cadouri", to: "/cadouri" },
-            { label: "Personalizate", to: "/personalizare" },
+            { label: "Toate produsele", to: "/#produse" },
             { label: "Despre noi", to: "/page/despre-noi" },
+            { label: "Garanție", to: "/page/garantie" },
+            { label: "Livrare", to: "/page/livrare" },
+            { label: "FAQ", to: "/page/faq" },
+            { label: "Contact", to: "/contact" },
           ].map((item) => (
             <Link
               key={item.to}
@@ -147,7 +146,7 @@ export default function Header() {
             </Link>
           ))}
           <Link
-            to="/oferte"
+            to="/#oferte"
             className="ml-auto px-4 h-7 mt-1.5 flex items-center text-xs font-bold uppercase tracking-wider bg-accent text-accent-foreground rounded-sm hover:opacity-90 transition-opacity"
           >
             🔥 Oferte
