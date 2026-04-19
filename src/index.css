@@ -25,10 +25,10 @@
     --fb-border-strong: 210 14% 80%;
 
     /* Footer dark + Woodmart accent badges */
-    --footer-bg: 0 0% 5%;            /* #0d0d0d */
-    --footer-fg: 0 0% 88%;
-    --footer-muted: 0 0% 60%;
-    --footer-accent: 214 89% 58%;    /* link hover albastru luminos */
+    --footer-bg: 214 60% 12%;        /* deep navy blue, much more vibrant than black */
+    --footer-fg: 0 0% 98%;
+    --footer-muted: 210 25% 78%;     /* mai luminos pt linkuri vizibile */
+    --footer-accent: 38 95% 58%;     /* portocaliu/galben viu pe titluri & hover */
 
     --badge-new-bg: 145 55% 38%;     /* verde NEW */
     --badge-sale-bg: 22 90% 55%;     /* portocaliu -10% */
