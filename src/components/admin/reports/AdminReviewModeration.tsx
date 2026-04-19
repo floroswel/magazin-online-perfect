@@ -2,41 +2,45 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Check, X, Star, MessageSquare, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { ro } from "date-fns/locale";
 
+type Status = "pending" | "approved" | "rejected";
+
 export default function AdminReviewModeration() {
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<"pending" | "approved" | "rejected">("pending");
+  const [filter, setFilter] = useState<Status>("pending");
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase.from("reviews").select("*, products(name)").order("created_at", { ascending: false }).limit(100);
-    const filtered = (data || []).filter((r: any) => {
-      if (filter === "pending") return !r.approved;
-      if (filter === "approved") return r.approved;
-      return false;
-    });
-    setReviews(data || []);
+    const { data, error } = await supabase
+      .from("product_reviews")
+      .select("id, rating, comment, status, created_at, product_id, products(name)")
+      .eq("status", filter)
+      .order("created_at", { ascending: false })
+      .limit(100);
+    if (error) {
+      toast({ title: "Eroare la încărcare", description: error.message, variant: "destructive" });
+      setReviews([]);
+    } else {
+      setReviews(data || []);
+    }
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, [filter]);
+  useEffect(() => { load(); /* eslint-disable-next-line */ }, [filter]);
 
-  const handleApprove = async (id: string) => {
-    // reviews table may not have 'approved' column in typed schema — cast to bypass
-    await (supabase.from("reviews") as any).update({ approved: true }).eq("id", id);
-    toast({ title: "Review aprobat" });
-    load();
-  };
-
-  const handleReject = async (id: string) => {
-    toast({ title: "Review respins" });
+  const updateStatus = async (id: string, status: Status) => {
+    const { error } = await supabase.from("product_reviews").update({ status }).eq("id", id);
+    if (error) {
+      toast({ title: "Eroare", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: status === "approved" ? "Review aprobat" : "Review respins" });
     load();
   };
 
@@ -45,7 +49,7 @@ export default function AdminReviewModeration() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold flex items-center gap-2"><MessageSquare className="w-5 h-5" /> Moderare Review-uri</h1>
-          <p className="text-sm text-muted-foreground">Aprobă sau respinge review-uri clienți.</p>
+          <p className="text-sm text-muted-foreground">Aprobă sau respinge review-uri clienți (date reale din product_reviews).</p>
         </div>
         <Button variant="outline" size="sm" onClick={load}><RefreshCw className="w-4 h-4 mr-1" /> Refresh</Button>
       </div>
@@ -75,7 +79,7 @@ export default function AdminReviewModeration() {
                   <TableHead>Rating</TableHead>
                   <TableHead>Comentariu</TableHead>
                   <TableHead>Data</TableHead>
-                  {filter === "pending" && <TableHead>Acțiuni</TableHead>}
+                  <TableHead>Acțiuni</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -91,14 +95,16 @@ export default function AdminReviewModeration() {
                     </TableCell>
                     <TableCell className="text-sm max-w-md truncate">{r.comment || "—"}</TableCell>
                     <TableCell className="text-xs text-muted-foreground">{format(new Date(r.created_at), "dd MMM HH:mm", { locale: ro })}</TableCell>
-                    {filter === "pending" && (
-                      <TableCell>
-                        <div className="flex gap-1">
-                          <Button size="sm" variant="outline" className="text-green-600 h-7" onClick={() => handleApprove(r.id)}><Check className="w-3 h-3" /></Button>
-                          <Button size="sm" variant="outline" className="text-red-600 h-7" onClick={() => handleReject(r.id)}><X className="w-3 h-3" /></Button>
-                        </div>
-                      </TableCell>
-                    )}
+                    <TableCell>
+                      <div className="flex gap-1">
+                        {filter !== "approved" && (
+                          <Button size="sm" variant="outline" className="text-green-600 h-7" onClick={() => updateStatus(r.id, "approved")}><Check className="w-3 h-3" /></Button>
+                        )}
+                        {filter !== "rejected" && (
+                          <Button size="sm" variant="outline" className="text-red-600 h-7" onClick={() => updateStatus(r.id, "rejected")}><X className="w-3 h-3" /></Button>
+                        )}
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
