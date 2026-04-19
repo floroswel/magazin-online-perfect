@@ -46,6 +46,7 @@ import {
   BarChart,
 } from "recharts";
 import ManualOrderDialog from "./orders/ManualOrderDialog";
+import DemoDataPanel from "./DemoDataPanel";
 import { translateOrderStatus } from "@/lib/orderStatusLabels";
 
 const statusColors: Record<string, string> = {
