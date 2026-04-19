@@ -91,7 +91,7 @@ export default function Contact() {
   return (
     <>
       <SeoHead title="Contact" description="Contactează-ne — Mama Lucica" />
-      <div className="ml-container py-10 lg:py-16">
+      <div className="bg-white text-foreground ml-container py-10 lg:py-16">
         <header className="mb-10 text-center max-w-2xl mx-auto">
           <h1 className="font-display text-4xl lg:text-5xl mb-3">Contactează-ne</h1>
           <p className="text-muted-foreground">{formSubtitle}</p>
@@ -212,8 +212,8 @@ export default function Contact() {
             </h3>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {docs.map((d, i) => (
-                <a key={i} href={d.url} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-3 border rounded hover:bg-muted text-sm transition-colors">
+                <a key={i} href={d.url}
+                  className="flex items-center gap-2 p-3 bg-white border rounded hover:bg-muted text-sm transition-colors">
                   <FileText className="w-4 h-4 text-accent shrink-0" />
                   <span>{d.label}</span>
                 </a>
