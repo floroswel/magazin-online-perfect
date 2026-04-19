@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import StorefrontLayout from "@/components/storefront/StorefrontLayout";
 import SeoHead from "@/components/SeoHead";
 import { Skeleton } from "@/components/ui/skeleton";
+import { sanitizeHtml } from "@/lib/sanitize-html";
 
 interface CmsPageData {
   title: string;

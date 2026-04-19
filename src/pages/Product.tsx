@@ -8,6 +8,7 @@ import { ShoppingBag, Heart, Truck, Shield, Award, Minus, Plus } from "lucide-re
 import StorefrontLayout from "@/components/storefront/StorefrontLayout";
 import SeoHead from "@/components/SeoHead";
 import ProductCard from "@/components/storefront/ProductCard";
+import { sanitizeHtml } from "@/lib/sanitize-html";
 
 export default function Product() {
   const { slug } = useParams<{ slug: string }>();
