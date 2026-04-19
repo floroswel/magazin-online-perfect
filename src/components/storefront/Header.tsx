@@ -166,13 +166,15 @@ export default function Header() {
             <nav className="flex-1 overflow-y-auto p-4 space-y-1">
               {[
                 { label: "Acasă", to: "/" },
-                { label: "Toate produsele", to: "/catalog" },
+                { label: "Toate produsele", to: "/#produse" },
+                { label: "Lumânări", to: "/categorie/lumanari" },
                 { label: "Lumânări parfumate", to: "/categorie/lumanari-parfumate" },
-                { label: "După parfum", to: "/parfumuri" },
-                { label: "După ocazie", to: "/ocazii" },
-                { label: "Cadouri", to: "/cadouri" },
-                { label: "Personalizate", to: "/personalizare" },
-                { label: "Oferte", to: "/oferte" },
+                { label: "După parfum", to: "/categorie/dupa-parfum" },
+                { label: "După ocazie", to: "/categorie/dupa-ocazie" },
+                { label: "Cadouri", to: "/categorie/cadouri" },
+                { label: "Personalizate", to: "/categorie/personalizate" },
+                { label: "Odorizante Dulap", to: "/categorie/odorizante-dulap" },
+                { label: "Oferte", to: "/#oferte" },
                 { label: "Despre noi", to: "/page/despre-noi" },
                 { label: "Contact", to: "/contact" },
               ].map((item) => (
