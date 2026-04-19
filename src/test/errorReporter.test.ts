@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 const insertMock = vi.fn().mockResolvedValue({ data: null, error: null });
-const fromMock = vi.fn(() => ({ insert: insertMock }));
+const fromMock = vi.fn((_table: string) => ({ insert: insertMock }));
 const getUserMock = vi.fn().mockResolvedValue({ data: { user: { id: "test-user-id" } } });
 
 vi.mock("@/integrations/supabase/client", () => ({
