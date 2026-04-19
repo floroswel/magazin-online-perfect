@@ -6,7 +6,7 @@ const getUserMock = vi.fn().mockResolvedValue({ data: { user: { id: "test-user-i
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
-    from: (...args: any[]) => fromMock(...args),
+    from: (table: string) => fromMock(table),
     auth: { getUser: () => getUserMock() },
   },
 }));
