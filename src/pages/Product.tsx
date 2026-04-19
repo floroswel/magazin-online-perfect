@@ -9,6 +9,7 @@ import StorefrontLayout from "@/components/storefront/StorefrontLayout";
 import SeoHead from "@/components/SeoHead";
 import ProductCard from "@/components/storefront/ProductCard";
 import { sanitizeHtml } from "@/lib/sanitize-html";
+import { safeJsonLd } from "@/lib/sanitize-json-ld";
 
 export default function Product() {
   const { slug } = useParams<{ slug: string }>();
@@ -99,12 +100,40 @@ export default function Product() {
     setOpen(true);
   };
 
+  const productJsonLd = safeJsonLd({
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    name: product.name,
+    image: images.length ? images : undefined,
+    description: product.short_description || product.meta_description || product.name,
+    sku: product.sku || product.id,
+    brand: product.brand ? { "@type": "Brand", name: product.brand } : undefined,
+    aggregateRating:
+      (product.rating ?? 0) > 0 && (product.review_count ?? 0) > 0
+        ? {
+            "@type": "AggregateRating",
+            ratingValue: Number(product.rating).toFixed(1),
+            reviewCount: product.review_count,
+          }
+        : undefined,
+    offers: {
+      "@type": "Offer",
+      url: `${window.location.origin}/produs/${product.slug}`,
+      priceCurrency: "RON",
+      price: Number(product.price).toFixed(2),
+      availability: stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      itemCondition: "https://schema.org/NewCondition",
+    },
+  });
+
   return (
     <StorefrontLayout>
       <SeoHead
         title={product.meta_title || `${product.name} — Mama Lucica`}
         description={product.meta_description || product.short_description || `Cumpără ${product.name} de la Mama Lucica.`}
+        ogImage={product.image_url || undefined}
       />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: productJsonLd }} />
       <section className="ml-container py-6 lg:py-10">
         <nav className="text-xs text-muted-foreground mb-4">
           <Link to="/" className="hover:text-accent">Acasă</Link>
