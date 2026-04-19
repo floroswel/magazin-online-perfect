@@ -22,6 +22,7 @@ const Admin = lazy(() => import("./pages/Admin"));
 const AccountHome = lazy(() => import("./pages/account/AccountHome"));
 const AccountWallet = lazy(() => import("./pages/account/Wallet"));
 const AccountPlaceholder = lazy(() => import("./pages/account/Placeholder"));
+const Contact = lazy(() => import("./pages/Contact"));
 
 const queryClient = new QueryClient();
 
@@ -57,6 +58,7 @@ const App = () => (
                       <Route path="/account/addresses" element={<ErrorBoundary><AccountPlaceholder title="Adrese" /></ErrorBoundary>} />
                       <Route path="/account/favorites" element={<ErrorBoundary><AccountPlaceholder title="Favorite" /></ErrorBoundary>} />
                       <Route path="/account/settings" element={<ErrorBoundary><AccountPlaceholder title="Setări" /></ErrorBoundary>} />
+                      <Route path="/contact" element={<ErrorBoundary><Contact /></ErrorBoundary>} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
