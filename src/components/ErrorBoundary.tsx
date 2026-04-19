@@ -1,9 +1,11 @@
 import React, { Component, type ErrorInfo, type ReactNode } from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
+import { captureError } from "@/lib/errorReporter";
 
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
+  scope?: string;
 }
 
 interface State {
@@ -22,25 +24,12 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    // eslint-disable-next-line no-console
     console.error("[ErrorBoundary] Caught error:", error, errorInfo);
-
-    // Fire-and-forget log to DB
-    try {
-      import("@/integrations/supabase/client").then(({ supabase }) => {
-        supabase.from("health_logs").insert({
-          scope: "error_boundary",
-          level: "error",
-          message: error.message || "Unknown error",
-          meta_json: {
-            stack: error.stack,
-            componentStack: errorInfo.componentStack,
-            url: window.location.href,
-          },
-        }).then(() => {});
-      });
-    } catch {
-      // Silently ignore DB logging failures
-    }
+    captureError(error, {
+      componentStack: errorInfo.componentStack ?? undefined,
+      extra: { scope: this.props.scope ?? "root" },
+    }, "error");
   }
 
   render() {
@@ -55,9 +44,9 @@ export default class ErrorBoundary extends Component<Props, State> {
               Ceva nu a funcționat corect
             </h2>
             <p className="text-muted-foreground text-sm">
-              A apărut o eroare. Încearcă să reîncarci pagina.
+              A apărut o eroare. Echipa a fost notificată automat. Încearcă să reîncarci pagina.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-3 justify-center">
               <button
                 onClick={() => window.location.reload()}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
