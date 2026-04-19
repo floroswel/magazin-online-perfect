@@ -29,7 +29,7 @@ export default function ProductCard({ p }: { p: ProductCardData }) {
   const outOfStock = (p.stock ?? 1) <= 0;
 
   return (
-    <article className="wm-card flex flex-col">
+    <article className="wm-card group flex flex-col">
       <Link to={`/produs/${p.slug}`} className="relative wm-card-img overflow-hidden">
         {p.image_url ? (
           <img
