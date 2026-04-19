@@ -19,6 +19,24 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQ, setSearchQ] = useState("");
 
+  // Live nav categories from DB (synced with admin /admin/categories)
+  const { data: navCategories = [] } = useQuery({
+    queryKey: ["nav-categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("id, name, slug, parent_id, display_order, visible, show_in_nav")
+        .eq("visible", true)
+        .eq("show_in_nav", true)
+        .is("parent_id", null)
+        .order("display_order")
+        .order("name");
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60_000,
+  });
+
   const logoUrl = unq(s.header_logo_url) || unq(s.logo_url);
   const logoVisible = s.logo_visible !== "false";
   const siteName = unq(s.header_store_name) || unq(s.site_name) || "Mama Lucica";
