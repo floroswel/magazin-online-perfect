@@ -231,6 +231,6 @@ export default function Contact() {
           </Card>
         )}
       </div>
-    </>
+    </StorefrontLayout>
   );
 }
