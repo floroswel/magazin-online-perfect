@@ -1,44 +1,85 @@
-// SEO head minim — folosit de paginile de auth.
-import { useEffect } from "react";
+// SEO head — unified for storefront pages.
+// Canonical falls back to app_settings.site_url (managed in Admin → General Settings),
+// then to window.location.origin if missing.
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SeoOptions {
   title?: string;
   description?: string;
   noindex?: boolean;
   canonical?: string;
+  ogImage?: string;
+}
+
+let cachedSiteUrl: string | null = null;
+
+async function getSiteUrl(): Promise<string> {
+  if (cachedSiteUrl) return cachedSiteUrl;
+  try {
+    const { data } = await supabase
+      .from("app_settings")
+      .select("value_json")
+      .eq("key", "site_url")
+      .maybeSingle();
+    const v = (data?.value_json as any);
+    const url = (typeof v === "string" ? v : v?.url) || window.location.origin;
+    cachedSiteUrl = url.replace(/\/$/, "");
+    return cachedSiteUrl;
+  } catch {
+    return window.location.origin;
+  }
+}
+
+function setMeta(name: string, content: string, attr: "name" | "property" = "name") {
+  let el = document.querySelector(`meta[${attr}="${name}"]`);
+  if (!el) {
+    el = document.createElement("meta");
+    el.setAttribute(attr, name);
+    document.head.appendChild(el);
+  }
+  el.setAttribute("content", content);
+}
+
+function setLink(rel: string, href: string) {
+  let el = document.querySelector(`link[rel="${rel}"]`);
+  if (!el) {
+    el = document.createElement("link");
+    el.setAttribute("rel", rel);
+    document.head.appendChild(el);
+  }
+  el.setAttribute("href", href);
 }
 
 export function usePageSeo(opts: SeoOptions = {}) {
+  const [siteUrl, setSiteUrl] = useState<string>("");
+
   useEffect(() => {
-    if (opts.title) document.title = opts.title;
+    getSiteUrl().then(setSiteUrl);
+  }, []);
+
+  useEffect(() => {
+    if (opts.title) {
+      document.title = opts.title;
+      setMeta("og:title", opts.title, "property");
+    }
     if (opts.description) {
-      let meta = document.querySelector('meta[name="description"]');
-      if (!meta) {
-        meta = document.createElement("meta");
-        meta.setAttribute("name", "description");
-        document.head.appendChild(meta);
-      }
-      meta.setAttribute("content", opts.description.slice(0, 160));
+      const desc = opts.description.slice(0, 160);
+      setMeta("description", desc);
+      setMeta("og:description", desc, "property");
     }
-    if (opts.noindex) {
-      let robots = document.querySelector('meta[name="robots"]');
-      if (!robots) {
-        robots = document.createElement("meta");
-        robots.setAttribute("name", "robots");
-        document.head.appendChild(robots);
-      }
-      robots.setAttribute("content", "noindex, nofollow");
-    }
-    if (opts.canonical) {
-      let link = document.querySelector('link[rel="canonical"]');
-      if (!link) {
-        link = document.createElement("link");
-        link.setAttribute("rel", "canonical");
-        document.head.appendChild(link);
-      }
-      link.setAttribute("href", opts.canonical);
-    }
-  }, [opts.title, opts.description, opts.noindex, opts.canonical]);
+    setMeta("robots", opts.noindex ? "noindex, nofollow" : "index, follow");
+
+    // Canonical: explicit > computed from siteUrl + path
+    const path = window.location.pathname + window.location.search;
+    const canonicalHref =
+      opts.canonical || (siteUrl ? `${siteUrl}${path}` : `${window.location.origin}${path}`);
+    setLink("canonical", canonicalHref);
+    setMeta("og:url", canonicalHref, "property");
+
+    if (opts.ogImage) setMeta("og:image", opts.ogImage, "property");
+    setMeta("og:type", "website", "property");
+  }, [opts.title, opts.description, opts.noindex, opts.canonical, opts.ogImage, siteUrl]);
 }
 
 export default function SeoHead(props: SeoOptions) {
