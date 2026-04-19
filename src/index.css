@@ -52,6 +52,39 @@
     --ml-warning: 30 80% 50%;
     --ml-success: 145 18% 48%;
 
+    /* ── Status semantic tokens (WCAG AA on light + dark) ── */
+    --success: 145 55% 32%;
+    --success-foreground: 0 0% 100%;
+    --success-soft: 145 50% 94%;
+    --success-soft-foreground: 145 55% 22%;
+
+    --warning: 35 85% 42%;
+    --warning-foreground: 0 0% 100%;
+    --warning-soft: 38 90% 94%;
+    --warning-soft-foreground: 30 75% 26%;
+
+    --info: 215 75% 42%;
+    --info-foreground: 0 0% 100%;
+    --info-soft: 215 80% 95%;
+    --info-soft-foreground: 215 75% 28%;
+
+    --danger: 0 65% 42%;
+    --danger-foreground: 0 0% 100%;
+    --danger-soft: 0 70% 96%;
+    --danger-soft-foreground: 0 65% 32%;
+
+    --neutral-soft: 0 0% 95%;
+    --neutral-soft-foreground: 0 0% 28%;
+
+    --highlight: 38 75% 50%;          /* gold star, premium accent */
+    --highlight-soft: 38 80% 95%;
+
+    /* Overlays / scrims */
+    --scrim: 0 0% 6%;
+    --scrim-strong: 0 0% 0%;
+    --on-dark: 0 0% 100%;
+    --on-dark-muted: 0 0% 100%;       /* used with /70 opacity */
+
     --sidebar-background: 270 35% 14%;
     --sidebar-foreground: 285 25% 82%;
     --sidebar-primary: 327 87% 55%;

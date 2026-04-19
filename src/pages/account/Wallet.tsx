@@ -82,7 +82,7 @@ export default function WalletPage() {
                   <li key={t.id} className="flex items-center gap-4 px-5 py-4">
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                        credit ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"
+                        credit ? "bg-success-soft text-success" : "bg-danger-soft text-danger"
                       }`}
                     >
                       {credit ? <ArrowDownLeft className="w-5 h-5" /> : <ArrowUpRight className="w-5 h-5" />}
@@ -93,7 +93,7 @@ export default function WalletPage() {
                       </p>
                       <p className="text-xs text-muted-foreground">{formatRoDate(t.created_at)}</p>
                     </div>
-                    <div className={`text-base font-semibold tabular-nums ${credit ? "text-emerald-600" : "text-red-600"}`}>
+                    <div className={`text-base font-semibold tabular-nums ${credit ? "text-success" : "text-danger"}`}>
                       {credit ? "+" : "−"}{Number(t.amount).toFixed(2)} RON
                     </div>
                   </li>

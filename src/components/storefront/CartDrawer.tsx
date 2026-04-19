@@ -18,8 +18,8 @@ export default function CartDrawer() {
   const progress = Math.min(100, (subtotal / FREE_SHIP) * 100);
 
   return (
-    <div className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} />
+    <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="Coș cumpărături">
+      <div className="absolute inset-0 bg-scrim/50" onClick={() => setOpen(false)} aria-hidden="true" />
       <aside className="absolute right-0 top-0 bottom-0 w-full sm:w-[420px] bg-card shadow-editorial flex flex-col">
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h2 className="font-display text-xl">Coșul tău <span className="text-sm text-muted-foreground">({items.length})</span></h2>
@@ -31,7 +31,7 @@ export default function CartDrawer() {
             {remaining > 0 ? (
               <p className="text-xs mb-1.5">Mai adaugă <strong className="text-accent">{remaining.toFixed(2)} lei</strong> pentru livrare gratuită 🚚</p>
             ) : (
-              <p className="text-xs text-ml-success font-semibold mb-1.5">✓ Beneficiezi de livrare gratuită!</p>
+              <p className="text-xs text-success font-semibold mb-1.5">✓ Beneficiezi de livrare gratuită!</p>
             )}
             <div className="h-1.5 bg-border rounded-full overflow-hidden">
               <div className="h-full bg-accent transition-all duration-500" style={{ width: `${progress}%` }} />

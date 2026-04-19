@@ -140,22 +140,22 @@ export default function Footer() {
           {socialShow && (
             <div className="flex items-center gap-3">
               {facebook && (
-                <a href={facebook} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-white/10 rounded-sm transition-colors" aria-label="Facebook">
+                <a href={facebook} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-on-dark/10 rounded-sm transition-colors" aria-label="Facebook">
                   <Facebook className="h-4 w-4" />
                 </a>
               )}
               {instagram && (
-                <a href={instagram} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-white/10 rounded-sm transition-colors" aria-label="Instagram">
+                <a href={instagram} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-on-dark/10 rounded-sm transition-colors" aria-label="Instagram">
                   <Instagram className="h-4 w-4" />
                 </a>
               )}
               {tiktok && (
-                <a href={tiktok} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-white/10 rounded-sm transition-colors" aria-label="TikTok">
+                <a href={tiktok} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-on-dark/10 rounded-sm transition-colors" aria-label="TikTok">
                   <span className="text-xs font-bold">TT</span>
                 </a>
               )}
               {youtube && (
-                <a href={youtube} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-white/10 rounded-sm transition-colors" aria-label="YouTube">
+                <a href={youtube} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-on-dark/10 rounded-sm transition-colors" aria-label="YouTube">
                   <Youtube className="h-4 w-4" />
                 </a>
               )}
@@ -268,7 +268,7 @@ export default function Footer() {
 
       {/* ANPC SAL/SOL bar + parteneri */}
       {(anpcShow || salShow || partners.length > 0) && (
-        <div className="border-t border-white/10">
+        <div className="border-t border-on-dark/10">
           <div className="ml-container py-5 flex flex-wrap items-center justify-center gap-4 md:gap-6">
             {anpcShow && (
               <a href={anpcUrl} target="_blank" rel="noopener noreferrer" className="block hover:opacity-80 transition-opacity">
@@ -281,7 +281,7 @@ export default function Footer() {
               </a>
             )}
 
-            {partners.length > 0 && (anpcShow || salShow) && <div className="hidden md:block w-px h-10 bg-white/10" />}
+            {partners.length > 0 && (anpcShow || salShow) && <div className="hidden md:block w-px h-10 bg-on-dark/10" />}
 
             {partners.map(p => (
               <a key={p.name} href={p.url || "#"} target="_blank" rel="noopener noreferrer" className="block hover:opacity-80 transition-opacity">
@@ -295,7 +295,7 @@ export default function Footer() {
 
             {showPaymentIcons && (
               <>
-                <div className="hidden md:block w-px h-10 bg-white/10" />
+                <div className="hidden md:block w-px h-10 bg-on-dark/10" />
                 <div className="flex items-center gap-3 text-xs opacity-60">
                   <span>Plătește sigur cu</span>
                   {truthy(s.footer_payment_visa_show) && <span className="font-bold tracking-wider">VISA</span>}
@@ -311,7 +311,7 @@ export default function Footer() {
       )}
 
       {/* Bottom */}
-      <div className="border-t border-white/10 bg-black/30" style={bottomStyle}>
+      <div className="border-t border-on-dark/10 bg-scrim/30" style={bottomStyle}>
         <div className="ml-container py-4 flex flex-col md:flex-row items-center justify-between gap-2 text-xs opacity-60">
           <p>© {year} {copyrightName}. Toate drepturile rezervate.</p>
           {madeInShow && <p>{madeInText}</p>}

@@ -174,7 +174,7 @@ export default function Product() {
             {product.short_description && <p className="text-sm text-muted-foreground mb-4">{product.short_description}</p>}
             {(product.rating ?? 0) > 0 && (
               <div className="flex items-center gap-2 text-sm mb-4">
-                <span className="text-amber-500">{"★".repeat(Math.round(Number(product.rating)))}</span>
+                <span className="text-highlight" aria-hidden="true">{"★".repeat(Math.round(Number(product.rating)))}</span>
                 <span className="text-muted-foreground">{Number(product.rating).toFixed(1)} ({product.review_count ?? 0} recenzii)</span>
               </div>
             )}
@@ -190,7 +190,7 @@ export default function Product() {
             <div className="text-xs text-muted-foreground mb-6">TVA inclus · Livrare 35 lei (gratuit peste 200 lei)</div>
 
             {stock > 0 ? (
-              <div className="text-sm text-green-700 font-semibold mb-4">✓ În stoc ({stock} buc.)</div>
+              <div className="text-sm text-success font-semibold mb-4">✓ În stoc ({stock} buc.)</div>
             ) : (
               <div className="text-sm text-destructive font-semibold mb-4">✗ Stoc epuizat</div>
             )}
@@ -247,7 +247,7 @@ export default function Product() {
               {reviews.map((r: any) => (
                 <div key={r.id} className="p-4 border border-border rounded-md">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-amber-500">{"★".repeat(r.rating)}</span>
+                    <span className="text-highlight" aria-hidden="true">{"★".repeat(r.rating)}</span>
                     <span className="text-sm font-semibold">{r.author_name || "Anonim"}</span>
                     <span className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString("ro-RO")}</span>
                   </div>

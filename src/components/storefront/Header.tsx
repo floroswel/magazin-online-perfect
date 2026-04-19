@@ -188,7 +188,7 @@ export default function Header() {
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-[60] xl:hidden">
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+          <div className="fixed inset-0 bg-scrim/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} aria-hidden="true" />
           <div className="fixed left-0 top-0 h-screen w-80 max-w-[85vw] bg-background shadow-editorial flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-border">
               <span className="font-display text-xl">Meniu</span>
