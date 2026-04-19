@@ -4560,7 +4560,8 @@ export type Database = {
           id: string
           order_id: string
           price: number
-          product_id: string
+          product_id: string | null
+          product_name_snapshot: string | null
           quantity: number
           serial_numbers: Json | null
           tax_amount: number | null
@@ -4574,7 +4575,8 @@ export type Database = {
           id?: string
           order_id: string
           price: number
-          product_id: string
+          product_id?: string | null
+          product_name_snapshot?: string | null
           quantity?: number
           serial_numbers?: Json | null
           tax_amount?: number | null
@@ -4588,7 +4590,8 @@ export type Database = {
           id?: string
           order_id?: string
           price?: number
-          product_id?: string
+          product_id?: string | null
+          product_name_snapshot?: string | null
           quantity?: number
           serial_numbers?: Json | null
           tax_amount?: number | null
