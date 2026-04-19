@@ -8,6 +8,7 @@ import { ShoppingBag, Heart, Truck, Shield, Award, Minus, Plus } from "lucide-re
 import StorefrontLayout from "@/components/storefront/StorefrontLayout";
 import SeoHead from "@/components/SeoHead";
 import ProductCard from "@/components/storefront/ProductCard";
+import { sanitizeHtml } from "@/lib/sanitize-html";
 
 export default function Product() {
   const { slug } = useParams<{ slug: string }>();
@@ -204,7 +205,7 @@ export default function Product() {
             {product.description && (
               <div className="prose prose-sm max-w-none border-t border-border pt-6">
                 <h3 className="font-display text-lg mb-2">Descriere</h3>
-                <div dangerouslySetInnerHTML={{ __html: product.description }} />
+                <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.description) }} />
               </div>
             )}
           </div>

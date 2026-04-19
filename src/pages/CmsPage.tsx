@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import StorefrontLayout from "@/components/storefront/StorefrontLayout";
 import SeoHead from "@/components/SeoHead";
 import { Skeleton } from "@/components/ui/skeleton";
+import { sanitizeHtml } from "@/lib/sanitize-html";
 
 interface CmsPageData {
   title: string;
@@ -78,7 +79,7 @@ export default function CmsPage() {
             </header>
             <div
               className="prose prose-neutral max-w-none prose-headings:font-serif prose-h1:hidden prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-3 prose-h3:text-lg prose-h3:mt-6 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-li:my-1 prose-strong:text-foreground"
-              dangerouslySetInnerHTML={{ __html: page.body_html || "" }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.body_html) }}
             />
           </article>
         )}

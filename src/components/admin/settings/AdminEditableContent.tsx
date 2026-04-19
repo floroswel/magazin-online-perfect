@@ -285,7 +285,7 @@ export default function AdminEditableContent() {
                     <Switch
                       checked={settings[key] !== "false"}
                       onCheckedChange={(checked) => {
-                        console.log("Toggle:", key, checked);
+                        // visibility toggle handled below
                         updateSetting(key, checked ? "true" : "false");
                       }}
                     />
