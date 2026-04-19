@@ -15,10 +15,12 @@ interface Brand {
   logo_url: string | null;
   description: string | null;
   created_at: string;
+  is_demo?: boolean;
 }
 
 export default function AdminBrands() {
   const [brands, setBrands] = useState<Brand[]>([]);
+  const [counts, setCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({ name: "", slug: "", logo_url: "", description: "" });
   const [adding, setAdding] = useState(false);
@@ -28,8 +30,14 @@ export default function AdminBrands() {
 
   const fetch = async () => {
     setLoading(true);
-    const { data } = await supabase.from("brands").select("*").order("name");
-    setBrands(data || []);
+    const [{ data: brandsData }, { data: prodData }] = await Promise.all([
+      supabase.from("brands").select("*").order("name"),
+      supabase.from("products").select("brand_id"),
+    ]);
+    setBrands(brandsData || []);
+    const map: Record<string, number> = {};
+    (prodData || []).forEach((p: any) => { if (p.brand_id) map[p.brand_id] = (map[p.brand_id] || 0) + 1; });
+    setCounts(map);
     setLoading(false);
   };
 
@@ -102,6 +110,7 @@ export default function AdminBrands() {
                   <TableHead>Logo</TableHead>
                   <TableHead>Nume</TableHead>
                   <TableHead>Slug</TableHead>
+                  <TableHead className="text-center">Produse</TableHead>
                   <TableHead>Descriere</TableHead>
                   <TableHead></TableHead>
                 </TableRow>
@@ -112,11 +121,17 @@ export default function AdminBrands() {
                     <TableCell>
                       {b.logo_url ? <img src={b.logo_url} alt={b.name} className="w-8 h-8 object-contain" /> : <div className="w-8 h-8 bg-muted rounded" />}
                     </TableCell>
-                    <TableCell className="font-medium">{b.name}</TableCell>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        {b.name}
+                        {b.is_demo && <span className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-border bg-muted text-muted-foreground">DEMO</span>}
+                      </div>
+                    </TableCell>
                     <TableCell className="font-mono text-sm text-muted-foreground">{b.slug}</TableCell>
+                    <TableCell className="text-center font-semibold">{counts[b.id] || 0}</TableCell>
                     <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">{b.description || "—"}</TableCell>
                     <TableCell>
-                      <Button variant="ghost" size="sm" onClick={() => remove(b.id)} className="text-destructive hover:text-destructive">
+                      <Button variant="ghost" size="sm" onClick={() => { if (confirm(`Ștergi brandul "${b.name}"? Produsele rămân fără brand.`)) remove(b.id); }} className="text-destructive hover:text-destructive">
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </TableCell>

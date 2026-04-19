@@ -1065,6 +1065,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          is_demo: boolean
           logo_url: string | null
           name: string
           slug: string
@@ -1074,6 +1075,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_demo?: boolean
           logo_url?: string | null
           name: string
           slug: string
@@ -1083,6 +1085,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_demo?: boolean
           logo_url?: string | null
           name?: string
           slug?: string
@@ -1368,6 +1371,7 @@ export type Database = {
           icon: string | null
           id: string
           image_url: string | null
+          is_demo: boolean
           meta_description: string | null
           meta_title: string | null
           name: string
@@ -1385,6 +1389,7 @@ export type Database = {
           icon?: string | null
           id?: string
           image_url?: string | null
+          is_demo?: boolean
           meta_description?: string | null
           meta_title?: string | null
           name: string
@@ -1402,6 +1407,7 @@ export type Database = {
           icon?: string | null
           id?: string
           image_url?: string | null
+          is_demo?: boolean
           meta_description?: string | null
           meta_title?: string | null
           name?: string
@@ -5883,6 +5889,45 @@ export type Database = {
           },
         ]
       }
+      product_compatibility: {
+        Row: {
+          compatible_with_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          product_id: string
+        }
+        Insert: {
+          compatible_with_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          product_id: string
+        }
+        Update: {
+          compatible_with_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_compatibility_compatible_with_id_fkey"
+            columns: ["compatible_with_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_compatibility_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_line_items: {
         Row: {
           created_at: string
@@ -6248,6 +6293,7 @@ export type Database = {
           image_alts: Json | null
           image_url: string | null
           images: string[] | null
+          is_demo: boolean
           length_cm: number | null
           low_stock_threshold: number | null
           meta_description: string | null
@@ -6273,6 +6319,7 @@ export type Database = {
           status: string | null
           stock: number
           subscription_discount_percent: number | null
+          supplier_id: string | null
           tags: string[] | null
           total_sold: number | null
           videos: string[] | null
@@ -6316,6 +6363,7 @@ export type Database = {
           image_alts?: Json | null
           image_url?: string | null
           images?: string[] | null
+          is_demo?: boolean
           length_cm?: number | null
           low_stock_threshold?: number | null
           meta_description?: string | null
@@ -6341,6 +6389,7 @@ export type Database = {
           status?: string | null
           stock?: number
           subscription_discount_percent?: number | null
+          supplier_id?: string | null
           tags?: string[] | null
           total_sold?: number | null
           videos?: string[] | null
@@ -6384,6 +6433,7 @@ export type Database = {
           image_alts?: Json | null
           image_url?: string | null
           images?: string[] | null
+          is_demo?: boolean
           length_cm?: number | null
           low_stock_threshold?: number | null
           meta_description?: string | null
@@ -6409,6 +6459,7 @@ export type Database = {
           status?: string | null
           stock?: number
           subscription_discount_percent?: number | null
+          supplier_id?: string | null
           tags?: string[] | null
           total_sold?: number | null
           videos?: string[] | null
@@ -6433,6 +6484,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
             referencedColumns: ["id"]
           },
         ]
@@ -9432,8 +9490,11 @@ export type Database = {
           address: string | null
           contact_person: string | null
           created_at: string
+          cui: string | null
           email: string | null
           id: string
+          is_demo: boolean
+          lead_time_days: number | null
           name: string
           notes: string | null
           phone: string | null
@@ -9443,8 +9504,11 @@ export type Database = {
           address?: string | null
           contact_person?: string | null
           created_at?: string
+          cui?: string | null
           email?: string | null
           id?: string
+          is_demo?: boolean
+          lead_time_days?: number | null
           name: string
           notes?: string | null
           phone?: string | null
@@ -9454,8 +9518,11 @@ export type Database = {
           address?: string | null
           contact_person?: string | null
           created_at?: string
+          cui?: string | null
           email?: string | null
           id?: string
+          is_demo?: boolean
+          lead_time_days?: number | null
           name?: string
           notes?: string | null
           phone?: string | null
@@ -10328,6 +10395,13 @@ export type Database = {
     }
     Functions: {
       anonymize_user_data: { Args: { p_user_id: string }; Returns: Json }
+      brand_product_counts: {
+        Args: never
+        Returns: {
+          brand_id: string
+          product_count: number
+        }[]
+      }
       check_exit_intent_fraud: {
         Args: {
           p_address?: string
@@ -10392,6 +10466,7 @@ export type Database = {
       is_admin: { Args: never; Returns: boolean }
       is_public_app_setting_key: { Args: { _key: string }; Returns: boolean }
       is_valid_email: { Args: { email: string }; Returns: boolean }
+      purge_demo_catalog: { Args: never; Returns: Json }
       search_products: {
         Args: { result_limit?: number; search_term: string }
         Returns: {

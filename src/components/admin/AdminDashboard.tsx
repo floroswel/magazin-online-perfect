@@ -46,6 +46,7 @@ import {
   BarChart,
 } from "recharts";
 import ManualOrderDialog from "./orders/ManualOrderDialog";
+import DemoDataPanel from "./DemoDataPanel";
 import { translateOrderStatus } from "@/lib/orderStatusLabels";
 
 const statusColors: Record<string, string> = {
@@ -369,6 +370,9 @@ export default function AdminDashboard() {
         <Link to="/admin/reports"><Button size="sm" variant="outline" className="h-8 gap-1 text-xs"><BarChart3 className="w-3.5 h-3.5" /> Rapoarte</Button></Link>
       </div>
       <ManualOrderDialog open={manualOrderOpen} onOpenChange={setManualOrderOpen} />
+
+      <DemoDataPanel />
+
 
       {/* KPI Cards Row 1 */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
