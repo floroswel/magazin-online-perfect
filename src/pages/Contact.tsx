@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import SeoHead from "@/components/SeoHead";
+import LegalConsents, { EMPTY_CONSENTS, allConsentsAccepted, type LegalConsentsState } from "@/components/storefront/LegalConsents";
 
 const unq = (s?: string) => (s || "").replace(/^"|"$/g, "");
 const truthy = (v?: string) => v !== "false" && v !== '"false"' && v !== undefined;
@@ -17,7 +18,8 @@ const truthy = (v?: string) => v !== "false" && v !== '"false"' && v !== undefin
 export default function Contact() {
   const { settings: s } = useSettings();
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "", gdpr: false });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
+  const [consents, setConsents] = useState<LegalConsentsState>(EMPTY_CONSENTS);
 
   // Form
   const formShow = truthy(s.contact_form_show);
@@ -69,8 +71,8 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.gdpr) {
-      toast.error("Te rugăm să accepți Politica de Confidențialitate");
+    if (!allConsentsAccepted(consents)) {
+      toast.error("Te rugăm să bifezi toate documentele legale");
       return;
     }
     setLoading(true);
@@ -80,7 +82,8 @@ export default function Contact() {
       });
       if (error) throw error;
       toast.success("Mesaj trimis! Îți răspundem în curând.");
-      setForm({ name: "", email: "", phone: "", subject: "", message: "", gdpr: false });
+      setForm({ name: "", email: "", phone: "", subject: "", message: "" });
+      setConsents(EMPTY_CONSENTS);
     } catch (err: any) {
       toast.error(err.message || "Eroare la trimitere");
     } finally {
@@ -127,11 +130,8 @@ export default function Contact() {
                   <Label>Mesaj *</Label>
                   <Textarea required rows={5} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} />
                 </div>
-                <div className="flex items-start gap-2">
-                  <Checkbox id="gdpr" checked={form.gdpr} onCheckedChange={v => setForm({ ...form, gdpr: !!v })} />
-                  <label htmlFor="gdpr" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">{gdprText}</label>
-                </div>
-                <Button type="submit" disabled={loading} className="w-full md:w-auto"
+                <LegalConsents value={consents} onChange={setConsents} idPrefix="contact" compact />
+                <Button type="submit" disabled={loading || !allConsentsAccepted(consents)} className="w-full md:w-auto"
                   style={formBtnColor ? { backgroundColor: formBtnColor } : undefined}>
                   {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Send className="w-4 h-4 mr-2" />}
                   {formBtnText}
