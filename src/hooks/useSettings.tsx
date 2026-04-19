@@ -30,6 +30,13 @@ const SETTINGS_KEYS = [
   "header_ticker_messages", "header_show_ticker", "header_phone_display", "header_topbar_links",
   // Footer identity & display
   "footer_store_name", "footer_tagline", "footer_logo_url", "footer_show",
+  "footer_brand_description",
+  // Footer Trust Strip (4 icons row)
+  "footer_trust_show",
+  "footer_trust_1_show", "footer_trust_1_icon", "footer_trust_1_title", "footer_trust_1_subtitle",
+  "footer_trust_2_show", "footer_trust_2_icon", "footer_trust_2_title", "footer_trust_2_subtitle",
+  "footer_trust_3_show", "footer_trust_3_icon", "footer_trust_3_title", "footer_trust_3_subtitle",
+  "footer_trust_4_show", "footer_trust_4_icon", "footer_trust_4_title", "footer_trust_4_subtitle",
   // Footer legal
   "footer_company_name", "footer_cui", "footer_reg_com", "footer_capital_social", "footer_show_legal_data",
   // Footer contact
