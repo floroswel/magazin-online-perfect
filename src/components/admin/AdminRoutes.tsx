@@ -59,6 +59,7 @@ const AdminPricingRules = lazy(() => import("./marketing/AdminPricingRules"));
 const AdminFooterBadges = lazy(() => import("./settings/AdminFooterBadges"));
 const AdminFooterSettings = lazy(() => import("./settings/AdminFooterSettings"));
 const AdminHomepageSettings = lazy(() => import("./content/AdminHomepageSettings"));
+const AdminThemeTexts = lazy(() => import("./content/AdminThemeTexts"));
 const AdminBanners = lazy(() => import("./marketing/AdminBanners"));
 const AdminBlog = lazy(() => import("./content/AdminBlog"));
 const AdminMediaLibrary = lazy(() => import("./content/AdminMediaLibrary"));
@@ -334,6 +335,7 @@ export default function AdminRoutes() {
         <Route path="content/pages" element={<AdminCmsPages />} />
         <Route path="content/page-builder" element={<AdminPageBuilder />} />
         <Route path="content/homepage" element={<AdminHomepageSettings />} />
+        <Route path="content/theme-texts" element={<AdminThemeTexts />} />
         <Route path="content/landing" element={<AdminLandingPages />} />
         <Route path="content/blog" element={<AdminBlog />} />
         <Route path="content/media" element={<AdminMediaLibrary />} />
