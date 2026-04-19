@@ -40,7 +40,7 @@ export async function checkAndNotifyBackInStock(
           to: req.email,
           data: {
             product_name: product.name,
-            product_url: `/product/${product.slug}`,
+            product_url: `/produs/${product.slug}`,
             product_image: product.images?.[0] || product.image_url,
             product_price: product.price,
           },

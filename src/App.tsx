@@ -12,6 +12,8 @@ import { FavoritesProvider } from "@/hooks/useFavorites";
 import { CompareProvider } from "@/hooks/useCompare";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ScrollToTop from "./components/ScrollToTop";
+import RedirectHandler from "./components/RedirectHandler";
+import SitemapRedirect from "./components/SitemapRedirect";
 
 const Index = lazy(() => import("./pages/Index"));
 const Catalog = lazy(() => import("./pages/Catalog"));
@@ -50,6 +52,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
+        <RedirectHandler />
         <AuthProvider>
           <SettingsProvider>
             <ThemeTextProvider>
@@ -80,6 +83,7 @@ const App = () => (
                       <Route path="/contact" element={<ErrorBoundary><Contact /></ErrorBoundary>} />
                       <Route path="/page/:slug" element={<ErrorBoundary><CmsPage /></ErrorBoundary>} />
                       <Route path="/track" element={<ErrorBoundary><TrackOrder /></ErrorBoundary>} />
+                      <Route path="/sitemap.xml" element={<SitemapRedirect />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
