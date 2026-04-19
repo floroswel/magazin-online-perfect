@@ -93,7 +93,7 @@ export default function Contact() {
   };
 
   return (
-    <>
+    <StorefrontLayout>
       <SeoHead title="Contact" description="Contactează-ne — Mama Lucica" />
       <div className="bg-white text-foreground ml-container py-10 lg:py-16">
         <header className="mb-10 text-center max-w-2xl mx-auto">
