@@ -50,10 +50,10 @@ export default function DemoDataPanel() {
   if (!counts || counts.total === 0) return null;
 
   return (
-    <Card className="border-l-4 border-l-amber-500 bg-amber-50/40 dark:bg-amber-950/20">
+    <Card className="border-l-4 border-l-warning bg-muted/30">
       <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+          <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-semibold">Date de testare (QA seed) prezente</p>
             <p className="text-xs text-muted-foreground mt-0.5 flex flex-wrap gap-1.5">
