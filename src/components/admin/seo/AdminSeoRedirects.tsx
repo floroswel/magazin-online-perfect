@@ -14,20 +14,20 @@ import { toast } from "sonner";
 
 interface Redirect {
   id: string;
-  source_path: string;
+  source_url: string;
   target_url: string;
   redirect_type: number;
   is_active: boolean;
   hit_count: number;
   last_hit_at: string | null;
-  note: string | null;
+  notes: string | null;
 }
 
 export default function AdminSeoRedirects() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [form, setForm] = useState({ source_path: "", target_url: "", redirect_type: "301", note: "" });
+  const [form, setForm] = useState({ source_url: "", target_url: "", redirect_type: "301", notes: "" });
 
   const { data: redirects = [], isLoading } = useQuery({
     queryKey: ["seo-redirects"],
@@ -41,17 +41,18 @@ export default function AdminSeoRedirects() {
   const createMutation = useMutation({
     mutationFn: async (r: typeof form) => {
       const { error } = await (supabase as any).from("seo_redirects").insert({
-        source_path: r.source_path.startsWith("/") ? r.source_path : "/" + r.source_path,
+        source_url: r.source_url.startsWith("/") ? r.source_url : "/" + r.source_url,
         target_url: r.target_url,
         redirect_type: parseInt(r.redirect_type),
-        note: r.note || null,
+        notes: r.notes || null,
       });
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["seo-redirects"] });
+      queryClient.invalidateQueries({ queryKey: ["seo-redirects-active"] });
       setDialogOpen(false);
-      setForm({ source_path: "", target_url: "", redirect_type: "301", note: "" });
+      setForm({ source_url: "", target_url: "", redirect_type: "301", notes: "" });
       toast.success("Redirect creat!");
     },
     onError: (e: any) => toast.error(e.message),
@@ -77,7 +78,7 @@ export default function AdminSeoRedirects() {
   });
 
   const filtered = redirects.filter(
-    (r) => r.source_path.toLowerCase().includes(search.toLowerCase()) || r.target_url.toLowerCase().includes(search.toLowerCase())
+    (r) => r.source_url.toLowerCase().includes(search.toLowerCase()) || r.target_url.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -98,11 +99,11 @@ export default function AdminSeoRedirects() {
             <div className="space-y-3">
               <div>
                 <Label>Sursă (calea veche)</Label>
-                <Input placeholder="/produse/old-slug" value={form.source_path} onChange={(e) => setForm({ ...form, source_path: e.target.value })} />
+                <Input placeholder="/produse/old-slug" value={form.source_url} onChange={(e) => setForm({ ...form, source_url: e.target.value })} />
               </div>
               <div>
                 <Label>Destinație (URL nou)</Label>
-                <Input placeholder="/produse/new-slug sau https://..." value={form.target_url} onChange={(e) => setForm({ ...form, target_url: e.target.value })} />
+                <Input placeholder="/produs/new-slug sau https://..." value={form.target_url} onChange={(e) => setForm({ ...form, target_url: e.target.value })} />
               </div>
               <div>
                 <Label>Tip Redirect</Label>
@@ -116,9 +117,9 @@ export default function AdminSeoRedirects() {
               </div>
               <div>
                 <Label>Notă (opțional)</Label>
-                <Input placeholder="Motivul redirectului" value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} />
+                <Input placeholder="Motivul redirectului" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
               </div>
-              <Button className="w-full" onClick={() => createMutation.mutate(form)} disabled={!form.source_path || !form.target_url || createMutation.isPending}>
+              <Button className="w-full" onClick={() => createMutation.mutate(form)} disabled={!form.source_url || !form.target_url || createMutation.isPending}>
                 Salvează
               </Button>
             </div>
@@ -143,11 +144,11 @@ export default function AdminSeoRedirects() {
                 <Switch checked={r.is_active} onCheckedChange={(checked) => toggleMutation.mutate({ id: r.id, active: checked })} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 text-sm font-medium">
-                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded truncate max-w-[200px]">{r.source_path}</code>
+                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded truncate max-w-[200px]">{r.source_url}</code>
                     <ArrowRight className="w-3 h-3 text-muted-foreground shrink-0" />
                     <code className="text-xs bg-muted px-1.5 py-0.5 rounded truncate max-w-[200px]">{r.target_url}</code>
                   </div>
-                  {r.note && <p className="text-xs text-muted-foreground mt-0.5">{r.note}</p>}
+                  {r.notes && <p className="text-xs text-muted-foreground mt-0.5">{r.notes}</p>}
                 </div>
                 <Badge variant="outline" className="text-[10px] shrink-0">{r.redirect_type}</Badge>
                 <span className="text-xs text-muted-foreground shrink-0">{r.hit_count} accesări</span>
