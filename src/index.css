@@ -12,36 +12,36 @@
 
 @layer base {
   :root {
-    /* === BRAND CORE — Facebook-style Blue === */
-    --fb-blue: 214 89% 52%;          /* #1877F2 */
-    --fb-blue-hover: 214 89% 46%;    /* hover state */
-    --fb-blue-dark: 214 89% 38%;
-    --fb-blue-soft: 214 100% 96%;    /* badge bg, hover row */
-    --fb-text: 0 0% 2%;              /* #050505 */
-    --fb-text-secondary: 215 4% 41%; /* #65676B */
+    /* === BRAND CORE — Cartuseria.ro inspired (Navy + Orange) === */
+    --fb-blue: 212 65% 26%;          /* #173E70 navy corporate */
+    --fb-blue-hover: 212 65% 20%;    /* hover state */
+    --fb-blue-dark: 212 70% 16%;
+    --fb-blue-soft: 212 60% 95%;     /* badge bg, hover row */
+    --fb-text: 0 0% 12%;             /* #1f1f1f */
+    --fb-text-secondary: 215 10% 38%;
     --fb-bg: 0 0% 100%;              /* card white */
-    --fb-bg-soft: 210 14% 95%;       /* #F0F2F5 page bg */
-    --fb-border: 210 14% 89%;        /* divider */
-    --fb-border-strong: 210 14% 80%;
+    --fb-bg-soft: 0 0% 97%;          /* page bg quasi-white */
+    --fb-border: 210 14% 88%;        /* divider */
+    --fb-border-strong: 210 14% 78%;
 
-    /* Footer dark + Woodmart accent badges */
-    --footer-bg: 214 60% 12%;        /* deep navy blue, much more vibrant than black */
+    /* Footer dark navy + portocaliu accent (cartuseria style) */
+    --footer-bg: 212 70% 14%;        /* deep navy */
     --footer-fg: 0 0% 98%;
-    --footer-muted: 210 25% 78%;     /* mai luminos pt linkuri vizibile */
-    --footer-accent: 38 95% 58%;     /* portocaliu/galben viu pe titluri & hover */
+    --footer-muted: 210 20% 75%;
+    --footer-accent: 22 95% 52%;     /* portocaliu CTA */
 
-    --badge-new-bg: 145 55% 38%;     /* verde NEW */
-    --badge-sale-bg: 22 90% 55%;     /* portocaliu -10% */
+    --badge-new-bg: 145 55% 38%;
+    --badge-sale-bg: 22 95% 52%;     /* portocaliu -10% */
     --badge-hot-bg: 0 75% 50%;
-    --star-color: 38 92% 50%;        /* gold rating */
+    --star-color: 38 92% 50%;
 
-    /* Top info bar (Journal green→albastru) */
-    --topbar-bg: 214 89% 28%;
+    /* Top info bar — navy închis */
+    --topbar-bg: 212 70% 16%;
     --topbar-fg: 0 0% 100%;
 
-    /* Category icon pill bg */
-    --cat-pill-bg: 210 14% 96%;
-    --cat-pill-fg: 214 89% 52%;
+    /* Category icon pill bg — bara nav albastră */
+    --cat-pill-bg: 212 65% 26%;
+    --cat-pill-fg: 0 0% 100%;
 
     /* === Backward-compat: atelier-* mapate pe noua paletă === */
     --atelier-noir: 0 0% 5%;
@@ -54,36 +54,36 @@
     --atelier-sage: 145 45% 38%;
     --atelier-sage-soft: 145 50% 94%;
 
-    /* === Shadcn semantic tokens (storefront) === */
-    --background: 210 14% 95%;       /* page bg light gri */
-    --foreground: 0 0% 2%;
+    /* === Shadcn semantic tokens (storefront) — Cartuseria style === */
+    --background: 0 0% 100%;          /* page bg alb curat */
+    --foreground: 0 0% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 2%;
+    --card-foreground: 0 0% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 2%;
-    --primary: 214 89% 52%;          /* FB BLUE — CTA principale */
+    --popover-foreground: 0 0% 12%;
+    --primary: 22 95% 52%;            /* PORTOCALIU CTA — Adaugă în coș */
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 14% 96%;
-    --secondary-foreground: 0 0% 2%;
-    --muted: 210 14% 96%;
-    --muted-foreground: 215 4% 41%;
-    --accent: 214 89% 52%;
+    --secondary: 212 65% 26%;         /* NAVY — header/nav bg */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 16% 95%;
+    --muted-foreground: 215 10% 38%;
+    --accent: 22 95% 52%;             /* portocaliu hover */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 75% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 210 14% 89%;
-    --input: 210 14% 89%;
-    --ring: 214 89% 52%;
-    --radius: 0.5rem;                 /* rounded modern Journal/Woodmart */
+    --border: 210 14% 88%;
+    --input: 210 14% 80%;
+    --ring: 22 95% 52%;
+    --radius: 0.25rem;                /* dreptunghiular subtil — cartuseria */
 
-    --ml-primary: 214 89% 52%;
-    --ml-primary-dark: 214 89% 38%;
-    --ml-primary-darker: 214 89% 28%;
-    --ml-primary-light: 214 100% 96%;
-    --ml-primary-hover: 214 89% 46%;
-    --ml-accent: 22 90% 55%;
-    --ml-accent-dark: 22 90% 45%;
-    --ml-accent-light: 22 90% 95%;
+    --ml-primary: 212 65% 26%;
+    --ml-primary-dark: 212 70% 16%;
+    --ml-primary-darker: 212 75% 12%;
+    --ml-primary-light: 212 60% 95%;
+    --ml-primary-hover: 212 65% 20%;
+    --ml-accent: 22 95% 52%;
+    --ml-accent-dark: 22 95% 44%;
+    --ml-accent-light: 22 95% 95%;
     --ml-warning: 38 92% 50%;
     --ml-success: 145 55% 38%;
 
@@ -148,10 +148,10 @@
     --transition-base: 220ms var(--ease-editorial);
 
     /* ── Friendly aliases (overridden live by ControlTheme via useSettings) ── */
-    --color-primary: #1877F2;
-    --color-accent: #1877F2;
-    --color-bg: #F0F2F5;
-    --color-text: #050505;
+    --color-primary: #FF6A13;
+    --color-accent: #173E70;
+    --color-bg: #FFFFFF;
+    --color-text: #1f1f1f;
     --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }

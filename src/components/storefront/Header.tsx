@@ -123,7 +123,7 @@ export default function Header() {
           {/* Account pill */}
           <Link
             to={user ? "/account" : "/auth"}
-            className="hidden lg:inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold bg-muted border border-border text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+            className="hidden lg:inline-flex items-center gap-2 rounded-sm px-4 py-2 text-[13px] font-bold uppercase tracking-wide bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
             aria-label="Cont"
           >
             <User className="h-4 w-4" />
@@ -144,16 +144,16 @@ export default function Header() {
             )}
           </Link>
 
-          {/* Cart pill */}
+          {/* Cart pill — portocaliu CTA */}
           <button
             onClick={() => setCartOpen(true)}
-            className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center gap-2 rounded-sm px-4 py-2 text-[13px] font-bold uppercase tracking-wide bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
             aria-label="Coș"
           >
             <span className="relative">
               <ShoppingBag className="h-4 w-4" />
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-[10px] font-bold rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-secondary text-secondary-foreground text-[10px] font-bold rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
@@ -177,30 +177,30 @@ export default function Header() {
         </div>
       </form>
 
-      {/* Category icon nav — Woodmart style */}
-      <nav className="hidden xl:block border-t border-border">
-        <div className="ml-container flex items-center gap-1 h-12 overflow-x-auto">
-          <Link to="/" className="cat-icon-pill font-semibold">
-            <span className="text-lg">🏠</span> Acasă
+      {/* Category nav — Cartuseria style: bară navy continuă */}
+      <nav className="hidden xl:block bg-secondary text-secondary-foreground">
+        <div className="ml-container flex items-center gap-0 h-12 overflow-x-auto">
+          <Link to="/" className="inline-flex items-center gap-2 px-4 h-12 text-[13px] font-bold uppercase tracking-wide hover:bg-primary hover:text-primary-foreground transition-colors">
+            <span className="text-base">🏠</span> Acasă
           </Link>
-          <Link to="/catalog" className="cat-icon-pill font-semibold">
-            <span className="text-lg">🕯️</span> Toate produsele
+          <Link to="/catalog" className="inline-flex items-center gap-2 px-4 h-12 text-[13px] font-bold uppercase tracking-wide hover:bg-primary hover:text-primary-foreground transition-colors">
+            <span className="text-base">🕯️</span> Toate produsele
           </Link>
           {navCategories.map((cat: any) => (
             <MegaMenu key={cat.id} rootCat={cat} />
           ))}
-          <Link to="/blog" className="cat-icon-pill">
-            <span className="text-lg">📰</span> Blog
+          <Link to="/blog" className="inline-flex items-center gap-2 px-4 h-12 text-[13px] font-semibold uppercase tracking-wide hover:bg-primary hover:text-primary-foreground transition-colors">
+            <span className="text-base">📰</span> Blog
           </Link>
-          <Link to="/contact" className="cat-icon-pill">
-            <span className="text-lg">📞</span> Contact
+          <Link to="/contact" className="inline-flex items-center gap-2 px-4 h-12 text-[13px] font-semibold uppercase tracking-wide hover:bg-primary hover:text-primary-foreground transition-colors">
+            <span className="text-base">📞</span> Contact
           </Link>
 
-          {/* Free shipping pill — right side */}
-          <div className="ml-auto">
-            <span className="shipping-pill">
+          {/* Free shipping pill — right side, portocaliu */}
+          <div className="ml-auto pr-2">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wide">
               <Truck className="h-3.5 w-3.5" />
-              Transport gratuit la comenzi &gt; 200 lei
+              Transport gratuit &gt; 200 lei
             </span>
           </div>
         </div>
