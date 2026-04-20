@@ -354,8 +354,12 @@ export default function Checkout() {
                   <Input label="Adresă (stradă, nr., bloc, ap.) *" value={form.address} onChange={(v) => set("address", v)} autoComplete="street-address" />
                 </div>
                 <GeoSelect label="Județ *" value={form.judet} onChange={(v) => set("judet", v)} options={judete.map(j => ({ value: j.abreviere, label: j.nume }))} placeholder="Alege județul" />
-                <GeoSelect label="Localitate *" value={form.city} onChange={(v) => set("city", v)}
-                  options={localitati.map(l => ({ value: l.nume, label: l.tip === "municipiu" ? `${l.nume} (municipiu)` : l.tip === "oraș" ? `${l.nume} (oraș)` : l.nume }))}
+                <GeoSelect label="Localitate *" value={selectedLocalitateId} onChange={(v) => {
+                  setSelectedLocalitateId(v);
+                  const selected = localitati.find((l) => String(l.id) === v);
+                  set("city", selected?.nume || "");
+                }}
+                  options={localitatiOptions}
                   placeholder={!form.judet ? "Alege întâi județul" : loadingLoc ? "Se încarcă..." : "Alege localitatea"}
                   disabled={!form.judet || loadingLoc} />
                 <Input label="Cod poștal" value={form.postal_code} onChange={(v) => set("postal_code", v)} inputMode="numeric" autoComplete="postal-code" />
@@ -376,8 +380,12 @@ export default function Checkout() {
                   <Input label="Nume *" value={billing.last_name} onChange={(v) => setBill("last_name", v)} />
                   <div className="sm:col-span-2"><Input label="Adresă *" value={billing.address} onChange={(v) => setBill("address", v)} /></div>
                   <GeoSelect label="Județ *" value={billing.judet} onChange={(v) => setBill("judet", v)} options={judete.map(j => ({ value: j.abreviere, label: j.nume }))} placeholder="Alege județul" />
-                  <GeoSelect label="Localitate *" value={billing.city} onChange={(v) => setBill("city", v)}
-                    options={billingLocalitati.map(l => ({ value: l.nume, label: l.nume }))}
+                  <GeoSelect label="Localitate *" value={selectedBillingLocalitateId} onChange={(v) => {
+                    setSelectedBillingLocalitateId(v);
+                    const selected = billingLocalitati.find((l) => String(l.id) === v);
+                    setBill("city", selected?.nume || "");
+                  }}
+                    options={billingLocalitatiOptions}
                     placeholder={!billing.judet ? "Alege întâi județul" : loadingBillLoc ? "Se încarcă..." : "Alege localitatea"}
                     disabled={!billing.judet || loadingBillLoc} />
                   <Input label="Cod poștal" value={billing.postal_code} onChange={(v) => setBill("postal_code", v)} inputMode="numeric" />
