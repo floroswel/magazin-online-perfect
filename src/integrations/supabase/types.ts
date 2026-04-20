@@ -1552,23 +1552,35 @@ export type Database = {
       cart_items: {
         Row: {
           created_at: string
+          gift_message: string | null
+          gift_wrap: boolean
           id: string
+          note: string | null
           product_id: string
           quantity: number
+          saved_for_later: boolean
           user_id: string
         }
         Insert: {
           created_at?: string
+          gift_message?: string | null
+          gift_wrap?: boolean
           id?: string
+          note?: string | null
           product_id: string
           quantity?: number
+          saved_for_later?: boolean
           user_id: string
         }
         Update: {
           created_at?: string
+          gift_message?: string | null
+          gift_wrap?: boolean
           id?: string
+          note?: string | null
           product_id?: string
           quantity?: number
+          saved_for_later?: boolean
           user_id?: string
         }
         Relationships: [
