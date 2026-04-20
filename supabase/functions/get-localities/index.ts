@@ -6,6 +6,9 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -21,52 +24,67 @@ Deno.serve(async (req) => {
       );
     }
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000);
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    let response: Response;
-    try {
-      response = await fetch(
-        `https://roloca.coldfuse.io/orase/${encodeURIComponent(judetAuto)}`,
-        { signal: controller.signal }
-      );
-    } catch (e) {
-      // Retry once
-      response = await fetch(
-        `https://roloca.coldfuse.io/orase/${encodeURIComponent(judetAuto)}`,
-        { signal: AbortSignal.timeout(10000) }
-      );
-    } finally {
-      clearTimeout(timeout);
-    }
+    // Look up judet id from abbreviation
+    const { data: judet, error: jErr } = await supabase
+      .from("romania_judete")
+      .select("id, abreviere, nume")
+      .ilike("abreviere", judetAuto)
+      .maybeSingle();
 
-    if (!response.ok) {
+    if (jErr) throw jErr;
+    if (!judet) {
       return new Response(
-        JSON.stringify({ error: "Nu s-au putut încărca localitățile" }),
-        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ error: "Județ inexistent", localities: [] }),
+        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const rawData = await response.json();
+    // Fetch ALL localities for this judet (no 1000 default cap)
+    const { data, error } = await supabase
+      .from("romania_localitati")
+      .select("id, nume, tip")
+      .eq("judet_id", judet.id)
+      .order("nume", { ascending: true })
+      .range(0, 9999);
 
-    // Roloca returns array of objects with "nume" field
-    const localities = (Array.isArray(rawData) ? rawData : [])
-      .map((item: any) => ({
-        id: item.id || 0,
-        nume: item.nume || item.name || String(item),
-        tip: item.simplesort === 1 ? "municipiu" : item.simplesort === 2 ? "oraș" : "sat",
+    if (error) throw error;
+
+    const tipOrder: Record<string, number> = {
+      municipiu: 0,
+      "municipiu reședință": 0,
+      oraș: 1,
+      oras: 1,
+      comună: 2,
+      comuna: 2,
+      sat: 3,
+      localitate: 4,
+    };
+
+    const localities = (data || [])
+      .map((l: any) => ({
+        id: l.id,
+        nume: l.nume,
+        tip: l.tip || "localitate",
       }))
       .sort((a: any, b: any) => {
-        // Cities first, then alphabetical
-        const tipOrder: Record<string, number> = { municipiu: 0, oraș: 1, sat: 2 };
-        const diff = (tipOrder[a.tip] ?? 3) - (tipOrder[b.tip] ?? 3);
-        if (diff !== 0) return diff;
+        const da = tipOrder[a.tip] ?? 5;
+        const db = tipOrder[b.tip] ?? 5;
+        if (da !== db) return da - db;
         return a.nume.localeCompare(b.nume, "ro");
       });
 
     return new Response(
-      JSON.stringify({ localities }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      JSON.stringify({ localities, judet: judet.nume, total: localities.length }),
+      {
+        status: 200,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+          "Cache-Control": "public, max-age=86400",
+        },
+      }
     );
   } catch (err) {
     console.error("get-localities error:", err);
