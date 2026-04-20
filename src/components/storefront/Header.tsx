@@ -8,6 +8,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSettings } from "@/hooks/useSettings";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import SearchAutocomplete from "./SearchAutocomplete";
+import MegaMenu from "./MegaMenu";
 
 const unq = (str?: string) => (str || "").replace(/^"|"$/g, "");
 
@@ -17,7 +19,7 @@ const CATEGORY_ICONS: Record<string, string> = {
 };
 
 export default function Header() {
-  const { count: cartCount, setOpen: setCartOpen } = useCart();
+  const { count: cartCount, subtotal: cartSubtotal, setOpen: setCartOpen } = useCart();
   const { count: favCount } = useFavorites();
   const { ids: compareIds } = useCompare();
   const compareCount = compareIds?.length || 0;
@@ -83,25 +85,10 @@ export default function Header() {
           )}
         </Link>
 
-        {/* Search pill — Woodmart long rounded */}
-        <form onSubmit={onSearch} className="hidden md:flex flex-1 max-w-3xl">
-          <div className="relative w-full">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <input
-              type="search"
-              value={searchQ}
-              onChange={(e) => setSearchQ(e.target.value)}
-              placeholder={searchPlaceholder}
-              className="search-pill"
-            />
-            <button
-              type="submit"
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 px-5 h-9 bg-primary text-primary-foreground text-xs font-semibold rounded-full uppercase tracking-wide hover:bg-primary/90 transition-colors"
-            >
-              Caută
-            </button>
-          </div>
-        </form>
+        {/* Search with autocomplete */}
+        <div className="hidden md:flex flex-1 max-w-3xl">
+          <SearchAutocomplete placeholder={searchPlaceholder} />
+        </div>
 
         {/* Right actions */}
         <div className="ml-auto flex items-center gap-1 lg:gap-3">
@@ -171,7 +158,7 @@ export default function Header() {
                 </span>
               )}
             </span>
-            <span className="hidden sm:inline">{cartTotal.toFixed(2)} lei</span>
+            <span className="hidden sm:inline">{cartSubtotal.toFixed(2)} lei</span>
           </button>
         </div>
       </div>
@@ -200,10 +187,7 @@ export default function Header() {
             <span className="text-lg">🕯️</span> Toate produsele
           </Link>
           {navCategories.map((cat: any) => (
-            <Link key={cat.id} to={`/categorie/${cat.slug}`} className="cat-icon-pill">
-              <span className="text-lg" aria-hidden>{CATEGORY_ICONS[cat.slug] || "🕯️"}</span>
-              {cat.name}
-            </Link>
+            <MegaMenu key={cat.id} rootCat={cat} />
           ))}
           <Link to="/blog" className="cat-icon-pill">
             <span className="text-lg">📰</span> Blog
