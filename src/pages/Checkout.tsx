@@ -54,6 +54,8 @@ export default function Checkout() {
   const [billingLocalitati, setBillingLocalitati] = useState<Localitate[]>([]);
   const [loadingLoc, setLoadingLoc] = useState(false);
   const [loadingBillLoc, setLoadingBillLoc] = useState(false);
+  const [selectedLocalitateId, setSelectedLocalitateId] = useState("");
+  const [selectedBillingLocalitateId, setSelectedBillingLocalitateId] = useState("");
 
   const [consents, setConsents] = useState<LegalConsentsState>(EMPTY_CONSENTS);
 
@@ -101,6 +103,7 @@ export default function Checkout() {
   useEffect(() => {
     if (!form.judet) { setLocalitati([]); return; }
     setLoadingLoc(true);
+    setSelectedLocalitateId("");
     setForm((f) => ({ ...f, city: "" }));
     supabase.functions.invoke("get-localities", { body: { judetAuto: form.judet } })
       .then(({ data, error }: any) => {
@@ -118,6 +121,7 @@ export default function Checkout() {
   useEffect(() => {
     if (!billing.judet) { setBillingLocalitati([]); return; }
     setLoadingBillLoc(true);
+    setSelectedBillingLocalitateId("");
     setBilling((b) => ({ ...b, city: "" }));
     supabase.functions.invoke("get-localities", { body: { judetAuto: billing.judet } })
       .then(({ data }: any) => {
