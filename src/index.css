@@ -54,36 +54,36 @@
     --atelier-sage: 145 45% 38%;
     --atelier-sage-soft: 145 50% 94%;
 
-    /* === Shadcn semantic tokens (storefront) === */
-    --background: 210 14% 95%;       /* page bg light gri */
-    --foreground: 0 0% 2%;
+    /* === Shadcn semantic tokens (storefront) — Cartuseria style === */
+    --background: 0 0% 100%;          /* page bg alb curat */
+    --foreground: 0 0% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 2%;
+    --card-foreground: 0 0% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 2%;
-    --primary: 214 89% 52%;          /* FB BLUE — CTA principale */
+    --popover-foreground: 0 0% 12%;
+    --primary: 22 95% 52%;            /* PORTOCALIU CTA — Adaugă în coș */
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 14% 96%;
-    --secondary-foreground: 0 0% 2%;
-    --muted: 210 14% 96%;
-    --muted-foreground: 215 4% 41%;
-    --accent: 214 89% 52%;
+    --secondary: 212 65% 26%;         /* NAVY — header/nav bg */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 16% 95%;
+    --muted-foreground: 215 10% 38%;
+    --accent: 22 95% 52%;             /* portocaliu hover */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 75% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 210 14% 89%;
-    --input: 210 14% 89%;
-    --ring: 214 89% 52%;
-    --radius: 0.5rem;                 /* rounded modern Journal/Woodmart */
+    --border: 210 14% 88%;
+    --input: 210 14% 80%;
+    --ring: 22 95% 52%;
+    --radius: 0.25rem;                /* dreptunghiular subtil — cartuseria */
 
-    --ml-primary: 214 89% 52%;
-    --ml-primary-dark: 214 89% 38%;
-    --ml-primary-darker: 214 89% 28%;
-    --ml-primary-light: 214 100% 96%;
-    --ml-primary-hover: 214 89% 46%;
-    --ml-accent: 22 90% 55%;
-    --ml-accent-dark: 22 90% 45%;
-    --ml-accent-light: 22 90% 95%;
+    --ml-primary: 212 65% 26%;
+    --ml-primary-dark: 212 70% 16%;
+    --ml-primary-darker: 212 75% 12%;
+    --ml-primary-light: 212 60% 95%;
+    --ml-primary-hover: 212 65% 20%;
+    --ml-accent: 22 95% 52%;
+    --ml-accent-dark: 22 95% 44%;
+    --ml-accent-light: 22 95% 95%;
     --ml-warning: 38 92% 50%;
     --ml-success: 145 55% 38%;
 
