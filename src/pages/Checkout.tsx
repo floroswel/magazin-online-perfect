@@ -362,14 +362,81 @@ export default function Checkout() {
           </div>
 
           <aside className="bg-card border border-border rounded-md p-5 h-fit lg:sticky lg:top-24">
-            <h2 className="font-display text-lg mb-4">Comanda ta</h2>
-            <div className="space-y-2 mb-4 max-h-64 overflow-y-auto">
-              {items.map((it) => (
-                <div key={it.product_id} className="flex justify-between text-sm gap-3">
-                  <span className="line-clamp-1">{it.quantity} × {it.name}</span>
-                  <span className="font-semibold whitespace-nowrap">{(it.price * it.quantity).toFixed(2)} lei</span>
-                </div>
-              ))}
+            <h2 className="font-display text-lg mb-4">Comanda ta ({items.length} {items.length === 1 ? "produs" : "produse"})</h2>
+            <div className="space-y-3 mb-4 max-h-[420px] overflow-y-auto pr-1">
+              {items.map((it) => {
+                const stock = stockMap[it.product_id];
+                const stockKnown = typeof stock === "number";
+                const maxReached = stockKnown && it.quantity >= stock;
+                const lowStock = stockKnown && stock > 0 && stock <= 5;
+                return (
+                  <div key={it.product_id} className="flex gap-3 pb-3 border-b border-border last:border-b-0">
+                    <Link to={it.slug ? `/produs/${it.slug}` : "#"} className="shrink-0">
+                      {it.image_url ? (
+                        <img src={it.image_url} alt={it.name} loading="lazy" className="w-16 h-16 object-cover rounded-sm border border-border" />
+                      ) : (
+                        <div className="w-16 h-16 bg-muted rounded-sm" />
+                      )}
+                    </Link>
+                    <div className="flex-1 min-w-0">
+                      <Link to={it.slug ? `/produs/${it.slug}` : "#"} className="text-sm font-medium line-clamp-2 hover:text-accent">
+                        {it.name}
+                      </Link>
+                      <div className="text-xs text-muted-foreground mt-0.5">{it.price.toFixed(2)} lei / buc</div>
+                      {lowStock && (
+                        <div className="text-[11px] text-amber-600 dark:text-amber-400 mt-0.5 inline-flex items-center gap-1">
+                          <AlertTriangle className="h-3 w-3" /> Doar {stock} în stoc
+                        </div>
+                      )}
+                      {stockKnown && stock === 0 && (
+                        <div className="text-[11px] text-destructive mt-0.5">Stoc epuizat</div>
+                      )}
+                      <div className="flex items-center justify-between mt-2 gap-2">
+                        <div className="inline-flex items-center border border-border rounded-sm overflow-hidden">
+                          <button
+                            type="button"
+                            onClick={() => updateQty(it.product_id, it.quantity - 1)}
+                            disabled={loading}
+                            aria-label="Scade cantitatea"
+                            className="w-7 h-7 inline-flex items-center justify-center hover:bg-muted disabled:opacity-40"
+                          >
+                            <Minus className="h-3 w-3" />
+                          </button>
+                          <span className="w-8 text-center text-sm font-semibold tabular-nums">{it.quantity}</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (maxReached) {
+                                toast.warning(`Stoc disponibil: ${stock} buc.`);
+                                return;
+                              }
+                              updateQty(it.product_id, it.quantity + 1);
+                            }}
+                            disabled={loading || maxReached}
+                            aria-label="Crește cantitatea"
+                            title={maxReached ? `Maxim ${stock} bucăți disponibile` : ""}
+                            className="w-7 h-7 inline-flex items-center justify-center hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed"
+                          >
+                            <Plus className="h-3 w-3" />
+                          </button>
+                        </div>
+                        <div className="text-sm font-semibold whitespace-nowrap">
+                          {(it.price * it.quantity).toFixed(2)} lei
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeItem(it.product_id)}
+                          disabled={loading}
+                          aria-label="Elimină din coș"
+                          className="text-muted-foreground hover:text-destructive p-1"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             <div className="space-y-2 text-sm border-t border-border pt-3 mb-4">
               <div className="flex justify-between"><span>Subtotal</span><span>{subtotal.toFixed(2)} lei</span></div>
