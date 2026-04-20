@@ -68,6 +68,35 @@ export default function Checkout() {
     });
   }, []);
 
+  // Load stock for cart products + auto-clamp quantities
+  useEffect(() => {
+    if (items.length === 0) return;
+    const ids = items.map((i) => i.product_id);
+    (supabase as any)
+      .from("products")
+      .select("id, stock")
+      .in("id", ids)
+      .then(({ data }: any) => {
+        if (!data) return;
+        const map: Record<string, number> = {};
+        data.forEach((p: any) => { map[p.id] = Number(p.stock ?? 0); });
+        setStockMap(map);
+        // Auto-clamp qty in cart if it exceeds stock
+        items.forEach((it) => {
+          const max = map[it.product_id];
+          if (typeof max === "number" && it.quantity > max) {
+            updateQty(it.product_id, Math.max(0, max));
+            if (max === 0) {
+              toast.error(`"${it.name}" nu mai este în stoc — eliminat din coș`);
+            } else {
+              toast.warning(`"${it.name}": cantitate redusă la ${max} (stoc disponibil)`);
+            }
+          }
+        });
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items.length]);
+
   // Load localitati when judet changes
   useEffect(() => {
     if (!form.judet) { setLocalitati([]); return; }
