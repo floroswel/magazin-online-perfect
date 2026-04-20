@@ -33,7 +33,7 @@ export default function CartDrawer() {
             ) : (
               <p className="text-xs text-success font-semibold mb-1.5">✓ Beneficiezi de livrare gratuită!</p>
             )}
-            <div className="h-1.5 bg-border rounded-full overflow-hidden">
+            <div className="h-1 bg-border rounded-full overflow-hidden max-w-full">
               <div className="h-full bg-accent transition-all duration-500" style={{ width: `${progress}%` }} />
             </div>
           </div>
