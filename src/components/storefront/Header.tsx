@@ -144,16 +144,16 @@ export default function Header() {
             )}
           </Link>
 
-          {/* Cart pill */}
+          {/* Cart pill — portocaliu CTA */}
           <button
             onClick={() => setCartOpen(true)}
-            className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center gap-2 rounded-sm px-4 py-2 text-[13px] font-bold uppercase tracking-wide bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
             aria-label="Coș"
           >
             <span className="relative">
               <ShoppingBag className="h-4 w-4" />
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-[10px] font-bold rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-secondary text-secondary-foreground text-[10px] font-bold rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
