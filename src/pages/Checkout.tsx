@@ -138,17 +138,6 @@ export default function Checkout() {
       .finally(() => setLoadingBillLoc(false));
   }, [billing.judet]);
 
-  if (items.length === 0) {
-    return (
-      <StorefrontLayout>
-        <div className="ml-container py-20 text-center">
-          <h1 className="font-display text-2xl mb-3">Coș gol</h1>
-          <Link to="/catalog" className="px-6 py-2.5 bg-primary text-primary-foreground rounded-sm">Vezi produsele</Link>
-        </div>
-      </StorefrontLayout>
-    );
-  }
-
   const set = (k: string, v: any) => setForm((f) => ({ ...f, [k]: v }));
   const setComp = (k: string, v: any) => setCompany((c) => ({ ...c, [k]: v }));
   const setBill = (k: string, v: any) => setBilling((b) => ({ ...b, [k]: v }));
@@ -184,6 +173,17 @@ export default function Checkout() {
             : l.nume,
     }));
   }, [billingLocalitati]);
+
+  if (items.length === 0) {
+    return (
+      <StorefrontLayout>
+        <div className="ml-container py-20 text-center">
+          <h1 className="font-display text-2xl mb-3">Coș gol</h1>
+          <Link to="/catalog" className="px-6 py-2.5 bg-primary text-primary-foreground rounded-sm">Vezi produsele</Link>
+        </div>
+      </StorefrontLayout>
+    );
+  }
 
   const lookupAnaf = async () => {
     const cui = company.cui.trim().replace(/^RO/i, "");
