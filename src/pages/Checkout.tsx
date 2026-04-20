@@ -54,6 +54,8 @@ export default function Checkout() {
   const [billingLocalitati, setBillingLocalitati] = useState<Localitate[]>([]);
   const [loadingLoc, setLoadingLoc] = useState(false);
   const [loadingBillLoc, setLoadingBillLoc] = useState(false);
+  const [selectedLocalitateId, setSelectedLocalitateId] = useState("");
+  const [selectedBillingLocalitateId, setSelectedBillingLocalitateId] = useState("");
 
   const [consents, setConsents] = useState<LegalConsentsState>(EMPTY_CONSENTS);
 
@@ -99,8 +101,13 @@ export default function Checkout() {
 
   // Load localitati when judet changes
   useEffect(() => {
-    if (!form.judet) { setLocalitati([]); return; }
+    if (!form.judet) {
+      setLocalitati([]);
+      setSelectedLocalitateId("");
+      return;
+    }
     setLoadingLoc(true);
+    setSelectedLocalitateId("");
     setForm((f) => ({ ...f, city: "" }));
     supabase.functions.invoke("get-localities", { body: { judetAuto: form.judet } })
       .then(({ data, error }: any) => {
@@ -116,8 +123,13 @@ export default function Checkout() {
 
   // Load billing localitati
   useEffect(() => {
-    if (!billing.judet) { setBillingLocalitati([]); return; }
+    if (!billing.judet) {
+      setBillingLocalitati([]);
+      setSelectedBillingLocalitateId("");
+      return;
+    }
     setLoadingBillLoc(true);
+    setSelectedBillingLocalitateId("");
     setBilling((b) => ({ ...b, city: "" }));
     supabase.functions.invoke("get-localities", { body: { judetAuto: billing.judet } })
       .then(({ data }: any) => {
@@ -125,6 +137,42 @@ export default function Checkout() {
       })
       .finally(() => setLoadingBillLoc(false));
   }, [billing.judet]);
+
+  const set = (k: string, v: any) => setForm((f) => ({ ...f, [k]: v }));
+  const setComp = (k: string, v: any) => setCompany((c) => ({ ...c, [k]: v }));
+  const setBill = (k: string, v: any) => setBilling((b) => ({ ...b, [k]: v }));
+
+  const localitatiOptions = useMemo(() => {
+    const counts = new Map<string, number>();
+    localitati.forEach((l) => counts.set(l.nume, (counts.get(l.nume) ?? 0) + 1));
+
+    return localitati.map((l) => ({
+      value: String(l.id),
+      label: counts.get(l.nume)! > 1
+        ? `${l.nume} (${l.tip || "localitate"} #${l.id})`
+        : l.tip === "municipiu"
+          ? `${l.nume} (municipiu)`
+          : l.tip === "oraș" || l.tip === "oras"
+            ? `${l.nume} (oraș)`
+            : l.nume,
+    }));
+  }, [localitati]);
+
+  const billingLocalitatiOptions = useMemo(() => {
+    const counts = new Map<string, number>();
+    billingLocalitati.forEach((l) => counts.set(l.nume, (counts.get(l.nume) ?? 0) + 1));
+
+    return billingLocalitati.map((l) => ({
+      value: String(l.id),
+      label: counts.get(l.nume)! > 1
+        ? `${l.nume} (${l.tip || "localitate"} #${l.id})`
+        : l.tip === "municipiu"
+          ? `${l.nume} (municipiu)`
+          : l.tip === "oraș" || l.tip === "oras"
+            ? `${l.nume} (oraș)`
+            : l.nume,
+    }));
+  }, [billingLocalitati]);
 
   if (items.length === 0) {
     return (
@@ -136,10 +184,6 @@ export default function Checkout() {
       </StorefrontLayout>
     );
   }
-
-  const set = (k: string, v: any) => setForm((f) => ({ ...f, [k]: v }));
-  const setComp = (k: string, v: any) => setCompany((c) => ({ ...c, [k]: v }));
-  const setBill = (k: string, v: any) => setBilling((b) => ({ ...b, [k]: v }));
 
   const lookupAnaf = async () => {
     const cui = company.cui.trim().replace(/^RO/i, "");
@@ -310,8 +354,12 @@ export default function Checkout() {
                   <Input label="Adresă (stradă, nr., bloc, ap.) *" value={form.address} onChange={(v) => set("address", v)} autoComplete="street-address" />
                 </div>
                 <GeoSelect label="Județ *" value={form.judet} onChange={(v) => set("judet", v)} options={judete.map(j => ({ value: j.abreviere, label: j.nume }))} placeholder="Alege județul" />
-                <GeoSelect label="Localitate *" value={form.city} onChange={(v) => set("city", v)}
-                  options={localitati.map(l => ({ value: l.nume, label: l.tip === "municipiu" ? `${l.nume} (municipiu)` : l.tip === "oraș" ? `${l.nume} (oraș)` : l.nume }))}
+                <GeoSelect label="Localitate *" value={selectedLocalitateId} onChange={(v) => {
+                  setSelectedLocalitateId(v);
+                  const selected = localitati.find((l) => String(l.id) === v);
+                  set("city", selected?.nume || "");
+                }}
+                  options={localitatiOptions}
                   placeholder={!form.judet ? "Alege întâi județul" : loadingLoc ? "Se încarcă..." : "Alege localitatea"}
                   disabled={!form.judet || loadingLoc} />
                 <Input label="Cod poștal" value={form.postal_code} onChange={(v) => set("postal_code", v)} inputMode="numeric" autoComplete="postal-code" />
@@ -332,8 +380,12 @@ export default function Checkout() {
                   <Input label="Nume *" value={billing.last_name} onChange={(v) => setBill("last_name", v)} />
                   <div className="sm:col-span-2"><Input label="Adresă *" value={billing.address} onChange={(v) => setBill("address", v)} /></div>
                   <GeoSelect label="Județ *" value={billing.judet} onChange={(v) => setBill("judet", v)} options={judete.map(j => ({ value: j.abreviere, label: j.nume }))} placeholder="Alege județul" />
-                  <GeoSelect label="Localitate *" value={billing.city} onChange={(v) => setBill("city", v)}
-                    options={billingLocalitati.map(l => ({ value: l.nume, label: l.nume }))}
+                  <GeoSelect label="Localitate *" value={selectedBillingLocalitateId} onChange={(v) => {
+                    setSelectedBillingLocalitateId(v);
+                    const selected = billingLocalitati.find((l) => String(l.id) === v);
+                    setBill("city", selected?.nume || "");
+                  }}
+                    options={billingLocalitatiOptions}
                     placeholder={!billing.judet ? "Alege întâi județul" : loadingBillLoc ? "Se încarcă..." : "Alege localitatea"}
                     disabled={!billing.judet || loadingBillLoc} />
                   <Input label="Cod poștal" value={billing.postal_code} onChange={(v) => setBill("postal_code", v)} inputMode="numeric" />
