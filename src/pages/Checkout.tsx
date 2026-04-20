@@ -18,10 +18,11 @@ const PHONE_RE = /^(\+?40|0)7\d{8}$/;
 const CUI_RE = /^(RO)?\d{2,10}$/i;
 
 export default function Checkout() {
-  const { items, subtotal, clear } = useCart();
+  const { items, subtotal, clear, updateQty, removeItem } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [stockMap, setStockMap] = useState<Record<string, number>>({});
 
   // Customer type
   const [customerType, setCustomerType] = useState<"pf" | "pj">("pf");
