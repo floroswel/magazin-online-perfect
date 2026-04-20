@@ -101,7 +101,11 @@ export default function Checkout() {
 
   // Load localitati when judet changes
   useEffect(() => {
-    if (!form.judet) { setLocalitati([]); return; }
+    if (!form.judet) {
+      setLocalitati([]);
+      setSelectedLocalitateId("");
+      return;
+    }
     setLoadingLoc(true);
     setSelectedLocalitateId("");
     setForm((f) => ({ ...f, city: "" }));
@@ -119,7 +123,11 @@ export default function Checkout() {
 
   // Load billing localitati
   useEffect(() => {
-    if (!billing.judet) { setBillingLocalitati([]); return; }
+    if (!billing.judet) {
+      setBillingLocalitati([]);
+      setSelectedBillingLocalitateId("");
+      return;
+    }
     setLoadingBillLoc(true);
     setSelectedBillingLocalitateId("");
     setBilling((b) => ({ ...b, city: "" }));
@@ -144,6 +152,38 @@ export default function Checkout() {
   const set = (k: string, v: any) => setForm((f) => ({ ...f, [k]: v }));
   const setComp = (k: string, v: any) => setCompany((c) => ({ ...c, [k]: v }));
   const setBill = (k: string, v: any) => setBilling((b) => ({ ...b, [k]: v }));
+
+  const localitatiOptions = useMemo(() => {
+    const counts = new Map<string, number>();
+    localitati.forEach((l) => counts.set(l.nume, (counts.get(l.nume) ?? 0) + 1));
+
+    return localitati.map((l) => ({
+      value: String(l.id),
+      label: counts.get(l.nume)! > 1
+        ? `${l.nume} (${l.tip || "localitate"} #${l.id})`
+        : l.tip === "municipiu"
+          ? `${l.nume} (municipiu)`
+          : l.tip === "oraș" || l.tip === "oras"
+            ? `${l.nume} (oraș)`
+            : l.nume,
+    }));
+  }, [localitati]);
+
+  const billingLocalitatiOptions = useMemo(() => {
+    const counts = new Map<string, number>();
+    billingLocalitati.forEach((l) => counts.set(l.nume, (counts.get(l.nume) ?? 0) + 1));
+
+    return billingLocalitati.map((l) => ({
+      value: String(l.id),
+      label: counts.get(l.nume)! > 1
+        ? `${l.nume} (${l.tip || "localitate"} #${l.id})`
+        : l.tip === "municipiu"
+          ? `${l.nume} (municipiu)`
+          : l.tip === "oraș" || l.tip === "oras"
+            ? `${l.nume} (oraș)`
+            : l.nume,
+    }));
+  }, [billingLocalitati]);
 
   const lookupAnaf = async () => {
     const cui = company.cui.trim().replace(/^RO/i, "");
