@@ -95,7 +95,7 @@ export default function Header() {
           {/* Compare circle (desktop) */}
           <Link
             to="/compare"
-            className="hidden lg:flex relative w-10 h-10 rounded-full bg-secondary items-center justify-center hover:bg-muted transition-colors"
+            className="hidden lg:flex relative w-10 h-10 rounded-full bg-muted border border-border text-foreground items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors"
             aria-label="Comparator"
           >
             <GitCompareArrows className="h-5 w-5" />
