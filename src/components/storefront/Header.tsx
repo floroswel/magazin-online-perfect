@@ -95,7 +95,7 @@ export default function Header() {
           {/* Compare circle (desktop) */}
           <Link
             to="/compare"
-            className="hidden lg:flex relative w-10 h-10 rounded-full bg-secondary items-center justify-center hover:bg-muted transition-colors"
+            className="hidden lg:flex relative w-10 h-10 rounded-full bg-muted border border-border text-foreground items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors"
             aria-label="Comparator"
           >
             <GitCompareArrows className="h-5 w-5" />
@@ -109,7 +109,7 @@ export default function Header() {
           {/* Wishlist circle */}
           <Link
             to="/account/favorites"
-            className="hidden lg:flex relative w-10 h-10 rounded-full bg-secondary items-center justify-center hover:bg-muted transition-colors"
+            className="hidden lg:flex relative w-10 h-10 rounded-full bg-muted border border-border text-foreground items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors"
             aria-label="Favorite"
           >
             <Heart className="h-5 w-5" />
@@ -123,7 +123,7 @@ export default function Header() {
           {/* Account pill */}
           <Link
             to={user ? "/account" : "/auth"}
-            className="hidden lg:inline-flex pill-btn-light"
+            className="hidden lg:inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold bg-muted border border-border text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
             aria-label="Cont"
           >
             <User className="h-4 w-4" />
@@ -144,21 +144,21 @@ export default function Header() {
             )}
           </Link>
 
-          {/* Cart pill — black Woodmart */}
+          {/* Cart pill */}
           <button
             onClick={() => setCartOpen(true)}
-            className="pill-btn-dark"
+            className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             aria-label="Coș"
           >
             <span className="relative">
               <ShoppingBag className="h-4 w-4" />
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[10px] font-bold rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-[10px] font-bold rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
             </span>
-            <span className="hidden sm:inline">{cartSubtotal.toFixed(2)} lei</span>
+            <span className="hidden sm:inline">Coș · {cartSubtotal.toFixed(2)} lei</span>
           </button>
         </div>
       </div>
