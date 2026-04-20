@@ -12,36 +12,36 @@
 
 @layer base {
   :root {
-    /* === BRAND CORE — Facebook-style Blue === */
-    --fb-blue: 214 89% 52%;          /* #1877F2 */
-    --fb-blue-hover: 214 89% 46%;    /* hover state */
-    --fb-blue-dark: 214 89% 38%;
-    --fb-blue-soft: 214 100% 96%;    /* badge bg, hover row */
-    --fb-text: 0 0% 2%;              /* #050505 */
-    --fb-text-secondary: 215 4% 41%; /* #65676B */
+    /* === BRAND CORE — Cartuseria.ro inspired (Navy + Orange) === */
+    --fb-blue: 212 65% 26%;          /* #173E70 navy corporate */
+    --fb-blue-hover: 212 65% 20%;    /* hover state */
+    --fb-blue-dark: 212 70% 16%;
+    --fb-blue-soft: 212 60% 95%;     /* badge bg, hover row */
+    --fb-text: 0 0% 12%;             /* #1f1f1f */
+    --fb-text-secondary: 215 10% 38%;
     --fb-bg: 0 0% 100%;              /* card white */
-    --fb-bg-soft: 210 14% 95%;       /* #F0F2F5 page bg */
-    --fb-border: 210 14% 89%;        /* divider */
-    --fb-border-strong: 210 14% 80%;
+    --fb-bg-soft: 0 0% 97%;          /* page bg quasi-white */
+    --fb-border: 210 14% 88%;        /* divider */
+    --fb-border-strong: 210 14% 78%;
 
-    /* Footer dark + Woodmart accent badges */
-    --footer-bg: 214 60% 12%;        /* deep navy blue, much more vibrant than black */
+    /* Footer dark navy + portocaliu accent (cartuseria style) */
+    --footer-bg: 212 70% 14%;        /* deep navy */
     --footer-fg: 0 0% 98%;
-    --footer-muted: 210 25% 78%;     /* mai luminos pt linkuri vizibile */
-    --footer-accent: 38 95% 58%;     /* portocaliu/galben viu pe titluri & hover */
+    --footer-muted: 210 20% 75%;
+    --footer-accent: 22 95% 52%;     /* portocaliu CTA */
 
-    --badge-new-bg: 145 55% 38%;     /* verde NEW */
-    --badge-sale-bg: 22 90% 55%;     /* portocaliu -10% */
+    --badge-new-bg: 145 55% 38%;
+    --badge-sale-bg: 22 95% 52%;     /* portocaliu -10% */
     --badge-hot-bg: 0 75% 50%;
-    --star-color: 38 92% 50%;        /* gold rating */
+    --star-color: 38 92% 50%;
 
-    /* Top info bar (Journal green→albastru) */
-    --topbar-bg: 214 89% 28%;
+    /* Top info bar — navy închis */
+    --topbar-bg: 212 70% 16%;
     --topbar-fg: 0 0% 100%;
 
-    /* Category icon pill bg */
-    --cat-pill-bg: 210 14% 96%;
-    --cat-pill-fg: 214 89% 52%;
+    /* Category icon pill bg — bara nav albastră */
+    --cat-pill-bg: 212 65% 26%;
+    --cat-pill-fg: 0 0% 100%;
 
     /* === Backward-compat: atelier-* mapate pe noua paletă === */
     --atelier-noir: 0 0% 5%;
