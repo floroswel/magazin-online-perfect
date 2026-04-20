@@ -99,6 +99,16 @@ export default function Product() {
       price: Number(product.price),
     }, qty);
     setOpen(true);
+    toast.success(`${qty} × ${product.name} adăugat în coș`, {
+      action: {
+        label: "Vezi coșul",
+        onClick: () => {
+          setOpen(false);
+          navigate("/cos");
+        },
+      },
+      duration: 5000,
+    });
   };
 
   const productJsonLd = safeJsonLd({
