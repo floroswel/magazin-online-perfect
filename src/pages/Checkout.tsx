@@ -182,6 +182,14 @@ export default function Checkout() {
       if (!billing.first_name.trim() || !billing.last_name.trim()) return "Prenume + nume facturare.";
       if (!billing.address.trim() || !billing.judet || !billing.city) return "Completează adresa de facturare.";
     }
+    // Stock validation — block submit if any item exceeds available stock
+    for (const it of items) {
+      const stock = stockMap[it.product_id];
+      if (typeof stock === "number") {
+        if (stock <= 0) return `"${it.name}" nu mai este în stoc. Elimină-l din coș.`;
+        if (it.quantity > stock) return `"${it.name}": stoc disponibil ${stock} buc. Reduce cantitatea.`;
+      }
+    }
     if (!allConsentsAccepted(consents)) return "Trebuie să bifezi toate documentele legale.";
     return null;
   };
