@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/hooks/useCart";
 import { useFavorites } from "@/hooks/useFavorites";
 import { ShoppingBag, Heart, Truck, Shield, Award, Minus, Plus } from "lucide-react";
+import { toast } from "sonner";
 import StorefrontLayout from "@/components/storefront/StorefrontLayout";
 import SeoHead from "@/components/SeoHead";
 import ProductCard from "@/components/storefront/ProductCard";
@@ -98,6 +99,16 @@ export default function Product() {
       price: Number(product.price),
     }, qty);
     setOpen(true);
+    toast.success(`${qty} × ${product.name} adăugat în coș`, {
+      action: {
+        label: "Vezi coșul",
+        onClick: () => {
+          setOpen(false);
+          navigate("/cos");
+        },
+      },
+      duration: 5000,
+    });
   };
 
   const productJsonLd = safeJsonLd({
