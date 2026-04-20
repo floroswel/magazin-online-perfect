@@ -109,7 +109,7 @@ export default function Header() {
           {/* Wishlist circle */}
           <Link
             to="/account/favorites"
-            className="hidden lg:flex relative w-10 h-10 rounded-full bg-secondary items-center justify-center hover:bg-muted transition-colors"
+            className="hidden lg:flex relative w-10 h-10 rounded-full bg-muted border border-border text-foreground items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors"
             aria-label="Favorite"
           >
             <Heart className="h-5 w-5" />
@@ -123,7 +123,7 @@ export default function Header() {
           {/* Account pill */}
           <Link
             to={user ? "/account" : "/auth"}
-            className="hidden lg:inline-flex pill-btn-light"
+            className="hidden lg:inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold bg-muted border border-border text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
             aria-label="Cont"
           >
             <User className="h-4 w-4" />
