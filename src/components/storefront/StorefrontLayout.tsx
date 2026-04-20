@@ -26,7 +26,7 @@ export default function StorefrontLayout({ children, hideFooter }: Props) {
     <div className="min-h-screen flex flex-col bg-background">
       <SiteAlert />
       <TopTicker />
-      <HeaderTopBar />
+      
       <Header />
       <main className="flex-1 pb-20 lg:pb-0">{children}</main>
       {!hideFooter && <Footer />}
