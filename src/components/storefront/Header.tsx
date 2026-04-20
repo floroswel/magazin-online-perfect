@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingBag, Heart, User, Menu, X, GitCompareArrows, Truck } from "lucide-react";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
+import { Search, ShoppingBag, Heart, User, Menu, X, GitCompareArrows, Truck, ChevronDown, Phone, MapPin, Clock } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useCompare } from "@/hooks/useCompare";
@@ -13,11 +13,6 @@ import MegaMenu from "./MegaMenu";
 
 const unq = (str?: string) => (str || "").replace(/^"|"$/g, "");
 
-// Mapare iconuri pentru categoriile principale (Woodmart-style)
-const CATEGORY_ICONS: Record<string, string> = {
-  default: "🕯️",
-};
-
 export default function Header() {
   const { count: cartCount, subtotal: cartSubtotal, setOpen: setCartOpen } = useCart();
   const { count: favCount } = useFavorites();
@@ -26,6 +21,7 @@ export default function Header() {
   const { user } = useAuth();
   const { settings: s } = useSettings();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQ, setSearchQ] = useState("");
 
@@ -49,22 +45,55 @@ export default function Header() {
   const logoUrl = unq(s.header_logo_url) || unq(s.logo_url);
   const logoVisible = s.logo_visible !== "false";
   const siteName = unq(s.header_store_name) || unq(s.site_name) || "Mama Lucica";
-  const searchPlaceholder = unq(s.header_search_placeholder) || "Caută lumânări, parfumuri, ocazii...";
+  const phone = unq(s.contact_phone);
 
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQ.trim()) navigate(`/cautare?q=${encodeURIComponent(searchQ.trim())}`);
   };
 
-  const cartTotal = 0; // TODO: hook subtotal când e nevoie
+  const navLinkCls = ({ isActive }: { isActive: boolean }) =>
+    `relative inline-flex items-center gap-2 px-4 h-12 text-[13px] font-bold uppercase tracking-wide transition-colors ${
+      isActive
+        ? "bg-primary text-primary-foreground"
+        : "text-secondary-foreground hover:bg-primary hover:text-primary-foreground"
+    }`;
 
   return (
-    <header className="sticky top-0 z-40 bg-card border-b border-border">
-      {/* Main row: logo · search · actions */}
+    <header className="sticky top-0 z-40 bg-card shadow-sm">
+      {/* === ROW 1 — Topbar navy: program + telefon + livrare === */}
+      <div className="hidden md:block bg-secondary text-secondary-foreground border-b border-secondary/40">
+        <div className="ml-container flex items-center justify-between h-9 text-[12px]">
+          <div className="flex items-center gap-5">
+            <span className="flex items-center gap-1.5 opacity-90">
+              <Clock className="h-3 w-3" /> Luni–Vineri 09:00–18:00
+            </span>
+            <Link to="/page/livrare" className="hidden lg:flex items-center gap-1.5 hover:text-primary transition-colors">
+              <Truck className="h-3 w-3" /> Livrare gratuită {">"} 200 lei
+            </Link>
+            <Link to="/track" className="hidden lg:flex items-center gap-1.5 hover:text-primary transition-colors">
+              <MapPin className="h-3 w-3" /> Urmărire comandă
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-5">
+            <Link to="/contact" className="hover:text-primary transition-colors">Contact</Link>
+            <Link to="/page/despre-noi" className="hidden lg:inline hover:text-primary transition-colors">Despre noi</Link>
+            <Link to="/blog" className="hidden lg:inline hover:text-primary transition-colors">Blog</Link>
+            {phone && (
+              <a href={`tel:${phone.replace(/\s/g, "")}`} className="flex items-center gap-1.5 font-bold text-primary">
+                <Phone className="h-3.5 w-3.5" /> {phone}
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* === ROW 2 — Main: logo · search · acțiuni === */}
       <div className="ml-container flex items-center gap-4 lg:gap-8 h-16 lg:h-20">
-        {/* Mobile menu */}
+        {/* Mobile menu toggle */}
         <button
-          className="xl:hidden p-2 -ml-2"
+          className="xl:hidden p-2 -ml-2 text-foreground"
           onClick={() => setMobileOpen(true)}
           aria-label="Deschide meniu"
         >
@@ -74,68 +103,75 @@ export default function Header() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
           {logoVisible && logoUrl ? (
-            <img src={logoUrl} alt={siteName} className="h-8 lg:h-10 w-auto object-contain" />
+            <img src={logoUrl} alt={siteName} className="h-8 lg:h-12 w-auto object-contain" />
           ) : (
             <>
-              <span className="text-2xl">🕯️</span>
-              <span className="font-display text-xl lg:text-2xl font-bold tracking-tight text-foreground">
-                {siteName.toLowerCase()}<span className="text-primary">.</span>
-              </span>
+              <span className="text-3xl">🕯️</span>
+              <div className="flex flex-col leading-none">
+                <span className="font-display text-xl lg:text-2xl font-extrabold tracking-tight text-secondary uppercase">
+                  {siteName}
+                </span>
+                <span className="hidden lg:inline text-[10px] uppercase tracking-[0.2em] text-muted-foreground mt-0.5">
+                  Lumânări artizanale
+                </span>
+              </div>
             </>
           )}
         </Link>
 
-        {/* Search with autocomplete */}
+        {/* Search — mare cu buton portocaliu lipit */}
         <div className="hidden md:flex flex-1 max-w-3xl">
-          <SearchAutocomplete placeholder={searchPlaceholder} />
+          <SearchAutocomplete placeholder="Caută produse, branduri, categorii..." />
         </div>
 
         {/* Right actions */}
-        <div className="ml-auto flex items-center gap-1 lg:gap-3">
-          {/* Compare circle (desktop) */}
+        <div className="ml-auto flex items-center gap-2 lg:gap-4">
+          {/* Compare */}
           <Link
             to="/compare"
-            className="hidden lg:flex relative w-10 h-10 rounded-full bg-muted border border-border text-foreground items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors"
+            className="hidden lg:flex flex-col items-center gap-0.5 text-secondary hover:text-primary transition-colors group"
             aria-label="Comparator"
           >
-            <GitCompareArrows className="h-5 w-5" />
-            {compareCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
-                {compareCount}
-              </span>
-            )}
+            <div className="relative">
+              <GitCompareArrows className="h-6 w-6" />
+              {compareCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[10px] font-bold rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
+                  {compareCount}
+                </span>
+              )}
+            </div>
+            <span className="text-[10px] font-semibold uppercase tracking-wide">Compară</span>
           </Link>
 
-          {/* Wishlist circle */}
+          {/* Wishlist */}
           <Link
             to="/account/favorites"
-            className="hidden lg:flex relative w-10 h-10 rounded-full bg-muted border border-border text-foreground items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors"
+            className="hidden lg:flex flex-col items-center gap-0.5 text-secondary hover:text-primary transition-colors"
             aria-label="Favorite"
           >
-            <Heart className="h-5 w-5" />
-            {favCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
-                {favCount}
-              </span>
-            )}
+            <div className="relative">
+              <Heart className="h-6 w-6" />
+              {favCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[10px] font-bold rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
+                  {favCount}
+                </span>
+              )}
+            </div>
+            <span className="text-[10px] font-semibold uppercase tracking-wide">Favorite</span>
           </Link>
 
-          {/* Account pill */}
+          {/* Account */}
           <Link
             to={user ? "/account" : "/auth"}
-            className="hidden lg:inline-flex items-center gap-2 rounded-sm px-4 py-2 text-[13px] font-bold uppercase tracking-wide bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
+            className="hidden lg:flex flex-col items-center gap-0.5 text-secondary hover:text-primary transition-colors"
             aria-label="Cont"
           >
-            <User className="h-4 w-4" />
-            <span>{user ? "Contul meu" : "Login / Register"}</span>
+            <User className="h-6 w-6" />
+            <span className="text-[10px] font-semibold uppercase tracking-wide">{user ? "Contul meu" : "Cont"}</span>
           </Link>
 
-          {/* Mobile icons */}
-          <Link
-            to="/account/favorites"
-            className="lg:hidden relative p-2"
-            aria-label="Favorite"
-          >
+          {/* Mobile favorite icon */}
+          <Link to="/account/favorites" className="lg:hidden relative p-2 text-foreground" aria-label="Favorite">
             <Heart className="h-5 w-5" />
             {favCount > 0 && (
               <span className="absolute top-0 right-0 bg-primary text-primary-foreground text-[10px] font-bold rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
@@ -144,75 +180,85 @@ export default function Header() {
             )}
           </Link>
 
-          {/* Cart pill — portocaliu CTA */}
+          {/* Cart — buton portocaliu mare */}
           <button
             onClick={() => setCartOpen(true)}
-            className="inline-flex items-center gap-2 rounded-sm px-4 py-2 text-[13px] font-bold uppercase tracking-wide bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+            className="inline-flex items-center gap-3 rounded-sm pl-3 pr-4 h-12 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm group"
             aria-label="Coș"
           >
             <span className="relative">
-              <ShoppingBag className="h-4 w-4" />
+              <ShoppingBag className="h-6 w-6" />
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-secondary text-secondary-foreground text-[10px] font-bold rounded-full h-4 min-w-4 px-1 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-secondary text-secondary-foreground text-[10px] font-bold rounded-full h-5 min-w-5 px-1 flex items-center justify-center border-2 border-primary">
                   {cartCount}
                 </span>
               )}
             </span>
-            <span className="hidden sm:inline">Coș · {cartSubtotal.toFixed(2)} lei</span>
+            <span className="hidden sm:flex flex-col items-start leading-tight">
+              <span className="text-[10px] uppercase tracking-wider opacity-90">Coșul meu</span>
+              <span className="text-sm font-bold">{cartSubtotal.toFixed(2)} lei</span>
+            </span>
           </button>
         </div>
       </div>
 
       {/* Mobile search */}
       <form onSubmit={onSearch} className="md:hidden ml-container pb-3">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <div className="relative flex">
           <input
             type="search"
             value={searchQ}
             onChange={(e) => setSearchQ(e.target.value)}
-            placeholder="Caută..."
-            className="w-full h-11 pl-11 pr-4 rounded-full border border-input bg-background text-sm focus:outline-none focus:border-primary"
+            placeholder="Caută produse..."
+            className="flex-1 h-11 pl-4 pr-2 rounded-l-sm border-2 border-r-0 border-secondary bg-background text-sm focus:outline-none"
           />
+          <button type="submit" className="h-11 px-4 rounded-r-sm bg-primary text-primary-foreground" aria-label="Caută">
+            <Search className="h-5 w-5" />
+          </button>
         </div>
       </form>
 
-      {/* Category nav — Cartuseria style: bară navy continuă */}
+      {/* === ROW 3 — Bara categorii navy === */}
       <nav className="hidden xl:block bg-secondary text-secondary-foreground">
-        <div className="ml-container flex items-center gap-0 h-12 overflow-x-auto">
-          <Link to="/" className="inline-flex items-center gap-2 px-4 h-12 text-[13px] font-bold uppercase tracking-wide hover:bg-primary hover:text-primary-foreground transition-colors">
-            <span className="text-base">🏠</span> Acasă
-          </Link>
-          <Link to="/catalog" className="inline-flex items-center gap-2 px-4 h-12 text-[13px] font-bold uppercase tracking-wide hover:bg-primary hover:text-primary-foreground transition-colors">
-            <span className="text-base">🕯️</span> Toate produsele
-          </Link>
+        <div className="ml-container flex items-center h-12">
+          {/* All categories button — accent portocaliu */}
+          <button className="inline-flex items-center gap-2 h-12 px-4 bg-primary text-primary-foreground text-[13px] font-bold uppercase tracking-wide hover:bg-primary/90 transition-colors">
+            <Menu className="h-4 w-4" /> Toate categoriile <ChevronDown className="h-3 w-3" />
+          </button>
+
+          <NavLink to="/" end className={navLinkCls}>
+            Acasă
+          </NavLink>
+          <NavLink to="/catalog" className={navLinkCls}>
+            Toate produsele
+          </NavLink>
           {navCategories.map((cat: any) => (
             <MegaMenu key={cat.id} rootCat={cat} />
           ))}
-          <Link to="/blog" className="inline-flex items-center gap-2 px-4 h-12 text-[13px] font-semibold uppercase tracking-wide hover:bg-primary hover:text-primary-foreground transition-colors">
-            <span className="text-base">📰</span> Blog
-          </Link>
-          <Link to="/contact" className="inline-flex items-center gap-2 px-4 h-12 text-[13px] font-semibold uppercase tracking-wide hover:bg-primary hover:text-primary-foreground transition-colors">
-            <span className="text-base">📞</span> Contact
-          </Link>
+          <NavLink to="/blog" className={navLinkCls}>
+            Blog
+          </NavLink>
+          <NavLink to="/contact" className={navLinkCls}>
+            Contact
+          </NavLink>
 
-          {/* Free shipping pill — right side, portocaliu */}
+          {/* Free shipping badge */}
           <div className="ml-auto pr-2">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wide">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm border border-primary text-primary text-[11px] font-bold uppercase tracking-wide">
               <Truck className="h-3.5 w-3.5" />
-              Transport gratuit &gt; 200 lei
+              Transport gratuit {">"} 200 lei
             </span>
           </div>
         </div>
       </nav>
 
-      {/* Mobile drawer */}
+      {/* === Mobile drawer === */}
       {mobileOpen && (
         <div className="fixed inset-0 z-[60] xl:hidden">
           <div className="fixed inset-0 bg-scrim/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} aria-hidden="true" />
           <div className="fixed left-0 top-0 h-screen w-80 max-w-[85vw] bg-background shadow-2xl flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b border-border bg-primary text-primary-foreground">
-              <span className="font-display text-lg font-bold">Meniu</span>
+            <div className="flex items-center justify-between p-4 bg-secondary text-secondary-foreground">
+              <span className="font-display text-lg font-extrabold uppercase tracking-wide">Meniu</span>
               <button onClick={() => setMobileOpen(false)} className="p-2" aria-label="Închide"><X className="h-5 w-5" /></button>
             </div>
             <nav className="flex-1 overflow-y-auto p-3 space-y-1">
@@ -228,7 +274,7 @@ export default function Header() {
                   key={item.to}
                   to={item.to}
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 text-sm font-medium hover:bg-secondary rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-3 py-3 text-sm font-bold uppercase tracking-wide hover:bg-secondary hover:text-secondary-foreground rounded-sm transition-colors"
                 >
                   <span className="text-lg">{item.icon}</span>
                   {item.label}
@@ -239,14 +285,14 @@ export default function Header() {
               <Link
                 to={user ? "/account" : "/auth"}
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 px-3 py-2.5 bg-primary text-primary-foreground rounded-full text-sm font-semibold justify-center"
+                className="flex items-center gap-2 px-3 py-3 bg-primary text-primary-foreground rounded-sm text-sm font-bold uppercase tracking-wide justify-center"
               >
                 <User className="h-4 w-4" /> {user ? "Contul meu" : "Login / Register"}
               </Link>
               <Link
                 to="/compare"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 px-3 py-2.5 bg-secondary text-foreground rounded-full text-sm font-medium justify-center"
+                className="flex items-center gap-2 px-3 py-3 bg-secondary text-secondary-foreground rounded-sm text-sm font-bold uppercase tracking-wide justify-center"
               >
                 <GitCompareArrows className="h-4 w-4" /> Comparator ({compareCount})
               </Link>
