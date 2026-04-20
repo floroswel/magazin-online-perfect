@@ -9,7 +9,7 @@ import SeoHead from "@/components/SeoHead";
 import LegalConsents, { EMPTY_CONSENTS, allConsentsAccepted, type LegalConsentsState } from "@/components/storefront/LegalConsents";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Search, User, Building2 } from "lucide-react";
+import { Loader2, Search, User, Building2, Plus, Minus, Trash2, AlertTriangle } from "lucide-react";
 
 type Judet = { abreviere: string; nume: string };
 type Localitate = { id: number; nume: string; tip: string };
