@@ -11,15 +11,23 @@ export interface CartItem {
   quantity: number;
   burn_time_hours?: number | null;
   weight_grams?: number | null;
+  saved_for_later?: boolean;
+  gift_wrap?: boolean;
+  gift_message?: string | null;
+  note?: string | null;
 }
 
 interface CartContextValue {
   items: CartItem[];
+  savedItems: CartItem[];
   count: number;
   subtotal: number;
   addItem: (item: Omit<CartItem, "quantity">, qty?: number) => void;
   updateQty: (productId: string, qty: number) => void;
   removeItem: (productId: string) => void;
+  saveForLater: (productId: string) => void;
+  moveToCart: (productId: string) => void;
+  updateMeta: (productId: string, meta: Partial<Pick<CartItem, "gift_wrap" | "gift_message" | "note">>) => void;
   clear: () => void;
   open: boolean;
   setOpen: (v: boolean) => void;
@@ -48,7 +56,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     (async () => {
       const { data } = await (supabase as any)
         .from("cart_items")
-        .select("product_id, quantity, products:product_id(name, slug, image_url, price)")
+        .select("product_id, quantity, saved_for_later, gift_wrap, gift_message, note, products:product_id(name, slug, image_url, price)")
         .eq("user_id", user.id);
       if (data?.length) {
         const dbItems: CartItem[] = data.map((r: any) => ({
@@ -58,6 +66,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
           image_url: r.products?.image_url,
           price: Number(r.products?.price ?? 0),
           quantity: r.quantity,
+          saved_for_later: !!r.saved_for_later,
+          gift_wrap: !!r.gift_wrap,
+          gift_message: r.gift_message ?? null,
+          note: r.note ?? null,
         }));
         setItems((local) => mergeCarts(local, dbItems));
       }
@@ -69,7 +81,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
     await (supabase as any).from("cart_items").delete().eq("user_id", user.id);
     if (next.length) {
       await (supabase as any).from("cart_items").insert(
-        next.map((i) => ({ user_id: user.id, product_id: i.product_id, quantity: i.quantity }))
+        next.map((i) => ({
+          user_id: user.id,
+          product_id: i.product_id,
+          quantity: i.quantity,
+          saved_for_later: !!i.saved_for_later,
+          gift_wrap: !!i.gift_wrap,
+          gift_message: i.gift_message ?? null,
+          note: i.note ?? null,
+        }))
       );
     }
   }, [user]);
@@ -79,7 +99,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const existing = prev.find((p) => p.product_id === item.product_id);
       const next = existing
         ? prev.map((p) => p.product_id === item.product_id ? { ...p, quantity: p.quantity + qty } : p)
-        : [...prev, { ...item, quantity: qty }];
+        : [...prev, { ...item, quantity: qty, saved_for_later: false, gift_wrap: false, gift_message: null, note: null }];
       persistDb(next);
       return next;
     });
@@ -103,16 +123,56 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const saveForLater: CartContextValue["saveForLater"] = (productId) => {
+    setItems((prev) => {
+      const next = prev.map((p) =>
+        p.product_id === productId ? { ...p, saved_for_later: true } : p
+      );
+      persistDb(next);
+      return next;
+    });
+  };
+
+  const moveToCart: CartContextValue["moveToCart"] = (productId) => {
+    setItems((prev) => {
+      const next = prev.map((p) =>
+        p.product_id === productId ? { ...p, saved_for_later: false } : p
+      );
+      persistDb(next);
+      return next;
+    });
+  };
+
+  const updateMeta: CartContextValue["updateMeta"] = (productId, meta) => {
+    setItems((prev) => {
+      const next = prev.map((p) =>
+        p.product_id === productId ? { ...p, ...meta } : p
+      );
+      persistDb(next);
+      return next;
+    });
+  };
+
   const clear = () => {
     setItems([]);
     persistDb([]);
   };
 
-  const count = items.reduce((s, i) => s + i.quantity, 0);
-  const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
+  const activeItems = items.filter((i) => !i.saved_for_later);
+  const savedItems = items.filter((i) => i.saved_for_later);
+  const count = activeItems.reduce((s, i) => s + i.quantity, 0);
+  const subtotal = activeItems.reduce((s, i) => s + i.price * i.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, count, subtotal, addItem, updateQty, removeItem, clear, open, setOpen }}>
+    <CartContext.Provider value={{
+      items: activeItems,
+      savedItems,
+      count,
+      subtotal,
+      addItem, updateQty, removeItem,
+      saveForLater, moveToCart, updateMeta,
+      clear, open, setOpen
+    }}>
       {children}
     </CartContext.Provider>
   );
