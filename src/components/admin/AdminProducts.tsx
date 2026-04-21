@@ -676,7 +676,7 @@ export default function AdminProducts() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Slug (URL)</Label>
-                <Input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} placeholder="samsung-galaxy-s24-ultra" />
+                <Input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} placeholder="lumanare-vanilie-santal-90g" />
               </div>
               <div className="space-y-2">
                 <Label>Brand</Label>
@@ -860,8 +860,8 @@ export default function AdminProducts() {
                 </div>
               )}
               <div className="flex gap-2">
-                <Input placeholder="Cheie (ex: Memorie)" value={specKey} onChange={(e) => setSpecKey(e.target.value)} className="flex-1" />
-                <Input placeholder="Valoare (ex: 12GB)" value={specVal} onChange={(e) => setSpecVal(e.target.value)} className="flex-1" />
+                <Input placeholder="Cheie (ex: Parfum)" value={specKey} onChange={(e) => setSpecKey(e.target.value)} className="flex-1" />
+                <Input placeholder="Valoare (ex: Vanilie)" value={specVal} onChange={(e) => setSpecVal(e.target.value)} className="flex-1" />
                 <Button type="button" variant="outline" size="sm" onClick={addSpec} disabled={!specKey.trim()}>
                   <Plus className="w-4 h-4" />
                 </Button>
@@ -920,13 +920,13 @@ export default function AdminProducts() {
               </Button>
             </div>
             {variantAttrs.length === 0 && (
-              <p className="text-sm text-muted-foreground">Nicio variantă. Adaugă atribute precum Culoare, Mărime, Capacitate etc.</p>
+              <p className="text-sm text-muted-foreground">Nicio variantă. Adaugă atribute precum Parfum, Greutate, Tip Recipient etc.</p>
             )}
             {variantAttrs.map((variant) => (
               <Card key={variant.id} className="bg-muted/30 border-border">
                 <CardContent className="p-4 space-y-3">
                   <div className="flex items-center gap-2">
-                    <Input placeholder="Nume atribut (ex: Culoare)" value={variant.attribute} onChange={(e) => updateVariantAttr(variant.id, "attribute", e.target.value)} className="flex-1" />
+                    <Input placeholder="Nume atribut (ex: Parfum)" value={variant.attribute} onChange={(e) => updateVariantAttr(variant.id, "attribute", e.target.value)} className="flex-1" />
                     <Button type="button" variant="ghost" size="icon" className="text-destructive h-8 w-8" onClick={() => removeVariantAttr(variant.id)}>
                       <Trash2 className="w-4 h-4" />
                     </Button>
