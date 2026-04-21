@@ -46,41 +46,51 @@ export default function PopupNewsletter() {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="relative bg-white shadow-2xl w-[450px] max-w-[90vw] overflow-hidden" style={{ borderRadius: 8 }}>
-        {/* Header gradient */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 px-8 py-6 text-center text-white">
-          <p className="text-2xl font-extrabold">10% REDUCERE</p>
-          <p className="text-sm opacity-90 mt-1">LA PRIMA COMANDĂ</p>
-        </div>
-
-        <button onClick={handleClose} className="absolute top-3 right-3 text-white/80 hover:text-white z-10">
+      <div className="relative bg-white rounded-lg shadow-2xl w-[450px] max-w-[90vw] overflow-hidden">
+        {/* Close button */}
+        <button onClick={handleClose} className="absolute top-3 right-3 text-gray-400 hover:text-gray-800 z-10 text-2xl leading-none">
           <X className="w-5 h-5" />
         </button>
 
-        <div className="p-8 space-y-4">
-          <p className="text-sm text-center text-muted-foreground">
-            Abonează-te la newsletter și primești cod de reducere <strong className="text-foreground">{code}</strong> pentru prima ta comandă!
+        {/* Header grafic cu clip-path */}
+        <div className="h-[140px] bg-gradient-to-r from-blue-600 to-blue-800 flex items-center justify-center relative">
+          <div className="text-center text-white">
+            <p className="text-3xl font-bold">10% REDUCERE</p>
+            <p className="text-sm font-medium opacity-90">LA PRIMA COMANDĂ</p>
+          </div>
+          <div
+            className="absolute bottom-0 left-0 right-0 h-6 bg-white"
+            style={{ clipPath: "polygon(0 100%, 50% 0, 100% 100%)" }}
+          />
+        </div>
+
+        {/* Formular */}
+        <div className="p-8 pt-10 text-center">
+          <h3 className="text-lg font-bold text-gray-800 mb-2">Fii primul care află!</h3>
+          <p className="text-sm text-gray-500 mb-4">
+            Abonează-te și primești un cod de 10% reducere + acces la vânzări private.
           </p>
           <form onSubmit={handleSubmit} className="space-y-3">
             <input
               type="email"
-              placeholder="Adresa ta de email"
+              placeholder="Adresa ta de email..."
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
-              className="w-full h-11 px-4 border text-sm focus:outline-none focus:border-primary"
-              style={{ borderColor: "#e5e7eb", borderRadius: 2 }}
+              className="w-full border border-gray-300 rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-blue-600"
             />
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-11 bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm uppercase tracking-wide transition-colors disabled:opacity-50"
-              style={{ borderRadius: 2 }}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm py-3 rounded-sm transition-colors tracking-wide disabled:opacity-50"
             >
-              {loading ? "..." : "VREAU REDUCEREA DE 10%"}
+              {loading ? "Se procesează..." : "VREAU REDUCEREA DE 10%"}
             </button>
           </form>
-          <button onClick={handleClose} className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors">
+          <button
+            onClick={handleClose}
+            className="mt-4 text-xs text-gray-400 hover:text-gray-600 underline"
+          >
             Nu, mulțumesc.
           </button>
         </div>
