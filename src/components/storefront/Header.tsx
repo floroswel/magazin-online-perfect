@@ -95,6 +95,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40">
       {/* LAYER 1 — Dark topbar */}
+      {unq(s.header_topbar_show) !== "false" && (
       <div className="hidden md:block" style={{ background: topbarColor, color: "#ffffff" }}>
         <div className="ml-container flex items-center justify-between h-8 text-[11px]">
           <div className="flex items-center gap-4">
