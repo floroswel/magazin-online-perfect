@@ -53,7 +53,7 @@ export default function PopupNewsletter() {
         </button>
 
         {/* Header grafic cu clip-path */}
-        <div className="h-[140px] bg-gradient-to-r from-blue-600 to-blue-800 flex items-center justify-center relative">
+        <div className="h-[140px] flex items-center justify-center relative" style={{ background: `linear-gradient(to right, var(--btn-primary-bg, #141414), #000)` }}>
           <div className="text-center text-white">
             <p className="text-3xl font-bold">10% REDUCERE</p>
             <p className="text-sm font-medium opacity-90">LA PRIMA COMANDĂ</p>
@@ -77,12 +77,13 @@ export default function PopupNewsletter() {
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
-              className="w-full border border-gray-300 rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-blue-600"
+              className="w-full border border-gray-300 rounded-sm px-4 py-3 text-sm focus:outline-none"
             />
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm py-3 rounded-sm transition-colors tracking-wide disabled:opacity-50"
+              className="w-full font-bold text-sm py-3 rounded-sm transition-colors tracking-wide disabled:opacity-50"
+              style={{ background: "var(--btn-primary-bg, #141414)", color: "var(--btn-primary-text, #fff)" }}
             >
               {loading ? "Se procesează..." : "VREAU REDUCEREA DE 10%"}
             </button>

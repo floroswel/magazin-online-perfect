@@ -141,7 +141,7 @@ export default function Index() {
             <img src={heroImageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" />
           )}
           <div className="absolute top-20 right-20 w-64 h-64 rounded-full blur-3xl" style={{ background: `${primaryColor}33` }} />
-          <div className="absolute bottom-10 left-10 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 left-10 w-48 h-48 rounded-full blur-3xl" style={{ background: `${primaryColor}15` }} />
 
           <div className="ml-container py-20 lg:py-28 relative z-10">
             <p className="text-sm tracking-widest uppercase mb-4" style={{ color: "rgba(255,255,255,0.7)" }}>{heroSubtitle}</p>
@@ -224,7 +224,7 @@ export default function Index() {
                 <div className="w-2 h-2 rounded-full bg-white" />
               </div>
               <div className="relative z-10">
-                <span className="text-blue-300 text-xs uppercase tracking-widest">{b1Label}</span>
+                <span className="text-xs uppercase tracking-widest" style={{ color: "rgba(200,220,255,0.8)" }}>{b1Label}</span>
                 <h3 className="text-white text-2xl font-bold mt-1">{b1Title}</h3>
                 <Link to={b1Url} className="inline-flex items-center gap-1 text-white text-sm font-semibold mt-3 hover:underline">
                   {b1Cta}
@@ -249,7 +249,7 @@ export default function Index() {
 
       {/* ── BESTSELLERS ── */}
       {showFeatured && bestSellers.length > 0 && (
-        <section className="py-14" style={{ background: "#f0f0f0" }}>
+        <section className="py-14" style={{ background: unq(s.background_color) || "#f5f5f5" }}>
           <div className="ml-container">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl lg:text-3xl font-bold">

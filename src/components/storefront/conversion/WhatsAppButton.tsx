@@ -1,11 +1,15 @@
 import { useSettings } from "@/hooks/useSettings";
 
+const unq = (v?: string) => (v || "").replace(/^"|"$/g, "");
+
 export default function WhatsAppButton() {
   const { settings } = useSettings();
 
   const show = settings.whatsapp_show === "true" || settings.whatsapp_show === '"true"';
-  const number = (settings.whatsapp_number || "").replace(/"/g, "");
-  const message = (settings.whatsapp_message || "").replace(/"/g, "");
+  const number = unq(settings.whatsapp_number);
+  const message = unq(settings.whatsapp_message);
+  const position = unq(settings.whatsapp_position) || "right";
+  const color = unq(settings.whatsapp_color) || "#25D366";
 
   if (!show || !number) return null;
 
@@ -16,7 +20,8 @@ export default function WhatsAppButton() {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-[80] bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-colors group"
+      className={`fixed bottom-20 lg:bottom-6 z-[80] w-14 h-14 rounded-full text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform group ${position === "left" ? "left-4" : "right-4"}`}
+      style={{ background: color }}
       aria-label="WhatsApp"
     >
       <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
