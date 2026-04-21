@@ -148,13 +148,43 @@ export default function Index() {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-8 text-white max-w-2xl">
               {heroTitle}
             </h1>
-            <Link
-              to={heroCtaUrl}
-              className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm font-bold uppercase tracking-widest transition-all rounded-md"
-              style={{ background: primaryColor }}
-            >
-              {heroCtaText} <ArrowRight className="w-4 h-4" />
-            </Link>
+            <div className="flex flex-wrap gap-4">
+              <Link
+                to={heroCtaUrl}
+                className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm font-bold uppercase tracking-widest transition-all rounded-md"
+                style={{ background: primaryColor }}
+              >
+                {heroCtaText} <ArrowRight className="w-4 h-4" />
+              </Link>
+              {unq(s.hero_show_second_btn) === "true" && (
+                <Link
+                  to={unq(s.hero_second_btn_url) || "/page/despre-noi"}
+                  className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm font-bold uppercase tracking-widest transition-all rounded-md border border-white/30 hover:bg-white/10"
+                >
+                  {unq(s.hero_second_btn_text) || "Povestea noastră"}
+                </Link>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── CATEGORIES GRID ── */}
+      {showCategories && categories.length > 0 && (
+        <section className="ml-container py-14">
+          <h2 className="text-2xl lg:text-3xl font-bold text-center mb-8">
+            {unq(s.categories_title) || t("categories_title", "Categoriile Noastre")}
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {categories.slice(0, categoriesCount).map((cat: any) => (
+              <Link key={cat.id} to={`/catalog/${cat.slug}`} className="group relative rounded-xl overflow-hidden bg-gray-100 aspect-[4/3] flex items-end">
+                {cat.image_url && <img src={cat.image_url} alt={cat.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />}
+                <div className="relative z-10 w-full p-4 bg-gradient-to-t from-black/60 to-transparent">
+                  <h3 className="text-white font-bold text-sm">{cat.name}</h3>
+                  {cat.description && <p className="text-white/70 text-xs mt-0.5 line-clamp-1">{cat.description}</p>}
+                </div>
+              </Link>
+            ))}
           </div>
         </section>
       )}
