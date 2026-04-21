@@ -69,6 +69,7 @@ const AdminExtraServices = lazy(() => import("./checkout/AdminExtraServices"));
 const AdminEmailSettings = lazy(() => import("./settings/AdminEmailSettings"));
 const AdminTaxSettings = lazy(() => import("./settings/AdminTaxSettings"));
 const AdminThemeEditor = lazy(() => import("./settings/AdminThemeEditor"));
+const AdminThemeVisual = lazy(() => import("./control/AdminThemeVisual"));
 const AdminEditableContent = lazy(() => import("./settings/AdminEditableContent"));
 const AdminCmsExtras = lazy(() => import("./content/AdminCmsExtras"));
 const Admin2FA = lazy(() => import("./settings/Admin2FA"));
@@ -440,6 +441,8 @@ export default function AdminRoutes() {
         <Route path="shipping/gomag" element={<AdminShippingGomag />} />
         <Route path="settings/theme" element={<AdminThemeEditor />} />
         <Route path="tema" element={<AdminThemeEditor />} />
+        <Route path="tema-vizuala" element={<AdminThemeVisual />} />
+        <Route path="settings/theme-visual" element={<AdminThemeVisual />} />
         <Route path="settings/content-editor" element={<AdminEditableContent />} />
         <Route path="content/cms-extras" element={<AdminCmsExtras />} />
         {/* footer-badges removed — use settings/footer */}
