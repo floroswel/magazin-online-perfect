@@ -71,7 +71,10 @@ export default function Footer() {
     { label: "Lista de dorințe", url: "/account/favorites" },
   ]);
 
-  const col3Links = parseLinks(s.footer_col3_links || "", [
+  // Col3 — if title is "Date comerciale" show company data, otherwise use links
+  const col3Title = unq(s.footer_col3_title) || "Magazinul nostru";
+  const isCompanyDataCol = col3Title.toLowerCase().includes("date comerciale") || col3Title.toLowerCase().includes("date companie");
+  const col3Links = isCompanyDataCol ? [] : parseLinks(s.footer_col3_links || "", [
     { label: "Despre noi", url: "/page/despre-noi" },
     { label: "Blog", url: "/blog" },
     { label: "Contact", url: "/contact" },
@@ -131,7 +134,16 @@ export default function Footer() {
 
             <div>
               <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">{col3Heading}</h4>
-              {renderLinkList(col3Links)}
+              {isCompanyDataCol ? (
+                <ul className="space-y-2 text-sm">
+                  <li>{company}</li>
+                  {unq(s.footer_cui) && <li>CUI: {unq(s.footer_cui)}</li>}
+                  {unq(s.footer_reg_com) && <li>Reg. Com: {unq(s.footer_reg_com)}</li>}
+                  {unq(s.footer_capital_social) && <li>Capital social: {unq(s.footer_capital_social)}</li>}
+                  {unq(s.footer_address_street) && <li>{unq(s.footer_address_street)}</li>}
+                  {unq(s.footer_address_city) && <li>{unq(s.footer_address_city)}</li>}
+                </ul>
+              ) : renderLinkList(col3Links)}
             </div>
 
             <div>
