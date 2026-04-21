@@ -441,6 +441,8 @@ export default function AdminRoutes() {
         <Route path="shipping/gomag" element={<AdminShippingGomag />} />
         <Route path="settings/theme" element={<AdminThemeEditor />} />
         <Route path="tema" element={<AdminThemeEditor />} />
+        <Route path="tema-vizuala" element={<AdminThemeVisual />} />
+        <Route path="settings/theme-visual" element={<AdminThemeVisual />} />
         <Route path="settings/content-editor" element={<AdminEditableContent />} />
         <Route path="content/cms-extras" element={<AdminCmsExtras />} />
         {/* footer-badges removed — use settings/footer */}
