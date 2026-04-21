@@ -77,12 +77,13 @@ export default function PopupNewsletter() {
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
-              className="w-full border border-gray-300 rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-blue-600"
+              className="w-full border border-gray-300 rounded-sm px-4 py-3 text-sm focus:outline-none"
             />
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm py-3 rounded-sm transition-colors tracking-wide disabled:opacity-50"
+              className="w-full font-bold text-sm py-3 rounded-sm transition-colors tracking-wide disabled:opacity-50"
+              style={{ background: "var(--btn-primary-bg, #141414)", color: "var(--btn-primary-text, #fff)" }}
             >
               {loading ? "Se procesează..." : "VREAU REDUCEREA DE 10%"}
             </button>
