@@ -49,8 +49,21 @@ export default function AdminThemeVisual() {
   const { settings, updateSetting } = useSettings();
   const [saveStatus, setSaveStatus] = useState("");
 
+  const SYNC_MAP: Record<string, string> = {
+    primary_color: "theme_primary_color",
+    theme_primary_color: "primary_color",
+    nav_bar_color: "theme_navbar_color",
+    theme_navbar_color: "nav_bar_color",
+    header_topbar_bg_color: "theme_topbar_color",
+    theme_topbar_color: "header_topbar_bg_color",
+    footer_bg_color: "theme_footer_color",
+    theme_footer_color: "footer_bg_color",
+  };
+
   const save = useCallback(async (key: string, value: string) => {
     const ok = await updateSetting(key, value);
+    const mirror = SYNC_MAP[key];
+    if (mirror) updateSetting(mirror, value);
     if (ok) {
       setSaveStatus("✅ Salvat");
       setTimeout(() => setSaveStatus(""), 2000);
