@@ -12,7 +12,7 @@
     --card-foreground: 0 0% 13%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 13%;
-    --primary: 213 95% 55%;
+    --primary: 217 91% 53%;
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 20%;
     --secondary-foreground: 0 0% 100%;
@@ -24,35 +24,26 @@
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 213 95% 55%;
+    --ring: 217 91% 53%;
     --radius: 0.125rem;
 
-    /* Custom color tokens */
-    --color-bg-primary: #f5f5f5;
-    --color-bg-secondary: #ffffff;
-    --color-text-primary: #222222;
-    --color-text-secondary: #6b7280;
-    --color-primary: #2563eb;
-    --color-primary-hover: #1d4ed8;
-    --color-navbar: #333333;
-    --color-topbar: #222222;
-    --color-footer: #1f1f1f;
-    --color-footer-sub: #181818;
-    --color-ticker: #d32f2f;
-    --color-badge-sale: #f97316;
-    --color-badge-best: #2563eb;
-    --color-badge-new: #16a34a;
-    --color-badge-hot: #dc2626;
+    --star-color: 38 92% 50%;
+    --badge-new-bg: 145 55% 38%;
+    --badge-sale-bg: 25 90% 48%;
+    --badge-hot-bg: 0 72% 50%;
+
+    --footer-bg: 0 0% 12%;
+    --footer-fg: 0 0% 85%;
+    --footer-muted: 0 0% 60%;
+    --footer-accent: 217 91% 53%;
+    --topbar-bg: 0 0% 13%;
+    --topbar-fg: 0 0% 100%;
+
     --color-price: #f97316;
     --color-price-old: #9ca3af;
     --color-border: #e5e7eb;
 
-    /* Shadcn extended */
-    --ml-primary: 213 95% 55%;
-    --ml-primary-dark: 0 0% 20%;
-    --ml-primary-hover: 213 95% 48%;
-
-    /* Status tokens */
+    /* Status */
     --success: 145 55% 32%;
     --success-foreground: 0 0% 100%;
     --warning: 35 85% 42%;
@@ -61,25 +52,7 @@
     --info-foreground: 0 0% 100%;
     --danger: 0 65% 42%;
     --danger-foreground: 0 0% 100%;
-
-    /* Overlays */
     --scrim: 0 0% 6%;
-
-    /* Badge HSL */
-    --badge-new-bg: 145 55% 38%;
-    --badge-sale-bg: 25 90% 48%;
-    --badge-hot-bg: 0 72% 50%;
-    --star-color: 38 92% 50%;
-
-    /* Footer */
-    --footer-bg: 0 0% 12%;
-    --footer-fg: 0 0% 85%;
-    --footer-muted: 0 0% 60%;
-    --footer-accent: 213 95% 55%;
-
-    /* Topbar */
-    --topbar-bg: 0 0% 13%;
-    --topbar-fg: 0 0% 100%;
 
     /* Admin sidebar */
     --sidebar-background: 270 35% 14%;
@@ -91,11 +64,8 @@
     --sidebar-border: 270 30% 24%;
     --sidebar-ring: 327 87% 55%;
 
-    /* Dimensions */
     --container-max: 1280px;
     --container-pad: 1rem;
-
-    /* Shadows */
     --shadow-soft: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
     --shadow-card: 0 2px 12px rgba(0,0,0,0.06);
     --shadow-elevated: 0 12px 40px -10px rgba(0,0,0,0.18);
@@ -108,7 +78,7 @@
     --card-foreground: 0 0% 96%;
     --popover: 0 0% 12%;
     --popover-foreground: 0 0% 96%;
-    --primary: 213 95% 55%;
+    --primary: 217 91% 53%;
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 16%;
     --secondary-foreground: 0 0% 96%;
@@ -120,7 +90,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 20%;
     --input: 0 0% 20%;
-    --ring: 213 95% 55%;
+    --ring: 217 91% 53%;
   }
 
   .admin-panel {
@@ -188,21 +158,17 @@
     padding: 0 var(--container-pad);
   }
 
-  /* Ticker marquee */
+  /* Ticker */
   @keyframes ticker {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
   }
-  .ticker-track {
-    animation: ticker 28s linear infinite;
-  }
+  .ticker-track { animation: ticker 28s linear infinite; }
   @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
   }
-  .marquee-track {
-    animation: marquee var(--marquee-speed, 25s) linear infinite;
-  }
+  .animate-marquee { animation: marquee 25s linear infinite; }
 
   /* Toast social proof */
   @keyframes slideInLeft {
@@ -211,9 +177,20 @@
     85% { transform: translateX(0); opacity: 1; }
     100% { transform: translateX(-120%); opacity: 0; }
   }
-  .animate-toast {
-    animation: slideInLeft 6s ease-in-out forwards;
+  .animate-toast { animation: slideInLeft 6s ease-in-out forwards; }
+
+  /* Image zoom */
+  .img-zoom { transition: transform 0.3s ease; }
+  .img-zoom:hover { transform: scale(1.1); }
+
+  /* Mega menu */
+  .mega-sidebar-item {
+    @apply flex items-center justify-between px-4 py-2.5 cursor-pointer border-l-4 border-transparent transition-all;
   }
+  .mega-sidebar-item:hover {
+    @apply bg-gray-100 border-l-primary;
+  }
+  .mega-sidebar-item:hover .mega-sidebar-text { color: #2563eb; }
 
   /* Skeleton */
   @keyframes shimmer {
@@ -221,15 +198,12 @@
     100% { background-position: 200% 0; }
   }
   .skeleton {
-    background: linear-gradient(90deg,
-      hsl(var(--muted)) 25%,
-      hsl(var(--border)) 50%,
-      hsl(var(--muted)) 75%);
+    background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--border)) 50%, hsl(var(--muted)) 75%);
     background-size: 200% 100%;
     animation: shimmer 1.6s infinite;
   }
 
-  /* Stagger animation */
+  /* Stagger */
   .stagger > * { opacity: 0; animation: fade-in-up 0.7s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
   .stagger > *:nth-child(1) { animation-delay: 0.05s; }
   .stagger > *:nth-child(2) { animation-delay: 0.15s; }
@@ -242,16 +216,19 @@
 
   /* Card system */
   .wm-card {
-    background: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
-    border-radius: 2px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
     overflow: hidden;
-    transition: box-shadow 0.2s ease;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
   }
-  .wm-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+  .wm-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+  }
   .wm-card-img {
     aspect-ratio: 1;
-    background: hsl(var(--muted));
+    background: #f9fafb;
     padding: 1rem;
     display: flex;
     align-items: center;
@@ -274,19 +251,16 @@
   .wm-badge {
     font-size: 10px;
     font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 2px;
+    padding: 3px 8px;
+    border-radius: 0.25rem;
     color: white;
     text-transform: uppercase;
     letter-spacing: 0.02em;
   }
-  .wm-badge-sale { background: var(--color-badge-sale); }
-  .wm-badge-best { background: var(--color-badge-best); }
-  .wm-badge-new  { background: var(--color-badge-new); }
-  .wm-badge-hot  { background: var(--color-badge-hot); }
-
-  /* Topbar utility */
-  .journal-topbar { background: hsl(var(--topbar-bg)); color: hsl(var(--topbar-fg)); font-size: 12px; }
+  .wm-badge-sale { background: #f97316; }
+  .wm-badge-best { background: #2563eb; }
+  .wm-badge-new  { background: #16a34a; }
+  .wm-badge-hot  { background: #dc2626; }
 
   /* Footer */
   .footer-dark { background: hsl(var(--footer-bg)); color: hsl(var(--footer-fg)); }
@@ -297,10 +271,14 @@
   }
   .footer-link { color: hsl(var(--footer-muted)); @apply text-sm py-1 block transition-colors; }
 
-  /* Pill buttons */
-  .pill-btn { @apply inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors; }
+  /* Catalog bridges */
+  .price-now, .card-price-now { color: var(--color-price) !important; }
+  .stars, .star-filled { color: hsl(var(--star-color)) !important; }
+  .badge-sale { background: hsl(var(--badge-sale-bg)) !important; }
+  .badge-new { background: hsl(var(--badge-new-bg)) !important; }
 
-  /* Shine */
+  /* Pill / Shine */
+  .pill-btn { @apply inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors; }
   .btn-shine { position: relative; overflow: hidden; }
   .btn-shine::before {
     content: '';
@@ -314,25 +292,23 @@
     to { transform: translateX(250%) skewX(-20deg); }
   }
 
-  /* Catalog token bridges */
-  .price-now, .card-price-now { color: var(--color-price) !important; }
-  .stars, .star-filled { color: hsl(var(--star-color)) !important; }
-  .badge-sale { background: hsl(var(--badge-sale-bg)) !important; }
-  .badge-new { background: hsl(var(--badge-new-bg)) !important; }
+  /* Search pill */
+  .search-pill {
+    @apply h-11 w-full border-2 border-primary bg-background pl-4 pr-28 text-sm focus:outline-none transition-all;
+  }
 
   /* Section spacing */
   .section-tight { @apply py-16 md:py-20; }
   .section-base  { @apply py-20 md:py-32; }
 
-  /* Category icon pill (for mega menu) */
+  /* Category icon pill */
   .cat-icon-pill {
     @apply inline-flex items-center gap-2 px-3 py-2 text-sm font-medium
            hover:bg-primary hover:text-primary-foreground transition-colors whitespace-nowrap;
   }
 
-  /* Search pill */
-  .search-pill {
-    @apply h-11 w-full border-2 border-primary bg-background pl-4 pr-28 text-sm
-           focus:outline-none transition-all;
-  }
+  /* Number input cleanup */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type=number] { -moz-appearance: textfield; }
 }
