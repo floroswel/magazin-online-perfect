@@ -144,8 +144,12 @@ export default function Product() {
   return (
     <StorefrontLayout>
       <SeoHead
-        title={product.meta_title || `${product.name} — Mama Lucica`}
-        description={product.meta_description || product.short_description || `Cumpără ${product.name} de la Mama Lucica.`}
+        title={product.meta_title || `${product.name} | Mama Lucica`}
+        description={
+          product.meta_description
+          || product.short_description
+          || (product.description ? product.description.replace(/<[^>]*>/g, "").slice(0, 155) : `Cumpără ${product.name} de la Mama Lucica.`)
+        }
         ogImage={product.image_url || undefined}
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: productJsonLd }} />
