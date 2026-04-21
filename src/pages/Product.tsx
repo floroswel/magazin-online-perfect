@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/hooks/useCart";
 import { useFavorites } from "@/hooks/useFavorites";
 import { ShoppingBag, Heart, Truck, Shield, Award, Minus, Plus } from "lucide-react";
+import { useSettings } from "@/hooks/useSettings";
 import { toast } from "sonner";
 import StorefrontLayout from "@/components/storefront/StorefrontLayout";
 import SeoHead from "@/components/SeoHead";
@@ -19,6 +20,9 @@ export default function Product() {
   const { toggle, isFav } = useFavorites();
   const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
+  const { settings: s } = useSettings();
+  const shippingCost = s.default_shipping_cost || "35";
+  const freeThreshold = s.free_shipping_threshold || "200";
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", slug],
