@@ -51,9 +51,13 @@ const ProductCard = forwardRef<HTMLElement, { p: ProductCardData }>(function Pro
         <button
           onClick={(e) => { e.preventDefault(); toggle?.(p.id); }}
           aria-label={fav ? "Elimină din favorite" : "Adaugă la favorite"}
-          className={`absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow-sm border transition-all ${
-            fav ? "opacity-100 bg-blue-600 text-white border-blue-600" : "opacity-0 group-hover:opacity-100 border-gray-200 hover:bg-blue-600 hover:text-white hover:border-blue-600"
-          }`}
+          className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full flex items-center justify-center shadow-sm border transition-all"
+          style={fav
+            ? { opacity: 1, background: "var(--btn-primary-bg, #141414)", color: "var(--btn-primary-text, #fff)", borderColor: "var(--btn-primary-bg, #141414)" }
+            : { borderColor: "#e5e7eb", background: "rgba(255,255,255,0.9)" }
+          }
+          onMouseEnter={e => { if (!fav) { e.currentTarget.style.background = "var(--btn-primary-bg, #141414)"; e.currentTarget.style.color = "var(--btn-primary-text, #fff)"; e.currentTarget.style.borderColor = "var(--btn-primary-bg, #141414)"; }}}
+          onMouseLeave={e => { if (!fav) { e.currentTarget.style.background = "rgba(255,255,255,0.9)"; e.currentTarget.style.color = ""; e.currentTarget.style.borderColor = "#e5e7eb"; }}}
         >
           <Heart className={`h-3.5 w-3.5 ${fav ? "fill-current" : ""}`} />
         </button>
@@ -61,7 +65,7 @@ const ProductCard = forwardRef<HTMLElement, { p: ProductCardData }>(function Pro
 
       <div className="wm-card-body flex-1 flex flex-col">
         {p.category_name && <div className="wm-card-cat">{p.category_name}</div>}
-        <Link to={`/produs/${p.slug}`} className="wm-card-title hover:text-blue-600 transition-colors min-h-[2.5rem]">
+        <Link to={`/produs/${p.slug}`} className="wm-card-title transition-colors min-h-[2.5rem]" style={{ ["--tw-text-opacity" as any]: 1 }} onMouseEnter={e => e.currentTarget.style.color = "var(--btn-primary-bg, #141414)"} onMouseLeave={e => e.currentTarget.style.color = ""}>
           {p.name}
         </Link>
 
@@ -88,12 +92,15 @@ const ProductCard = forwardRef<HTMLElement, { p: ProductCardData }>(function Pro
             {p.old_price && p.old_price > p.price && (
               <div className="text-xs line-through text-gray-400">{Number(p.old_price).toFixed(0)} RON</div>
             )}
-            <div className="text-lg font-bold text-orange-500">{Number(p.price).toFixed(0)} RON</div>
+            <div className="text-lg font-bold" style={{ color: "var(--product-price-color, #FF3300)" }}>{Number(p.price).toFixed(0)} RON</div>
           </div>
           <button
             disabled={outOfStock}
             onClick={() => addItem({ product_id: p.id, name: p.name, slug: p.slug, image_url: p.image_url, price: Number(p.price) })}
-            className="h-9 px-4 bg-blue-600 text-white text-xs font-bold uppercase tracking-wide hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1.5 rounded-md"
+            className="h-9 px-4 text-xs font-bold uppercase tracking-wide disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1.5 rounded-md"
+            style={{ background: "var(--btn-primary-bg, #141414)", color: "var(--btn-primary-text, #fff)" }}
+            onMouseEnter={e => e.currentTarget.style.background = "var(--btn-primary-hover, #000)"}
+            onMouseLeave={e => e.currentTarget.style.background = "var(--btn-primary-bg, #141414)"}
             aria-label={outOfStock ? "Stoc epuizat" : `Adaugă ${p.name} în coș`}
           >
             <ShoppingBag className="h-3.5 w-3.5" />

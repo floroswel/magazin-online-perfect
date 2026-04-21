@@ -39,7 +39,9 @@ export default function MegaMenu({ rootCat }: { rootCat: Cat }) {
     >
       <Link
         to={`/categorie/${rootCat.slug}`}
-        className="inline-flex items-center gap-1 h-[42px] px-4 text-[12px] font-bold uppercase tracking-wide text-gray-300 hover:bg-blue-600 hover:text-white transition-colors whitespace-nowrap"
+        className="inline-flex items-center gap-1 h-[42px] px-4 text-[12px] font-bold uppercase tracking-wide text-gray-300 hover:text-white transition-colors whitespace-nowrap"
+        onMouseEnter={e => e.currentTarget.style.background = "var(--btn-primary-bg, #141414)"}
+        onMouseLeave={e => e.currentTarget.style.background = ""}
       >
         {rootCat.name}
       </Link>
