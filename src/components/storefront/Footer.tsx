@@ -157,6 +157,9 @@ export default function Footer() {
                   <span>✉️</span>
                   <a href={`mailto:${email}`} className="hover:text-white break-all">{email}</a>
                 </li>
+                {schedule && (
+                  <li className="text-xs leading-relaxed mt-2" style={{ color: "#999" }}>{schedule}</li>
+                )}
               </ul>
             </div>
           </div>
