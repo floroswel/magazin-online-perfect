@@ -198,7 +198,7 @@ export default function Product() {
                 </>
               )}
             </div>
-            <div className="text-xs text-muted-foreground mb-6">TVA inclus · Livrare 35 lei (gratuit peste 200 lei)</div>
+            <div className="text-xs text-muted-foreground mb-6">TVA inclus · Livrare {shippingCost} lei (gratuit peste {freeThreshold} lei)</div>
 
             {stock > 0 ? (
               <div className="text-sm text-success font-semibold mb-4">✓ În stoc ({stock} buc.)</div>
