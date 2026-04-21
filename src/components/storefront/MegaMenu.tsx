@@ -52,12 +52,12 @@ export default function MegaMenu({ rootCat }: { rootCat: Cat }) {
             <div className="text-[11px] uppercase tracking-wider text-gray-400 font-semibold mb-3">Subcategorii</div>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
               {subs.map((s) => (
-                <Link key={s.id} to={`/categorie/${s.slug}`} className="text-sm text-gray-700 hover:text-blue-600 transition-colors py-1">
+                <Link key={s.id} to={`/categorie/${s.slug}`} className="text-sm text-gray-700 transition-colors py-1" onMouseEnter={e => e.currentTarget.style.color = "var(--btn-primary-bg, #141414)"} onMouseLeave={e => e.currentTarget.style.color = ""}>
                   {s.name}
                 </Link>
               ))}
             </div>
-            <Link to={`/categorie/${rootCat.slug}`} className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline mt-4">
+            <Link to={`/categorie/${rootCat.slug}`} className="inline-flex items-center gap-1 text-xs font-semibold hover:underline mt-4" style={{ color: "var(--btn-primary-bg, #141414)" }}>
               Vezi toate din {rootCat.name} <ArrowRight className="h-3 w-3" />
             </Link>
           </div>

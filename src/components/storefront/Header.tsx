@@ -120,7 +120,7 @@ export default function Header() {
             <span>Livrare gratuită peste <strong>{freeShip} RON</strong></span>
           </div>
           {phone && (
-            <a href={`tel:${phone.replace(/\s/g, "")}`} className="flex items-center gap-1.5 font-semibold text-gray-700 hover:text-blue-600 transition-colors">
+            <a href={`tel:${phone.replace(/\s/g, "")}`} className="flex items-center gap-1.5 font-semibold text-gray-700 transition-colors" onMouseEnter={e => e.currentTarget.style.color = primaryColor} onMouseLeave={e => e.currentTarget.style.color = ""}>
               <Phone className="h-3.5 w-3.5" /> Suport: {phone}
             </a>
           )}
@@ -149,7 +149,7 @@ export default function Header() {
           </div>
 
           <div className="ml-auto flex items-center gap-1 lg:gap-3">
-            <Link to="/compare" className="hidden lg:flex flex-col items-center gap-0.5 px-2 text-gray-600 hover:text-blue-600 transition-colors" aria-label="Compară">
+            <Link to="/compare" className="hidden lg:flex flex-col items-center gap-0.5 px-2 text-gray-600 transition-colors" onMouseEnter={e => e.currentTarget.style.color = primaryColor} onMouseLeave={e => e.currentTarget.style.color = ""} aria-label="Compară">
               <div className="relative">
                 <GitCompareArrows className="h-5 w-5" />
                 {compareCount > 0 && (
@@ -159,7 +159,7 @@ export default function Header() {
               <span className="text-[10px] font-medium">Compară</span>
             </Link>
 
-            <Link to="/account/favorites" className="hidden lg:flex flex-col items-center gap-0.5 px-2 text-gray-600 hover:text-blue-600 transition-colors" aria-label="Favorite">
+            <Link to="/account/favorites" className="hidden lg:flex flex-col items-center gap-0.5 px-2 text-gray-600 transition-colors" onMouseEnter={e => e.currentTarget.style.color = primaryColor} onMouseLeave={e => e.currentTarget.style.color = ""} aria-label="Favorite">
               <div className="relative">
                 <Heart className="h-5 w-5" />
                 {favCount > 0 && (
@@ -169,7 +169,7 @@ export default function Header() {
               <span className="text-[10px] font-medium">Favorite</span>
             </Link>
 
-            <Link to={user ? "/account" : "/auth"} className="hidden lg:flex flex-col items-center gap-0.5 px-2 text-gray-600 hover:text-blue-600 transition-colors" aria-label="Cont">
+            <Link to={user ? "/account" : "/auth"} className="hidden lg:flex flex-col items-center gap-0.5 px-2 text-gray-600 transition-colors" onMouseEnter={e => e.currentTarget.style.color = primaryColor} onMouseLeave={e => e.currentTarget.style.color = ""} aria-label="Cont">
               <User className="h-5 w-5" />
               <span className="text-[10px] font-medium">{user ? "Contul meu" : "Cont"}</span>
             </Link>
@@ -259,7 +259,7 @@ export default function Header() {
                         <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-3">Subcategorii</p>
                         <div className="grid grid-cols-2 gap-2">
                           {getSubcats(hoveredCat).map((sub: any) => (
-                            <Link key={sub.id} to={`/categorie/${sub.slug}`} className="text-sm text-gray-700 hover:text-blue-600 transition-colors py-1">
+                            <Link key={sub.id} to={`/categorie/${sub.slug}`} className="text-sm text-gray-700 transition-colors py-1" onMouseEnter={e => e.currentTarget.style.color = primaryColor} onMouseLeave={e => e.currentTarget.style.color = ""}>
                               {sub.name}
                             </Link>
                           ))}
