@@ -22,7 +22,7 @@ export default function Index() {
   });
 
   // ── Real data from Supabase ──
-  const { data: newProducts = [] } = useQuery({
+  const { data: newProducts = [], isLoading: loadingNew } = useQuery({
     queryKey: ["home-new-products"],
     queryFn: async () => {
       const { data } = await supabase
@@ -36,7 +36,7 @@ export default function Index() {
     staleTime: 60_000,
   });
 
-  const { data: bestSellers = [] } = useQuery({
+  const { data: bestSellers = [], isLoading: loadingBest } = useQuery({
     queryKey: ["home-bestsellers"],
     queryFn: async () => {
       const { data } = await supabase
@@ -50,7 +50,7 @@ export default function Index() {
     staleTime: 60_000,
   });
 
-  const { data: categories = [] } = useQuery({
+  const { data: categories = [], isLoading: loadingCats } = useQuery({
     queryKey: ["home-categories"],
     queryFn: async () => {
       const { data } = await supabase
@@ -64,6 +64,14 @@ export default function Index() {
     },
     staleTime: 60_000,
   });
+
+  const SkeletonGrid = ({ count = 8, aspect = "aspect-[3/4]" }: { count?: number; aspect?: string }) => (
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} className={`${aspect} bg-muted animate-pulse rounded-sm`} />
+      ))}
+    </div>
+  );
 
   const showHero = s.show_hero !== "false";
   const showCategories = s.show_categories !== "false";
