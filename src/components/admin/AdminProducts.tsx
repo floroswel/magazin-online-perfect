@@ -670,7 +670,7 @@ export default function AdminProducts() {
                   const name = e.target.value;
                   setForm((f) => ({ ...f, name, slug: !editingId ? generateSlug(name) : f.slug }));
                 }}
-                placeholder="ex: Samsung Galaxy S24 Ultra"
+                placeholder="ex: Lumânare Vanilie & Santal 90g"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
