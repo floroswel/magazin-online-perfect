@@ -206,6 +206,20 @@ function applyCSSVariables(s: SettingsMap) {
   const root = document.documentElement;
   const body = document.body;
 
+  // ━━ Force default theme colors to prevent stale cache ━━
+  root.style.setProperty('--primary', '213 95% 55%');
+  root.style.setProperty('--primary-foreground', '0 0% 100%');
+  root.style.setProperty('--secondary', '0 0% 20%');
+  root.style.setProperty('--secondary-foreground', '0 0% 100%');
+  root.style.setProperty('--background', '0 0% 96%');
+  root.style.setProperty('--foreground', '0 0% 13%');
+  root.style.setProperty('--ring', '213 95% 55%');
+  root.style.setProperty('--color-primary', '#2563eb');
+  root.style.setProperty('--color-navbar', '#333333');
+  root.style.setProperty('--color-ticker', '#d32f2f');
+  root.style.setProperty('--color-footer', '#1f1f1f');
+  root.style.setProperty('--color-price', '#f97316');
+
   // ━━ Brand Colors → HSL for Shadcn ━━
   if (s.primary_color) {
     const hsl = hexToHSL(s.primary_color);
@@ -339,8 +353,8 @@ const CACHE_KEY = "ml_settings_cache";
 
 function loadCachedSettings(): SettingsMap {
   try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (raw) return JSON.parse(raw);
+    // Clear stale cache from old theme
+    localStorage.removeItem(CACHE_KEY);
   } catch {}
   return {};
 }
