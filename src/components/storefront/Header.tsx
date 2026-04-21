@@ -66,10 +66,10 @@ export default function Header() {
         <div className="ml-container flex items-center justify-between h-9 text-[12px]">
           <div className="flex items-center gap-5">
             <span className="flex items-center gap-1.5 opacity-90">
-              <Clock className="h-3 w-3" /> Luni–Vineri 09:00–18:00
+              <Clock className="h-3 w-3" /> {unq(s.contact_schedule) || "Luni–Vineri 09:00–18:00"}
             </span>
             <Link to="/page/livrare" className="hidden lg:flex items-center gap-1.5 hover:text-primary transition-colors">
-              <Truck className="h-3 w-3" /> Livrare gratuită {">"} 200 lei
+              <Truck className="h-3 w-3" /> Livrare gratuită {">"} {unq(s.free_shipping_threshold) || "200"} lei
             </Link>
             <Link to="/track" className="hidden lg:flex items-center gap-1.5 hover:text-primary transition-colors">
               <MapPin className="h-3 w-3" /> Urmărire comandă
@@ -246,7 +246,7 @@ export default function Header() {
           <div className="ml-auto pr-2">
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm border border-primary text-primary text-[11px] font-bold uppercase tracking-wide">
               <Truck className="h-3.5 w-3.5" />
-              Transport gratuit {">"} 200 lei
+              Transport gratuit {">"} {unq(s.free_shipping_threshold) || "200"} lei
             </span>
           </div>
         </div>
