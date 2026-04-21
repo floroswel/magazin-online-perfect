@@ -157,35 +157,39 @@ export default function Index() {
       </section>
 
       {/* ───────────── CATEGORII ───────────── */}
-      {showCategories && categories.length > 0 && (
+      {showCategories && (
         <section className="ml-container py-14">
           <h2 className="font-display text-2xl lg:text-3xl font-bold mb-8 text-center">
             {categoriesTitle}
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {categories.map((cat: any) => (
-              <Link
-                key={cat.id}
-                to={`/categorie/${cat.slug}`}
-                className="group relative aspect-[4/3] bg-muted rounded-sm overflow-hidden border border-border hover:border-primary transition-colors"
-              >
-                {cat.image_url ? (
-                  <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-5xl">🕯️</div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h3 className="text-white font-bold text-sm uppercase tracking-wide">{cat.name}</h3>
-                </div>
-              </Link>
-            ))}
-          </div>
+          {loadingCats ? (
+            <SkeletonGrid count={4} aspect="aspect-[4/3]" />
+          ) : categories.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {categories.map((cat: any) => (
+                <Link
+                  key={cat.id}
+                  to={`/categorie/${cat.slug}`}
+                  className="group relative aspect-[4/3] bg-muted rounded-sm overflow-hidden border border-border hover:border-primary transition-colors"
+                >
+                  {cat.image_url ? (
+                    <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-5xl">🕯️</div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <h3 className="text-white font-bold text-sm uppercase tracking-wide">{cat.name}</h3>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : null}
         </section>
       )}
 
       {/* ───────────── PRODUSE NOI ───────────── */}
-      {showNewArrivals && newProducts.length > 0 && (
+      {showNewArrivals && (
         <section className="ml-container py-14">
           <div className="flex items-center justify-between mb-8">
             <h2 className="font-display text-2xl lg:text-3xl font-bold">{newArrivalsTitle}</h2>
@@ -193,16 +197,20 @@ export default function Index() {
               Vezi toate <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {newProducts.map((p: any) => (
-              <ProductCard key={p.id} p={p} />
-            ))}
-          </div>
+          {loadingNew ? (
+            <SkeletonGrid />
+          ) : newProducts.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {newProducts.map((p: any) => (
+                <ProductCard key={p.id} p={p} />
+              ))}
+            </div>
+          ) : null}
         </section>
       )}
 
       {/* ───────────── BESTSELLERS ───────────── */}
-      {showFeatured && bestSellers.length > 0 && (
+      {showFeatured && (
         <section className="bg-muted/50 py-14">
           <div className="ml-container">
             <div className="flex items-center justify-between mb-8">
@@ -211,11 +219,15 @@ export default function Index() {
                 Vezi toate <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {bestSellers.map((p: any) => (
-                <ProductCard key={p.id} p={p} />
-              ))}
-            </div>
+            {loadingBest ? (
+              <SkeletonGrid />
+            ) : bestSellers.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {bestSellers.map((p: any) => (
+                  <ProductCard key={p.id} p={p} />
+                ))}
+              </div>
+            ) : null}
           </div>
         </section>
       )}
