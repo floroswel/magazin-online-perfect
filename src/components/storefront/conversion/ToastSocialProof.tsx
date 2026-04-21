@@ -1,12 +1,18 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSettings } from "@/hooks/useSettings";
 import { supabase } from "@/integrations/supabase/client";
-import { ShoppingBag, X } from "lucide-react";
+
+interface ProofData {
+  message: string;
+  name: string;
+  city: string;
+  product: string;
+}
 
 export default function ToastSocialProof() {
   const { settings } = useSettings();
-  const [messages, setMessages] = useState<string[]>([]);
-  const [current, setCurrent] = useState<string | null>(null);
+  const [messages, setMessages] = useState<ProofData[]>([]);
+  const [current, setCurrent] = useState<ProofData | null>(null);
   const [visible, setVisible] = useState(false);
 
   const show = settings.social_proof_show === "true" || settings.social_proof_show === '"true"';
@@ -16,14 +22,26 @@ export default function ToastSocialProof() {
     if (!show) return;
     (async () => {
       const { data } = await supabase.rpc("get_social_proof_messages", { limit_count: 10 });
-      if (data?.length) setMessages(data.map((d: any) => d.message));
+      if (data?.length) {
+        setMessages(data.map((d: any) => {
+          const msg = d.message as string;
+          // Parse "Ion din București a cumpărat Lumânare..."
+          const nameMatch = msg.match(/^(.+?) din (.+?) a cumpărat (.+)$/);
+          return {
+            message: msg,
+            name: nameMatch?.[1] || "Client",
+            city: nameMatch?.[2] || "România",
+            product: nameMatch?.[3] || "un produs",
+          };
+        }));
+      }
     })();
   }, [show]);
 
   const showNext = useCallback(() => {
     if (!messages.length) return;
-    const msg = messages[Math.floor(Math.random() * messages.length)];
-    setCurrent(msg);
+    const item = messages[Math.floor(Math.random() * messages.length)];
+    setCurrent(item);
     setVisible(true);
     setTimeout(() => setVisible(false), 6000);
   }, [messages]);
@@ -38,18 +56,26 @@ export default function ToastSocialProof() {
   if (!show || !visible || !current) return null;
 
   return (
-    <div className="fixed bottom-6 left-6 z-[90] animate-toast">
-      <div className="bg-white border shadow-2xl w-[320px] p-4 flex items-start gap-3" style={{ borderColor: "#e5e7eb", borderRadius: 4 }}>
-        <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center shrink-0">
-          <ShoppingBag className="h-5 w-5 text-green-600" />
+    <div className="fixed bottom-6 left-6 z-[90]">
+      <div className="bg-white border border-gray-200 rounded-sm shadow-2xl w-[320px] p-3 flex items-center gap-3 animate-toast">
+        {/* Product image placeholder */}
+        <div className="w-12 h-12 bg-gray-100 rounded-sm overflow-hidden shrink-0 border border-gray-100 flex items-center justify-center">
+          <span className="text-2xl">🕯️</span>
         </div>
+
+        {/* Info */}
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-foreground leading-snug">{current}</p>
-          <p className="text-[11px] text-muted-foreground mt-1">Verificat ✓</p>
+          <p className="text-xs text-gray-500 truncate">Acum câteva minute</p>
+          <p className="text-sm font-semibold text-gray-800 truncate">
+            {current.name} din {current.city}
+          </p>
+          <p className="text-xs text-gray-500 truncate">
+            a cumpărat: {current.product}
+          </p>
         </div>
-        <button onClick={() => setVisible(false)} className="text-muted-foreground hover:text-foreground shrink-0">
-          <X className="h-4 w-4" />
-        </button>
+
+        {/* Verified badge */}
+        <div className="text-green-500 text-xs font-bold shrink-0">✔ Verificat</div>
       </div>
     </div>
   );
