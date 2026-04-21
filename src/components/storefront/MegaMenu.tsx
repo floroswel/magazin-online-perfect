@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 
 interface Cat {
   id: string;
@@ -39,23 +39,23 @@ export default function MegaMenu({ rootCat }: { rootCat: Cat }) {
     >
       <Link
         to={`/categorie/${rootCat.slug}`}
-        className="inline-flex items-center gap-1 h-[42px] px-4 text-[12px] font-bold uppercase tracking-wide text-gray-300 hover:bg-primary hover:text-white transition-colors whitespace-nowrap"
+        className="inline-flex items-center gap-1 h-[42px] px-4 text-[12px] font-bold uppercase tracking-wide text-gray-300 hover:bg-blue-600 hover:text-white transition-colors whitespace-nowrap"
       >
         {rootCat.name}
       </Link>
 
       {open && subs.length > 0 && (
         <div className="absolute left-0 top-full z-50 w-[500px] max-w-[calc(100vw-2rem)]">
-          <div className="bg-white border shadow-2xl p-5" style={{ borderColor: "#e5e7eb", borderRadius: 2 }}>
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-3">Subcategorii</div>
+          <div className="bg-white border border-gray-200 shadow-2xl p-5 rounded-b-lg">
+            <div className="text-[11px] uppercase tracking-wider text-gray-400 font-semibold mb-3">Subcategorii</div>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
               {subs.map((s) => (
-                <Link key={s.id} to={`/categorie/${s.slug}`} className="text-sm text-foreground hover:text-primary transition-colors py-1">
+                <Link key={s.id} to={`/categorie/${s.slug}`} className="text-sm text-gray-700 hover:text-blue-600 transition-colors py-1">
                   {s.name}
                 </Link>
               ))}
             </div>
-            <Link to={`/categorie/${rootCat.slug}`} className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline mt-4">
+            <Link to={`/categorie/${rootCat.slug}`} className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline mt-4">
               Vezi toate din {rootCat.name} <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
