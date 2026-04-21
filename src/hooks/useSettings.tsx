@@ -148,6 +148,35 @@ const SETTINGS_KEYS = [
   "theme_footer_color", "theme_ticker_color",
   "theme_font_heading", "theme_font_body",
   "theme_container_width", "theme_radius_card", "theme_radius_btn",
+  // ━━ Header dynamic texts ━━
+  "header_welcome_text", "header_track_text", "header_locale_text", "header_search_placeholder",
+  // ━━ Theme hero gradient ━━
+  "theme_hero_gradient_start", "theme_hero_gradient_mid", "theme_hero_gradient_end",
+  // ━━ Homepage banners ━━
+  "homepage_show_banners", "homepage_show_brand_story",
+  "homepage_banner1_label", "homepage_banner1_title", "homepage_banner1_cta",
+  "homepage_banner1_url", "homepage_banner1_image",
+  "homepage_banner1_gradient_from", "homepage_banner1_gradient_to",
+  "homepage_banner2_label", "homepage_banner2_subtitle", "homepage_banner2_price",
+  "homepage_banner2_cta", "homepage_banner2_url",
+  "homepage_banner2_gradient_from", "homepage_banner2_gradient_to",
+  // ━━ Homepage brand story ━━
+  "homepage_brand_label", "homepage_brand_title", "homepage_brand_text",
+  "homepage_brand_cta", "homepage_brand_url", "homepage_brand_image",
+  // ━━ Homepage products description ━━
+  "homepage_products_description",
+  // ━━ Homepage sections JSON ━━
+  "homepage_sections", "homepage_promo_banner", "homepage_why_us", "homepage_brands",
+  // ━━ Footer new colors ━━
+  "footer_main_bg", "footer_copyright_bg",
+  // ━━ Footer steps ━━
+  "footer_show_steps",
+  "footer_step1_icon", "footer_step1_title", "footer_step1_text",
+  "footer_step2_icon", "footer_step2_title", "footer_step2_text",
+  "footer_step3_icon", "footer_step3_title", "footer_step3_text",
+  "footer_step4_icon", "footer_step4_title", "footer_step4_text",
+  // ━━ Footer delivery/payment badges ━━
+  "footer_delivery_badges", "footer_payment_badges",
 ];
 
 /* ── Convert a hex color (#RRGGBB) to the HSL string Shadcn expects ("H S% L%") ── */
