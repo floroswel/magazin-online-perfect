@@ -23,33 +23,57 @@ export default function Footer() {
   const salUrl = unq(s.footer_sal_url) || "https://consumer-redress.ec.europa.eu/site-relocation_en?event=main.home2.show&lng=RO";
   const salLogo = unq(s.footer_sal_logo_url) || "https://etamade-com.github.io/anpc-sal-sol-logo/anpc-sol.svg";
 
+  // Steps
+  const showSteps = s.footer_show_steps !== "false";
+  const step1 = unq(s.footer_step1_text) || "Alege produsele";
+  const step2 = unq(s.footer_step2_text) || "Finalizează comanda";
+  const step3 = unq(s.footer_step3_text) || "Primește comanda";
+
+  // Colors
+  const mainBg = unq(s.footer_main_bg) || unq(s.footer_bg_color) || "#1f1f1f";
+  const copyrightBg = unq(s.footer_copyright_bg) || "#181818";
+  const primaryColor = unq(s.theme_primary_color) || "#2563eb";
+
+  // Badges
+  const deliveryBadgesRaw = unq(s.footer_delivery_badges) || "DPD,Fan Courier,Cargus";
+  const paymentBadgesRaw = unq(s.footer_payment_badges) || "VISA,MASTERCARD,NETOPIA,RAMBURS";
+  const deliveryBadges = deliveryBadgesRaw.split(",").map(b => b.trim()).filter(Boolean);
+  const paymentBadges = paymentBadgesRaw.split(",").map(b => b.trim()).filter(Boolean);
+
+  // Column headings
+  const col1Heading = unq(s.footer_col1_heading) || unq(s.footer_col1_title) || "Informații utilitare";
+  const col2Heading = unq(s.footer_col2_heading) || unq(s.footer_col2_title) || "Contul meu";
+  const col3Heading = unq(s.footer_col3_heading) || unq(s.footer_col3_title) || "Magazinul nostru";
+  const col4Heading = unq(s.footer_col4_heading) || unq(s.footer_col4_title) || "Suport clienți";
+
   return (
     <>
       <footer className="mt-0">
         {/* LAYER 1 — Pre-footer steps */}
-        <div className="bg-white border-t border-gray-200">
-          <div className="ml-container py-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left">
-            {[
-              { step: "1", title: "Alege produsele" },
-              { step: "2", title: "Finalizează comanda" },
-              { step: "3", title: "Primește comanda" },
-            ].map(({ step, title }) => (
-              <div key={step} className="flex flex-col md:flex-row items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold shrink-0">
-                  {step}
+        {showSteps && (
+          <div className="bg-white border-t border-gray-200">
+            <div className="ml-container py-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left">
+              {[
+                { step: "1", title: step1 },
+                { step: "2", title: step2 },
+                { step: "3", title: step3 },
+              ].map(({ step, title }) => (
+                <div key={step} className="flex flex-col md:flex-row items-center gap-3">
+                  <div className="w-10 h-10 rounded-full text-white flex items-center justify-center text-sm font-bold shrink-0" style={{ background: primaryColor }}>
+                    {step}
+                  </div>
+                  <p className="font-semibold text-sm text-gray-800">{title}</p>
                 </div>
-                <p className="font-semibold text-sm text-gray-800">{title}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* LAYER 2 — Main footer */}
-        <div style={{ background: "#1f1f1f", color: "#d4d4d4" }}>
+        <div style={{ background: mainBg, color: "#d4d4d4" }}>
           <div className="ml-container py-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Col 1 */}
             <div>
-              <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">Informații utilitare</h4>
+              <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">{col1Heading}</h4>
               <ul className="space-y-2 text-sm">
                 <li><Link to="/page/cum-cumpar" className="hover:text-white transition-colors">Cum cumpăr</Link></li>
                 <li><Link to="/page/livrare" className="hover:text-white transition-colors">Politica de livrare</Link></li>
@@ -59,9 +83,8 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Col 2 */}
             <div>
-              <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">Contul meu</h4>
+              <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">{col2Heading}</h4>
               <ul className="space-y-2 text-sm">
                 <li><Link to="/account" className="hover:text-white transition-colors">Datele mele</Link></li>
                 <li><Link to="/account/orders" className="hover:text-white transition-colors">Comenzi</Link></li>
@@ -69,9 +92,8 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Col 3 */}
             <div>
-              <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">Magazinul nostru</h4>
+              <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">{col3Heading}</h4>
               <ul className="space-y-2 text-sm">
                 <li><Link to="/page/despre-noi" className="hover:text-white transition-colors">Despre noi</Link></li>
                 <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
@@ -79,9 +101,8 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Col 4 */}
             <div>
-              <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">Suport clienți</h4>
+              <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">{col4Heading}</h4>
               <ul className="space-y-3 text-sm">
                 <li className="flex items-center gap-2">
                   <span>📞</span>
@@ -97,20 +118,19 @@ export default function Footer() {
         </div>
 
         {/* LAYER 3 — Payment & delivery logos */}
-        <div style={{ background: "#1f1f1f" }} className="border-t border-gray-800">
+        <div style={{ background: mainBg }} className="border-t border-gray-800">
           <div className="ml-container py-5 flex flex-col lg:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3 flex-wrap justify-center">
               <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Livrare:</span>
-              <span className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">DPD</span>
-              <span className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">Fan Courier</span>
-              <span className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">Cargus</span>
+              {deliveryBadges.map((badge) => (
+                <span key={badge} className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">{badge}</span>
+              ))}
             </div>
             <div className="flex items-center gap-3 flex-wrap justify-center">
               <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Plată securizată:</span>
-              <span className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">VISA</span>
-              <span className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">MASTERCARD</span>
-              <span className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">NETOPIA</span>
-              <span className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">RAMBURS</span>
+              {paymentBadges.map((badge) => (
+                <span key={badge} className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">{badge}</span>
+              ))}
             </div>
           </div>
           {/* ANPC */}
@@ -125,7 +145,7 @@ export default function Footer() {
         </div>
 
         {/* LAYER 4 — Copyright */}
-        <div style={{ background: "#181818" }}>
+        <div style={{ background: copyrightBg }}>
           <div className="ml-container py-4 text-center">
             <p className="text-[11px] text-gray-600">
               © {year} {copyrightName} · {company}. Toate drepturile rezervate.
