@@ -81,7 +81,7 @@ export default function Index() {
   const heroGradientStart = unq(s.theme_hero_gradient_start) || "#1a1a2e";
   const heroGradientMid = unq(s.theme_hero_gradient_mid) || "#16213e";
   const heroGradientEnd = unq(s.theme_hero_gradient_end) || "#0f3460";
-  const primaryColor = unq(s.theme_primary_color) || "#2563eb";
+  const primaryColor = unq(s.primary_color) || unq(s.theme_primary_color) || "#2563eb";
 
   // Products section
   const productsDescription = unq(s.homepage_products_description) || "Fiecare lumânare este turnată manual, insuflând atmosferă și caracter în spațiul tău.";

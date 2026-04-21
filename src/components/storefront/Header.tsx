@@ -61,9 +61,9 @@ export default function Header() {
   const siteName = unq(s.header_store_name) || unq(s.site_name) || "Mama Lucica";
   const phone = unq(s.contact_phone);
   const freeShip = unq(s.free_shipping_threshold) || "200";
-  const primaryColor = unq(s.theme_primary_color) || "#2563eb";
-  const topbarColor = unq(s.theme_topbar_color) || "#222222";
-  const navbarColor = unq(s.theme_navbar_color) || "#333333";
+  const primaryColor = unq(s.primary_color) || unq(s.theme_primary_color) || "#2563eb";
+  const topbarColor = unq(s.header_topbar_bg_color) || unq(s.theme_topbar_color) || "#222222";
+  const navbarColor = unq(s.nav_bar_color) || unq(s.theme_navbar_color) || "#333333";
   const welcomeText = unq(s.header_welcome_text) || "Bine ai venit pe";
   const trackText = unq(s.header_track_text) || "Urmărește comanda";
   const localeText = unq(s.header_locale_text) || "RO / RON";

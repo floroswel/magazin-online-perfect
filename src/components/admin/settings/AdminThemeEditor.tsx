@@ -167,8 +167,23 @@ export default function AdminThemeEditor() {
   const [customCssDraft, setCustomCssDraft] = useState("");
   const [uploading, setUploading] = useState(false);
 
+  // Sync map: when saving one key, also save its mirror key so both admin editors + storefront stay in sync
+  const SYNC_MAP: Record<string, string> = {
+    primary_color: "theme_primary_color",
+    theme_primary_color: "primary_color",
+    nav_bar_color: "theme_navbar_color",
+    theme_navbar_color: "nav_bar_color",
+    header_topbar_bg_color: "theme_topbar_color",
+    theme_topbar_color: "header_topbar_bg_color",
+    footer_bg_color: "theme_footer_color",
+    theme_footer_color: "footer_bg_color",
+  };
+
   const saveSetting = useCallback(async (key: string, value: string) => {
     const saved = await updateSetting(key, value);
+    // Also sync the mirror key silently
+    const mirror = SYNC_MAP[key];
+    if (mirror) updateSetting(mirror, value);
     if (saved) {
       setSaveStatus("✅ Salvat");
       setTimeout(() => setSaveStatus(""), 2000);
