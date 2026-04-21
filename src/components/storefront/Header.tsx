@@ -55,11 +55,26 @@ export default function Header() {
     staleTime: 60_000,
   });
 
+  // All settings-driven values
   const logoUrl = unq(s.header_logo_url) || unq(s.logo_url);
   const logoVisible = s.logo_visible !== "false";
   const siteName = unq(s.header_store_name) || unq(s.site_name) || "Mama Lucica";
   const phone = unq(s.contact_phone);
   const freeShip = unq(s.free_shipping_threshold) || "200";
+  const primaryColor = unq(s.theme_primary_color) || "#2563eb";
+  const topbarColor = unq(s.theme_topbar_color) || "#222222";
+  const navbarColor = unq(s.theme_navbar_color) || "#333333";
+  const welcomeText = unq(s.header_welcome_text) || "Bine ai venit pe";
+  const trackText = unq(s.header_track_text) || "Urmărește comanda";
+  const localeText = unq(s.header_locale_text) || "RO / RON";
+  const allProductsText = unq(s.header_all_products_text) || "Toate Produsele";
+  const voucherText = unq(s.header_voucher_text) || "🎁 Vouchere Cadou";
+  const voucherUrl = unq(s.header_voucher_url) || "/catalog?tag=seturi-cadou";
+  const navHomeText = unq(s.header_nav_home_text) || "Acasă";
+  const navReduceriText = unq(s.header_nav_reduceri_text) || "Reduceri";
+  const navNoutatiText = unq(s.header_nav_noutati_text) || "Noutăți";
+  const searchPlaceholder = unq(s.header_search_placeholder) || "Caută lumânări, odorizante...";
+  const cartLabel = unq(s.header_cart_label) || "Coș";
 
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,17 +95,17 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40">
       {/* LAYER 1 — Dark topbar */}
-      <div className="hidden md:block" style={{ background: "#222222", color: "#ffffff" }}>
+      <div className="hidden md:block" style={{ background: topbarColor, color: "#ffffff" }}>
         <div className="ml-container flex items-center justify-between h-8 text-[11px]">
           <div className="flex items-center gap-4">
-            <span>Bine ai venit pe {siteName}!</span>
+            <span>{welcomeText} {siteName}!</span>
             <Link to={user ? "/account" : "/auth"} className="hover:underline">Contul meu</Link>
             <span className="opacity-30">|</span>
-            <Link to="/track" className="hover:underline">Urmărește comanda</Link>
+            <Link to="/track" className="hover:underline">{trackText}</Link>
           </div>
           <div className="flex items-center gap-3">
             <span className="opacity-30">|</span>
-            <span>RO / RON</span>
+            <span>{localeText}</span>
           </div>
         </div>
       </div>
@@ -113,34 +128,30 @@ export default function Header() {
       {/* LAYER 3 — Main header */}
       <div className="bg-white border-b" style={{ borderColor: "#e5e7eb" }}>
         <div className="ml-container flex items-center gap-4 lg:gap-8 h-[70px]">
-          {/* Mobile menu toggle */}
           <button className="xl:hidden p-2 -ml-2" onClick={() => setMobileOpen(true)} aria-label="Meniu">
             <Menu className="h-6 w-6" />
           </button>
 
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
             {logoVisible && logoUrl ? (
               <img src={logoUrl} alt={siteName} className="h-10 lg:h-12 w-auto object-contain" />
             ) : (
-              <span className="text-xl lg:text-2xl font-extrabold tracking-tight uppercase text-blue-600">
+              <span className="text-xl lg:text-2xl font-extrabold tracking-tight uppercase" style={{ color: primaryColor }}>
                 {siteName}
               </span>
             )}
           </Link>
 
-          {/* Search bar */}
           <div className="hidden md:flex flex-1 max-w-2xl">
-            <SearchAutocomplete placeholder="Caută lumânări, odorizante..." />
+            <SearchAutocomplete placeholder={searchPlaceholder} />
           </div>
 
-          {/* Right actions */}
           <div className="ml-auto flex items-center gap-1 lg:gap-3">
             <Link to="/compare" className="hidden lg:flex flex-col items-center gap-0.5 px-2 text-gray-600 hover:text-blue-600 transition-colors" aria-label="Compară">
               <div className="relative">
                 <GitCompareArrows className="h-5 w-5" />
                 {compareCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-blue-600 text-white text-[9px] font-bold rounded-full h-4 min-w-4 px-0.5 flex items-center justify-center">{compareCount}</span>
+                  <span className="absolute -top-1.5 -right-1.5 text-white text-[9px] font-bold rounded-full h-4 min-w-4 px-0.5 flex items-center justify-center" style={{ background: primaryColor }}>{compareCount}</span>
                 )}
               </div>
               <span className="text-[10px] font-medium">Compară</span>
@@ -150,7 +161,7 @@ export default function Header() {
               <div className="relative">
                 <Heart className="h-5 w-5" />
                 {favCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-blue-600 text-white text-[9px] font-bold rounded-full h-4 min-w-4 px-0.5 flex items-center justify-center">{favCount}</span>
+                  <span className="absolute -top-1.5 -right-1.5 text-white text-[9px] font-bold rounded-full h-4 min-w-4 px-0.5 flex items-center justify-center" style={{ background: primaryColor }}>{favCount}</span>
                 )}
               </div>
               <span className="text-[10px] font-medium">Favorite</span>
@@ -161,19 +172,18 @@ export default function Header() {
               <span className="text-[10px] font-medium">{user ? "Contul meu" : "Cont"}</span>
             </Link>
 
-            {/* Mobile fav */}
             <Link to="/account/favorites" className="lg:hidden relative p-2" aria-label="Favorite">
               <Heart className="h-5 w-5" />
               {favCount > 0 && (
-                <span className="absolute top-0 right-0 bg-blue-600 text-white text-[9px] font-bold rounded-full h-4 min-w-4 px-0.5 flex items-center justify-center">{favCount}</span>
+                <span className="absolute top-0 right-0 text-white text-[9px] font-bold rounded-full h-4 min-w-4 px-0.5 flex items-center justify-center" style={{ background: primaryColor }}>{favCount}</span>
               )}
             </Link>
 
-            {/* Cart */}
             <button
               onClick={() => setCartOpen(true)}
-              className="inline-flex items-center gap-2 h-11 px-4 bg-blue-600 text-white hover:bg-blue-700 transition-colors rounded-md"
-              aria-label="Coș"
+              className="inline-flex items-center gap-2 h-11 px-4 text-white transition-colors rounded-md"
+              style={{ background: primaryColor }}
+              aria-label={cartLabel}
             >
               <span className="relative">
                 <ShoppingBag className="h-5 w-5" />
@@ -182,22 +192,22 @@ export default function Header() {
                 )}
               </span>
               <span className="hidden sm:flex flex-col items-start leading-tight">
-                <span className="text-[10px] uppercase tracking-wider opacity-80">Coș</span>
+                <span className="text-[10px] uppercase tracking-wider opacity-80">{cartLabel}</span>
                 <span className="text-sm font-bold">{cartSubtotal.toFixed(2)} lei</span>
               </span>
             </button>
           </div>
         </div>
 
-        {/* Mobile search */}
         <form onSubmit={onSearch} className="md:hidden ml-container pb-3">
           <div className="relative flex">
             <input
               type="search" value={searchQ} onChange={(e) => setSearchQ(e.target.value)}
-              placeholder="Caută produse..."
-              className="flex-1 h-10 pl-3 pr-2 border-2 border-r-0 border-blue-600 bg-white text-sm focus:outline-none rounded-l-md"
+              placeholder={searchPlaceholder}
+              className="flex-1 h-10 pl-3 pr-2 border-2 border-r-0 bg-white text-sm focus:outline-none rounded-l-md"
+              style={{ borderColor: primaryColor }}
             />
-            <button type="submit" className="h-10 px-3 bg-blue-600 text-white rounded-r-md" aria-label="Caută">
+            <button type="submit" className="h-10 px-3 text-white rounded-r-md" style={{ background: primaryColor }} aria-label="Caută">
               <Search className="h-4 w-4" />
             </button>
           </div>
@@ -205,23 +215,23 @@ export default function Header() {
       </div>
 
       {/* LAYER 4 — Navbar categorii */}
-      <nav className="hidden xl:block" style={{ background: "#333333" }}>
+      <nav className="hidden xl:block" style={{ background: navbarColor }}>
         <div className="ml-container flex items-center h-[42px]">
-          {/* Toate Produsele with mega menu */}
           <div
             className="relative"
             onMouseEnter={() => setMegaOpen(true)}
             onMouseLeave={() => { setMegaOpen(false); setHoveredCat(null); }}
           >
-            <button className="inline-flex items-center gap-2 h-[42px] px-5 bg-blue-600 text-white text-[12px] font-bold uppercase tracking-wide hover:bg-blue-700 transition-colors">
-              <Menu className="h-4 w-4" /> Toate Produsele <ChevronDown className="h-3 w-3" />
+            <button
+              className="inline-flex items-center gap-2 h-[42px] px-5 text-white text-[12px] font-bold uppercase tracking-wide transition-colors"
+              style={{ background: primaryColor }}
+            >
+              <Menu className="h-4 w-4" /> {allProductsText} <ChevronDown className="h-3 w-3" />
             </button>
 
-            {/* Mega menu dropdown with sidebar */}
             {megaOpen && rootCats.length > 0 && (
               <div className="absolute left-0 top-full z-50 bg-white border border-gray-200 shadow-2xl rounded-b-lg" style={{ width: 700 }}>
                 <div className="flex min-h-[280px]">
-                  {/* Sidebar categorii */}
                   <div className="w-[240px] bg-gray-50 border-r border-gray-200 py-2">
                     {rootCats.map((cat: any) => (
                       <div
@@ -241,7 +251,6 @@ export default function Header() {
                     ))}
                   </div>
 
-                  {/* Right panel — subcategorii */}
                   <div className="flex-1 p-6">
                     {hoveredCat ? (
                       <>
@@ -256,7 +265,7 @@ export default function Header() {
                         {getSubcats(hoveredCat).length === 0 && (
                           <p className="text-sm text-gray-400">Nicio subcategorie încă.</p>
                         )}
-                        <Link to="/catalog" className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline mt-4">
+                        <Link to="/catalog" className="inline-flex items-center gap-1 text-xs font-semibold hover:underline mt-4" style={{ color: primaryColor }}>
                           Vezi toate produsele →
                         </Link>
                       </>
@@ -271,22 +280,22 @@ export default function Header() {
             )}
           </div>
 
-          <NavLink to="/" end className={({ isActive }) => `inline-flex items-center h-[42px] px-4 text-[12px] font-bold uppercase tracking-wide transition-colors ${isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-blue-600 hover:text-white"}`}>
-            Acasă
+          <NavLink to="/" end className={({ isActive }) => `inline-flex items-center h-[42px] px-4 text-[12px] font-bold uppercase tracking-wide transition-colors ${isActive ? "text-white" : "text-gray-300 hover:text-white"}`} style={({ isActive }) => isActive ? { background: primaryColor } : {}}>
+            {navHomeText}
           </NavLink>
-          <NavLink to="/catalog?sort=discount" className={({ isActive }) => `inline-flex items-center h-[42px] px-4 text-[12px] font-bold uppercase tracking-wide transition-colors ${isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-blue-600 hover:text-white"}`}>
-            Reduceri
+          <NavLink to="/catalog?sort=discount" className={({ isActive }) => `inline-flex items-center h-[42px] px-4 text-[12px] font-bold uppercase tracking-wide transition-colors ${isActive ? "text-white" : "text-gray-300 hover:text-white"}`} style={({ isActive }) => isActive ? { background: primaryColor } : {}}>
+            {navReduceriText}
           </NavLink>
-          <NavLink to="/catalog?sort=newest" className={({ isActive }) => `inline-flex items-center h-[42px] px-4 text-[12px] font-bold uppercase tracking-wide transition-colors ${isActive ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-blue-600 hover:text-white"}`}>
-            Noutăți
+          <NavLink to="/catalog?sort=newest" className={({ isActive }) => `inline-flex items-center h-[42px] px-4 text-[12px] font-bold uppercase tracking-wide transition-colors ${isActive ? "text-white" : "text-gray-300 hover:text-white"}`} style={({ isActive }) => isActive ? { background: primaryColor } : {}}>
+            {navNoutatiText}
           </NavLink>
 
           {navCategories.slice(0, 4).map((cat: any) => (
             <MegaMenu key={cat.id} rootCat={cat} />
           ))}
 
-          <NavLink to="/catalog?tag=seturi-cadou" className={({ isActive }) => `inline-flex items-center h-[42px] px-4 text-[12px] font-bold uppercase tracking-wide transition-colors ${isActive ? "bg-blue-600 text-white" : "text-yellow-400 hover:bg-blue-600 hover:text-white"}`}>
-            🎁 Vouchere Cadou
+          <NavLink to={voucherUrl} className={({ isActive }) => `inline-flex items-center h-[42px] px-4 text-[12px] font-bold uppercase tracking-wide transition-colors ${isActive ? "text-white" : "text-yellow-400 hover:text-white"}`} style={({ isActive }) => isActive ? { background: primaryColor } : {}}>
+            {voucherText}
           </NavLink>
 
           <div className="ml-auto pr-2">
@@ -303,14 +312,14 @@ export default function Header() {
         <div className="fixed inset-0 z-[60] xl:hidden">
           <div className="fixed inset-0 bg-black/60" onClick={() => setMobileOpen(false)} />
           <div className="fixed left-0 top-0 h-screen w-80 max-w-[85vw] bg-white shadow-2xl flex flex-col">
-            <div className="flex items-center justify-between p-4" style={{ background: "#333" }}>
+            <div className="flex items-center justify-between p-4" style={{ background: navbarColor }}>
               <span className="text-lg font-extrabold uppercase tracking-wide text-white">Meniu</span>
               <button onClick={() => setMobileOpen(false)} className="p-2 text-white" aria-label="Închide"><X className="h-5 w-5" /></button>
             </div>
             <nav className="flex-1 overflow-y-auto p-3 space-y-1">
               {[
-                { label: "Acasă", to: "/" },
-                { label: "Toate produsele", to: "/catalog" },
+                { label: navHomeText, to: "/" },
+                { label: allProductsText, to: "/catalog" },
                 ...navCategories.map((c: any) => ({ label: c.name, to: `/categorie/${c.slug}` })),
                 { label: "Blog", to: "/blog" },
                 { label: "Contact", to: "/contact" },
@@ -323,7 +332,8 @@ export default function Header() {
             </nav>
             <div className="p-4 border-t space-y-2">
               <Link to={user ? "/account" : "/auth"} onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 px-3 py-3 bg-blue-600 text-white text-sm font-bold uppercase justify-center rounded-md">
+                className="flex items-center gap-2 px-3 py-3 text-white text-sm font-bold uppercase justify-center rounded-md"
+                style={{ background: primaryColor }}>
                 <User className="h-4 w-4" /> {user ? "Contul meu" : "Login / Register"}
               </Link>
             </div>
