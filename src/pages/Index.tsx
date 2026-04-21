@@ -71,6 +71,12 @@ export default function Index() {
   const showFeatured = s.show_featured !== "false";
   const showBanners = s.homepage_show_banners !== "false";
   const showBrandStory = s.homepage_show_brand_story !== "false";
+  const showBenefits = s.show_benefits !== "false";
+  const showMidBanner = s.show_mid_banner === "true";
+  const showNewsletter = s.show_newsletter !== "false";
+  const categoriesCount = parseInt(unq(s.categories_count) || "6", 10);
+  const newArrivalsCount = parseInt(unq(s.new_arrivals_count) || "8", 10);
+  const featuredCount = parseInt(unq(s.featured_count) || "8", 10);
 
   // Hero
   const heroTitle = t("hero_title", s.hero_title || "Ritmul lent al momentele calmă");
@@ -142,13 +148,43 @@ export default function Index() {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-8 text-white max-w-2xl">
               {heroTitle}
             </h1>
-            <Link
-              to={heroCtaUrl}
-              className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm font-bold uppercase tracking-widest transition-all rounded-md"
-              style={{ background: primaryColor }}
-            >
-              {heroCtaText} <ArrowRight className="w-4 h-4" />
-            </Link>
+            <div className="flex flex-wrap gap-4">
+              <Link
+                to={heroCtaUrl}
+                className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm font-bold uppercase tracking-widest transition-all rounded-md"
+                style={{ background: primaryColor }}
+              >
+                {heroCtaText} <ArrowRight className="w-4 h-4" />
+              </Link>
+              {unq(s.hero_show_second_btn) === "true" && (
+                <Link
+                  to={unq(s.hero_second_btn_url) || "/page/despre-noi"}
+                  className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm font-bold uppercase tracking-widest transition-all rounded-md border border-white/30 hover:bg-white/10"
+                >
+                  {unq(s.hero_second_btn_text) || "Povestea noastră"}
+                </Link>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── CATEGORIES GRID ── */}
+      {showCategories && categories.length > 0 && (
+        <section className="ml-container py-14">
+          <h2 className="text-2xl lg:text-3xl font-bold text-center mb-8">
+            {unq(s.categories_title) || t("categories_title", "Categoriile Noastre")}
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {categories.slice(0, categoriesCount).map((cat: any) => (
+              <Link key={cat.id} to={`/catalog/${cat.slug}`} className="group relative rounded-xl overflow-hidden bg-gray-100 aspect-[4/3] flex items-end">
+                {cat.image_url && <img src={cat.image_url} alt={cat.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />}
+                <div className="relative z-10 w-full p-4 bg-gradient-to-t from-black/60 to-transparent">
+                  <h3 className="text-white font-bold text-sm">{cat.name}</h3>
+                  {cat.description && <p className="text-white/70 text-xs mt-0.5 line-clamp-1">{cat.description}</p>}
+                </div>
+              </Link>
+            ))}
           </div>
         </section>
       )}
@@ -255,8 +291,49 @@ export default function Index() {
         </section>
       )}
 
+      {/* ── DE CE MAMA LUCICA (Benefits) ── */}
+      {showBenefits && (
+        <section className="py-14" style={{ background: "#faf8f5" }}>
+          <div className="ml-container">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+              {[1, 2, 3, 4].map(i => {
+                const icon = unq(s[`benefit_${i}_icon`]) || "✨";
+                const title = unq(s[`benefit_${i}_title`]) || "";
+                const subtitle = unq(s[`benefit_${i}_subtitle`]) || "";
+                if (!title) return null;
+                return (
+                  <div key={i} className="flex flex-col items-center gap-2">
+                    <span className="text-3xl">{icon}</span>
+                    <h3 className="text-sm font-bold">{title}</h3>
+                    <p className="text-xs text-gray-500">{subtitle}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── MID BANNER ── */}
+      {showMidBanner && (
+        <section className="ml-container py-6">
+          <Link
+            to={unq(s.mid_banner_url) || "#"}
+            className="block relative rounded-xl overflow-hidden min-h-[140px] flex items-center justify-center text-white text-center"
+            style={{ background: unq(s.mid_banner_bg) || "#2563eb" }}
+          >
+            {unq(s.mid_banner_image) && (
+              <img src={unq(s.mid_banner_image)} alt="" className="absolute inset-0 w-full h-full object-cover" />
+            )}
+            <div className="relative z-10 p-6">
+              <h3 className="text-2xl font-bold">{unq(s.mid_banner_text) || "Ofertă Specială"}</h3>
+            </div>
+          </Link>
+        </section>
+      )}
+
       {/* ── NEWSLETTER ── */}
-      <HomepageNewsletter />
+      {showNewsletter && <HomepageNewsletter />}
 
       {/* ── EMPTY STATE ── */}
       {newProducts.length === 0 && bestSellers.length === 0 && categories.length === 0 && (
