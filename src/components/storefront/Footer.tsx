@@ -30,9 +30,9 @@ export default function Footer() {
   const step3 = unq(s.footer_step3_text) || "Primește comanda";
 
   // Colors
-  const mainBg = unq(s.footer_main_bg) || unq(s.footer_bg_color) || "#1f1f1f";
+  const mainBg = unq(s.footer_bg_color) || unq(s.footer_main_bg) || unq(s.theme_footer_color) || "#1f1f1f";
   const copyrightBg = unq(s.footer_copyright_bg) || "#181818";
-  const primaryColor = unq(s.theme_primary_color) || "#2563eb";
+  const primaryColor = unq(s.primary_color) || unq(s.theme_primary_color) || "#2563eb";
 
   // Badges
   const deliveryBadgesRaw = unq(s.footer_delivery_badges) || "DPD,Fan Courier,Cargus";
