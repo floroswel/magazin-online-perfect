@@ -10867,6 +10867,8 @@ export type Database = {
         Row: {
           allowed_delivery_method_ids: Json | null
           allowed_ips: string | null
+          cashback_enabled: boolean
+          cashback_pct: number
           checkout_display_name: string
           condition_categories: Json | null
           condition_countries: Json | null
@@ -10885,6 +10887,8 @@ export type Database = {
         Insert: {
           allowed_delivery_method_ids?: Json | null
           allowed_ips?: string | null
+          cashback_enabled?: boolean
+          cashback_pct?: number
           checkout_display_name?: string
           condition_categories?: Json | null
           condition_countries?: Json | null
@@ -10903,6 +10907,8 @@ export type Database = {
         Update: {
           allowed_delivery_method_ids?: Json | null
           allowed_ips?: string | null
+          cashback_enabled?: boolean
+          cashback_pct?: number
           checkout_display_name?: string
           condition_categories?: Json | null
           condition_countries?: Json | null
