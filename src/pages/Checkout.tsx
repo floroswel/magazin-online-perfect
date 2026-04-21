@@ -59,8 +59,26 @@ export default function Checkout() {
 
   const [consents, setConsents] = useState<LegalConsentsState>(EMPTY_CONSENTS);
 
-  const FREE_SHIP = 200;
-  const shipping = subtotal >= FREE_SHIP ? 0 : 35;
+  // ── Dynamic settings for shipping ──
+  const [freeShipThreshold, setFreeShipThreshold] = useState(200);
+  const [shippingCostSetting, setShippingCostSetting] = useState(35);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await (supabase as any)
+        .from("app_settings")
+        .select("key, value_json")
+        .in("key", ["free_shipping_threshold", "default_shipping_cost"]);
+      if (!data) return;
+      data.forEach((r: any) => {
+        const v = Number(typeof r.value_json === "string" ? r.value_json : r.value_json ?? 0);
+        if (r.key === "free_shipping_threshold" && v > 0) setFreeShipThreshold(v);
+        if (r.key === "default_shipping_cost" && v > 0) setShippingCostSetting(v);
+      });
+    })();
+  }, []);
+
+  const shipping = subtotal >= freeShipThreshold ? 0 : shippingCostSetting;
   const total = subtotal + shipping;
 
   // Load judete on mount
@@ -288,6 +306,39 @@ export default function Checkout() {
       }));
       await (supabase as any).from("order_items").insert(itemsPayload);
       clear();
+
+      // Send order confirmation email (fire-and-forget)
+      supabase.functions.invoke("send-email", {
+        body: {
+          type: "order_confirmation",
+          to: form.email,
+          data: {
+            order_number: order.order_number || order.id.slice(0, 8),
+            total,
+            name: `${form.first_name} ${form.last_name}`.trim(),
+            items: items.map((it) => ({ name: it.name, qty: it.quantity, price: it.price })),
+          },
+        },
+      }).catch(console.error);
+
+      // If card payment → redirect to Netopia
+      if (form.payment_method === "card") {
+        try {
+          const { data: payData, error: payError } = await supabase.functions.invoke("netopia-payment", {
+            body: { orderId: order.id },
+          });
+          if (payError) throw payError;
+          if (payData?.paymentUrl) {
+            window.location.href = payData.paymentUrl;
+            return;
+          }
+          toast.error("Nu s-a putut inițializa plata cu cardul. Comanda a fost salvată.");
+        } catch (payErr: any) {
+          console.error("Netopia redirect error:", payErr);
+          toast.error("Eroare la procesarea plății cu cardul. Comanda a fost salvată.");
+        }
+      }
+
       toast.success("Comandă plasată cu succes!");
       navigate(`/track?order=${order.order_number || order.id}`);
     } catch (err: any) {
