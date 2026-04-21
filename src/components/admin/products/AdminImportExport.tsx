@@ -168,8 +168,8 @@ const INTERVAL_OPTIONS = [
 ];
 
 const CSV_TEMPLATE = `name,slug,description,short_description,price,compare_at_price,cost_price,sku,ean,stock,low_stock_threshold,weight_kg,brand,categories,tags,status,featured,visible,meta_title,meta_description
-"Produs Exemplu 1","produs-exemplu-1","Descriere detaliata","Descriere scurta",199.99,249.99,100,SKU001,5901234123457,50,5,1.5,"Samsung","electronice,telefoane","tag1,tag2",active,true,true,"Produs Exemplu 1 | Magazin","Descriere SEO pentru produs exemplu"
-"Produs Exemplu 2","produs-exemplu-2","Alt produs","Scurt",99.99,,60,SKU002,,100,10,0.5,"Apple","accesorii","tag3",active,false,true,"Produs Exemplu 2","Alt produs SEO"`;
+"Lumânare Vanilie & Santal","lumanare-vanilie-santal","Lumânare parfumată handmade din ceară de soia","Lumânare premium cu parfum de vanilie",89.99,119.99,35,LUM001,5901234123457,50,5,0.3,"Mama Lucica","lumanari-parfumate","vanilie,santal",active,true,true,"Lumânare Vanilie | Mama Lucica","Lumânare parfumată handmade din ceară de soia"
+"Odorizant Auto Lavandă","odorizant-auto-lavanda","Odorizant premium","Parfum auto",29.99,,12,ODR001,,100,10,0.1,"Mama Lucica","odorizante-auto","lavanda",active,false,true,"Odorizant Lavandă","Odorizant auto premium"`;
 
 export default function AdminImportExport() {
   const [importing, setImporting] = useState(false);
