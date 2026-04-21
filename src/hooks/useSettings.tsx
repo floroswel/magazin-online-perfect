@@ -177,6 +177,34 @@ const SETTINGS_KEYS = [
   "footer_step4_icon", "footer_step4_title", "footer_step4_text",
   // ━━ Footer delivery/payment badges ━━
   "footer_delivery_badges", "footer_payment_badges",
+  // ━━ Benefits section ━━
+  "show_benefits",
+  "benefit_1_icon", "benefit_1_title", "benefit_1_subtitle",
+  "benefit_2_icon", "benefit_2_title", "benefit_2_subtitle",
+  "benefit_3_icon", "benefit_3_title", "benefit_3_subtitle",
+  "benefit_4_icon", "benefit_4_title", "benefit_4_subtitle",
+  // ━━ Mid banner ━━
+  "show_mid_banner", "mid_banner_image", "mid_banner_text", "mid_banner_url", "mid_banner_bg",
+  // ━━ Navbar special link ━━
+  "navbar_special_link_text", "navbar_special_link_url", "navbar_special_link_color",
+  // ━━ Section counts ━━
+  "categories_count", "new_arrivals_count", "featured_count",
+  // ━━ WhatsApp extras ━━
+  "whatsapp_position", "whatsapp_color",
+  // ━━ Popup extras ━━
+  "popup_title", "popup_subtitle", "popup_btn_color", "popup_btn_text",
+  // ━━ Newsletter extras ━━
+  "newsletter_btn_text", "newsletter_text_color",
+  // ━━ Mega menu ━━
+  "show_megamenu", "megamenu_banner_text", "megamenu_categories_count",
+  // ━━ Header toggles ━━
+  "header_topbar_show", "header_topbar_right_text",
+  "header_show_compare", "header_show_favorites", "header_show_account",
+  "search_border_color",
+  // ━━ Hero extras ━━
+  "hero_show_second_btn", "hero_second_btn_text", "hero_second_btn_url",
+  // ━━ Badge colors ━━
+  "badge_hot_color",
 ];
 
 /* ── Convert a hex color (#RRGGBB) to the HSL string Shadcn expects ("H S% L%") ── */

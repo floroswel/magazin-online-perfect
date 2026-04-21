@@ -71,6 +71,12 @@ export default function Index() {
   const showFeatured = s.show_featured !== "false";
   const showBanners = s.homepage_show_banners !== "false";
   const showBrandStory = s.homepage_show_brand_story !== "false";
+  const showBenefits = s.show_benefits !== "false";
+  const showMidBanner = s.show_mid_banner === "true";
+  const showNewsletter = s.show_newsletter !== "false";
+  const categoriesCount = parseInt(unq(s.categories_count) || "6", 10);
+  const newArrivalsCount = parseInt(unq(s.new_arrivals_count) || "8", 10);
+  const featuredCount = parseInt(unq(s.featured_count) || "8", 10);
 
   // Hero
   const heroTitle = t("hero_title", s.hero_title || "Ritmul lent al momentele calmă");
@@ -255,8 +261,49 @@ export default function Index() {
         </section>
       )}
 
+      {/* ── DE CE MAMA LUCICA (Benefits) ── */}
+      {showBenefits && (
+        <section className="py-14" style={{ background: "#faf8f5" }}>
+          <div className="ml-container">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+              {[1, 2, 3, 4].map(i => {
+                const icon = unq(s[`benefit_${i}_icon`]) || "✨";
+                const title = unq(s[`benefit_${i}_title`]) || "";
+                const subtitle = unq(s[`benefit_${i}_subtitle`]) || "";
+                if (!title) return null;
+                return (
+                  <div key={i} className="flex flex-col items-center gap-2">
+                    <span className="text-3xl">{icon}</span>
+                    <h3 className="text-sm font-bold">{title}</h3>
+                    <p className="text-xs text-gray-500">{subtitle}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── MID BANNER ── */}
+      {showMidBanner && (
+        <section className="ml-container py-6">
+          <Link
+            to={unq(s.mid_banner_url) || "#"}
+            className="block relative rounded-xl overflow-hidden min-h-[140px] flex items-center justify-center text-white text-center"
+            style={{ background: unq(s.mid_banner_bg) || "#2563eb" }}
+          >
+            {unq(s.mid_banner_image) && (
+              <img src={unq(s.mid_banner_image)} alt="" className="absolute inset-0 w-full h-full object-cover" />
+            )}
+            <div className="relative z-10 p-6">
+              <h3 className="text-2xl font-bold">{unq(s.mid_banner_text) || "Ofertă Specială"}</h3>
+            </div>
+          </Link>
+        </section>
+      )}
+
       {/* ── NEWSLETTER ── */}
-      <HomepageNewsletter />
+      {showNewsletter && <HomepageNewsletter />}
 
       {/* ── EMPTY STATE ── */}
       {newProducts.length === 0 && bestSellers.length === 0 && categories.length === 0 && (
