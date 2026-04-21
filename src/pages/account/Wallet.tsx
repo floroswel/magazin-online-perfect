@@ -31,20 +31,28 @@ export default function WalletPage() {
   const [txs, setTxs] = useState<Tx[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [balance, setBalance] = useState(0);
+
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const { data } = await supabase
-        .from("wallet_transactions")
-        .select("id, type, amount, direction, description, created_at")
-        .eq("customer_id", user.id)
-        .order("created_at", { ascending: false });
-      setTxs(data || []);
+      const [txRes, walletRes] = await Promise.all([
+        supabase
+          .from("wallet_transactions")
+          .select("id, type, amount, direction, description, created_at")
+          .eq("customer_id", user.id)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("customer_wallets" as any)
+          .select("available_balance")
+          .eq("customer_id", user.id)
+          .maybeSingle(),
+      ]);
+      setTxs(txRes.data || []);
+      setBalance(Number((walletRes.data as any)?.available_balance) || 0);
       setLoading(false);
     })();
   }, [user]);
-
-  const balance = txs.reduce((sum, t) => sum + (isCredit(t) ? Number(t.amount) : -Number(t.amount)), 0);
 
   return (
     <AccountLayout title="Portofel">

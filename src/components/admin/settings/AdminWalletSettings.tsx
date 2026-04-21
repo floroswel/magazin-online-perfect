@@ -10,7 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Save, Wallet, Settings, Filter } from "lucide-react";
+import { Save, Wallet, Settings, Filter, Gift } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AdminWalletSettings() {
@@ -44,6 +44,8 @@ export default function AdminWalletSettings() {
     limit_individual_pct: 100,
     limit_legal_pct: 100,
     allowed_ips: "",
+    cashback_enabled: false,
+    cashback_pct: 5,
   });
 
   useEffect(() => {
@@ -63,6 +65,8 @@ export default function AdminWalletSettings() {
         limit_individual_pct: settings.limit_individual_pct ?? 100,
         limit_legal_pct: settings.limit_legal_pct ?? 100,
         allowed_ips: settings.allowed_ips || "",
+        cashback_enabled: settings.cashback_enabled || false,
+        cashback_pct: settings.cashback_pct ?? 5,
       });
     }
   }, [settings]);
@@ -125,6 +129,7 @@ export default function AdminWalletSettings() {
       <Tabs defaultValue="general">
         <TabsList>
           <TabsTrigger value="general"><Settings className="w-4 h-4 mr-1" /> Setări generale</TabsTrigger>
+          <TabsTrigger value="cashback"><Gift className="w-4 h-4 mr-1" /> Cashback</TabsTrigger>
           <TabsTrigger value="conditions"><Filter className="w-4 h-4 mr-1" /> Condiții afișare</TabsTrigger>
         </TabsList>
 
@@ -244,6 +249,45 @@ export default function AdminWalletSettings() {
                     />
                   </div>
                 </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="cashback" className="space-y-5 mt-4">
+          <Card>
+            <CardContent className="pt-6 space-y-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-base font-semibold">Cashback automat la livrare</Label>
+                  <p className="text-sm text-muted-foreground">La fiecare comandă livrată, clientul primește un % din valoarea comenzii în portofel</p>
+                </div>
+                <Switch
+                  checked={form.cashback_enabled}
+                  onCheckedChange={(v) => setForm((f) => ({ ...f, cashback_enabled: v }))}
+                />
+              </div>
+              {form.cashback_enabled && (
+                <div className="space-y-2 pt-2">
+                  <Label>Procent cashback (%)</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={100}
+                    step={0.5}
+                    value={form.cashback_pct}
+                    onChange={(e) => setForm((f) => ({ ...f, cashback_pct: +e.target.value }))}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Ex: 5% → o comandă de 200 RON generează 10 RON cashback în portofel. 
+                    Cashback-ul se acordă automat când comanda trece pe statusul „Livrat".
+                  </p>
+                </div>
+              )}
+              {form.cashback_enabled ? (
+                <Badge className="bg-green-500/15 text-green-500 border-green-500/30">✅ Cashback activ — {form.cashback_pct}%</Badge>
+              ) : (
+                <Badge variant="secondary">⏸️ Cashback dezactivat</Badge>
               )}
             </CardContent>
           </Card>
