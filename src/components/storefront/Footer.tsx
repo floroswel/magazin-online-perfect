@@ -27,21 +27,18 @@ export default function Footer() {
     <>
       <footer className="mt-0">
         {/* LAYER 1 — Pre-footer steps */}
-        <div className="bg-white border-t" style={{ borderColor: "#e5e7eb" }}>
-          <div className="ml-container py-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white border-t border-gray-200">
+          <div className="ml-container py-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left">
             {[
-              { step: "1", title: "Alege produsele", sub: "Navighează catalogul nostru" },
-              { step: "2", title: "Finalizează comanda", sub: "Plată securizată online sau ramburs" },
-              { step: "3", title: "Primești acasă în 24-48h", sub: "Livrare rapidă în toată România" },
-            ].map(({ step, title, sub }) => (
-              <div key={step} className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center text-lg font-bold shrink-0">
+              { step: "1", title: "Alege produsele" },
+              { step: "2", title: "Finalizează comanda" },
+              { step: "3", title: "Primește comanda" },
+            ].map(({ step, title }) => (
+              <div key={step} className="flex flex-col md:flex-row items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold shrink-0">
                   {step}
                 </div>
-                <div>
-                  <p className="font-bold text-sm">{title}</p>
-                  <p className="text-xs text-muted-foreground">{sub}</p>
-                </div>
+                <p className="font-semibold text-sm text-gray-800">{title}</p>
               </div>
             ))}
           </div>
@@ -52,12 +49,12 @@ export default function Footer() {
           <div className="ml-container py-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Col 1 */}
             <div>
-              <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">Informații</h4>
+              <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">Informații utilitare</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link to="/page/despre-noi" className="hover:text-white transition-colors">Despre noi</Link></li>
+                <li><Link to="/page/cum-cumpar" className="hover:text-white transition-colors">Cum cumpăr</Link></li>
+                <li><Link to="/page/livrare" className="hover:text-white transition-colors">Politica de livrare</Link></li>
+                <li><Link to="/page/politica-retur" className="hover:text-white transition-colors">Politica de returnare</Link></li>
                 <li><Link to="/page/termeni-conditii" className="hover:text-white transition-colors">Termeni și condiții</Link></li>
-                <li><Link to="/page/politica-de-confidentialitate" className="hover:text-white transition-colors">Confidențialitate</Link></li>
-                <li><Link to="/page/politica-cookie" className="hover:text-white transition-colors">Politica cookies</Link></li>
                 <li><Link to="/page/gdpr" className="hover:text-white transition-colors">GDPR</Link></li>
               </ul>
             </div>
@@ -67,9 +64,8 @@ export default function Footer() {
               <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">Contul meu</h4>
               <ul className="space-y-2 text-sm">
                 <li><Link to="/account" className="hover:text-white transition-colors">Datele mele</Link></li>
-                <li><Link to="/account/orders" className="hover:text-white transition-colors">Comenzile mele</Link></li>
-                <li><Link to="/account/favorites" className="hover:text-white transition-colors">Favorite</Link></li>
-                <li><Link to="/account/addresses" className="hover:text-white transition-colors">Adrese</Link></li>
+                <li><Link to="/account/orders" className="hover:text-white transition-colors">Comenzi</Link></li>
+                <li><Link to="/account/favorites" className="hover:text-white transition-colors">Lista de dorințe</Link></li>
               </ul>
             </div>
 
@@ -80,8 +76,6 @@ export default function Footer() {
                 <li><Link to="/page/despre-noi" className="hover:text-white transition-colors">Despre noi</Link></li>
                 <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
                 <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
-                <li><Link to="/page/livrare" className="hover:text-white transition-colors">Livrare</Link></li>
-                <li><Link to="/page/politica-retur" className="hover:text-white transition-colors">Politica retur</Link></li>
               </ul>
             </div>
 
@@ -90,37 +84,43 @@ export default function Footer() {
               <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">Suport clienți</h4>
               <ul className="space-y-3 text-sm">
                 <li className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-primary shrink-0" />
+                  <span>📞</span>
                   <a href={`tel:${phone.replace(/\s/g, "")}`} className="hover:text-white font-medium">{phone}</a>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-primary shrink-0" />
+                  <span>✉️</span>
                   <a href={`mailto:${email}`} className="hover:text-white break-all">{email}</a>
-                </li>
-                <li className="flex items-center gap-2 text-xs opacity-70">
-                  <Clock className="h-4 w-4 shrink-0" />
-                  <span>{schedule}</span>
                 </li>
               </ul>
             </div>
           </div>
         </div>
 
-        {/* LAYER 3 — Payment & compliance */}
+        {/* LAYER 3 — Payment & delivery logos */}
         <div style={{ background: "#1f1f1f" }} className="border-t border-gray-800">
           <div className="ml-container py-5 flex flex-col lg:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3 flex-wrap justify-center">
-              <span className="text-xs text-gray-500 uppercase tracking-wider">Plată securizată</span>
-              <FooterPaymentIcons />
+              <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Livrare:</span>
+              <span className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">DPD</span>
+              <span className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">Fan Courier</span>
+              <span className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">Cargus</span>
             </div>
-            <div className="flex items-center gap-3">
-              <a href={anpcUrl} target="_blank" rel="noopener noreferrer" className="block bg-white rounded px-2 py-1 hover:opacity-90">
-                <img src={anpcLogo} alt="ANPC SAL" className="h-8" loading="lazy" />
-              </a>
-              <a href={salUrl} target="_blank" rel="noopener noreferrer" className="block bg-white rounded px-2 py-1 hover:opacity-90">
-                <img src={salLogo} alt="ANPC SOL" className="h-8" loading="lazy" />
-              </a>
+            <div className="flex items-center gap-3 flex-wrap justify-center">
+              <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Plată securizată:</span>
+              <span className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">VISA</span>
+              <span className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">MASTERCARD</span>
+              <span className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">NETOPIA</span>
+              <span className="bg-gray-700 text-gray-300 text-xs font-bold px-3 py-1 rounded">RAMBURS</span>
             </div>
+          </div>
+          {/* ANPC */}
+          <div className="ml-container pb-4 flex items-center justify-center gap-3">
+            <a href={anpcUrl} target="_blank" rel="noopener noreferrer" className="block bg-white rounded px-2 py-1 hover:opacity-90">
+              <img src={anpcLogo} alt="ANPC SAL" className="h-8" loading="lazy" />
+            </a>
+            <a href={salUrl} target="_blank" rel="noopener noreferrer" className="block bg-white rounded px-2 py-1 hover:opacity-90">
+              <img src={salLogo} alt="ANPC SOL" className="h-8" loading="lazy" />
+            </a>
           </div>
         </div>
 
