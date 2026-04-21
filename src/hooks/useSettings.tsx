@@ -47,7 +47,7 @@ const SETTINGS_KEYS = [
   // Footer columns (new 4-col layout)
   "footer_col1_title", "footer_col1_links", "footer_col1_show",
   "footer_col2_title", "footer_col2_links", "footer_col2_show",
-  "footer_col3_title", "footer_col3_show",
+  "footer_col3_title", "footer_col3_links", "footer_col3_show",
   "footer_col4_title", "footer_col4_show", "footer_col4_support_text",
   // Footer legacy columns
   "footer_show_products_col", "footer_products_title", "footer_products_links",
