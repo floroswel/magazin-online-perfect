@@ -35,7 +35,7 @@ export default function Auth() {
         if (error) { setError(error.message); } else { setRegisterSuccess(true); }
       } else {
         const { error } = await signIn(email, password);
-        if (error) { setError("Email sau parolă incorectă"); } else { toast.success("Bun venit!"); navigate("/admin"); }
+        if (error) { setError("Email sau parolă incorectă"); } else { toast.success("Bun venit!"); navigate("/account"); }
       }
     } catch { setError("A apărut o eroare"); }
     finally { setLoading(false); }

@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingBag, Heart, Star } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
@@ -19,7 +20,7 @@ export interface ProductCardData {
   category_name?: string | null;
 }
 
-export default function ProductCard({ p }: { p: ProductCardData }) {
+const ProductCard = forwardRef<HTMLElement, { p: ProductCardData }>(function ProductCard({ p }, ref) {
   const { addItem } = useCart();
   const { toggle, isFav } = useFavorites();
   const fav = isFav?.(p.id) ?? false;
@@ -29,7 +30,7 @@ export default function ProductCard({ p }: { p: ProductCardData }) {
   const outOfStock = (p.stock ?? 1) <= 0;
 
   return (
-    <article className="wm-card group flex flex-col">
+    <article ref={ref} className="wm-card group flex flex-col">
       <Link to={`/produs/${p.slug}`} className="relative wm-card-img overflow-hidden">
         {p.image_url ? (
           <img
@@ -96,4 +97,6 @@ export default function ProductCard({ p }: { p: ProductCardData }) {
       </div>
     </article>
   );
-}
+});
+
+export default ProductCard;
