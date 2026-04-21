@@ -1,125 +1,107 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Instrument+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ──────────────────────────────────────────────────────────────
-   MamaLucica — Journal × Woodmart Hybrid (Facebook Blue)
-   Primary #1877F2 · BG #FFFFFF / #F0F2F5 · Text #050505 / #65676B
-   Footer dark #0d0d0d cu accent albastru
-   ────────────────────────────────────────────────────────────── */
-
 @layer base {
   :root {
-    /* === BRAND CORE — Cartuseria.ro inspired (Navy + Orange) === */
-    --fb-blue: 212 65% 26%;          /* #173E70 navy corporate */
-    --fb-blue-hover: 212 65% 20%;    /* hover state */
-    --fb-blue-dark: 212 70% 16%;
-    --fb-blue-soft: 212 60% 95%;     /* badge bg, hover row */
-    --fb-text: 0 0% 12%;             /* #1f1f1f */
-    --fb-text-secondary: 215 10% 38%;
-    --fb-bg: 0 0% 100%;              /* card white */
-    --fb-bg-soft: 0 0% 97%;          /* page bg quasi-white */
-    --fb-border: 210 14% 88%;        /* divider */
-    --fb-border-strong: 210 14% 78%;
+    /* === Theme variables — populated by useSettings from DB === */
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f5f5f5;
+    --color-text-primary: #111111;
+    --color-text-secondary: #666666;
+    --color-primary: #2563eb;
+    --color-primary-hover: #1d4ed8;
+    --color-navbar: #333333;
+    --color-topbar: #222222;
+    --color-footer: #1f1f1f;
+    --color-ticker: #d32f2f;
+    --color-badge-new: #16a34a;
+    --color-badge-sale: #dc2626;
+    --color-badge-hot: #ea580c;
+    --color-price: #dc2626;
+    --color-price-old: #999999;
+    --color-border: #e5e5e5;
+    --color-card-bg: #ffffff;
 
-    /* Footer dark navy + portocaliu accent (cartuseria style) */
-    --footer-bg: 212 70% 14%;        /* deep navy */
-    --footer-fg: 0 0% 98%;
-    --footer-muted: 210 20% 75%;
-    --footer-accent: 22 95% 52%;     /* portocaliu CTA */
+    /* Fonts */
+    --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-nav: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
-    --badge-new-bg: 145 55% 38%;
-    --badge-sale-bg: 22 95% 52%;     /* portocaliu -10% */
-    --badge-hot-bg: 0 75% 50%;
-    --star-color: 38 92% 50%;
+    /* Dimensions */
+    --container-max: 1280px;
+    --header-height: 70px;
+    --topbar-height: 32px;
+    --navbar-height: 42px;
+    --radius-card: 4px;
+    --radius-btn: 4px;
 
-    /* Top info bar — navy închis */
-    --topbar-bg: 212 70% 16%;
-    --topbar-fg: 0 0% 100%;
-
-    /* Category icon pill bg — bara nav albastră */
-    --cat-pill-bg: 212 65% 26%;
-    --cat-pill-fg: 0 0% 100%;
-
-    /* === Backward-compat: atelier-* mapate pe noua paletă === */
-    --atelier-noir: 0 0% 5%;
-    --atelier-or: 214 89% 52%;       /* fost gold, acum albastru brand */
-    --atelier-cream: 0 0% 100%;
-    --atelier-ivory: 210 14% 98%;
-    --atelier-espresso: 0 0% 10%;
-    --atelier-bordeaux: 0 75% 42%;
-    --atelier-bordeaux-soft: 0 65% 52%;
-    --atelier-sage: 145 45% 38%;
-    --atelier-sage-soft: 145 50% 94%;
-
-    /* === Shadcn semantic tokens (storefront) — Cartuseria style === */
-    --background: 0 0% 100%;          /* page bg alb curat */
-    --foreground: 0 0% 12%;
+    /* === Shadcn semantic tokens === */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 7%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 12%;
+    --card-foreground: 0 0% 7%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 12%;
-    --primary: 22 95% 52%;            /* PORTOCALIU CTA — Adaugă în coș */
+    --popover-foreground: 0 0% 7%;
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 212 65% 26%;         /* NAVY — header/nav bg */
+    --secondary: 0 0% 20%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 210 16% 95%;
-    --muted-foreground: 215 10% 38%;
-    --accent: 22 95% 52%;             /* portocaliu hover */
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 217 91% 60%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 75% 50%;
+    --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 210 14% 88%;
-    --input: 210 14% 80%;
-    --ring: 22 95% 52%;
-    --radius: 0.25rem;                /* dreptunghiular subtil — cartuseria */
+    --border: 0 0% 90%;
+    --input: 0 0% 80%;
+    --ring: 217 91% 60%;
+    --radius: 0.25rem;
 
-    --ml-primary: 212 65% 26%;
-    --ml-primary-dark: 212 70% 16%;
-    --ml-primary-darker: 212 75% 12%;
-    --ml-primary-light: 212 60% 95%;
-    --ml-primary-hover: 212 65% 20%;
-    --ml-accent: 22 95% 52%;
-    --ml-accent-dark: 22 95% 44%;
-    --ml-accent-light: 22 95% 95%;
-    --ml-warning: 38 92% 50%;
-    --ml-success: 145 55% 38%;
-
-    /* ── Status semantic tokens (WCAG AA on light + dark) ── */
+    /* Status tokens */
     --success: 145 55% 32%;
     --success-foreground: 0 0% 100%;
     --success-soft: 145 50% 94%;
     --success-soft-foreground: 145 55% 22%;
-
     --warning: 35 85% 42%;
     --warning-foreground: 0 0% 100%;
     --warning-soft: 38 90% 94%;
     --warning-soft-foreground: 30 75% 26%;
-
     --info: 215 75% 42%;
     --info-foreground: 0 0% 100%;
     --info-soft: 215 80% 95%;
     --info-soft-foreground: 215 75% 28%;
-
     --danger: 0 65% 42%;
     --danger-foreground: 0 0% 100%;
     --danger-soft: 0 70% 96%;
     --danger-soft-foreground: 0 65% 32%;
-
-    --neutral-soft: 0 0% 95%;
-    --neutral-soft-foreground: 0 0% 28%;
-
-    --highlight: 38 75% 50%;          /* gold star, premium accent */
+    --highlight: 38 75% 50%;
     --highlight-soft: 38 80% 95%;
 
-    /* Overlays / scrims */
+    /* Overlays */
     --scrim: 0 0% 6%;
     --scrim-strong: 0 0% 0%;
     --on-dark: 0 0% 100%;
-    --on-dark-muted: 0 0% 100%;       /* used with /70 opacity */
 
+    /* Badge colors */
+    --badge-new-bg: 145 55% 38%;
+    --badge-sale-bg: 0 72% 50%;
+    --badge-hot-bg: 25 90% 48%;
+    --star-color: 38 92% 50%;
+
+    /* Footer */
+    --footer-bg: 0 0% 12%;
+    --footer-fg: 0 0% 98%;
+    --footer-muted: 0 0% 60%;
+    --footer-accent: 217 91% 60%;
+
+    /* Topbar */
+    --topbar-bg: 0 0% 13%;
+    --topbar-fg: 0 0% 100%;
+
+    /* Admin sidebar */
     --sidebar-background: 270 35% 14%;
     --sidebar-foreground: 285 25% 82%;
     --sidebar-primary: 327 87% 55%;
@@ -129,53 +111,38 @@
     --sidebar-border: 270 30% 24%;
     --sidebar-ring: 327 87% 55%;
 
-    --container-max: 1320px;
     --container-pad: 1rem;
 
-    --gradient-noir: linear-gradient(135deg, hsl(0 0% 8%), hsl(25 20% 12%));
-    --gradient-cream: linear-gradient(180deg, hsl(38 38% 95%) 0%, hsl(35 18% 92%) 100%);
-    --gradient-gold: linear-gradient(135deg, hsl(35 45% 62%), hsl(35 38% 44%));
-    --gradient-bordeaux: linear-gradient(135deg, hsl(350 38% 28%), hsl(350 32% 20%));
-    --gradient-candlelight: linear-gradient(180deg, hsl(25 25% 8%) 0%, hsl(25 18% 14%) 100%);
+    /* Shadows */
+    --shadow-soft: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-card: 0 2px 12px rgba(0,0,0,0.06);
+    --shadow-elevated: 0 12px 40px -10px rgba(0,0,0,0.18);
 
-    --shadow-soft: 0 1px 3px rgba(20,20,20,0.04), 0 1px 2px rgba(20,20,20,0.06);
-    --shadow-card: 0 2px 12px rgba(20,20,20,0.06);
-    --shadow-elevated: 0 12px 40px -10px rgba(20,20,20,0.18);
-    --shadow-gold: 0 8px 24px -8px rgba(184,147,90,0.45);
-    --shadow-bordeaux: 0 8px 24px -8px rgba(120,40,55,0.35);
-
+    /* Transition */
     --ease-editorial: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --transition-base: 220ms var(--ease-editorial);
-
-    /* ── Friendly aliases (overridden live by ControlTheme via useSettings) ── */
-    --color-primary: #FF6A13;
-    --color-accent: #173E70;
-    --color-bg: #FFFFFF;
-    --color-text: #1f1f1f;
-    --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
-  .dark, .candlelight {
+  .dark {
     --background: 0 0% 8%;
     --foreground: 0 0% 96%;
     --card: 0 0% 12%;
     --card-foreground: 0 0% 96%;
     --popover: 0 0% 12%;
     --popover-foreground: 0 0% 96%;
-    --primary: 214 89% 58%;
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 16%;
     --secondary-foreground: 0 0% 96%;
     --muted: 0 0% 14%;
     --muted-foreground: 0 0% 65%;
-    --accent: 214 89% 58%;
+    --accent: 217 91% 60%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 75% 55%;
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 20%;
     --input: 0 0% 20%;
-    --ring: 214 89% 58%;
+    --ring: 217 91% 60%;
   }
 
   .admin-panel {
@@ -218,24 +185,22 @@
   html { scroll-behavior: smooth; }
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     font-size: 14px;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  h1, h2, h3, h4, .font-display {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  h1, h2, h3, h4 {
+    font-family: var(--font-heading);
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.2;
   }
   h1 { font-size: clamp(2rem, 4vw, 3rem); }
   h2 { font-size: clamp(1.5rem, 2.5vw, 2rem); }
-  .font-display-bold { font-weight: 800; }
-  .font-serif-classic { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 300; }
   .eyebrow {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-nav);
     text-transform: uppercase;
     letter-spacing: 0.12em;
     font-size: 0.7rem;
@@ -243,7 +208,6 @@
     color: hsl(var(--muted-foreground));
   }
   img { max-width: 100%; display: block; }
-
   ::selection { background: hsl(var(--accent) / 0.25); color: hsl(var(--foreground)); }
 }
 
@@ -254,31 +218,7 @@
     padding: 0 var(--container-pad);
   }
 
-  .text-gradient-gold {
-    background: var(--gradient-gold);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-  }
-
-  .bg-cream-gradient { background: var(--gradient-cream); }
-  .bg-noir-gradient { background: var(--gradient-noir); }
-  .shadow-editorial { box-shadow: var(--shadow-elevated); }
-  .shadow-gold { box-shadow: var(--shadow-gold); }
-
-  /* Editorial section spacer with gold rule */
-  .section-rule {
-    @apply flex items-center gap-4 mb-8;
-  }
-  .section-rule::before,
-  .section-rule::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: hsl(var(--accent) / 0.4);
-  }
-
+  /* Ticker animation */
   .ticker-track {
     animation: ticker 28s linear infinite;
   }
@@ -287,69 +227,36 @@
     100% { transform: translateX(-50%); }
   }
 
-  /* Editorial vignette + paper grain on hero */
-  .hero-vignette::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse at center, transparent 40%, hsl(var(--atelier-noir) / 0.08) 100%);
-    pointer-events: none;
-    z-index: 1;
+  /* Skeleton loading */
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
   }
-  .paper-grain {
-    background-image:
-      radial-gradient(hsl(var(--atelier-or) / 0.07) 1px, transparent 1px),
-      radial-gradient(hsl(var(--atelier-noir) / 0.05) 1px, transparent 1px);
-    background-size: 18px 18px, 28px 28px;
-    background-position: 0 0, 9px 14px;
-  }
-  .paper-grain-strong {
-    background-image:
-      radial-gradient(hsl(var(--atelier-or) / 0.10) 1px, transparent 1px),
-      radial-gradient(hsl(var(--atelier-noir) / 0.06) 1.2px, transparent 1.2px),
-      linear-gradient(180deg, hsl(var(--atelier-ivory)) 0%, hsl(var(--atelier-cream)) 100%);
-    background-size: 16px 16px, 24px 24px, 100% 100%;
-    background-position: 0 0, 8px 12px, 0 0;
+  .skeleton {
+    background: linear-gradient(90deg,
+      hsl(var(--muted)) 25%,
+      hsl(var(--border)) 50%,
+      hsl(var(--muted)) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s infinite;
   }
 
-  /* Bordeaux + Sage badge utilities */
-  .badge-limited {
-    background: var(--gradient-bordeaux);
-    color: hsl(var(--atelier-cream));
-    box-shadow: var(--shadow-bordeaux);
-  }
-  .badge-natural {
-    background: hsl(var(--atelier-sage-soft));
-    color: hsl(145 35% 22%);
-    border: 1px solid hsl(var(--atelier-sage) / 0.3);
+  /* Spin */
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
 
-  /* Editorial section rhythm */
-  .section-tight { @apply py-16 md:py-20; }
-  .section-base  { @apply py-20 md:py-32; }
-  .section-tall  { @apply py-28 md:py-40; }
-
-  /* Gold rule divider */
-  .gold-rule {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--accent) / 0.6), transparent);
+  /* Stagger animation */
+  .stagger > * { opacity: 0; animation: fade-in-up 0.7s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
+  .stagger > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.15s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.25s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.35s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.45s; }
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
   }
-
-  /* Animated underline link */
-  .link-underline {
-    position: relative;
-    display: inline-block;
-  }
-  .link-underline::after {
-    content: '';
-    position: absolute;
-    left: 0; bottom: -2px;
-    width: 100%; height: 1px;
-    background: hsl(var(--accent));
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.4s var(--ease-editorial);
-  }
-  .link-underline:hover::after { transform: scaleX(1); transform-origin: left; }
 
   /* Shine on hover (CTA buttons) */
   .btn-shine { position: relative; overflow: hidden; }
@@ -366,83 +273,38 @@
     to { transform: translateX(250%) skewX(-20deg); }
   }
 
-  /* Glow halo for candle */
-  .candle-glow {
-    background: radial-gradient(circle at center, hsl(35 80% 60% / 0.45) 0%, hsl(35 80% 60% / 0.15) 30%, transparent 70%);
-    filter: blur(24px);
-  }
-
-  /* Smoke wisps */
-  .smoke {
-    position: absolute;
-    width: 8px; height: 60px;
-    background: linear-gradient(to top, hsl(38 38% 95% / 0.5), transparent);
-    border-radius: 50%;
-    filter: blur(6px);
-    animation: smoke-rise 4s ease-out infinite;
-  }
-  @keyframes smoke-rise {
-    0% { opacity: 0; transform: translateY(0) scale(1); }
-    20% { opacity: 0.5; }
-    100% { opacity: 0; transform: translateY(-100px) scale(2.5); }
-  }
-
-  /* Stagger helper */
-  .stagger > * { opacity: 0; animation: fade-in-up 0.7s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
-  .stagger > *:nth-child(1) { animation-delay: 0.05s; }
-  .stagger > *:nth-child(2) { animation-delay: 0.15s; }
-  .stagger > *:nth-child(3) { animation-delay: 0.25s; }
-  .stagger > *:nth-child(4) { animation-delay: 0.35s; }
-  .stagger > *:nth-child(5) { animation-delay: 0.45s; }
-  @keyframes fade-in-up {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-  }
-  .skeleton {
-    background: linear-gradient(90deg,
-      hsl(var(--muted)) 25%,
-      hsl(var(--border)) 50%,
-      hsl(var(--muted)) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.6s infinite;
-  }
-
-  /* Catalog/product token bridges (still used by admin previews) */
+  /* Catalog/product token bridges */
   .price-now, .card-price-now { color: var(--product-price-color, hsl(var(--primary))) !important; }
   .stars, .star-filled { color: var(--stars-color, hsl(var(--star-color))) !important; }
   .badge-sale { background: var(--badge-sale-color, hsl(var(--badge-sale-bg))) !important; }
   .badge-new { background: var(--badge-new-color, hsl(var(--badge-new-bg))) !important; }
 
-  /* ─── Journal × Woodmart hybrid utilities ─────────────────────── */
+  /* Topbar utility */
   .journal-topbar { background: hsl(var(--topbar-bg)); color: hsl(var(--topbar-fg)); font-size: 12px; }
 
+  /* Pill buttons */
   .pill-btn { @apply inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors; }
   .pill-btn-light { @apply pill-btn bg-secondary text-foreground hover:bg-muted; }
   .pill-btn-dark  { @apply pill-btn bg-foreground text-background hover:bg-foreground/90; }
   .pill-btn-blue  { @apply pill-btn bg-primary text-primary-foreground hover:bg-primary/90; }
 
+  /* Search pill */
   .search-pill {
     @apply h-12 w-full rounded-full border border-input bg-background pl-12 pr-32 text-sm
            focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all;
   }
 
+  /* Category icon pill */
   .cat-icon-pill {
     @apply inline-flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium text-foreground/80
            hover:bg-secondary hover:text-primary transition-colors whitespace-nowrap;
   }
-  .cat-icon-pill svg { color: hsl(var(--cat-pill-fg)); }
 
+  /* Card system */
   .wm-card {
-    @apply relative bg-card rounded-2xl overflow-hidden border border-border/50
+    @apply relative bg-card overflow-hidden border border-border/50
            hover:border-border hover:shadow-lg transition-all duration-300;
+    border-radius: var(--radius-card);
   }
   .wm-card-img { @apply aspect-square bg-secondary/40 flex items-center justify-center p-4 sm:p-8; }
   .wm-card-body { @apply p-4 sm:p-5; }
@@ -478,6 +340,7 @@
   }
   .topseller-num { @apply text-3xl font-bold text-muted-foreground/40 w-8 shrink-0 text-center; }
 
+  /* Footer */
   .footer-dark { background: hsl(var(--footer-bg)); color: hsl(var(--footer-fg)); }
   .footer-dark a:hover { color: hsl(var(--footer-accent)); }
   .footer-col-title {
@@ -492,4 +355,35 @@
     background: hsl(var(--footer-accent));
   }
   .footer-link { color: hsl(var(--footer-muted)); @apply text-sm py-1 block transition-colors; }
+
+  /* Link underline animation */
+  .link-underline {
+    position: relative;
+    display: inline-block;
+  }
+  .link-underline::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -2px;
+    width: 100%; height: 1px;
+    background: hsl(var(--accent));
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s var(--ease-editorial);
+  }
+  .link-underline:hover::after { transform: scaleX(1); transform-origin: left; }
+
+  /* Section spacing */
+  .section-tight { @apply py-16 md:py-20; }
+  .section-base  { @apply py-20 md:py-32; }
+  .section-tall  { @apply py-28 md:py-40; }
+
+  /* Marquee animation for new ticker */
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .marquee-track {
+    animation: marquee var(--marquee-speed, 25s) linear infinite;
+  }
 }

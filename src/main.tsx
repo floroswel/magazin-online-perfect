@@ -1,6 +1,6 @@
-// Prevent flash of unstyled content (Atelier cream base)
-document.documentElement.style.backgroundColor = '#F8F5EF';
-document.body && (document.body.style.backgroundColor = '#F8F5EF');
+// Prevent flash of unstyled content
+document.documentElement.style.backgroundColor = '#ffffff';
+document.body && (document.body.style.backgroundColor = '#ffffff');
 
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
