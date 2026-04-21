@@ -86,8 +86,8 @@ export default function AdminBrands() {
         <CardHeader><CardTitle className="text-lg flex items-center gap-2"><Plus className="w-4 h-4" /> Adaugă brand</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div><Label>Nume *</Label><Input value={form.name} onChange={e => { setForm(f => ({ ...f, name: e.target.value, slug: generateSlug(e.target.value) })); }} placeholder="Samsung" /></div>
-            <div><Label>Slug</Label><Input value={form.slug} onChange={e => setForm(f => ({ ...f, slug: e.target.value }))} placeholder="samsung" /></div>
+            <div><Label>Nume *</Label><Input value={form.name} onChange={e => { setForm(f => ({ ...f, name: e.target.value, slug: generateSlug(e.target.value) })); }} placeholder="Mama Lucica" /></div>
+            <div><Label>Slug</Label><Input value={form.slug} onChange={e => setForm(f => ({ ...f, slug: e.target.value }))} placeholder="mama-lucica" /></div>
             <div><Label>Logo URL</Label><Input value={form.logo_url} onChange={e => setForm(f => ({ ...f, logo_url: e.target.value }))} placeholder="https://..." /></div>
             <div><Label>Descriere</Label><Input value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Scurtă descriere" /></div>
           </div>
