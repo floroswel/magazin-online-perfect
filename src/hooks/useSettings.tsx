@@ -86,6 +86,8 @@ const SETTINGS_KEYS = [
   "show_featured", "show_trust", "show_new_arrivals", "show_recently_viewed", "show_newsletter", "show_social_proof",
   // Misc
   "low_stock_threshold", "nav_bar_color", "header_bg",
+  // Hero
+  "hero_title", "hero_subtitle", "hero_cta_text", "hero_cta_url", "hero_image_url",
   "bestsellers_title", "new_arrivals_title",
   "flash_deals_title", "categories_title",
   "newsletter_title", "newsletter_subtitle", "newsletter_bg", "newsletter_trust_text",
