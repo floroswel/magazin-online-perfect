@@ -1037,6 +1037,48 @@ export default function AdminProducts() {
                 </div>
               </div>
             )}
+
+            {/* ─── Atribute Produs (din catalog) ─── */}
+            <div className="pt-4 border-t border-border space-y-3">
+              <Label className="text-base font-semibold flex items-center gap-2">
+                🏷️ Atribute Produs
+              </Label>
+              <p className="text-xs text-muted-foreground">
+                Selectează valorile atributelor din catalogul de atribute (Parfum, Tip Ceară, etc.)
+              </p>
+              {productAttributesList.map((attr: any) => (
+                <div key={attr.id} className="space-y-1.5">
+                  <Label className="text-sm">{attr.name}</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {(attr.attribute_values || []).map((val: any) => {
+                      const isSelected = (selectedProductAttrs[attr.id] || []).includes(val.id);
+                      return (
+                        <label key={val.id} className={cn(
+                          "flex items-center gap-2 px-3 py-1.5 rounded-lg border cursor-pointer transition-colors text-sm",
+                          isSelected ? "border-primary bg-primary/10 text-primary" : "border-border hover:border-primary/50"
+                        )}>
+                          <Checkbox
+                            checked={isSelected}
+                            onCheckedChange={(checked) => {
+                              setSelectedProductAttrs(prev => ({
+                                ...prev,
+                                [attr.id]: checked
+                                  ? [...(prev[attr.id] || []), val.id]
+                                  : (prev[attr.id] || []).filter((v: string) => v !== val.id),
+                              }));
+                            }}
+                          />
+                          {val.value}
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+              {productAttributesList.length === 0 && (
+                <p className="text-sm text-muted-foreground">Niciun atribut definit. Adaugă din Produse → Atribute.</p>
+              )}
+            </div>
           </div>
         );
 
