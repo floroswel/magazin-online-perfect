@@ -33,33 +33,27 @@ const ProductCard = forwardRef<HTMLElement, { p: ProductCardData }>(function Pro
     <article ref={ref} className="wm-card group flex flex-col">
       <Link to={`/produs/${p.slug}`} className="relative wm-card-img overflow-hidden">
         {p.image_url ? (
-          <img
-            src={p.image_url}
-            alt={p.name}
-            loading="lazy"
-            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
-          />
+          <img src={p.image_url} alt={p.name} loading="lazy" className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
         ) : (
           <div className="text-6xl opacity-50">🕯️</div>
         )}
 
         {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
-          {p.badge_new && <span className="wm-badge wm-badge-new">NEW</span>}
+        <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
+          {p.badge_new && <span className="wm-badge wm-badge-new">NOU</span>}
           {discount > 0 && <span className="wm-badge wm-badge-sale">-{discount}%</span>}
           {p.badge_bestseller && <span className="wm-badge wm-badge-hot">HOT</span>}
         </div>
 
-        {/* Wishlist circle */}
+        {/* Wishlist */}
         <button
           onClick={(e) => { e.preventDefault(); toggle?.(p.id); }}
           aria-label={fav ? "Elimină din favorite" : "Adaugă la favorite"}
-          aria-pressed={fav}
-          className={`absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-card/90 backdrop-blur flex items-center justify-center shadow-sm border border-border/50 transition-all ${
-            fav ? "opacity-100 bg-primary text-primary-foreground" : "opacity-0 group-hover:opacity-100 hover:bg-primary hover:text-primary-foreground"
+          className={`absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow-sm border transition-all ${
+            fav ? "opacity-100 bg-primary text-white border-primary" : "opacity-0 group-hover:opacity-100 border-gray-200 hover:bg-primary hover:text-white hover:border-primary"
           }`}
         >
-          <Heart className={`h-4 w-4 ${fav ? "fill-current" : ""}`} />
+          <Heart className={`h-3.5 w-3.5 ${fav ? "fill-current" : ""}`} />
         </button>
       </Link>
 
@@ -69,28 +63,35 @@ const ProductCard = forwardRef<HTMLElement, { p: ProductCardData }>(function Pro
           {p.name}
         </Link>
 
+        {/* Rating */}
         {(p.rating ?? 0) > 0 && (
-          <div className="flex items-center gap-1 mb-2 text-xs text-muted-foreground">
-            <Star className="h-3.5 w-3.5 fill-current" style={{ color: "hsl(var(--star-color))" }} />
-            <span className="font-semibold text-foreground">{Number(p.rating).toFixed(1)}</span>
-            <span>({p.review_count ?? 0})</span>
+          <div className="flex items-center gap-1 mb-2">
+            <div className="flex items-center gap-0.5">
+              {[1,2,3,4,5].map(i => (
+                <Star key={i} className="h-3 w-3" style={{ color: i <= Math.round(Number(p.rating)) ? "hsl(var(--star-color))" : "#d1d5db", fill: i <= Math.round(Number(p.rating)) ? "hsl(var(--star-color))" : "none" }} />
+              ))}
+            </div>
+            <span className="text-[11px] text-muted-foreground">({p.review_count ?? 0})</span>
           </div>
         )}
 
+        {/* Price + Add to cart */}
         <div className="mt-auto flex items-end justify-between gap-2 pt-2">
           <div>
             {p.old_price && p.old_price > p.price && (
-              <div className="text-xs text-muted-foreground line-through">{Number(p.old_price).toFixed(2)} lei</div>
+              <div className="text-xs line-through" style={{ color: "var(--color-price-old)" }}>{Number(p.old_price).toFixed(2)} RON</div>
             )}
-            <div className="wm-card-price">{Number(p.price).toFixed(2)} lei</div>
+            <div className="wm-card-price">{Number(p.price).toFixed(2)} RON</div>
           </div>
           <button
             disabled={outOfStock}
             onClick={() => addItem({ product_id: p.id, name: p.name, slug: p.slug, image_url: p.image_url, price: Number(p.price) })}
-            className="w-10 h-10 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center justify-center shadow-sm hover:shadow-md hover:scale-105"
+            className="h-9 px-4 bg-primary text-white text-xs font-bold uppercase tracking-wide hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1.5"
+            style={{ borderRadius: 2 }}
             aria-label={outOfStock ? "Stoc epuizat" : `Adaugă ${p.name} în coș`}
           >
-            <ShoppingBag className="h-4 w-4" />
+            <ShoppingBag className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Adaugă</span>
           </button>
         </div>
         {outOfStock && <div className="mt-2 text-[10px] text-destructive font-bold uppercase">Stoc epuizat</div>}
