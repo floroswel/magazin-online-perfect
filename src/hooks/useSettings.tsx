@@ -138,6 +138,16 @@ const SETTINGS_KEYS = [
   "contact_doc4_show", "contact_doc4_label", "contact_doc4_url",
   "contact_caen_show", "contact_caen_codes",
   "contact_map_show", "contact_map_embed_url",
+  // ━━ New theme keys ━━
+  "ticker_messages", "ticker_bg_color", "ticker_text_color", "ticker_speed",
+  "popup_show", "popup_delay_seconds", "popup_discount_code", "popup_discount_percent",
+  "social_proof_show", "social_proof_interval_seconds",
+  "whatsapp_show", "whatsapp_number", "whatsapp_message",
+  "megamenu_banner_image", "megamenu_banner_url",
+  "theme_primary_color", "theme_navbar_color", "theme_topbar_color",
+  "theme_footer_color", "theme_ticker_color",
+  "theme_font_heading", "theme_font_body",
+  "theme_container_width", "theme_radius_card", "theme_radius_btn",
 ];
 
 /* ── Convert a hex color (#RRGGBB) to the HSL string Shadcn expects ("H S% L%") ── */

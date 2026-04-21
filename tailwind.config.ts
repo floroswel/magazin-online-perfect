@@ -14,10 +14,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["'Inter'", "system-ui", "sans-serif"],
-        display: ["'Fraunces'", "'Cormorant Garamond'", "Georgia", "serif"],
-        serif: ["'Cormorant Garamond'", "Georgia", "serif"],
-        eyebrow: ["'Instrument Sans'", "'Inter'", "sans-serif"],
+        sans: ["var(--font-body)", "system-ui", "sans-serif"],
+        display: ["var(--font-heading)", "system-ui", "sans-serif"],
+        serif: ["var(--font-heading)", "Georgia", "serif"],
+        eyebrow: ["var(--font-nav)", "'Inter'", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

@@ -8,6 +8,9 @@ import Footer from "./Footer";
 import MobileBottomNav from "./MobileBottomNav";
 import CookieConsent from "./CookieConsent";
 import CompareBar from "./CompareBar";
+import ThemePopupNewsletter from "./theme/ThemePopupNewsletter";
+import ThemeToastSocialProof from "./theme/ThemeToastSocialProof";
+import ThemeWhatsApp from "./theme/ThemeWhatsApp";
 import { useRealtimeSettings } from "@/hooks/useRealtimeSettings";
 
 interface Props {
@@ -33,6 +36,9 @@ export default function StorefrontLayout({ children, hideFooter }: Props) {
       <CompareBar />
       <MobileBottomNav />
       {!isCheckout && <CookieConsent />}
+      <ThemePopupNewsletter />
+      <ThemeToastSocialProof />
+      <ThemeWhatsApp />
     </div>
   );
 }
