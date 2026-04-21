@@ -53,7 +53,7 @@ export default function PopupNewsletter() {
         </button>
 
         {/* Header grafic cu clip-path */}
-        <div className="h-[140px] bg-gradient-to-r from-blue-600 to-blue-800 flex items-center justify-center relative">
+        <div className="h-[140px] flex items-center justify-center relative" style={{ background: `linear-gradient(to right, var(--btn-primary-bg, #141414), #000)` }}>
           <div className="text-center text-white">
             <p className="text-3xl font-bold">10% REDUCERE</p>
             <p className="text-sm font-medium opacity-90">LA PRIMA COMANDĂ</p>
