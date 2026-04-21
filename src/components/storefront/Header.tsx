@@ -110,6 +110,7 @@ export default function Header() {
           </div>
         </div>
       </div>
+      )}
 
       {/* LAYER 2 — White utility bar */}
       <div className="hidden md:block bg-white border-b" style={{ borderColor: "#e5e7eb" }}>
