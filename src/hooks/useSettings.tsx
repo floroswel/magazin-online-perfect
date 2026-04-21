@@ -271,7 +271,7 @@ function applyCSSVariables(s: SettingsMap) {
   root.style.setProperty('--background', '0 0% 96%');
   root.style.setProperty('--foreground', '0 0% 13%');
   root.style.setProperty('--ring', '213 95% 55%');
-  root.style.setProperty('--color-primary', '#2563eb');
+  root.style.setProperty('--color-primary', s.primary_color || '#141414');
   root.style.setProperty('--color-navbar', '#333333');
   root.style.setProperty('--color-ticker', '#d32f2f');
   root.style.setProperty('--color-footer', '#1f1f1f');

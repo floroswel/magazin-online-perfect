@@ -144,7 +144,7 @@ export default function Index() {
           <div className="absolute bottom-10 left-10 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl" />
 
           <div className="ml-container py-20 lg:py-28 relative z-10">
-            <p className="text-blue-300 text-sm tracking-widest uppercase mb-4">{heroSubtitle}</p>
+            <p className="text-sm tracking-widest uppercase mb-4" style={{ color: "rgba(255,255,255,0.7)" }}>{heroSubtitle}</p>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-8 text-white max-w-2xl">
               {heroTitle}
             </h1>
