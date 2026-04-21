@@ -212,6 +212,17 @@ export default function AdminProducts() {
     },
   });
 
+  const { data: productAttributesList = [] } = useQuery({
+    queryKey: ["admin-product-attributes-with-values"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("product_attributes").select("id, name, slug, attribute_values(id, value, slug)").order("display_order");
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  const [selectedProductAttrs, setSelectedProductAttrs] = useState<Record<string, string[]>>({});
+
   // ─── Helpers ───
   const generateSlug = (name: string) =>
     name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
