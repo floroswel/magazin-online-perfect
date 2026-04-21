@@ -46,6 +46,53 @@ export default function Footer() {
   const col3Heading = unq(s.footer_col3_heading) || unq(s.footer_col3_title) || "Magazinul nostru";
   const col4Heading = unq(s.footer_col4_heading) || unq(s.footer_col4_title) || "Suport clienți";
 
+  // Dynamic links from admin (pipe-separated: "Label:/url|Label2:/url2")
+  const parseLinks = (raw: string, fallback: { label: string; url: string }[]) => {
+    const val = unq(raw);
+    if (!val) return fallback;
+    return val.split("|").map(entry => {
+      const [label, ...urlParts] = entry.split(":");
+      const url = urlParts.join(":");
+      return { label: label.trim(), url: url.trim() };
+    }).filter(l => l.label && l.url);
+  };
+
+  const col1Links = parseLinks(s.footer_col1_links, [
+    { label: "Cum cumpăr", url: "/page/cum-cumpar" },
+    { label: "Politica de livrare", url: "/page/livrare" },
+    { label: "Politica de returnare", url: "/page/politica-retur" },
+    { label: "Termeni și condiții", url: "/page/termeni-conditii" },
+    { label: "GDPR", url: "/page/gdpr" },
+  ]);
+
+  const col2Links = parseLinks(s.footer_col2_links, [
+    { label: "Datele mele", url: "/account" },
+    { label: "Comenzi", url: "/account/orders" },
+    { label: "Lista de dorințe", url: "/account/favorites" },
+  ]);
+
+  const col3Links = parseLinks(s.footer_col3_links || "", [
+    { label: "Despre noi", url: "/page/despre-noi" },
+    { label: "Blog", url: "/blog" },
+    { label: "Contact", url: "/contact" },
+  ]);
+
+  const isExternal = (url: string) => url.startsWith("http");
+
+  const renderLinkList = (links: { label: string; url: string }[]) => (
+    <ul className="space-y-2 text-sm">
+      {links.map((l, i) =>
+        <li key={i}>
+          {isExternal(l.url) ? (
+            <a href={l.url} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">{l.label}</a>
+          ) : (
+            <Link to={l.url} className="hover:text-white transition-colors">{l.label}</Link>
+          )}
+        </li>
+      )}
+    </ul>
+  );
+
   return (
     <>
       <footer className="mt-0">
@@ -74,31 +121,17 @@ export default function Footer() {
           <div className="ml-container py-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div>
               <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">{col1Heading}</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link to="/page/cum-cumpar" className="hover:text-white transition-colors">Cum cumpăr</Link></li>
-                <li><Link to="/page/livrare" className="hover:text-white transition-colors">Politica de livrare</Link></li>
-                <li><Link to="/page/politica-retur" className="hover:text-white transition-colors">Politica de returnare</Link></li>
-                <li><Link to="/page/termeni-conditii" className="hover:text-white transition-colors">Termeni și condiții</Link></li>
-                <li><Link to="/page/gdpr" className="hover:text-white transition-colors">GDPR</Link></li>
-              </ul>
+              {renderLinkList(col1Links)}
             </div>
 
             <div>
               <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">{col2Heading}</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link to="/account" className="hover:text-white transition-colors">Datele mele</Link></li>
-                <li><Link to="/account/orders" className="hover:text-white transition-colors">Comenzi</Link></li>
-                <li><Link to="/account/favorites" className="hover:text-white transition-colors">Lista de dorințe</Link></li>
-              </ul>
+              {renderLinkList(col2Links)}
             </div>
 
             <div>
               <h4 className="text-sm font-bold mb-4 uppercase tracking-wider text-white">{col3Heading}</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link to="/page/despre-noi" className="hover:text-white transition-colors">Despre noi</Link></li>
-                <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
-                <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
-              </ul>
+              {renderLinkList(col3Links)}
             </div>
 
             <div>
