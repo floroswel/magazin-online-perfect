@@ -81,15 +81,17 @@ export default function AdminThemeAudit() {
 
   const saveSnapshot = async () => {
     if (!report) return;
-    const { error } = await supabase.from("theme_audit_snapshots").insert({
-      total_db_keys: report.totals.db,
-      total_registry_keys: report.totals.registry,
-      synced_count: report.totals.db - report.totals.orphan,
-      orphan_db_count: report.totals.orphan,
-      missing_in_db_count: report.totals.missing,
-      deprecated_count: report.totals.deprecated,
-      report_json: report as unknown as Record<string, unknown>,
-    });
+    const { error } = await supabase.from("theme_audit_snapshots").insert([
+      {
+        total_db_keys: report.totals.db,
+        total_registry_keys: report.totals.registry,
+        synced_count: report.totals.db - report.totals.orphan,
+        orphan_db_count: report.totals.orphan,
+        missing_in_db_count: report.totals.missing,
+        deprecated_count: report.totals.deprecated,
+        report_json: report as never,
+      },
+    ]);
     if (error) {
       toast({ title: "Eroare", description: error.message, variant: "destructive" });
       return;
