@@ -9,6 +9,7 @@ import { useThemeText } from "@/hooks/useThemeText";
 import { useSettings } from "@/hooks/useSettings";
 import ProductCard from "@/components/storefront/ProductCard";
 import HomepageNewsletter from "@/components/storefront/HomepageNewsletter";
+import HomeCategorySidebar from "@/components/storefront/HomeCategorySidebar";
 
 const unq = (str?: string) => (str || "").replace(/^"|"$/g, "");
 
