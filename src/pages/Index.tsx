@@ -9,6 +9,7 @@ import { useThemeText } from "@/hooks/useThemeText";
 import { useSettings } from "@/hooks/useSettings";
 import ProductCard from "@/components/storefront/ProductCard";
 import HomepageNewsletter from "@/components/storefront/HomepageNewsletter";
+import HomeCategorySidebar from "@/components/storefront/HomeCategorySidebar";
 
 const unq = (str?: string) => (str || "").replace(/^"|"$/g, "");
 
@@ -128,46 +129,51 @@ export default function Index() {
 
   return (
     <StorefrontLayout>
-      {/* ── HERO ── */}
-      {showHero && (
-        <section
-          className="relative overflow-hidden"
-          style={{
-            background: `linear-gradient(135deg, ${heroGradientStart} 0%, ${heroGradientMid} 50%, ${heroGradientEnd} 100%)`,
-            minHeight: 420,
-          }}
-        >
-          {heroImageUrl && (
-            <img src={heroImageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" />
-          )}
-          <div className="absolute top-20 right-20 w-64 h-64 rounded-full blur-3xl" style={{ background: `${primaryColor}33` }} />
-          <div className="absolute bottom-10 left-10 w-48 h-48 rounded-full blur-3xl" style={{ background: `${primaryColor}15` }} />
+      {/* ── MEGA-HUB LAYOUT: Sidebar permanent + Hero compact ── */}
+      <section className="ml-container pt-4 pb-8">
+        <div className="flex gap-5">
+          <HomeCategorySidebar />
 
-          <div className="ml-container py-20 lg:py-28 relative z-10">
-            <p className="text-sm tracking-widest uppercase mb-4" style={{ color: "rgba(255,255,255,0.7)" }}>{heroSubtitle}</p>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-8 text-white max-w-2xl">
-              {heroTitle}
-            </h1>
-            <div className="flex flex-wrap gap-4">
-              <Link
-                to={heroCtaUrl}
-                className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm font-bold uppercase tracking-widest transition-all rounded-md"
-                style={{ background: primaryColor }}
-              >
-                {heroCtaText} <ArrowRight className="w-4 h-4" />
-              </Link>
-              {unq(s.hero_show_second_btn) === "true" && (
-                <Link
-                  to={unq(s.hero_second_btn_url) || "/page/despre-noi"}
-                  className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm font-bold uppercase tracking-widest transition-all rounded-md border border-white/30 hover:bg-white/10"
-                >
-                  {unq(s.hero_second_btn_text) || "Povestea noastră"}
-                </Link>
+          {showHero && (
+            <div
+              className="flex-1 relative overflow-hidden rounded-md min-h-[380px] flex items-center"
+              style={{
+                background: `linear-gradient(135deg, ${heroGradientStart} 0%, ${heroGradientMid} 50%, ${heroGradientEnd} 100%)`,
+              }}
+            >
+              {heroImageUrl && (
+                <img src={heroImageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-25" />
               )}
+              <div className="absolute top-10 right-10 w-56 h-56 rounded-full blur-3xl" style={{ background: `${primaryColor}40` }} />
+              <div className="absolute bottom-6 left-6 w-40 h-40 rounded-full blur-3xl" style={{ background: `${primaryColor}20` }} />
+
+              <div className="relative z-10 px-8 lg:px-12 py-10 max-w-2xl">
+                <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-3 text-white/70">{heroSubtitle}</p>
+                <h1 className="text-3xl lg:text-5xl font-extrabold leading-[1.05] mb-6 text-white">
+                  {heroTitle}
+                </h1>
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    to={heroCtaUrl}
+                    className="inline-flex items-center gap-2 px-7 py-3.5 text-white text-xs font-bold uppercase tracking-widest transition-all rounded-md hover:scale-[1.02]"
+                    style={{ background: primaryColor, boxShadow: `0 8px 24px -8px ${primaryColor}` }}
+                  >
+                    {heroCtaText} <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  {unq(s.hero_show_second_btn) === "true" && (
+                    <Link
+                      to={unq(s.hero_second_btn_url) || "/page/despre-noi"}
+                      className="inline-flex items-center gap-2 px-7 py-3.5 text-white text-xs font-bold uppercase tracking-widest transition-all rounded-md border border-white/30 hover:bg-white/10"
+                    >
+                      {unq(s.hero_second_btn_text) || "Povestea noastră"}
+                    </Link>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        </section>
-      )}
+          )}
+        </div>
+      </section>
 
       {/* ── CATEGORIES GRID ── */}
       {showCategories && categories.length > 0 && (

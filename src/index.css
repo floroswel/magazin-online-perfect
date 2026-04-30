@@ -12,34 +12,35 @@
     --card-foreground: 0 0% 13%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 13%;
-    --primary: 217 91% 53%;
+    /* MEGA-HUB ELECTRO PALETTE — alb curat + roșu agresiv + accent portocaliu */
+    --primary: 4 85% 56%;            /* #ee4036 roșu electro */
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 20%;
+    --secondary: 0 0% 13%;            /* dark topbar */
     --secondary-foreground: 0 0% 100%;
     --muted: 0 0% 96%;
     --muted-foreground: 220 9% 44%;
-    --accent: 25 95% 53%;
+    --accent: 32 100% 50%;            /* #ff9900 portocaliu hot */
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 72% 50%;
+    --destructive: 0 85% 50%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 217 91% 53%;
-    --radius: 0.125rem;
+    --ring: 4 85% 56%;
+    --radius: 0.25rem;
 
     --star-color: 38 92% 50%;
-    --badge-new-bg: 145 55% 38%;
-    --badge-sale-bg: 25 90% 48%;
-    --badge-hot-bg: 0 72% 50%;
+    --badge-new-bg: 145 60% 40%;       /* verde NOU */
+    --badge-sale-bg: 32 100% 50%;      /* portocaliu REDUCERE */
+    --badge-hot-bg: 4 85% 56%;         /* roșu HOT */
 
-    --footer-bg: 0 0% 12%;
-    --footer-fg: 0 0% 85%;
+    --footer-bg: 0 0% 10%;
+    --footer-fg: 0 0% 88%;
     --footer-muted: 0 0% 60%;
-    --footer-accent: 217 91% 53%;
+    --footer-accent: 4 85% 56%;
     --topbar-bg: 0 0% 13%;
     --topbar-fg: 0 0% 100%;
 
-    --color-price: #f97316;
+    --color-price: #ee4036;
     --color-price-old: #9ca3af;
     --color-border: #e5e7eb;
 
