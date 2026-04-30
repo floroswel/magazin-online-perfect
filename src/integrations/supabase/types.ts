@@ -685,25 +685,34 @@ export type Database = {
       }
       app_settings: {
         Row: {
+          deprecated_at: string | null
+          deprecated_reason: string | null
           description: string | null
           id: string
           key: string
+          replaced_by_key: string | null
           updated_at: string
           updated_by: string | null
           value_json: Json
         }
         Insert: {
+          deprecated_at?: string | null
+          deprecated_reason?: string | null
           description?: string | null
           id?: string
           key: string
+          replaced_by_key?: string | null
           updated_at?: string
           updated_by?: string | null
           value_json?: Json
         }
         Update: {
+          deprecated_at?: string | null
+          deprecated_reason?: string | null
           description?: string | null
           id?: string
           key?: string
+          replaced_by_key?: string | null
           updated_at?: string
           updated_by?: string | null
           value_json?: Json
@@ -10663,6 +10672,45 @@ export type Database = {
         }
         Relationships: []
       }
+      theme_audit_snapshots: {
+        Row: {
+          deprecated_count: number
+          id: string
+          missing_in_db_count: number
+          orphan_db_count: number
+          ran_at: string
+          ran_by: string | null
+          report_json: Json
+          synced_count: number
+          total_db_keys: number
+          total_registry_keys: number
+        }
+        Insert: {
+          deprecated_count: number
+          id?: string
+          missing_in_db_count: number
+          orphan_db_count: number
+          ran_at?: string
+          ran_by?: string | null
+          report_json: Json
+          synced_count: number
+          total_db_keys: number
+          total_registry_keys: number
+        }
+        Update: {
+          deprecated_count?: number
+          id?: string
+          missing_in_db_count?: number
+          orphan_db_count?: number
+          ran_at?: string
+          ran_by?: string | null
+          report_json?: Json
+          synced_count?: number
+          total_db_keys?: number
+          total_registry_keys?: number
+        }
+        Relationships: []
+      }
       theme_editor_settings: {
         Row: {
           category: string
@@ -10690,6 +10738,60 @@ export type Database = {
           updated_at?: string
           updated_by?: string | null
           value_json?: Json
+        }
+        Relationships: []
+      }
+      theme_settings_registry: {
+        Row: {
+          admin_module: string | null
+          consumer_files: Json | null
+          created_at: string
+          default_value: Json | null
+          description: string | null
+          enum_options: Json | null
+          group_name: string
+          id: string
+          is_public: boolean | null
+          is_required: boolean | null
+          key: string
+          sort_order: number | null
+          updated_at: string
+          validator_regex: string | null
+          value_type: string
+        }
+        Insert: {
+          admin_module?: string | null
+          consumer_files?: Json | null
+          created_at?: string
+          default_value?: Json | null
+          description?: string | null
+          enum_options?: Json | null
+          group_name: string
+          id?: string
+          is_public?: boolean | null
+          is_required?: boolean | null
+          key: string
+          sort_order?: number | null
+          updated_at?: string
+          validator_regex?: string | null
+          value_type: string
+        }
+        Update: {
+          admin_module?: string | null
+          consumer_files?: Json | null
+          created_at?: string
+          default_value?: Json | null
+          description?: string | null
+          enum_options?: Json | null
+          group_name?: string
+          id?: string
+          is_public?: boolean | null
+          is_required?: boolean | null
+          key?: string
+          sort_order?: number | null
+          updated_at?: string
+          validator_regex?: string | null
+          value_type?: string
         }
         Relationships: []
       }
@@ -11487,6 +11589,10 @@ export type Database = {
         Returns: undefined
       }
       delete_customer_data_gdpr: { Args: { p_user_id: string }; Returns: Json }
+      deprecate_setting: {
+        Args: { p_key: string; p_reason?: string; p_replaced_by?: string }
+        Returns: Json
+      }
       get_active_scripts_for_page: {
         Args: { p_page_types: string[] }
         Returns: {
@@ -11546,6 +11652,8 @@ export type Database = {
           slug: string
         }[]
       }
+      theme_audit_report: { Args: never; Returns: Json }
+      undeprecate_setting: { Args: { p_key: string }; Returns: Json }
       use_loyalty_points: {
         Args: {
           p_order_id?: string
