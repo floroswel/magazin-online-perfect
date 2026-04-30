@@ -307,6 +307,7 @@ const menuSections: MenuSection[] = [
           { label: "Notificări Push", path: "/admin/system/push" },
           { label: "Protecție Brute Force", path: "/admin/system/brute-force" },
           { label: "Loguri Sistem", path: "/admin/modules/logs" },
+          { label: "🎨 Theme Audit", path: "/admin/system/theme-audit" },
         ],
       },
       {

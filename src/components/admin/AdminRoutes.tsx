@@ -58,6 +58,7 @@ const AdminPromotions = lazy(() => import("./marketing/AdminPromotions"));
 const AdminPricingRules = lazy(() => import("./marketing/AdminPricingRules"));
 const AdminFooterBadges = lazy(() => import("./settings/AdminFooterBadges"));
 const AdminFooterSettings = lazy(() => import("./settings/AdminFooterSettings"));
+const AdminThemeAudit = lazy(() => import("@/pages/admin/AdminThemeAudit"));
 const AdminHomepageSettings = lazy(() => import("./content/AdminHomepageSettings"));
 const AdminThemeTexts = lazy(() => import("./content/AdminThemeTexts"));
 const AdminBanners = lazy(() => import("./marketing/AdminBanners"));
@@ -223,6 +224,7 @@ export default function AdminRoutes() {
     <Suspense fallback={<Fallback />}>
       <Routes>
         <Route index element={<AdminDashboard />} />
+        <Route path="system/theme-audit" element={<AdminThemeAudit />} />
 
         {/* ═══════════ COMENZI ═══════════ */}
         <Route path="orders" element={<AdminOrders />} />
